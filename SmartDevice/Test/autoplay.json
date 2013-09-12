@@ -1,0 +1,9 @@
+{
+    "items": [
+        {label: "Never"},
+        {label: "Every morning"},
+        {label: "Every hour"},
+        {label: "Every 6 hours",checked: "true"},
+        {label: "Every 12 hours"}
+    ]
+}

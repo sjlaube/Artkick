@@ -1,0 +1,14 @@
+
+{
+    "items": [
+        {label: "Top Lists", moveTo: "PlaylistView", rightText: "4 lists"},
+        {label: "Paintings", moveTo: "PlaylistView", rightText: "25 lists"},
+        {label: "Photography", moveTo: "PlaylistView", rightText: "15 lists"},
+        {label: "Artists", moveTo: "PlaylistView", rightText: "150 lists"},
+        {label: "Space", moveTo: "PlaylistView", rightText: "83 lists"},
+        {label: "Sports", moveTo: "PlaylistView", rightText: "12 lists"},
+        {label: "Featured", moveTo: "PlaylistView", rightText: "10 Viewlists"},
+        {label: "Museum Collections", moveTo: "PlaylistView", rightText: "8 Viewlists"},
+        {label: "Zwamy Picks", moveTo: "PlaylistView", rightText: "5 Viewlists"}
+    ]
+}
