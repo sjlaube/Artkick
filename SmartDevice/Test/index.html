@@ -435,6 +435,18 @@ Install Artkick</button>
 	    data-dojo-props=' moveTo:"AccountSettings", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">Account</li>
   </ul>
 </div>
+<div id="Sharemenu" data-dojo-type="dojox/mobile/SimpleDialog" data-dojo-props='modal:false, left:"0px", top:"45px"' 
+    style="position: absolute; z-index: 950; width: 200px">
+	  <div class="mblSimpleDialogTitle">Sharing Menu</div>
+	<button data-dojo-type="dojox/mobile/Button" 
+          style="width:100px;" onclick="facebook()">Facebook</button>
+	<button data-dojo-type="dojox/mobile/Button" 
+          style="width:100px;" onclick="facebook()">Twitter</button>
+	<button data-dojo-type="dojox/mobile/Button" 
+          style="width:100px;" onclick="facebook()">Email</button>
+		  
+</div>	
+	
 
  <!-- <div data-dojo-type="dojox/mobile/ScrollableView" id="set_autoplay" keepScrollPos="false" scrollBar="true">
  <h1 label="Set Autoplay" data-dojo-type="dojox/mobile/Heading" back="Done" moveTo="ImageView"></h1>
@@ -647,7 +659,7 @@ Send Feedback</button>
 <div data-dojo-type="dojox/mobile/ScrollableView"  id="OptionsList" style="height: auto;">
   <h1 label="Options" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
    <div  data-dojo-type="dojox/mobile/ToolBarButton" moveTo="ImageView" transition="slide" transitionDir="-1" style="float: left;" data-dojo-props="arrow:'left'">Back</div>
-     <div  data-dojo-type="dojox/mobile/ToolBarButton" id="share_button" style="float: richt;" onclick="facebook()">facebook</div>  
+     <div  data-dojo-type="dojox/mobile/ToolBarButton" id="share_button" style="float: right;" onclick="showsharemenu()">facebook</div>  
 
  </h1>
 <ul data-dojo-type="dojox/mobile/EdgeToEdgeList">

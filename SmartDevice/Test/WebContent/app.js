@@ -1578,6 +1578,7 @@ function facebook()
 {
 
 imageurl=imageMap[currImage]["thumbnail"];
+hidemenu();
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
 var obj={
     method: 'feed',
@@ -1649,6 +1650,15 @@ function showviewlistmenu() {
         window.viewmenushow = true;
     }
 }
+function showsharemenu(){
+	if( window.sharemenushow)
+		hidemenu();
+   else
+   {
+		dijit.registry.byId("Sharemenu").show();
+		window.sharemenushow=true;
+	}
+}
 
 function showviewlistmenu2() {
     var menulist = dijit.registry.byId("Viewlistmenu2");
@@ -1696,6 +1706,8 @@ function hidemenu() {
     syslist.hide();
     menulist2.hide();
     syslist2.hide();
+	dijit.registry.byId("Sharemenu").hide();
+	window.sharemenushow = false;
     window.systemmenushow = false;
     window.viewmenushow = false;
     window.systemmenushow2 = false;
