@@ -29,7 +29,7 @@ require(["jquery",
 		"dojox/form/PasswordValidator",
         "dojo/dom-attr"
     ],
-    function (
+    function ( 
         $,
         ready,
         dom,
