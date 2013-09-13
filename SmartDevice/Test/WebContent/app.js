@@ -1583,13 +1583,13 @@ imageurl=imageMap[currImage]["thumbnail"];
 hidemenu();
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
 var obj={
-    method: 'feed',
+//method: 'feed',
     name: 'Artkick rocks',
     link: "http://www.artkick.com/",
     picture: imageurl,
-	display:'popup',
+	//display:'popup',
     caption: 'Artkick',
-	redirect_uri: 'http://test.artkick.net',
+//	redirect_uri: 'http://test.artkick.net',
     description: 'Check out this great image and thousands more at Artkick'
 }
 
