@@ -1576,12 +1576,40 @@ function facebook3()
        }
      );     
 }
-function facebook()
+
+
+function emailShare()
 {
 
 imageurl=imageMap[currImage]["thumbnail"];
 hidemenu();
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
+
+calliOSFunction("email", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+}
+
+function twitter()
+{
+	//alert("facebook!");
+
+imageurl=imageMap[currImage]["thumbnail"];
+hidemenu();
+//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
+
+calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+}
+
+function facebook()
+{
+	//alert("facebook!");
+
+imageurl=imageMap[currImage]["thumbnail"];
+hidemenu();
+//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
+
+calliOSFunction("facebook", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+
+
 var obj={
 //method: 'feed',
     name: 'Artkick rocks',
@@ -1593,6 +1621,11 @@ var obj={
     description: 'Check out this great image and thousands more at Artkick'
 }
 
+
+
+
+
+/*
   function callback(response) {
     if (response && response.post_id) {
       alert('Post was published.');
@@ -1601,7 +1634,7 @@ var obj={
     }
   }
   FB.ui(obj, callback);
-
+*/
 }
 
 function showiframe(url) {
@@ -1759,8 +1792,10 @@ function regnewroku() {
 
 function installartkick() {
     //alert ("install artkick");
-    var win = window.open("https://owner.roku.com/add/ArtkickV0", '_blank');
-    win.focus();
+    //var win = window.open("https://owner.roku.com/add/ArtkickV0", '_blank');
+    //win.focus();
+    calliOSFunction("loadLink", ["https://owner.roku.com/add/ArtkickV0"], "onSuccess", "onError");
+    
 
 }
 
