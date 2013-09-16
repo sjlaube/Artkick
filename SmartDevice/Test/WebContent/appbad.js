@@ -54,8 +54,8 @@ require(["jquery",
 
 
         ready(
-		
-	
+
+
 		function () {
 
 
@@ -74,15 +74,15 @@ require(["jquery",
 			var optionsView = registry.byId("OptionsList");
 			var pictureGrid = registry.byId("Picturegrid");
 			var gridView = registry.byId("GridView");
-		
+
             var regPlayerView = registry.byId("registernewchromecast");	
 
             var addUserView = registry.byId("add_user_player");
             var removePlayerView = registry.byId("removeplayer");
             var fillsw = dijit.registry.byId("fillswitch");
 			var LoadImages = document.getElementById("LoadImages");
-			
-	
+
+
 			var	userrating = new Rating({
 							numStars:5});	
             window.boucingTime = 3000;
@@ -109,11 +109,11 @@ require(["jquery",
 			window.shuffle= false;
          
            window.switchView = false;
-		
+
 		   window.sliderIndex = 0;
 		   window.gridset = false;
 		   window.currGridList = -1;
-		
+
 
             function getCookie(c_name) {
                 var c_value = document.cookie;
@@ -147,26 +147,26 @@ require(["jquery",
 
             function checkCookie() {
                 var email = getCookie("email");
-                  //   alert("checkCookie " + email);
+                //     alert("checkCookie " + email);
                 var I0 = registry.byId("Intro0");
                 //         alert ("Io= " + I0 + I0.selected);
                 var Iv = registry.byId("ImageView");
                 var splash = dojo.byId("splash");
                 //         alert("Imageview= "+ Iv + Iv.selected);
                 //      I0.startup();
-                  //   alert ( "intro0 startup"); 
+                //     alert ( "intro0 startup"); 
                 I0.show();
                 Iv.startup();
-             //    alert ("try spash= " + splash);
+                // alert ("try spash= " + splash);
 
                 //   splash.style.display = "none";
                 //  alert ("did splash");
 
                 //     alert ("imageview startup");
 
-            //    alert("email1="+email);
+
                 if (email != null && email != "" && email != "null") {
-                 //  alert ("good to go");
+                    //alert ("good to go");
 
 
                     //     alert("Welcome again " + email);
@@ -176,7 +176,7 @@ require(["jquery",
                         callbackParamName: "callback",
                         load: function (result) {
                             if (result["Status"] == "success") {
-                    //       alert("we are here");
+
                                 //        var currView = dijit.registry.byId("Intro0");
                                 //        var mycurrView = currView.getShowingView();
                                 window.email = email;
@@ -194,11 +194,7 @@ require(["jquery",
 
                     });
 
-                } else 
-				{
-			//	alert("email="+email);
-				splash.style.display = "none";
-				}
+                } else splash.style.display = "none";
             }
             
             
@@ -392,7 +388,7 @@ require(["jquery",
                         if ((!window.foundIndex) && (window.currImage != window.tarImage)) {
 					                            imagesList.currentView.goTo(1);
                         }
-					
+
                         //
                         loadmetadata();
    
@@ -400,7 +396,6 @@ require(["jquery",
                         	window.switchView = false;
                             var currView = dijit.registry.byId("blankview");
 							     var currView2 = currView.getShowingView();
-								 alert("view2="+currView2);
 		                    currView2.performTransition("ImageView", 1, "fade", null);
                         }
                     }
@@ -470,7 +465,7 @@ require(["jquery",
                 } else {
                     loadImages(targImage,1,15,1);
                 }
-				
+
 
             }
 
@@ -781,7 +776,7 @@ require(["jquery",
 				var viewlists = "";
 				var vlname="";
 				var vlnumber="";
-				
+
 
 			//	alert(window.currViewList.length);
 
@@ -822,7 +817,7 @@ require(["jquery",
 				if (imageMap[currImage]["User Rating"]!=undefined) {
 					ratingvalue=imageMap[currImage]["User Rating"];
 				}
-						            						
+
 				else
 							ratingvalue=0;
 				userrating.set("value",ratingvalue);
@@ -837,7 +832,7 @@ require(["jquery",
 			//	metaPlane10.destroyDescendants();
 			//	alert("window currViewlist"+window.currList);
 				for (var i in imageMap[currImage]["viewlists2"]){
-				
+
 				   //   alert ("view=" + imageMap[currImage]["viewlists2"][i][0]+imageMap[currImage]["viewlists2"][i][1]);
 					  vlnumber=imageMap[currImage]["viewlists2"][i][0];
 					  vlname=imageMap[currImage]["viewlists2"][i][1];
@@ -853,11 +848,11 @@ require(["jquery",
 					  });
 					  myButton.startup();
 					  myButton.placeAt(metaPlane10);
-				
-				
+
+
 				//	   alert("mybutton" + myButton.onClick + "vlnumber="+vlnumber);
                      
-									  
+
 					//     viewlists = viewlists + vlname +"-"+"<img src='images/switch1.png' align='top' onclick=swapview(" + vlnumber + ")><br>";
 				   //   alert ("viewlists="+viewlists);
 					  }
@@ -879,12 +874,12 @@ require(["jquery",
 				}
 			//		alert("viewlists= "+ viewlists);
 				//metaPlane9.innerHTML = viewlists;
-				
-				
-				
-				
-				
-				
+
+
+
+
+
+
                 if (imageMap[currImage]["More Info Link"]) {
                     if (imageMap[currImage]["More Info Link"].substring(0, 4) == "http")
                         metaPlane3.innerHTML = "<a   style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["More Info Link"] + "\")' >"+ title+"</a>";
@@ -904,7 +899,7 @@ require(["jquery",
                         metaPlane7.innerHTML = "<a   style=\"color:#2518b5\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["Genre Link"] + "\")' >" + genre+ "</a>";
                 }
             }
-		
+
 
             function updatePlayers(selectedPlayers) {
                 var base = "http://evening-garden-3648.herokuapp.com/player/";
@@ -924,7 +919,7 @@ require(["jquery",
                             //playerList.destroyRecursive(true);
                             //$("#ownedPlayerList").html('');
                             playerList.destroyDescendants();
-					
+
                             for (var i in result["players"]) {
                                 var player = result["players"][i];
 
@@ -932,7 +927,7 @@ require(["jquery",
 
                                 if (curr - player["last_visit"] < 7000) {
                                     var status = "images/greenbutton.png";
-								
+
                                 } else {
                                     var status = "images/graybutton.png";
                                 }
@@ -1040,23 +1035,23 @@ require(["jquery",
             checkCookie();
 			window.BrowserDetect.init();
 		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS);
-			if (window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome")
+			if (window.BrowserDetect.OS=="Linus" && window.BrowserDetect.browser!= "Chrome")
 			{
 			alert("You must run Artkick under Chrome, please restart using the Chrome browser");
-		//	throw new Error();
+			throw new Error();
 			}
-			
+
 	on(regPlayerView, "beforeTransitionIn", 
 			 function(){
 				calliOSFunction("sayHello", ["On",window.email], "onSuccess", "onError");
 			});
-			
+
 		    on(regPlayerView, "beforeTransitionOut",
 		      function(){
 				calliOSFunction("sayHello", ["Off",window.email], "onSuccess", "onError");
 			});
-			
-			
+
+
         //   document.addEventListner("backbutton", function(){ alert ("back pushed");});
             // select player transition
             on(selectPlayerView, "beforeTransitionIn",
@@ -1185,17 +1180,17 @@ require(["jquery",
 					window.targImageGrid=-1;
 					loadGrid(0); //first call load up the first page of grid
 				})
-				
-				
+
+
 			window.hidebutton = function (node,hideMe){
 					domStyle.set(dijit.registry.byId(node).domNode, {
 							visibility: (hideMe ? 'hidden' : 'visible'),
 							display: (hideMe ? 'none' : 'block')
 						});
 			}
-			
-			
-			
+
+
+
 			window.loadGrid = function(page)	{		
 			 var gridprevious = dijit.registry.byId("GridPrevious");
 			  var gridnext = dijit.registry.byId("GridNext");
@@ -1259,7 +1254,7 @@ require(["jquery",
                 else
                     dijit.registry.byId("GridViewHeader").set("label",  window.currViewList.substring(0, 30)+"<br>Page "+window.currGridPage+"/"+window.gridPages);
 				//check number of pages if only 1 turn off the forward back buttons, otherwise check for first/last and show as appropriate
-				
+
 				dijit.registry.byId("gridshowing").set('selected', true);
 			//	alert("avail heigth="+window.innerHeight+"width="+window.innerWidth);
 
@@ -1288,8 +1283,8 @@ require(["jquery",
 
 										dijit.registry.byId("GridView").performTransition("blankview", 1, "fade", null);
 									   // loadImages(this.id,1,15,1);
-									  
-					            
+
+
 					            },	
 								width:dim+"px",
 								height: dim+"px",
@@ -1303,7 +1298,7 @@ require(["jquery",
 					//alert("first="+window.firstGridImage+" last="+window.lastGridImage);
 					}
 
-					
+
 				}
 				)
 				}; 
@@ -1321,7 +1316,7 @@ require(["jquery",
                    load: function (result) {
                    }
                });
-			
+
 			});
      	
 		//	on(userrating, "mouseover",
@@ -1339,8 +1334,8 @@ require(["jquery",
                 //   }
               // });
 		//		});	
-				
-				
+
+
 	        window.doPrev = function(imgId) {
 
 				//alert("currView id "+imgId);
@@ -1349,13 +1344,13 @@ require(["jquery",
 				if((window.prevImg!=undefined)&&(window.prevImg!=imgId)){
 					//normal slide backward
 					window.currAbsIndex--;
-					
+
 				}
-				
+
 				else if(imgId == window.currStartImg&&imgId!=window.absStartImg){
 					//slide backward at head
 					//prev chunk!
-					
+
 			        var imageData = {
                        "items": []
                     };
@@ -1364,13 +1359,13 @@ require(["jquery",
                        data: imageData
                     });
                     loadImages(window.currStartImg,0,15,0);
-					
+
 				}
-				
+
 				else if (imgId == window.currEndImg&&imgId!=window.absEndImg){
 					//slide forward at tail
 					//next chunk!
-					
+
 					var imageData = {
                        "items": []
                     };
@@ -1380,21 +1375,21 @@ require(["jquery",
                     });
                     //window.sliderIndex = 0;
                     loadImages(window.currEndImg,1,15,0);
-					
-					
+
+
 				}
-				
+
 				window.prevImg = imgId;
-				
-				
+
+
 			}
-			
-			
-				
+
+
+
 			window.doNext = function(imgId) {
 
-				
-				
+
+
 		      /*	
                alert("next action detected!");
                window.swipedImages++;
@@ -1545,60 +1540,57 @@ else
 }
 updateImages(-1);
 }
-
-//testgit
-
-
-function emailShare()
+function facebook2()
 {
 
-imageurl=imageMap[currImage]["thumbnail"];
-
-//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("email", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-setTimeout(function(){hidemenu()},1000);
+urlg="https://www.facebook.com/dialog/feed?app_id=633862919977898&link=http://developers.facebook.com/docs/reference/dialogs/&picture=http://fbrell.com/f8.jpg&name=Facebook%20Dialogs&caption=Reference%20Documentation&description=Using%20Dialogs%20to%20interact%20with%20users.&redirect_uri=https://test.artkick.net/windows.close.html/&display=popup"
+ 
+urlg="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=www.artkick.com&p[images][0]=&p[title]=test&p[summary]=test"
+ window.open(urlg,'feedDialog');
 }
-
-function twitter()
+function facebook3()
 {
-	//alert("facebook!");
-
-imageurl=imageMap[currImage]["thumbnail"];
-
-//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-setTimeout(function(){hidemenu()},1000);
+      FB.ui(
+       {
+         method: 'stream.publish',
+         message: 'Message here.',
+         attachment: {
+           name: 'Name here',
+           caption: 'Caption here.',
+           description: (
+             'description here'
+           ),
+           href: 'www.artkick.com'
+         },
+         
+         user_prompt_message: 'Personal message here'
+       },
+       function(response) {
+         if (response && response.post_id) {
+           alert('Post was published.');
+         } else {
+           alert('Post was not published.');
+         }
+       }
+     );     
 }
-
 function facebook()
 {
-	//alert("facebook!");
 
 imageurl=imageMap[currImage]["thumbnail"];
-
+hidemenu();
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("facebook", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-setTimeout(function(){hidemenu()},1000);
-
 var obj={
-//method: 'feed',
+    method: 'feed',
     name: 'Artkick rocks',
     link: "http://www.artkick.com/",
     picture: imageurl,
-	//display:'popup',
+	display:'popup',
     caption: 'Artkick',
-//	redirect_uri: 'http://test.artkick.net',
+	redirect_uri: 'http://test.artkick.net',
     description: 'Check out this great image and thousands more at Artkick'
 }
 
-
-
-
-
-/*
   function callback(response) {
     if (response && response.post_id) {
       alert('Post was published.');
@@ -1607,7 +1599,7 @@ var obj={
     }
   }
   FB.ui(obj, callback);
-*/
+
 }
 
 function showiframe(url) {
@@ -1622,14 +1614,13 @@ function showiframe(url) {
 }
 function showfullimage() {
     var currView = dijit.registry.byId("ImageView");
-	
-	hidebutton("GridView",true);
+	    hidebutton("GridView",true);
     document.getElementById("fullurl").setAttribute("src",window.imageMap[window.currImage]["url"]);
     currView.performTransition("fullimageview", 1, "flip", null);
 }
 function bigimage() {
 //check if menu up then close otherwise call showfullimage
- if (window.sharemenushow) 
+ if (window.systemmenushow) 
         hidemenu();
 	else
 	    showfullimage();
@@ -1707,14 +1698,21 @@ function showsystemmenu2() {
 
 function hidemenu() {
 
- 
+    var syslist = dijit.registry.byId("Systemmenu");
+    var menulist = dijit.registry.byId("Viewlistmenu");
+    var syslist2 = dijit.registry.byId("Systemmenu2");
+    var menulist2 = dijit.registry.byId("Viewlistmenu2");
+    menulist.hide();
+    syslist.hide();
+    menulist2.hide();
+    syslist2.hide();
 	dijit.registry.byId("Sharemenu").hide();
 	window.sharemenushow = false;
     window.systemmenushow = false;
     window.viewmenushow = false;
     window.systemmenushow2 = false;
     window.viewmenushow2 = false;
-    
+
 
 }
 
@@ -1735,7 +1733,7 @@ function swapview(newview){
 	currView.performTransition("blankview", 1, "fade", null);
 		currView2.performTransition("ImageView", 1, "fade", null);
 	updateImages(-1);
-				
+
 }
 
 function dologout() {
@@ -1759,10 +1757,8 @@ function regnewroku() {
 
 function installartkick() {
     //alert ("install artkick");
-    //var win = window.open("https://owner.roku.com/add/ArtkickV0", '_blank');
-    //win.focus();
-    calliOSFunction("loadLink", ["https://owner.roku.com/add/ArtkickV0"], "onSuccess", "onError");
-    
+    var win = window.open("https://owner.roku.com/add/ArtkickV0", '_blank');
+    win.focus();
 
 }
 
@@ -1812,7 +1808,7 @@ function createUser() {
 		alert("User name cannot be blank");
 		return;
 	}
-		
+
     dojo.io.script.get({
         url: base + "regUser?email=" + dojo.byId("regUserEmail").value + "&name=" + dojo.byId("regUserName").value+"&password=" + pw,
         callbackParamName: "callback",
@@ -1903,7 +1899,7 @@ function removePlayersAction() {
     if(window.rmplayerClickTime!=undefined && currTime - window.rmplayerClickTime < 7000)
         return;
 	window.rmplayerClickTime = currTime;
-	
+
     var r = confirm("Are you sure you want to delete the selected players?");
     if (r == false) {
         return;
@@ -1942,8 +1938,8 @@ function addUserToPlayers() {
     if(window.addUserClickTime!=undefined && currTime - window.addUserClickTime < window.boucingTime)
         return;
 	window.addUserClickTime = currTime;
-	
-	
+
+
     var email = dojo.byId("addPlayerEmail").value;
 
     var base = "http://evening-garden-3648.herokuapp.com/player/";
@@ -1968,8 +1964,8 @@ function searchUser() {
     if(window.searchuClickTime!=undefined && currTime - window.searchuClickTime < window.boucingTime)
         return;
 	window.searchuClickTime = currTime;
-	
-	
+
+
     var email = dojo.byId("addPlayerEmail").value;
     //alert(email);
     var base = "http://evening-garden-3648.herokuapp.com/player/";
@@ -2005,25 +2001,16 @@ function setAuto(interval) {
 
 
 function createPlayer() {
-	
+
 	var currTime = new Date().getTime();
     if(window.createPlayerClickTime!=undefined && currTime - window.createPlayerClickTime < window.boucingTime)
         return;
 	window.createPlayerClickTime = currTime;
-	if (dojo.byId("regPlayerCode").value =="")
-	{
-		alert("Player Code cannot be blank");
-		return;
-	}
-	if (dojo.byId("regPlayerName").value =="")
-	{
-		alert("You must name your player");
-		return;
-	}
-	
+
+
     var currView = dijit.registry.byId("registernewroku");
     var base = "http://evening-garden-3648.herokuapp.com/reg/";
-    alert(base + "userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
+    //alert(base + "userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
     dojo.io.script.get({
         url: base + "userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email,
         callbackParamName: "callback",
@@ -2181,8 +2168,7 @@ function onSuccess (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.result);
-        alert(obj.result);
-		hidemenu();
+        //alert(obj.result);
     }
 }
 
@@ -2192,10 +2178,5 @@ function onError (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.error);
-		        alert(obj.result);
-		hidemenu();
     }
 }
-
-//alert("toCall");
-

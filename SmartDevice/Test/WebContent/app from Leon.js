@@ -147,26 +147,26 @@ require(["jquery",
 
             function checkCookie() {
                 var email = getCookie("email");
-                  //   alert("checkCookie " + email);
+                //     alert("checkCookie " + email);
                 var I0 = registry.byId("Intro0");
                 //         alert ("Io= " + I0 + I0.selected);
                 var Iv = registry.byId("ImageView");
                 var splash = dojo.byId("splash");
                 //         alert("Imageview= "+ Iv + Iv.selected);
                 //      I0.startup();
-                  //   alert ( "intro0 startup"); 
+                //     alert ( "intro0 startup"); 
                 I0.show();
                 Iv.startup();
-             //    alert ("try spash= " + splash);
+                // alert ("try spash= " + splash);
 
                 //   splash.style.display = "none";
                 //  alert ("did splash");
 
                 //     alert ("imageview startup");
 
-            //    alert("email1="+email);
+
                 if (email != null && email != "" && email != "null") {
-                 //  alert ("good to go");
+                    //alert ("good to go");
 
 
                     //     alert("Welcome again " + email);
@@ -176,7 +176,7 @@ require(["jquery",
                         callbackParamName: "callback",
                         load: function (result) {
                             if (result["Status"] == "success") {
-                    //       alert("we are here");
+
                                 //        var currView = dijit.registry.byId("Intro0");
                                 //        var mycurrView = currView.getShowingView();
                                 window.email = email;
@@ -194,11 +194,7 @@ require(["jquery",
 
                     });
 
-                } else 
-				{
-			//	alert("email="+email);
-				splash.style.display = "none";
-				}
+                } else splash.style.display = "none";
             }
             
             
@@ -400,7 +396,6 @@ require(["jquery",
                         	window.switchView = false;
                             var currView = dijit.registry.byId("blankview");
 							     var currView2 = currView.getShowingView();
-								 alert("view2="+currView2);
 		                    currView2.performTransition("ImageView", 1, "fade", null);
                         }
                     }
@@ -1040,10 +1035,10 @@ require(["jquery",
             checkCookie();
 			window.BrowserDetect.init();
 		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS);
-			if (window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome")
+			if (window.BrowserDetect.OS=="Linus" && window.BrowserDetect.browser!= "Chrome")
 			{
 			alert("You must run Artkick under Chrome, please restart using the Chrome browser");
-		//	throw new Error();
+			throw new Error();
 			}
 			
 	on(regPlayerView, "beforeTransitionIn", 
@@ -1547,17 +1542,50 @@ updateImages(-1);
 }
 
 //testgit
+function facebook2()
+{
+
+urlg="https://www.facebook.com/dialog/feed?app_id=633862919977898&link=http://developers.facebook.com/docs/reference/dialogs/&picture=http://fbrell.com/f8.jpg&name=Facebook%20Dialogs&caption=Reference%20Documentation&description=Using%20Dialogs%20to%20interact%20with%20users.&redirect_uri=https://test.artkick.net/windows.close.html/&display=popup"
+ 
+urlg="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=www.artkick.com&p[images][0]=&p[title]=test&p[summary]=test"
+ window.open(urlg,'feedDialog');
+}
+function facebook3()
+{
+      FB.ui(
+       {
+         method: 'stream.publish',
+         message: 'Message here.',
+         attachment: {
+           name: 'Name here',
+           caption: 'Caption here.',
+           description: (
+             'description here'
+           ),
+           href: 'www.artkick.com'
+         },
+         
+         user_prompt_message: 'Personal message here'
+       },
+       function(response) {
+         if (response && response.post_id) {
+           alert('Post was published.');
+         } else {
+           alert('Post was not published.');
+         }
+       }
+     );     
+}
 
 
 function emailShare()
 {
 
 imageurl=imageMap[currImage]["thumbnail"];
-
+hidemenu();
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
 
 calliOSFunction("email", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-setTimeout(function(){hidemenu()},1000);
 }
 
 function twitter()
@@ -1565,11 +1593,10 @@ function twitter()
 	//alert("facebook!");
 
 imageurl=imageMap[currImage]["thumbnail"];
-
+hidemenu();
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
 
 calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-setTimeout(function(){hidemenu()},1000);
 }
 
 function facebook()
@@ -1577,11 +1604,11 @@ function facebook()
 	//alert("facebook!");
 
 imageurl=imageMap[currImage]["thumbnail"];
-
+hidemenu();
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
 
 calliOSFunction("facebook", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-setTimeout(function(){hidemenu()},1000);
+
 
 var obj={
 //method: 'feed',
@@ -1622,14 +1649,13 @@ function showiframe(url) {
 }
 function showfullimage() {
     var currView = dijit.registry.byId("ImageView");
-	
-	hidebutton("GridView",true);
+	    hidebutton("GridView",true);
     document.getElementById("fullurl").setAttribute("src",window.imageMap[window.currImage]["url"]);
     currView.performTransition("fullimageview", 1, "flip", null);
 }
 function bigimage() {
 //check if menu up then close otherwise call showfullimage
- if (window.sharemenushow) 
+ if (window.systemmenushow) 
         hidemenu();
 	else
 	    showfullimage();
@@ -1707,14 +1733,14 @@ function showsystemmenu2() {
 
 function hidemenu() {
 
- 
+
 	dijit.registry.byId("Sharemenu").hide();
 	window.sharemenushow = false;
     window.systemmenushow = false;
     window.viewmenushow = false;
     window.systemmenushow2 = false;
     window.viewmenushow2 = false;
-    
+
 
 }
 
@@ -2010,20 +2036,11 @@ function createPlayer() {
     if(window.createPlayerClickTime!=undefined && currTime - window.createPlayerClickTime < window.boucingTime)
         return;
 	window.createPlayerClickTime = currTime;
-	if (dojo.byId("regPlayerCode").value =="")
-	{
-		alert("Player Code cannot be blank");
-		return;
-	}
-	if (dojo.byId("regPlayerName").value =="")
-	{
-		alert("You must name your player");
-		return;
-	}
+	
 	
     var currView = dijit.registry.byId("registernewroku");
     var base = "http://evening-garden-3648.herokuapp.com/reg/";
-    alert(base + "userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
+    //alert(base + "userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
     dojo.io.script.get({
         url: base + "userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email,
         callbackParamName: "callback",
@@ -2181,8 +2198,7 @@ function onSuccess (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.result);
-        alert(obj.result);
-		hidemenu();
+        //alert(obj.result);
     }
 }
 
@@ -2192,8 +2208,6 @@ function onError (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.error);
-		        alert(obj.result);
-		hidemenu();
     }
 }
 

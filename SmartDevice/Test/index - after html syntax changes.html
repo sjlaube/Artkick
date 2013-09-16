@@ -137,7 +137,7 @@ document.getElementById('fb-root').appendChild(e);
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 236.5px; top: 374px; color: #56575A;">Swipe Left</span>
    <img src="images/place1a.png" alt=">" style="position: absolute; z-index: 900; left: 250px; top: 440px;">
  </div>
- <div data-dojo-type="dojox/mobile/View" id="Login" style="z-index:900" height="auto">
+ <div data-dojo-type="dojox/mobile/ScrollableView" id="Login" style="height: 100%;z-index:910">
 <div data-dojo-type="dojox/mobile/Heading">
   <span data-dojo-type="dojox/mobile/ToolBarButton" style="float: right;" onclick="login()">Login</span>
   <span data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='transition:"slide", transitionDir:"-1", moveTo:"Intro0"' style="float: left;">Back</span>
@@ -308,7 +308,7 @@ Add user to player(s)</button>
   
   <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="playerList" data-dojo-props='select:"multiple"' ></ul>
  </div>
- <div data-dojo-type="dojox/mobile/View" id="registeruser" >
+ <div data-dojo-type="dojox/mobile/ScrollableView" id="registeruser" >
 <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Register With Artkick"'>
  <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='moveTo:"Intro0",transition:"slide", transitionDir:"-1",arrow:"left"' style="float: left;" >Back</div>
 </div>
@@ -339,7 +339,7 @@ Add user to player(s)</button>
 Click to Logoff</button>
 </div>
   </div>
- <div data-dojo-type="dojox/mobile/View" id="registernewroku"  style="height: 100%;">
+ <div data-dojo-type="dojox/mobile/View" id="registernewroku"  style="height: auto;">
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Register New Roku',fixed:'top'">
      <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="arrow:'left', moveTo:'RegisterNew',transition:'slide',transitionDir:'-1'" >Back</div>
    </div>
@@ -354,7 +354,7 @@ Install Artkick</button>
        Register this Roku</button>
    </div>
  </div>
-<div data-dojo-type="dojox/mobile/View" id="registernewchromecast" style="height: 100%;">
+<div data-dojo-type="dojox/mobile/View" id="registernewchromecast" style="height: auto;">
    <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Register New ChromeCast'" >
      <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float:left;" data-dojo-props="arrow:'left', transition:'slide',transitionDir:'-1',moveTo:'RegisterNew'">Back</div>
    </div>
@@ -409,7 +409,7 @@ Install Artkick</button>
 <img  src="images/waitcircle.gif" alt="wait" >
 </div>  
 <div data-dojo-type="dojox/mobile/DataCarousel" onclick="bigimage()" id="ImageList" title="&amp;nbsp;" data-dojo-props="numVisible:1,pageIndicator:false,navButton:false" height="13em" style="width: 100%; height: 50%;" store="ItemFileReadStore_10"></div>
-   <table border="0" onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; height: auto; position: relative; left: 1em; width: 90%;">
+   <table border="0" onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; height: auto; position: relative; left: 1em; width: 100%;">
      <colgroup>
        <col></col>
      </colgroup>
@@ -521,7 +521,7 @@ Register</button>
 <img src="images/place4a.png" alt=">" style="position: absolute; z-index: 900; left: 250PX; top: 440PX;"></img>
 </div>
 
-<div data-dojo-type="dojox/mobile/View"  style="height:100%" id="blankview">
+<div data-dojo-type="dojox/mobile/ScrollableView"  id="blankview">
 <div align="center">
   <br><br><br><br><br><br>Loading, Please wait<br><br>
 	    <img  src="images/waitcircle.gif" alt="wait" align="center" >
