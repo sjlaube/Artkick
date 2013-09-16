@@ -400,7 +400,6 @@ require(["jquery",
                         	window.switchView = false;
                             var currView = dijit.registry.byId("blankview");
 							     var currView2 = currView.getShowingView();
-								 alert("view2="+currView2);
 		                    currView2.performTransition("ImageView", 1, "fade", null);
                         }
                     }
@@ -1547,37 +1546,41 @@ updateImages(-1);
 }
 
 //testgit
-<<<<<<< HEAD
-
-
-function emailShare()
-=======
 function facebook2()
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
 {
 
-imageurl=imageMap[currImage]["thumbnail"];
-
-//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("email", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-setTimeout(function(){hidemenu()},1000);
+urlg="https://www.facebook.com/dialog/feed?app_id=633862919977898&link=http://developers.facebook.com/docs/reference/dialogs/&picture=http://fbrell.com/f8.jpg&name=Facebook%20Dialogs&caption=Reference%20Documentation&description=Using%20Dialogs%20to%20interact%20with%20users.&redirect_uri=https://test.artkick.net/windows.close.html/&display=popup"
+ 
+urlg="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=www.artkick.com&p[images][0]=&p[title]=test&p[summary]=test"
+ window.open(urlg,'feedDialog');
 }
-
-function twitter()
+function facebook3()
 {
-	//alert("facebook!");
-
-imageurl=imageMap[currImage]["thumbnail"];
-
-//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-setTimeout(function(){hidemenu()},1000);
+      FB.ui(
+       {
+         method: 'stream.publish',
+         message: 'Message here.',
+         attachment: {
+           name: 'Name here',
+           caption: 'Caption here.',
+           description: (
+             'description here'
+           ),
+           href: 'www.artkick.com'
+         },
+         
+         user_prompt_message: 'Personal message here'
+       },
+       function(response) {
+         if (response && response.post_id) {
+           alert('Post was published.');
+         } else {
+           alert('Post was not published.');
+         }
+       }
+     );     
 }
 
-<<<<<<< HEAD
-=======
 
 function emailShare()
 {
@@ -1600,21 +1603,16 @@ hidemenu();
 calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
 }
 
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
 function facebook()
 {
 	//alert("facebook!");
 
 imageurl=imageMap[currImage]["thumbnail"];
-
+hidemenu();
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
 
 calliOSFunction("facebook", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-<<<<<<< HEAD
-setTimeout(function(){hidemenu()},1000);
-=======
 
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
 
 var obj={
 //method: 'feed',
@@ -1655,14 +1653,13 @@ function showiframe(url) {
 }
 function showfullimage() {
     var currView = dijit.registry.byId("ImageView");
-	
-	hidebutton("GridView",true);
+	    hidebutton("GridView",true);
     document.getElementById("fullurl").setAttribute("src",window.imageMap[window.currImage]["url"]);
     currView.performTransition("fullimageview", 1, "flip", null);
 }
 function bigimage() {
 //check if menu up then close otherwise call showfullimage
- if (window.sharemenushow) 
+ if (window.systemmenushow) 
         hidemenu();
 	else
 	    showfullimage();
@@ -1747,7 +1744,7 @@ function hidemenu() {
     window.viewmenushow = false;
     window.systemmenushow2 = false;
     window.viewmenushow2 = false;
-    
+
 
 }
 
@@ -2214,8 +2211,7 @@ function onSuccess (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.result);
-        alert(obj.result);
-		hidemenu();
+        //alert(obj.result);
     }
 }
 
@@ -2225,8 +2221,6 @@ function onError (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.error);
-		        alert(obj.result);
-		hidemenu();
     }
 }
 
