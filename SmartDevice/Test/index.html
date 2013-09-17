@@ -19,11 +19,10 @@
 ['compatible','',['WebContent/themes/windows/windows.css']],
 ['BlackBerry','',['WebContent/themes/blackberry/blackberry.css']],
 ['iPad','',['WebContent/themes/ipad/ipad.css']],['iPhone','',['WebContent/themes/iphone/iphone.css']],
-['.*','',['WebContent/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script>
+['.*','',['WebContent/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script> 
+
 
 <script type="text/javascript">
-
-
 
 require([
   "dijit/dijit",
@@ -88,30 +87,13 @@ require(["dojox/io/xhrScriptPlugin"],function(xhrScriptPlugin){
 
 <body  data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" class="claro" data-maq-ws="collapse" data-maq-orientation="portrait" id="myapp" data-maq-appstates="{}">
 
-<div id="fb-root"></div>
-<script>
-window.fbAsyncInit = function() {
-FB.init({
-appId : '633862919977898',
-channelUrl: '//test.artkick.net/index.html',
-status : true, // check login status
-cookie : true, // enable cookies to allow the server to access the session
-xfbml : true // parse XFBML
-});
-};
- 
-(function() {
-var e = document.createElement('script');
-e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-e.async = true;
-document.getElementById('fb-root').appendChild(e);
-}());
-</script>
 
-<div  id="splash" style=" position: fixed!important;align:left; overflow:hidden; background-color:#ffffff;z-index: 1500; width: 99.5%;height: 99.5%; position: absolute; top: 0px;left 0px"> 
-    <div align="center" style="top:100px ;font-family: Verdana,Geneva,sans-serif; font-size: 24px; width: 96%">
+
+
+<div   id="splash" style=" position: fixed!important;text-align:left; overflow:hidden; background-color:#ffffff;z-index:1500; width:100%; height:100%"> 
+    <div style="top:100px ;text-align:center;font-family: Verdana,Geneva,sans-serif; font-size: 24px; width: 96%">
       	<br><br><br>
-		<img  src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt="wait" align="center" >
+		<img  src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt="wait" style="text-align:center" >
 		<br>
 		<div  style="font-family: Verdana,Geneva,sans-serif; font-size: 15px; width: 96%">
 		EXPLORE, DISCOVER, SHARE </div>
@@ -120,15 +102,15 @@ document.getElementById('fb-root').appendChild(e);
 		Welcome to ArtKick MVP .3<br><br>
 		<small>Please wait while Artkick loads</small>
 		<br><br><br>
-	    <img  src="images/waitcircle.gif" alt="wait" align="center" >
+	    <img  src="images/waitcircle.gif" alt="wait" style="text-align:center" >
 		</div>
      </div>
-</div>
+</div> 
 
  <div data-dojo-type="dojox/mobile/SwapView" id="Intro0" style="background-color: #000000;">
-   <button data-dojo-type="dojox/mobile/Button" style="position: absolute; z-index: 900; left: 94px; top: 13px;" onclick="goToLogin1()">
+   <button data-dojo-type="dojox/mobile/Button" style="position: absolute; z-index: 900; left: 94px; top:13px;" onclick="goToLogin1()">
      Sign in</button>
-   <button data-dojo-type="dojox/mobile/Button" style="left: 12em; top: 13px; position: absolute; z-index: 900;" onclick="goToReg1()">
+   <button data-dojo-type="dojox/mobile/Button" style="left: 12em; top:13px; position: absolute; z-index: 900;" onclick="goToReg1()">
      Register</button>
 
    <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 65px; top: 170px;">   
@@ -137,11 +119,9 @@ document.getElementById('fb-root').appendChild(e);
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 236.5px; top: 374px; color: #56575A;">Swipe Left</span>
    <img src="images/place1a.png" alt=">" style="position: absolute; z-index: 900; left: 250px; top: 440px;">
  </div>
-<<<<<<< HEAD
- <div data-dojo-type="dojox/mobile/View" id="Login" style="z-index:900" height="auto">
-=======
- <div data-dojo-type="dojox/mobile/ScrollableView" id="Login" style="height: 100%;z-index:910">
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
+
+<div data-dojo-type="dojox/mobile/ScrollableView" id="Login" style="height: 100%;z-index:910">
+
 <div data-dojo-type="dojox/mobile/Heading">
   <span data-dojo-type="dojox/mobile/ToolBarButton" style="float: right;" onclick="login()">Login</span>
   <span data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='transition:"slide", transitionDir:"-1", moveTo:"Intro0"' style="float: left;">Back</span>
@@ -312,11 +292,9 @@ Add user to player(s)</button>
   
   <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="playerList" data-dojo-props='select:"multiple"' ></ul>
  </div>
-<<<<<<< HEAD
+
  <div data-dojo-type="dojox/mobile/View" id="registeruser" >
-=======
- <div data-dojo-type="dojox/mobile/ScrollableView" id="registeruser" >
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
+
 <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Register With Artkick"'>
  <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='moveTo:"Intro0",transition:"slide", transitionDir:"-1",arrow:"left"' style="float: left;" >Back</div>
 </div>
@@ -355,7 +333,7 @@ Click to Logoff</button>
 Install Artkick</button>
 </div>
    <div data-dojo-type="dojox/mobile/ContentPane" style="position: relative; left: 1em; width: 280px;"><span data-dojo-type="shapes/Text" style="font-size: 14px; left: 39px;">2. You should turn on your TV and switch to the input your Roku is connected to. You should see a list of applications. Use the arrow keys to highlight the Artkick icon and click it. You should see a registration screen with a 5 character registration code. Enter that code along with a name for your Roku player in the boxes below</span></div>
-   <div data-dojo-type="dojox/mobile/RoundRect" shadow="false" style="width: auto; height: auto; position: relative;">
+   <div data-dojo-type="dojox/mobile/RoundRect"  style="width: auto; height: auto; position: relative;shadow:false">
  <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerName" style="width: 260px; position: relative; left: 1em;" placeHolder="Enter a name for this player"></input>
      <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerCode" placeHolder="Enter code displayed on screen" style="position: relative; left: 1em; width: 192px;"></input>
      <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 187px;" onclick="createPlayer()">
@@ -367,7 +345,7 @@ Install Artkick</button>
      <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float:left;" data-dojo-props="arrow:'left', transition:'slide',transitionDir:'-1',moveTo:'RegisterNew'">Back</div>
    </div>
    <div data-dojo-type="dojox/mobile/ContentPane" style="width: 100%; position: relative;top:2em;">
-   <div data-dojo-type="shapes/Text" align="center" style="font-size: 18px">
+   <div data-dojo-type="shapes/Text"  style="text-align:center;font-size: 18px">
    Click this button to select a ChromeCast
    to register with Artkick</div>
 
@@ -412,12 +390,12 @@ Install Artkick</button>
 	 <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/shareicon3.png"' onclick="showsharemenu()" style="float: left;"></div>
    </div>
    <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_10" jsId="ItemFileReadStore_10" ></span>
-<div id="LoadImages"   align="center" style=" background-color:#c5ccd3;z-index: 1500; width: 100%;height: 100%; position: absolute; top: 2px;visibility:hidden">
+<div id="LoadImages"   style=" text-align:center;background-color:#c5ccd3;z-index: 1500; width: 100%;height: 100%; position: absolute; top: 2px;visibility:hidden">
 <br><br>Loading Images, Please wait<br><br>
 <img  src="images/waitcircle.gif" alt="wait" >
 </div>  
 <div data-dojo-type="dojox/mobile/DataCarousel" onclick="bigimage()" id="ImageList" title="&amp;nbsp;" data-dojo-props="numVisible:1,pageIndicator:false,navButton:false" height="13em" style="width: 100%; height: 50%;" store="ItemFileReadStore_10"></div>
-   <table border="0" onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; height: auto; position: relative; left: 1em; width: 90%;">
+   <table  onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; border:0;height: auto; position: relative; left: 1em; width: 90%;">
      <colgroup>
        <col></col>
      </colgroup>
@@ -529,16 +507,8 @@ Register</button>
 <img src="images/place4a.png" alt=">" style="position: absolute; z-index: 900; left: 250PX; top: 440PX;"></img>
 </div>
 
-<<<<<<< HEAD
-<div data-dojo-type="dojox/mobile/View"  style="height:100%" id="blankview">
-=======
-<div data-dojo-type="dojox/mobile/ScrollableView"  id="blankview">
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
-<div align="center">
-  <br><br><br><br><br><br>Loading, Please wait<br><br>
-	    <img  src="images/waitcircle.gif" alt="wait" align="center" >
-</div>
-</div>
+
+
 <div data-dojo-type="dojox/mobile/View" id="iframeview" style="height: 100%;">
   <div  data-dojo-type="dojox/mobile/Heading" 
        data-dojo-props='fixed:"top"'>
@@ -571,11 +541,11 @@ Register</button>
   <div data-dojo-type="dojox/mobile/RoundRect" style="width: 285px; height: auto;">
    <label style="position: relative; left: 4em;">
    Delete Account</label>
-   <br></br>
+   <br>
    <input type="text" data-dojo-type="dojox/mobile/TextBox" placeHolder="email" style="width: 250px; position: relative; left: 1em;"></input>
-   <br></br>
+   <br>
    <input type="password" data-dojo-type="dojox/mobile/TextBox" placeHolder="Password" style="width: 250px; position: relative; left: 1em;"></input>
-   <br></br>
+   <br>
    <button data-dojo-type="dojox/mobile/Button" onclick="notimplemented()" style="position: relative; left: 4em;">
    Delete Artkick Account</button>
    </div>

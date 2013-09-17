@@ -147,9 +147,9 @@ require(["jquery",
 
             function checkCookie() {
                 var email = getCookie("email");
-                  //   alert("checkCookie " + email);
+                     alert("checkCookie " + email);
                 var I0 = registry.byId("Intro0");
-                //         alert ("Io= " + I0 + I0.selected);
+                        alert ("Io= " + I0 + I0.selected);
                 var Iv = registry.byId("ImageView");
                 var splash = dojo.byId("splash");
                 //         alert("Imageview= "+ Iv + Iv.selected);
@@ -176,14 +176,17 @@ require(["jquery",
                         callbackParamName: "callback",
                         load: function (result) {
                             if (result["Status"] == "success") {
-                    //       alert("we are here");
+							//  splash.style.display = "none";
+                         //  alert("we are here");
                                 //        var currView = dijit.registry.byId("Intro0");
                                 //        var mycurrView = currView.getShowingView();
                                 window.email = email;
                                 Iv.selected = true;
                                 Iv.show();
-                                splash.style.display = "none";
-                                //       mycurrView.performTransition("ImageView", 1, "slide", null);
+								splash.style.display = "none";
+                              
+                                     //  I0.performTransition("ImageView", 1, "slide", null);
+									//   alert("transition done");
 
                                 //             var currView = registry.byId("Intro0");
                                 //        window.email = email;
@@ -263,7 +266,7 @@ require(["jquery",
 
             function loadImages(targImage,forward,numOfImg,include) {
 
-               
+
 
                 if (window.currList == null) {
                     window.currList = window.defList;
@@ -395,13 +398,14 @@ require(["jquery",
 					
                         //
                         loadmetadata();
-   
+   					    dijit.registry.byId("ImageView").show();
                         if(window.switchView){
                         	window.switchView = false;
-                            var currView = dijit.registry.byId("blankview");
-							     var currView2 = currView.getShowingView();
-								 alert("view2="+currView2);
-		                    currView2.performTransition("ImageView", 1, "fade", null);
+                        //    var currView = dijit.registry.byId("blankview");
+						//	     var currView2 = currView.getShowingView();
+						//		 alert("view2="+currView2);
+		                //    currView2.performTransition("ImageView", 1, "fade", null);
+
                         }
                     }
                 });
@@ -591,7 +595,7 @@ require(["jquery",
            window.goToViewlists = function(){
                 	window.foundIndex = true;
                 	window.justLogin = false;
-                	
+
 				    if (window.currCat.length < 30)
                          dijit.registry.byId("PlaylistHeader").set("label", "<small>" +   window.currCat + "</small>");
                     else
@@ -605,6 +609,7 @@ require(["jquery",
                     }
                     
                 updateLists(window.currCat);
+
                 var currView = dijit.registry.byId("Intro0");
                 var mycurrView = currView.getShowingView();
 				//  reset the scrollable view to the top
@@ -620,6 +625,7 @@ require(["jquery",
 
             function updateCats() {
                 var base = "http://evening-garden-3648.herokuapp.com/content/";
+				 	dijit.registry.byId("ImageView").hide();
                 catList.destroyRecursive(true);
                 $("#catList").html('');
                 dojo.io.script.get({
@@ -635,6 +641,7 @@ require(["jquery",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
+								clickable: true,
                                 onClick: function () {
                                     //alert(this.id);
                                     window.currCat = this.id;
@@ -643,7 +650,7 @@ require(["jquery",
                                     goToViewlists();
                                     //updateLists(window.currCat);
                                 },
-                                moveTo: "#"
+                            //    moveTo: "#"
 								//transition: "fade"
                                 //rightText:
                             });
@@ -690,7 +697,7 @@ require(["jquery",
                                     updateImages(-1);
 
                                 },
-                                moveTo: "#ImageView",
+                                moveTo: "#",
 								transition: "fade"
                             });
                            listList.addChild(myTopList);    
@@ -704,13 +711,15 @@ require(["jquery",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
+								clickable: true,
                                 onClick: function () {
                                     //alert(this.id);
                                     window.currList = this.id;
+
                                     updateImages(-1);
 
                                 },
-                                moveTo: "#ImageView",
+                           //     moveTo: "#ImageView",
 								transition: "fade"
                             });
                             listList.addChild(newList);
@@ -1033,18 +1042,18 @@ require(["jquery",
                 });
 
             }
-
+			if (window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome")
+			{
+			alert("You must run Artkick under Chrome, please restart using the Chrome browser");
+		//	throw new Error();
+			}
             hidemenu();
 
             getDefaults();
             checkCookie();
 			window.BrowserDetect.init();
 		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS);
-			if (window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome")
-			{
-			alert("You must run Artkick under Chrome, please restart using the Chrome browser");
-		//	throw new Error();
-			}
+			
 			
 	on(regPlayerView, "beforeTransitionIn", 
 			 function(){
@@ -1084,6 +1093,7 @@ require(["jquery",
 				   var tabshare = dijit.registry.byId("tabshare");
 				   var tabnowshowing = dijit.registry.byId("tabnowshowing");
                //     alert("Transition in!");    
+
 			   mytabbar.resize();
                     hidemenu();
 					// try to unset selected on buttonsvar fillsw = dijit.registry.byId("fillswitch");
@@ -1286,7 +1296,7 @@ require(["jquery",
 										 updateImages(this.id);	 
 
 
-										dijit.registry.byId("GridView").performTransition("blankview", 1, "fade", null);
+									//	dijit.registry.byId("GridView").performTransition("blankview", 1, "fade", null);
 									   // loadImages(this.id,1,15,1);
 									  
 					            
@@ -1546,14 +1556,9 @@ else
 updateImages(-1);
 }
 
-//testgit
-<<<<<<< HEAD
-
 
 function emailShare()
-=======
-function facebook2()
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
+
 {
 
 imageurl=imageMap[currImage]["thumbnail"];
@@ -1576,31 +1581,10 @@ calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[c
 setTimeout(function(){hidemenu()},1000);
 }
 
-<<<<<<< HEAD
-=======
 
-function emailShare()
-{
 
-imageurl=imageMap[currImage]["thumbnail"];
-hidemenu();
-//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
 
-calliOSFunction("email", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-}
 
-function twitter()
-{
-	//alert("facebook!");
-
-imageurl=imageMap[currImage]["thumbnail"];
-hidemenu();
-//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-}
-
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
 function facebook()
 {
 	//alert("facebook!");
@@ -1610,11 +1594,8 @@ imageurl=imageMap[currImage]["thumbnail"];
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
 
 calliOSFunction("facebook", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-<<<<<<< HEAD
-setTimeout(function(){hidemenu()},1000);
-=======
 
->>>>>>> 49cbd96b404121ab61b588a7af480915fedcbd1c
+setTimeout(function(){hidemenu()},1000);
 
 var obj={
 //method: 'feed',
@@ -1627,20 +1608,6 @@ var obj={
     description: 'Check out this great image and thousands more at Artkick'
 }
 
-
-
-
-
-/*
-  function callback(response) {
-    if (response && response.post_id) {
-      alert('Post was published.');
-    } else {
-     alert('Post was not published.');
-    }
-  }
-  FB.ui(obj, callback);
-*/
 }
 
 function showiframe(url) {
@@ -1754,20 +1721,23 @@ function hidemenu() {
 function goToLogin1() {
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView();
+	
     mycurrView.performTransition("Login", 1, "slide", null);
 }
 function swapview(newview){
     
 	//alert ("swapview "+newview);
 	 var currView = dijit.registry.byId("ImageView");
-	 	 var currView2 = dijit.registry.byId("blankview");
+	 //	 var currView2 = dijit.registry.byId("blankview");
 
 	window.currList = newview;
 	hidemenu();
 
-	currView.performTransition("blankview", 1, "fade", null);
-		currView2.performTransition("ImageView", 1, "fade", null);
+	//currView.performTransition("blankview", 1, "fade", null);
+	//	currView2.performTransition("ImageView", 1, "fade", null);
+	currView.hide();
 	updateImages(-1);
+	
 				
 }
 
@@ -2160,18 +2130,18 @@ function sendfeedback() {
 
 // this routine forces external links to be shown in our own window.
 // this is important when we use iframe to show artist/work links and the user then clicks on another link on that webpage, it does not open another browser window
-$(document).ready(function(){
-    if (("standalone" in window.navigator) && window.navigator.standalone) {
+//$(document).ready(function(){
+ //   if (("standalone" in window.navigator) && window.navigator.standalone) {
       // For iOS Apps
-      $('a').on('click', function(e){
-        e.preventDefault();
-        var new_location = $(this).attr('href');
-        if (new_location != undefined && new_location.substr(0, 1) != '#' && $(this).attr('data-method') == undefined){
-          window.location = new_location;
-        }
-      });
-    }
-  });
+ //     $('a').on('click', function(e){
+ //       e.preventDefault();
+ //       var new_location = $(this).attr('href');
+ //       if (new_location != undefined && new_location.substr(0, 1) != '#' && $(this).attr('data-method') == undefined){
+ //         window.location = new_location;
+ //       }
+ //     });
+ //   }
+ // });
 function openCustomURLinIFrame(src)
 {
     var rootElm = document.documentElement;
