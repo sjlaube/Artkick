@@ -741,7 +741,7 @@ require(["jquery",
                                 },
                                 moveTo: "",
 								transition: "fade"
-                            });
+                            }); 
                            listList.addChild(myTopList);    
                         
                        }  
