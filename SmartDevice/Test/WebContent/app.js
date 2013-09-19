@@ -301,10 +301,16 @@ require(["jquery",
                     load: function (viewlist) {
                         
                         if(viewlist["imageSet"].length==0){
-                        	alert("This viewlist is empty now, please star-rate some images and they will be added to it!");
+                        	alert("'My Top Rated Images' is empty, please star-rate some images and they will be added to it!");
                         	window.currList = window.defList;
                         	window.currCat = window.defCat;
                         	window.currImage = window.defImage;
+							setTimeout(function(){
+                            var currView = dijit.registry.byId("blankview");
+							     var currView2 = currView.getShowingView();
+							// alert("view2="+currView2+"view="+currView);
+		                   currView.performTransition("select_category", 1, "fade", null);
+                           },500);
                         	return;
                         }
                         
@@ -730,6 +736,7 @@ require(["jquery",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
+								clickable: true,
                                 onClick: function () {
                                     //alert(this.id);
                                     window.currList = this.id;

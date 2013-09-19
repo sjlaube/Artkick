@@ -63,7 +63,7 @@
   margin-bottom: 8px;
 }
 .mblCarouselItemImage {
-  -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+ -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
   vertical-align: bottom;
   width:100px;
