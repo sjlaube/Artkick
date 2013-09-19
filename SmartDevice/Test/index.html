@@ -10,7 +10,7 @@
 <title>ArtKick</title>
 <link rel="apple-touch-icon-precomposed"   href="images/ARTKICKlogoFULLCOLOR-APP_120.png" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
-<script type="text/javascript" src="WebContent/lib/dojo/dojo/dojo.js" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:true,'async':true,'packages':
+<script type="text/javascript" src="WebContent/lib/dojo/dojo/dojo.js" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:true,'async':false,'packages':
 [{'name': 'jquery', 'location': 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1', 'main': 'jquery'},
 {'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},
 {'name':'maqettaSamples','location':'../../../samples'},{'name':'maqetta','location':'../../maqetta'},
@@ -20,7 +20,7 @@
 ['BlackBerry','',['WebContent/themes/blackberry/blackberry.css']],
 ['iPad','',['WebContent/themes/ipad/ipad.css']],['iPhone','',['WebContent/themes/iphone/iphone.css']],
 ['.*','',['WebContent/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script> 
-
+<!-- <script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
 
 <script type="text/javascript">
 
@@ -40,6 +40,8 @@ require([
   "dojo/data/ItemFileReadStore",
   "dojox/mobile/EdgeToEdgeDataList",
   "dojox/mobile/SwapView",
+    "dojox/mobile/IconMenu",
+	"dojox/mobile/IconMenuItem",
   "dojox/mobile/RoundRectDataList",
   "dojox/mobile/Button",
   "dojox/mobile/ScrollablePane",
@@ -50,7 +52,7 @@ require([
   "shapes/Line",
   "clipart/Image",
   "dojox/mobile/FixedSplitter",
- //   "dojox/form/Rating-ArtKick",
+  //  "dojox/form/Rating",
   "dojox/mobile/SpinWheel",
   "dojox/mobile/ValuePicker",
   "dojox/mobile/ValuePickerSlot",
@@ -58,7 +60,7 @@ require([
   "dijit/form/DataList",
   "dojox/mobile/ComboBox",
   "dojox/mobile/ProgressIndicator",
-  "dojox/mobile/TabBar",
+ // "dojox/mobile/TabBar",
   "dojox/mobile/TabBarButton",
   "dojox/mobile/SearchBox",
   "clipart/Facebook"
@@ -69,10 +71,10 @@ require([
 @import "WebContent/lib/dojo/dojox/mobile/themes/common/domButtons/DomButtonRedBadge.css";@import "WebContent/app.css";
 </style>
 <script type="text/javascript" src="WebContent/app.js"></script>
-<script type="text/javascript" src="WebContent/Rating-ArtKick.js"></script>
+<script type="text/javascript" src="WebContent/Rating-ArtKick.js"></script> 
 <script type="text/javascript" src="WebContent/TabBar-ArtKick.js"></script>
 <script type="text/javascript" src="WebContent/Carousel-ArtKick.js"></script>
-<script type="text/javascript" src="WebContent/CarouselItem-ArtKick.js"></script>
+<script type="text/javascript" src="WebContent/CarouselItem-ArtKick.js"></script> 
 <script type="text/javascript" src="WebContent/Browser-Detect.js"></script>
 <script type="text/javascript">
 
@@ -99,15 +101,14 @@ require(["dojox/io/xhrScriptPlugin"],function(xhrScriptPlugin){
 		EXPLORE, DISCOVER, SHARE </div>
 		<br><br><br>
 		<div  style="font-family: Verdana,Geneva,sans-serif; font-size: 20px; width: 96%">
-		Welcome to ArtKick MVP .3<br><br>
+		Welcome to ArtKick<br><br>
 		<small>Please wait while Artkick loads</small>
 		<br><br><br>
 	    <img  src="images/waitcircle.gif" alt="wait" style="text-align:center" >
 		</div>
      </div>
 </div> 
-
- <div data-dojo-type="dojox/mobile/SwapView" id="Intro0" style="background-color: #000000;">
+ <div data-dojo-type="dojox/mobile/SwapView" data-dojo-props="selected:true" id="Intro0" style="height:100%;background-color: #62adc9;">
    <button data-dojo-type="dojox/mobile/Button" style="position: absolute; z-index: 900; left: 94px; top:13px;" onclick="goToLogin1()">
      Sign in</button>
    <button data-dojo-type="dojox/mobile/Button" style="left: 12em; top:13px; position: absolute; z-index: 900;" onclick="goToReg1()">
@@ -120,7 +121,7 @@ require(["dojox/io/xhrScriptPlugin"],function(xhrScriptPlugin){
    <img src="images/place1a.png" alt=">" style="position: absolute; z-index: 900; left: 250px; top: 440px;">
  </div>
 
-<div data-dojo-type="dojox/mobile/ScrollableView" id="Login" style="height: 100%;z-index:910">
+<div data-dojo-type="dojox/mobile/View" id="Login" style="height: 100%;z-index:950">
 
 <div data-dojo-type="dojox/mobile/Heading">
   <span data-dojo-type="dojox/mobile/ToolBarButton" style="float: right;" onclick="login()">Login</span>
@@ -218,8 +219,8 @@ Select which player(s) to add user</label>
 <button data-dojo-type="dojox/mobile/Button" style="height: 34px; position: relative; width: 281px;" onclick="addUserToPlayers()">
 Add user to player(s)</button>
 </div>
-   </div>
- <div data-dojo-type="dojox/mobile/ScrollableView" id="reset_password" style="height: 100%;">
+</div>
+ <div data-dojo-type="dojox/mobile/View" id="reset_password" style="height:100%">
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Reset Password'" >
     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="arrow:'left',moveTo:'Login',transition:'slide', transitionDir:'-1'">Back</div>
   </div>
@@ -230,36 +231,6 @@ Add user to player(s)</button>
        Send recovery email</button>
    </div>
  </div>
- <div id="Viewlistmenu2" data-dojo-type="dojox/mobile/SimpleDialog" data-dojo-props='modal:false, left:"0px", top:"22px"' style="position: absolute; z-index: 950; height: 150px; width: 200px">
-	 <ul data-dojo-type="dojox/mobile/IconMenu" data-dojo-props='cols:1'>
-     <li data-dojo-type="dojox/mobile/IconMenuItem" 
-        data-dojo-props=' moveTo:"select_category", closeOnAction:true' ><p style="font-family:arial;font-size:16px;font-weight:bold;">More Categories</li>
-  <!--   <li data-dojo-type="dojox/mobile/IconMenuItem" onclick="notimplemented()"
-	     data-dojo-props=''><p style="font-family:arial;font-size:16px;font-weight:bold;">Edit Viewlists</li> -->
-     <li data-dojo-type="dojox/mobile/IconMenuItem"   
-	     data-dojo-props='moveTo:"Share", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">Share</li>
-     <li data-dojo-type="dojox/mobile/IconMenuItem"  onclick="showsystemmenu2()"
-	     data-dojo-props='closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">System Menu</li>
-   </ul>
-</div>
-<div id="Systemmenu2" data-dojo-type="dojox/mobile/SimpleDialog" data-dojo-props='modal:false, left:"0px", top:"22px"' style="position: absolute; z-index: 950; height: 350px; width: 200px">
-   <ul data-dojo-type="dojox/mobile/IconMenu" data-dojo-props='cols:1'>
-    <li data-dojo-type="dojox/mobile/IconMenuItem" 
-	    data-dojo-props=' moveTo:"select_player", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">Select Player</li>
-    <li data-dojo-type="dojox/mobile/IconMenuItem" 
-	    data-dojo-props=' moveTo:"registernewplayer", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">Register New Player</li>
-    <li data-dojo-type="dojox/mobile/IconMenuItem" 
-	    data-dojo-props=' moveTo:"add_user_player", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">Add User to Player</li>
-    <li data-dojo-type="dojox/mobile/IconMenuItem" 
-	    data-dojo-props=' moveTo:"removeplayer", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">Remove Player</li>
-    <li data-dojo-type="dojox/mobile/IconMenuItem" 
-	    data-dojo-props=' moveTo:"LogOff", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">LogOff</li>
-    <li data-dojo-type="dojox/mobile/IconMenuItem" 
-	    data-dojo-props=' moveTo:"Options", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">Settings</li>
-    <li data-dojo-type="dojox/mobile/IconMenuItem" 
-	    data-dojo-props=' moveTo:"AccountSettings", closeOnAction:true'><p style="font-family:arial;font-size:16px;font-weight:bold;">Account</li>
-  </ul>
-</div>
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="PlaylistView"  >
    <div id="PlaylistHeader"  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Viewlists',fixed:'top'">
@@ -313,7 +284,7 @@ Add user to player(s)</button>
 </div>
 
 
- <div data-dojo-type="dojox/mobile/View" id="LogOff" style="height: 100%;">
+ <div data-dojo-type="dojox/mobile/View" id="LogOff" style="height: 100%">
   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Logoff'">
    <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left"  data-dojo-props='arrow:"left",moveTo:"OptionsList",transition:"slide", transitionDir:"-1"'>Back</div>
  </div>
@@ -332,7 +303,8 @@ Click to Logoff</button>
    <div data-dojo-type="dojox/mobile/ContentPane" style="width: 280px; position: relative; left: 1em; top: 0em;"><span data-dojo-type="shapes/Text" style="font-size: 14px; left: 19px; top: 0.5px;">1. Click this button to install the Artkick application on your Roku.  After the install completes return to this page.</span><button data-dojo-type="dojox/mobile/Button" onclick="installartkick()">
 Install Artkick</button>
 </div>
-   <div data-dojo-type="dojox/mobile/ContentPane" style="position: relative; left: 1em; width: 280px;"><span data-dojo-type="shapes/Text" style="font-size: 14px; left: 39px;">2. You should turn on your TV and switch to the input your Roku is connected to. You should see a list of applications. Use the arrow keys to highlight the Artkick icon and click it. You should see a registration screen with a 5 character registration code. Enter that code along with a name for your Roku player in the boxes below</span></div>
+   <div data-dojo-type="dojox/mobile/ContentPane" style="position: relative; left: 1em; width: 280px;">
+   <span data-dojo-type="shapes/Text" style="font-size: 14px; left: 39px;">2. You should turn on your TV and switch to the input your Roku is connected to. You should see a list of applications. Use the arrow keys to highlight the Artkick icon and click it. You should see a registration screen with a 5 character registration code. Enter that code along with a name for your Roku player in the boxes below</span></div>
    <div data-dojo-type="dojox/mobile/RoundRect"  style="width: auto; height: auto; position: relative;shadow:false">
  <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerName" style="width: 260px; position: relative; left: 1em;" placeHolder="Enter a name for this player"></input>
      <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerCode" placeHolder="Enter code displayed on screen" style="position: relative; left: 1em; width: 192px;"></input>
@@ -370,24 +342,26 @@ Install Artkick</button>
  
 
 
-<div id="Sharemenu" data-dojo-type="dojox/mobile/SimpleDialog" data-dojo-props='modal:false, left:"0px", top:"45px"' 
-    style="position: absolute; z-index: 950; width: 200px">
-	  <div class="mblSimpleDialogTitle">Sharing Menu</div>
-	<button data-dojo-type="dojox/mobile/Button" 
-          style="width:100px;" onclick="facebook()">Facebook</button>
-	<button data-dojo-type="dojox/mobile/Button" 
-          style="width:100px;" onclick="twitter()">Twitter</button>
-	<button data-dojo-type="dojox/mobile/Button" 
-          style="width:100px;" onclick="emailShare()">Email</button>
-		  
-</div>	
-	
 
- <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index=901,selected:true'"  >
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:true, left:"0px", top:"44px"' style="border:0px;outline:none;height:125px;background-image:none"
+<div  data-dojo-type="dojox/mobile/IconMenu" data-dojo-props='cols:"3"' style="position:absolute;top:42px;left:0px;width:220px;height:125px">
+
+	<li data-dojo-type="dojox/mobile/IconMenuItem" id="facebookbutton"  onclick="facebook()" style="width:70px;height:70px;margin:5px;border:0px"
+	  data-dojo-props='closeOnAction:true,label:"Facebook",icon:"images/FB-f-Logo__blue_50.png"'  ></li>
+	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="twitter()" style="width:70px;height:70px;margin:5px;border:0px"
+	  data-dojo-props='closeOnAction:true, label:"Twitter", icon:"images/twitter-share.png"' ></li>
+	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="emailShare()" style="width:70px;height:70px;margin:5px;border:0px"
+	  data-dojo-props='closeOnAction:true, label:"Mail", icon:"images/email-share.png"' ></li>
+	  	<button data-dojo-type="dojox/mobile/Button" 
+          style="width:200px;height:25px;position:absolute;top:85px;left:20px" onclick="hidemenu()">Cancel</button>
+  
+</div>
+</div>
+ <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index=901"  >
    <div id="ImageViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="font-size: 14px; line-height:150%">
 
      <div  data-dojo-type="dojox/mobile/ToolBarButton" id="shufflebutton" data-dojo-props='toggle:"true", icon:"images/media-shuffle2.png"' onclick="mediashuffle()" style="float: right;"></div>
-	 <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/shareicon3.png"' onclick="showsharemenu()" style="float: left;"></div>
+	 <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/share_30x30.png"' onclick="showsharemenu()" style="float: left;"></div>
    </div>
    <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_10" jsId="ItemFileReadStore_10" ></span>
 <div id="LoadImages"   style=" text-align:center;background-color:#c5ccd3;z-index: 1500; width: 100%;height: 100%; position: absolute; top: 2px;visibility:hidden">
@@ -457,14 +431,14 @@ Install Artkick</button>
      </tbody>
    </table>
  <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBar" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always",center:true'  style="border-bottom:none">
-		<li data-dojo-type="dojox.mobile.TabBarButton" onclick="refreshView()" data-dojo-props="selected:true" id="tabnowshowing" style="color:white;font-size:11px" >Now Showing</li>
+		<li data-dojo-type="dojox.mobile.TabBarButton" onclick="refreshView()"  id="tabnowshowing" style="color:white;font-size:11px" >Now Showing</li>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"GridView"' style="color:white;font-size:11px" >Grid</li>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabcategory" data-dojo-props='moveTo:"select_category"' style="color:white;font-size:11px" >More Art</li>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  id="taboptions" data-dojo-props='moveTo:"OptionsList"'   style="color:white;font-size:11px" >Options</li>
 	</ul> 
  </div>
 
- <div data-dojo-type="dojox/mobile/SwapView" id="Intro1" style="background-color: #000000; height: 100%;">
+ <div data-dojo-type="dojox/mobile/SwapView" id="Intro1" style="background-color: #62adc9; height: 100%;">
    <button data-dojo-type="dojox/mobile/Button" style="position: absolute; z-index: 900; top: 1em; left: 94px;" onclick="goToLogin1()">
      
      
@@ -475,33 +449,42 @@ Install Artkick</button>
      
      
      Register</button>
-   <img src="images/TV%20withpicturesmall.png" style="position: absolute; z-index: 900; left: 75px; top: 74px; width: 163px; height: 86px;"></img>
+   <img src="images/TV%20withpicturesmall.png" alt=" " style="position: absolute; z-index: 900; left: 75px; top: 74px; width: 163px; height: 86px;"></img>
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; float: none; font-size: 17px; left: 59px; top: 200px;">Great Art On Your Walls</span>
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; text-align: center; width: 254px; color: #ffffff; font-size: 14px; left: 36.5px; top: 260px;">Use the HDTVs you own to display the world's greatest art. Choose images to meet your every mood.</span>
 <img src="images/place2a.png" alt=">" style="position: absolute; z-index: 900; left: 250PX; top: 440PX;"></img>
-<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; top: 381px; left: 239px; color: #56575A;">Swipe Left</span></div>
- <div data-dojo-type="dojox/mobile/SwapView" id="Intro2" style="background-color: #000000;">
+<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; top: 381px; left: 239px; color: #56575A;">Swipe Left</span>
+</div>
+<div data-dojo-type="dojox/mobile/ScrollableView"  id="blankview">
+<div align="center">
+  <br><br><br><br><br><br>Loading, Please wait<br><br>
+	    <img  src="images/waitcircle.gif" alt="wait" align="center" >
+</div>
+</div>
+ <div data-dojo-type="dojox/mobile/SwapView" id="Intro2" style="background-color: #62adc9;">
    <button data-dojo-type="dojox/mobile/Button" style="position: absolute; z-index: 900; left: 94px; top: 1em;" onclick="goToLogin1()">
      
      Sign in</button>
    <button data-dojo-type="dojox/mobile/Button" style="position: absolute; z-index: 900; left: 12em; top: 1em;" onclick="goToReg1()">
      
  Register</button>
-   <img src="images/monetiphonesmall.png" style="position: absolute; z-index: 900; width: 194px; height: 98px; left: 62px; top: 77px;"></img>
+   <img src="images/monetiphonesmall.png" alt=">" style="position: absolute; z-index: 900; width: 194px; height: 98px; left: 62px; top: 77px;"></img>
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; color: #ffffff; font-size: 17px; left: 56.5px; top: 200px;">Change Images Instantly</span>
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; color: #ffffff; text-align: center; width: 254px; left: 34.5px; font-size: 14px; top: 260px;">Time for a new picture? Swipe your smartphone or tablet to change the image. Explore thousands of images and discover the ones you love.</span>
 <img src="images/place3a.png" alt=">" style="position: absolute; z-index: 900; left: 250PX; top: 440PX;"></img>
-<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 239px; top: 381px; color: #56575A;">Swipe Left</span></div>
- <div data-dojo-type="dojox/mobile/SwapView" id="Intro3" style="background-color: #000000;">
+<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 239px; top: 381px; color: #56575A;">Swipe Left</span>
+</div>
+
+<div data-dojo-type="dojox/mobile/SwapView" id="Intro3" style="background-color: #62adc9;">
 <button data-dojo-type="dojox/mobile/Button" style="position: absolute; z-index: 900; left: 94px; top: 1em;" onclick="goToLogin1()">
      
   Sign in</button>
    <button data-dojo-type="dojox/mobile/Button" style="top: 1em; left: 12em; position: absolute; z-index: 900;" onclick="goToReg1()">
      
 Register</button>
-   <img src="images/googleplussmall.png" style="position: absolute; z-index: 900; top: 6em; left: 7em;"></img>
-   <img src="images/facebook1small.png" style="position: absolute; z-index: 900; left: 5em; top: 8em;"></img>
-   <img src="images/twitter_logosmall.png" style="position: absolute; z-index: 900; width: 77px; height: 24px; left: 153px; top: 138px;"></img>
+   <img src="images/googleplussmall.png" alt=">" style="position: absolute; z-index: 900; top: 6em; left: 7em;"></img>
+   <img src="images/facebook1small.png" alt=">" style="position: absolute; z-index: 900; left: 5em; top: 8em;"></img>
+   <img src="images/twitter_logosmall.png" alt=">" style="position: absolute; z-index: 900; width: 77px; height: 24px; left: 153px; top: 138px;"></img>
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; font-size: 17px; left: 79px; top: 200px;">Share with Friends</span>
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; color: #ffffff; text-align: center; width: 254px; left: 35px; font-size: 15px; top: 260px;">Share your favorite images and find new ones from your personal network.</span>
 <img src="images/place4a.png" alt=">" style="position: absolute; z-index: 900; left: 250PX; top: 440PX;"></img>
@@ -510,19 +493,18 @@ Register</button>
 
 
 <div data-dojo-type="dojox/mobile/View" id="iframeview" style="height: 100%;">
-  <div  data-dojo-type="dojox/mobile/Heading" 
-       data-dojo-props='fixed:"top"'>
+  <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
   <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="destroyiframe()" style="float: left;">Done</div>
   </div>
   <div data-dojo-type="dojox/mobile/ContentPane" id="displayiframe" style="position: absolute; z-index: 900; width:100%;top:40px;" ></div>
   <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 800; left: 76px; top: 221px; font-size: 20px; font-weight: bold;">Loading web page</span>
-   <img style="position: absolute; z-index: 800; top: 16em; left: 9em;" src="images/wait_animated-blue.gif"></img>
+   <img style="position: absolute; z-index: 800; top: 16em; left: 9em;" alt=" "  src="images/wait_animated-blue.gif"></img>
 </div>
 <div data-dojo-type="dojox/mobile/ScrollableView" id="fullimageview" onclick="destroyfullimageview()" style="height:100%">
-     <img id="fullurl" style="width:100%;height:auto" src="images/blue.png"></img>
+     <img id="fullurl" style="width:100%;height:auto" src="images/blue.png" alt=" " ></img>
 </div>
 <div data-dojo-type="dojox/mobile/ScrollableView" id="AccountSettings" style="height: 100%;" >
-  <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Account Settings',fixed:'top'">
+  <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Account Settings",fixed:"top"'>
    <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left',moveTo:'OptionsList', transition:'slide',transitionDir:'-1'" style="float: left;">Back</div>
  </div>
   <div data-dojo-type="dojox/mobile/RoundRect" style="width: 285px; height: auto;">
@@ -552,6 +534,7 @@ Register</button>
 </div>
 <div data-dojo-type="dojox/mobile/ScrollableView"  id="OptionsList" style="height: auto;">
   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Options"'>
+   
    <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="arrow:'left',moveTo:'ImageView',transition:'slide',transitionDir:'-1'">Back</div>
     
 
@@ -607,7 +590,7 @@ Register</button>
     <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 65px; top: 170px;">  
 	<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 60px; top: 275px; color: #56575A;">
-Artkick MVP .3 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
+Artkick Version 1.0 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
 
   </span>
   </div>

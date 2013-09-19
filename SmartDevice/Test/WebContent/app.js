@@ -21,6 +21,7 @@ require(["jquery",
 		"dojo/hash",
 		"dojox/mobile",
 		"dojox/mobile/bookmarkable",
+		"dojox/mobile/IconMenu",
         "dojo/date/stamp",
         "dojo/data/ItemFileWriteStore",
         "dojo/_base/connect",
@@ -43,6 +44,7 @@ require(["jquery",
 		hash,
 		mobile,
 		bookmarkable,
+		IconMenu,
         stamp,
         ItemFileWriteStore,
         connect,
@@ -147,44 +149,52 @@ require(["jquery",
 
             function checkCookie() {
                 var email = getCookie("email");
-                     alert("checkCookie " + email);
+                  //   alert("checkCookie " + email);
                 var I0 = registry.byId("Intro0");
-                        alert ("Io= " + I0 + I0.selected);
+                 //     alert ("Io= " + I0 + I0.selected);
                 var Iv = registry.byId("ImageView");
                 var splash = dojo.byId("splash");
-                //         alert("Imageview= "+ Iv + Iv.selected);
-                //      I0.startup();
-                  //   alert ( "intro0 startup"); 
-                I0.show();
-                Iv.startup();
-             //    alert ("try spash= " + splash);
+				var menx = registry.byId("Sharemenu")
+				var opt = registry.byId("OptionsList");
+				
 
-                //   splash.style.display = "none";
-                //  alert ("did splash");
+             //    alert("Imageview= "+ Iv + I0 +splash+menx+optionsView+opt);
+             //     I0.startup();
+               //   alert ( "intro0 startup"); 
+               I0.show();
+                Iv.startup();
+               //  alert ("try spash= " + splash+"Iv="+Iv);
+
+               //    splash.style.display = "none";
+				  // 		splash.style.visibility = "hidden";
+             //    alert ("did splash");
 
                 //     alert ("imageview startup");
 
             //    alert("email1="+email);
                 if (email != null && email != "" && email != "null") {
-                 //  alert ("good to go");
+           //        alert ("good to go");
 
 
                     //     alert("Welcome again " + email);
-                    var base = "http://evening-garden-3648.herokuapp.com/player/"
+                    var base = "http://evening-garden-3648.herokuapp.com/player/";
                     dojo.io.script.get({
                         url: base + "getUser?email=" + email,
                         callbackParamName: "callback",
                         load: function (result) {
+				//		alert("status="+result["Status"]);
                             if (result["Status"] == "success") {
 							//  splash.style.display = "none";
-                         //  alert("we are here");
+                  //        alert("we are here");
                                 //        var currView = dijit.registry.byId("Intro0");
                                 //        var mycurrView = currView.getShowingView();
                                 window.email = email;
                                 Iv.selected = true;
-                                Iv.show();
-								splash.style.display = "none";
-                              
+						//		alert("before iv show");
+                               
+								splash.style.display = "none";splash.style.visibility = "hidden";
+                               Iv.show();
+							//	alert("showing imageview"+Iv);
                                      //  I0.performTransition("ImageView", 1, "slide", null);
 									//   alert("transition done");
 
@@ -192,7 +202,7 @@ require(["jquery",
                                 //        window.email = email;
                                 //         currView.performTransition("ImageView", 1, "slide", null);
 
-                            } else splash.style.display = "none";
+                            } else {splash.style.display = "none";}
                         }
 
                     });
@@ -200,7 +210,12 @@ require(["jquery",
                 } else 
 				{
 			//	alert("email="+email);
-				splash.style.display = "none";
+			//	splash.style.display = "none";
+			//	alert("none");
+				splash.style.visibility = "hidden";
+			//	alert("hidden");
+				I0.show();
+			//	alert("I0 show");
 				}
             }
             
@@ -271,8 +286,8 @@ require(["jquery",
                 if (window.currList == null) {
                     window.currList = window.defList;
                 }
-           //     alert(base + "getViewlist3?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1");
-               // alert("updating"+currList);
+              //  alert(base + "getViewlist3?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1");
+             //   alert("updating"+currList);
 			//   alert("switchview="+window.switchView);
                 var url = base + "getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1";
                 if(window.shuffle){
@@ -296,9 +311,9 @@ require(["jquery",
                         window.imageMap = {};
                         // get viewlist name
                         window.currViewList = viewlist["name"];
-                //        alert("currImage "+window.currImage);
-                 //       alert("tarImage "+window.tarImage);
-                        //	alert("category " +viewlist["name"]);
+                    //    alert("currImage "+window.currImage);
+                    //   alert("tarImage "+window.tarImage);
+                    //    alert("category " +viewlist["name"]);
                         if (window.currImage == window.tarImage) {
                             window.foundIndex = true;
                         }
@@ -398,14 +413,15 @@ require(["jquery",
 					
                         //
                         loadmetadata();
-   					    dijit.registry.byId("ImageView").show();
+   			//		    dijit.registry.byId("ImageView").show();
                         if(window.switchView){
                         	window.switchView = false;
-                        //    var currView = dijit.registry.byId("blankview");
-						//	     var currView2 = currView.getShowingView();
-						//		 alert("view2="+currView2);
-		                //    currView2.performTransition("ImageView", 1, "fade", null);
-
+							setTimeout(function(){
+                            var currView = dijit.registry.byId("blankview");
+							     var currView2 = currView.getShowingView();
+							// alert("view2="+currView2+"view="+currView);
+		                   currView.performTransition("ImageView", 1, "fade", null);
+                           },500);
                         }
                     }
                 });
@@ -423,7 +439,7 @@ require(["jquery",
                 window.imageCurrStore = new ItemFileWriteStore({
                     data: imageData
                 });
-           //    alert("update images");
+             //  alert("update images");
                 if (window.justLogin || window.justRefresh) {
 				   //  alert("justlogin");
 					 window.justRefresh = false;
@@ -443,7 +459,9 @@ require(["jquery",
                                 if(window.shuffle){
                                 	dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
                                 }
-                                
+                                 else{
+                                	dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
+                                }
                                 //alert(window.fill);
                                 var switchValue = "off";
                                 if (window.fill) {
@@ -459,7 +477,27 @@ require(["jquery",
                                 }
                                 
                                 $("option#" + result["autoInterval"]).attr('selected', 'selected');
-
+								// check if we were passed paramaters on invoking and go to that image instead
+								var curl=get('currList');
+								var curi=get('currImage');
+								var curc=get('currCat');
+								var curonce=get('once');
+						//		alert("start, check currList="+curl+"image"+curi+"cat:"+curc);
+								if (curl&&curi&&curc&&!curonce)
+								{
+							//	alert ('overriding to new image');
+				
+								window.tarImage = curi;
+                                window.currList = curl;
+                                window.currCat = curc;
+								// since this is already in the native app, we don't relauch
+								//var url="artkick://?currList="+curl+"&currImage="+curi+"&currCat="+curc+"&once="+"true";
+							//	alert("url:"+url);
+								//testlaunch(); 
+							//	openCustomURLinIFrame(url);		
+								//	alert("ret="+ret);
+											//open(url,"");
+								}
                             } else {
                                 window.tarImage = window.defImage;
                                 window.currList = window.defList;
@@ -468,10 +506,11 @@ require(["jquery",
                             }
                             loadImages(window.tarImage,1,15,1);
                             //alert(window.currCat);
-                            updateLists(window.currCat);
+                           // updateLists(window.currCat);
                         }
                     });
                 } else {
+			//	alert('load images target:'+targImage);
                     loadImages(targImage,1,15,1);
                 }
 				
@@ -625,7 +664,7 @@ require(["jquery",
 
             function updateCats() {
                 var base = "http://evening-garden-3648.herokuapp.com/content/";
-				 	dijit.registry.byId("ImageView").hide();
+			//	 	dijit.registry.byId("ImageView").hide();
                 catList.destroyRecursive(true);
                 $("#catList").html('');
                 dojo.io.script.get({
@@ -650,7 +689,7 @@ require(["jquery",
                                     goToViewlists();
                                     //updateLists(window.currCat);
                                 },
-                            //    moveTo: "#"
+                                moveTo: "#"
 								//transition: "fade"
                                 //rightText:
                             });
@@ -694,10 +733,13 @@ require(["jquery",
                                 onClick: function () {
                                     //alert(this.id);
                                     window.currList = this.id;
-                                    updateImages(-1);
-
+                                     window.switchView = true;
+                                    var currView = dijit.registry.byId("ImageView");
+	                                var currView2 = currView.getShowingView();
+                                    currView2.performTransition("blankview", 1, "slide", null);
+                                    setTimeout(function(){updateImages(-1)},10);
                                 },
-                                moveTo: "#",
+                                moveTo: "",
 								transition: "fade"
                             });
                            listList.addChild(myTopList);    
@@ -714,12 +756,16 @@ require(["jquery",
 								clickable: true,
                                 onClick: function () {
                                     //alert(this.id);
+									var currView = dijit.registry.byId("ImageView");
+	                                var currView2 = currView.getShowingView();
+                                    currView2.performTransition("blankview", 1, "slide", null);
                                     window.currList = this.id;
 
-                                    updateImages(-1);
+                                    window.switchView = true;
+                                    setTimeout(function(){updateImages(-1)},10);
 
                                 },
-                           //     moveTo: "#ImageView",
+                                moveTo: "",
 								transition: "fade"
                             });
                             listList.addChild(newList);
@@ -806,7 +852,7 @@ require(["jquery",
                 // check if there is a video
 			//	alert("video="+imageMap[currImage]["Video"]);
 				if (imageMap[currImage]["Video"])			
-			           title = title +"  "+ "<a style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["Video"] + "\")' >" + "<img src='images/video_icon2.png' align='center' >" + "</a>";
+			           title = title +"  "+ "<a style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["Video"] + "\")' >" + "<img src='images/Play_Icon.png' align='center' >" + "</a>";
            
 				if(imageMap[currImage]["Type  Detail"])
 					type=imageMap[currImage]["Type  Detail"];
@@ -839,20 +885,19 @@ require(["jquery",
 				//alert("user rating2=" + userrating.value);
 				// get the other viewlists
 				dojo.empty(metaPlane10);
-				if (imageMap[currImage]["viewlists2"].length>1)
-				      dojo.byId("viewtableline6a").innerHTML="Also in:"
-			    else
-					dojo.byId("viewtableline6a").innerHTML=""
+			
 			//	metaPlane10.destroyDescendants();
 			//	alert("window currViewlist"+window.currList);
+			    var vcount=0;
 				for (var i in imageMap[currImage]["viewlists2"]){
 				
 				   //   alert ("view=" + imageMap[currImage]["viewlists2"][i][0]+imageMap[currImage]["viewlists2"][i][1]);
 					  vlnumber=imageMap[currImage]["viewlists2"][i][0];
 					  vlname=imageMap[currImage]["viewlists2"][i][1];
-					  if (vlname!=window.currViewList){
+					  if (vlname!=window.currViewList && vlname != "All"){
 					  // create button for each viewlist
-				  //    alert("create new button" + vlname + "number" +vlnumber);
+					  vcount += 1;
+				  //   alert("create new button" + vlname + "number" +vlnumber);
 					  var myButton = new Button({
 					  num: vlnumber,
                       label: vlname, 
@@ -871,23 +916,13 @@ require(["jquery",
 				   //   alert ("viewlists="+viewlists);
 					  }
 				}
-				//alert("done creating buttons vlnumber="+ vlnumber);
+			//	alert("done creating buttons vcount="+ vcount);
 
-		//		if(imageMap[currImage]["Cat1Viewlist"] != "" && imageMap[currImage]["Cat1Viewlist"] != window.currViewList)
-		//		{ viewlists="  "+imageMap[currImage]["Cat1Viewlist"]+"-"+"<img src='images/switch1.png' onclick=swapview(" +imageMap[currImage]["viewlists"][1]  +")>";
-		//		}
-		//		if( imageMap[currImage]["Cat2Viewlist"] != "" && imageMap[currImage]["Cat2Viewlist"] != window.currViewList)
-		//		{ viewlists=viewlists+"<br>"+"  "+imageMap[currImage]["Cat2Viewlist"]+"-"+"<img src='images/switch1.png' onclick=swapview(" +imageMap[currImage]["viewlists"][2]  +")>";
-		//		}
-		//		if( imageMap[currImage]["Cat3Viewlist"] != "" && imageMap[currImage]["Cat3Viewlist"] != window.currViewList)
-		//		{ viewlists=viewlists+"<br>"+"  "+imageMap[currImage]["Cat3Viewlist"]+"-"+"<img src='images/switch1.png' onclick=swapview(" +imageMap[currImage]["viewlists"][3]  +")>";
-		//		}
-				if (viewlists != "")
-				{
-							         viewlists = "Appears in other viewlists:<br>"+viewlists;
-				}
-			//		alert("viewlists= "+ viewlists);
-				//metaPlane9.innerHTML = viewlists;
+
+				if (vcount>0)
+				      dojo.byId("viewtableline6a").innerHTML="Also in:"
+			    else
+					dojo.byId("viewtableline6a").innerHTML=""
 				
 				
 				
@@ -1042,17 +1077,32 @@ require(["jquery",
                 });
 
             }
+			window.BrowserDetect.init();
 			if (window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome")
 			{
 			alert("You must run Artkick under Chrome, please restart using the Chrome browser");
 		//	throw new Error();
 			}
+		    var curl=get('currList');
+			var curi=get('currImage');
+			var curc=get('currCat');
+			var curonce=get('once');
+			//		alert("start, check currList="+curl+"image"+curi+"cat:"+curc);
+			if (curl&&curi&&curc&&!curonce)
+			{
+				//	
+									
+				var url="artkick://?currList="+curl+"&currImage="+curi+"&currCat="+curc+"&once="+"true";
+				//	alert("url:"+url);
+				openCustomURLinIFrame(url);		
+			}
             hidemenu();
+
 
             getDefaults();
             checkCookie();
-			window.BrowserDetect.init();
-		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS);
+
+		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS+regPlayerView+selectPlayerView+imageView+selectCatView+selectListView+optionsView+addUserView+removePlayerView+gridView);
 			
 			
 	on(regPlayerView, "beforeTransitionIn", 
@@ -1060,7 +1110,7 @@ require(["jquery",
 				calliOSFunction("sayHello", ["On",window.email], "onSuccess", "onError");
 			});
 			
-		    on(regPlayerView, "beforeTransitionOut",
+	on(regPlayerView, "beforeTransitionOut",
 		      function(){
 				calliOSFunction("sayHello", ["Off",window.email], "onSuccess", "onError");
 			});
@@ -1068,7 +1118,7 @@ require(["jquery",
 			
         //   document.addEventListner("backbutton", function(){ alert ("back pushed");});
             // select player transition
-            on(selectPlayerView, "beforeTransitionIn",
+     on(selectPlayerView, "beforeTransitionIn",
 
                 function () {
                     //alert("Transition in!");
@@ -1078,29 +1128,32 @@ require(["jquery",
 
 
 
-            on(selectPlayerView, "beforeTransitionOut",
+     on(selectPlayerView, "beforeTransitionOut",
                 function () {
                     rememberSelectPlayers()
                 });
        
 
-            on(imageView, "beforeTransitionIn",
+     on(imageView, "beforeTransitionIn",
 
                 function () {
+			//	alert("transition to ImageView");
                 window.sliderIndex = 0;
 				   var mytabbar = dijit.registry.byId("myTabBar");
-				   var tabcategory = dijit.registry.byId("tabcategory");
-				   var tabshare = dijit.registry.byId("tabshare");
+				//   var tabcategory = dijit.registry.byId("tabcategory");
+				 //  var tabshare = dijit.registry.byId("tabshare");
 				   var tabnowshowing = dijit.registry.byId("tabnowshowing");
-               //     alert("Transition in!");    
+             //       alert("Transition in!");    
 
-			   mytabbar.resize();
+				//	mytabbar.resize();
+				//	alert("tab bar resize");
                     hidemenu();
 					// try to unset selected on buttonsvar fillsw = dijit.registry.byId("fillswitch");
 				//	tabplaylist.set('selected', false);
 				//	tabcategory.set('selected', false);
 				//    tabshare.set('selected', false);
-				    dijit.registry.byId("tabnowshowing").set('selected', true);
+				   dijit.registry.byId("tabnowshowing").set('selected', true);
+				//	alert("select tabnowshowing");
                     if (window.justLogin) {
                         updateImages(window.tarImage);
                         dojo.io.script.get({
@@ -1296,7 +1349,7 @@ require(["jquery",
 										 updateImages(this.id);	 
 
 
-									//	dijit.registry.byId("GridView").performTransition("blankview", 1, "fade", null);
+										dijit.registry.byId("GridView").performTransition("blankview", 1, "fade", null);
 									   // loadImages(this.id,1,15,1);
 									  
 					            
@@ -1564,8 +1617,10 @@ function emailShare()
 imageurl=imageMap[currImage]["thumbnail"];
 
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("email", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+var url="http://test.artkick.net/"
+url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
+//alert("url="+url);
+calliOSFunction("email", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
 setTimeout(function(){hidemenu()},1000);
 }
 
@@ -1576,13 +1631,17 @@ function twitter()
 imageurl=imageMap[currImage]["thumbnail"];
 
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+var url="http://test.artkick.net/"
+url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
+calliOSFunction("twitter", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
 setTimeout(function(){hidemenu()},1000);
 }
 
 
-
+function mytest()
+{
+alert("mytest");
+}
 
 
 function facebook()
@@ -1592,15 +1651,17 @@ function facebook()
 imageurl=imageMap[currImage]["thumbnail"];
 
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("facebook", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+var url="http://test.artkick.net/"
+url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
+//alert ("url="+url);
+calliOSFunction("facebook", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
 
 setTimeout(function(){hidemenu()},1000);
 
 var obj={
 //method: 'feed',
     name: 'Artkick rocks',
-    link: "http://www.artkick.com/",
+    link: "http://test.artkick.net/",
     picture: imageurl,
 	//display:'popup',
     caption: 'Artkick',
@@ -1610,15 +1671,22 @@ var obj={
 
 }
 
+function testlaunch()
+{
+ret=open("artkick://test.artkick.net/?currList=1047&currImage=9508&currCat=Lifestyle","");
+//alert("return="+ret);
+}
+
 function showiframe(url) {
     var currView = dijit.registry.byId("ImageView");
   //  alert ("displayiframe currView= "+url);
-	window.iframe=dojo.create("iframe", {
+	ret=window.iframe=dojo.create("iframe", {
         "src": url,
         "style": "border: 0; width: 100%;height:700px"
     });
     dijit.registry.byId("displayiframe").set("content",window.iframe );
     currView.performTransition("iframeview", 1, "slide", null);
+	return(ret);
 }
 function showfullimage() {
     var currView = dijit.registry.byId("ImageView");
@@ -1664,7 +1732,9 @@ function showsharemenu(){
 		hidemenu();
    else
    {
-		dijit.registry.byId("Sharemenu").show();
+		dijit.registry.byId("Sharemenu2").show();		
+		//dojo.style("Sharemenu2","display", "block");
+				
 		window.sharemenushow=true;
 	}
 }
@@ -1677,38 +1747,23 @@ function showviewlistmenu2() {
         hidemenu();
     } else {
         menulist.show();
+
         window.viewmenushow2 = true;
     }
 }
 
-function showsystemmenu() {
-    var menulist = dijit.registry.byId("Systemmenu");
 
-
-    if (window.systemmenushow) {
-        hidemenu();
-    } else {
-        menulist.show();
-        window.systemmenushow = true;
-    }
-}
-
-function showsystemmenu2() {
-    var menulist = dijit.registry.byId("Systemmenu2");
-
-
-    if (window.systemmenushow2) {
-        hidemenu();
-    } else {
-        menulist.show();
-        window.systemmenushow2 = true;
-    }
-}
 
 function hidemenu() {
 
  
-	dijit.registry.byId("Sharemenu").hide();
+	dijit.registry.byId("Sharemenu2").hide();
+  //   shmenu=dijit.registry.byId("Sharemenu2");
+//	                 shmenu.style.display = "none";
+	//			   		shmenu.style.visibility = "hidden";
+						
+	dojo.style("Sharemenu2","display", "none");
+//	alert("sharemenu2="+dojo.style("Sharemenu2"));
 	window.sharemenushow = false;
     window.systemmenushow = false;
     window.viewmenushow = false;
@@ -1721,21 +1776,21 @@ function hidemenu() {
 function goToLogin1() {
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView();
-	
+//	alert("goto login"+mycurrView);
     mycurrView.performTransition("Login", 1, "slide", null);
 }
 function swapview(newview){
     
 	//alert ("swapview "+newview);
 	 var currView = dijit.registry.byId("ImageView");
-	 //	 var currView2 = dijit.registry.byId("blankview");
+	 var currView2 = dijit.registry.byId("blankview");
 
 	window.currList = newview;
 	hidemenu();
 
-	//currView.performTransition("blankview", 1, "fade", null);
-	//	currView2.performTransition("ImageView", 1, "fade", null);
-	currView.hide();
+	currView.performTransition("blankview", 1, "fade", null);
+	currView2.performTransition("ImageView", 1, "fade", null);
+	//currView.hide();
 	updateImages(-1);
 	
 				
@@ -1896,7 +1951,12 @@ function refreshView() {
 // if user clicks on "now Showing" button it refreshes the view to what is presently being displayed
 	//alert("refresh view");
 	window.justRefresh = true;
-	updateImages(-1);
+	window.switchView = true;
+	var currView = dijit.registry.byId("Intro0");
+    var mycurrView = currView.getShowingView();
+    //alert(mycurrView);
+    mycurrView.performTransition("blankview", 1, "fade", null);
+	setTimeout(function(){updateImages(-1)},10);
 }
 
 function removePlayersAction() {
@@ -2200,5 +2260,10 @@ function onError (ret)
     }
 }
 
+// this function used to parse paramaters off the http line
+function get(name){
+   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+}
 //alert("toCall");
 

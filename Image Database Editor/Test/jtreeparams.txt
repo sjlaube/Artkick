@@ -1,0 +1,37 @@
+
+{ 
+
+        "themes" : {
+            "theme" : "default",
+            "dots" : false,
+            "icons" : true
+             },
+        "plugins" : [ "themes", "html_data" ]
+
+"themes" : {
+							"theme" : "default",
+							"dots" : true,
+							"icons" : true
+						},
+						"plugins" : [ "themes", "html_data", "types" ],
+						
+						"types": {
+						"valid_children": ["folder"],
+						"types": {
+							"default": {
+								"valid_children" : "none",
+								"icon" : {
+								    "image" : "jstree-v.pre1.0/_demo/file.png"
+								}
+							},
+							"folder": {
+								"valid_children" : ["default", "folder"],
+								"icon" : {
+								    "image" : "jstree-v.pre1.0/_demo/folder.png"
+							     }
+							}
+						}
+						},
+
+
+"title=\"Colorado River Toad| Incilius alvarius Syn.: Bufo alvarius, Family: Bufonidae\" artist=\"H.Krisp\" workDate=\"2011\" birthDate=\"undefined\" deathDate=\"\" source=\"Wikimedia Commons\" medium=\"Photograph\" location=\"\" "

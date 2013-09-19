@@ -1,0 +1,75 @@
+<!doctype html/>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Kevin's Test Site</title>
+	<link rel="stylesheet" href="main.css">
+	<script src="http://code.jquery.com/jquery-1.8.1.min.js" type="text/javascript"></script>
+	<script src="jquery.jstree.js"></script>
+
+	
+</head>
+<body>
+
+	<div class="content">
+	</div>
+	
+	<script type="text/javascript">
+	
+	$(document).ready(function () {
+		jQuery(function($) {
+			$('#container').jstree();
+		});
+	});
+	
+	var myArr = [];
+	var myCategories = [];
+	
+	$.ajax({
+			  url: 'http://evening-garden-3648.herokuapp.com/content/allCategories',
+			  dataType: 'jsonp',
+			  async: false,
+			  
+			  success: function(data) {
+							myArr.push('<div id="container"> <ul>');
+							$.each(data, function(key, value) {
+								$(this).each(function(key, value) {
+									var catViewList = getCatViewLists(value["name"]);
+								myArr.push("<li><a>" + value["name"] + "</a><ul>" + catViewList + "</ul></li>" );
+								//myCategories.push(value["name"], 
+								});
+							});
+							myArr.push('</ul></div>');
+							$('.content').html(myArr.join(''));
+						}
+			});
+	
+	function getCatViewLists(cat) {
+		var viewLists = [];
+		var strViewLists = "";
+		$.ajax({
+			  url: 'http://evening-garden-3648.herokuapp.com/content/getViewlistsByCategory?catName=Top%20Lists',
+			  dataType: 'jsonp',
+			  async: false,
+			  
+			  success: function(data) {
+				$.each(data, function(key, value) {
+					if (key == 'viewlists') {
+						$(this).each(function(key, value) {
+							viewLists.push("<li><a>" + value["name"] + "</a>" + "</li>");
+						//myCategories.push(value["name"], 
+						});
+				};
+				strViewLists = viewLists.join('');
+				});
+				
+			  }
+		});
+		
+		return strViewLists;
+	}
+	
+	</script>
+	
+</body>
+</html>
