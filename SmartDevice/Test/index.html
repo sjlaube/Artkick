@@ -345,19 +345,21 @@ Install Artkick</button>
 
 
 
-<div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:true, left:"0px", top:"44px"' style="border:0px;outline:none;height:125px;background-image:none"
-<div  data-dojo-type="dojox/mobile/IconMenu" data-dojo-props='cols:"3"' style="position:absolute;top:42px;left:0px;width:220px;height:125px">
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:true,left:"0px",top:"21px"' style="border:0px!important;outline:none!important;height:125px;width:230px;background-image:none!important">
 
-	<li data-dojo-type="dojox/mobile/IconMenuItem" id="facebookbutton"  onclick="facebook()" style="width:70px;height:70px;margin:5px;border:0px"
+<ul  data-dojo-type="dojox/mobile/IconMenu" data-dojo-props='cols:3' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
+	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="facebook()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true,label:"Facebook",icon:"images/FB-f-Logo__blue_50.png"'  ></li>
-	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="twitter()" style="width:70px;height:70px;margin:5px;border:0px"
+	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="twitter()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true, label:"Twitter", icon:"images/twitter-share.png"' ></li>
-	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="emailShare()" style="width:70px;height:70px;margin:5px;border:0px"
+	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="emailShare()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true, label:"Mail", icon:"images/email-share.png"' ></li>
-	  	<button data-dojo-type="dojox/mobile/Button" 
-          style="width:200px;height:25px;position:absolute;top:85px;left:20px" onclick="hidemenu()">Cancel</button>
-  
-</div>
+
+
+</ul>
+	  <button data-dojo-type="dojox/mobile/Button" style="width:140px;height:20px;position:absolute;top:99px;left:40px;padding:none!important;line-height:20px!important" onclick='hidemenu()'>Close
+	  
+	  </button>
 </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index=901"  >
    <div id="ImageViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="font-size: 14px; line-height:150%">
@@ -370,7 +372,7 @@ Install Artkick</button>
 <br><br>Loading Images, Please wait<br><br>
 <img  src="images/waitcircle.gif" alt="wait" >
 </div>  
-<div data-dojo-type="dojox/mobile/DataCarousel" onclick="bigimage()" id="ImageList" title="&amp;nbsp;" data-dojo-props="numVisible:1,pageIndicator:false,navButton:false" height="13em" style="width: 100%; height: 50%;" store="ItemFileReadStore_10"></div>
+<div data-dojo-type="dojox/mobile/DataCarousel" onclick="bigimage()" id="ImageList" title="&amp;nbsp;" data-dojo-props="numVisible:1,pageIndicator:false,navButton:false" height="13em" style="width: 100%; height:50%" store="ItemFileReadStore_10"></div>
    <table  onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; border:0;height: auto; position: relative; left: 1em; width: 90%;">
      <colgroup>
        <col></col>

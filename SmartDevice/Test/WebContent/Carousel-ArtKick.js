@@ -95,7 +95,7 @@ define("dojox/mobile/Carousel", [
 		buildRendering: function(){
 			this.containerNode = domConstruct.create("div", {className: "mblCarouselPages"});
 			this.inherited(arguments);
-			var i;
+			var i,len;
 			if(this.srcNodeRef){
 				// reparent
 				for(i = 0, len = this.srcNodeRef.childNodes.length; i < len; i++){

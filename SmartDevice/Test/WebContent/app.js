@@ -154,11 +154,11 @@ require(["jquery",
                  //     alert ("Io= " + I0 + I0.selected);
                 var Iv = registry.byId("ImageView");
                 var splash = dojo.byId("splash");
-				var menx = registry.byId("Sharemenu")
+				var menx = registry.byId("Sharemenu2")
 				var opt = registry.byId("OptionsList");
 				
 
-             //    alert("Imageview= "+ Iv + I0 +splash+menx+optionsView+opt);
+               alert("Imageview= "+ Iv + I0 +splash+menx+optionsView+opt);
               //    I0.startup();
                //   alert ( "intro0 startup"); 
                I0.show();
@@ -1657,7 +1657,7 @@ function emailShare()
 imageurl=imageMap[currImage]["thumbnail"];
 
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-var url="http://test.artkick.net/"
+var url="http://prod.artkick.net/"
 url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
 //alert("url="+url);
 calliOSFunction("email", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
@@ -1671,7 +1671,7 @@ function twitter()
 imageurl=imageMap[currImage]["thumbnail"];
 
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-var url="http://test.artkick.net/"
+var url="http://prod.artkick.net/"
 url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
 calliOSFunction("twitter", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
 setTimeout(function(){hidemenu()},1000);
@@ -1691,7 +1691,7 @@ function facebook()
 imageurl=imageMap[currImage]["thumbnail"];
 
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-var url="http://test.artkick.net/"
+var url="http://prod.artkick.net/"
 url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
 //alert ("url="+url);
 calliOSFunction("facebook", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
@@ -1701,11 +1701,11 @@ setTimeout(function(){hidemenu()},1000);
 var obj={
 //method: 'feed',
     name: 'Artkick rocks',
-    link: "http://test.artkick.net/",
+    link: "http://prod.artkick.net/",
     picture: imageurl,
 	//display:'popup',
     caption: 'Artkick',
-//	redirect_uri: 'http://test.artkick.net',
+//	redirect_uri: 'http://prod.artkick.net',
     description: 'Check out this great image and thousands more at Artkick'
 }
 
@@ -1713,7 +1713,7 @@ var obj={
 
 function testlaunch()
 {
-ret=open("artkick://test.artkick.net/?currList=1047&currImage=9508&currCat=Lifestyle","");
+ret=open("artkick://prod.artkick.net/?currList=1047&currImage=9508&currCat=Lifestyle","");
 //alert("return="+ret);
 }
 
