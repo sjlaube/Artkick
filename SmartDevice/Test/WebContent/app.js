@@ -1519,7 +1519,7 @@ require(["jquery",
                 //alert("changing view 0 on you");
                 window.currImage = view.getChildren()[0]['alt'];
                 if ((!window.foundIndex) && (window.currImage != window.tarImage)) {
-                    view.goTo(1);
+                   // view.goTo(1);
                     return;
                 }
                 // alert("changing view on you");
