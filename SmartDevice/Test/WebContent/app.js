@@ -159,7 +159,7 @@ require(["jquery",
 				
 
              //    alert("Imageview= "+ Iv + I0 +splash+menx+optionsView+opt);
-             //     I0.startup();
+              //    I0.startup();
                //   alert ( "intro0 startup"); 
                I0.show();
                 Iv.startup();
@@ -1109,10 +1109,12 @@ require(["jquery",
 
             }
 			window.BrowserDetect.init();
-			if (window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome")
+			//alert("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser);
+			if ((window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome") ||
+			(window.BrowserDetect.OS=="Windows" && window.BrowserDetect.browser!= "Chrome"))
 			{
 			alert("You must run Artkick under Chrome, please restart using the Chrome browser");
-		//	throw new Error();
+			window.close();
 			}
 		    var curl=get('currList');
 			var curi=get('currImage');
