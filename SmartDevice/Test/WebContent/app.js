@@ -305,12 +305,7 @@ require(["jquery",
                         	window.currList = window.defList;
                         	window.currCat = window.defCat;
                         	window.currImage = window.defImage;
-							setTimeout(function(){
-                            var currView = dijit.registry.byId("blankview");
-							     var currView2 = currView.getShowingView();
-							// alert("view2="+currView2+"view="+currView);
-		                   currView.performTransition("select_category", 1, "fade", null);
-                           },500);
+						    updateImages(-1);
                         	return;
                         }
                         
@@ -736,7 +731,7 @@ require(["jquery",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
-								clickable: true,
+                                clickable: true,
                                 onClick: function () {
                                     //alert(this.id);
                                     window.currList = this.id;
@@ -748,7 +743,7 @@ require(["jquery",
                                 },
                                 moveTo: "",
 								transition: "fade"
-                            }); 
+                            });
                            listList.addChild(myTopList);    
                         
                        }  
@@ -1023,8 +1018,8 @@ require(["jquery",
                         }
 
 
-                  		if(result["players"].length == 0)
-						      alert("There are no players registered.");
+                  		//if(result["players"].length == 0)
+						      //alert("There are no players registered.");
 					    for (var i in result["players"]) {
                             var player = result["players"][i];
 
@@ -1042,6 +1037,7 @@ require(["jquery",
                             //alert(player["account"]);
                             if (li == undefined) {
                                 //alert("new"+player["account"]);
+                                window.justCreatePlayer = true;
                                 li = new dojox.mobile.ListItem({
                                     id: "s" + player["account"],
                                     icon: status,
@@ -1074,11 +1070,25 @@ require(["jquery",
 
                             }
                         }
+                        
+                        
 
                         if (window.justCreatePlayer) {
                             //alert("justPlayer");
                             rememberSelectPlayers();
+                            window.currList = window.defList;
+                            window.currImage = window.defImage;
+                            window.currCat = window.defCat;
+                            if(window.shuffle){
+                            	// if random, then switch to normal!
+                            	mediashuffle();
+                            }
                             window.justCreatePlayer = false;
+                            updateImages(-1);
+                            var currView = dijit.registry.byId("Intro0");
+                            var mycurrView = currView.getShowingView();
+                            mycurrView.performTransition("ImageView", 1, "slide", null);
+                            
                         }
                     }
                 });
@@ -1110,15 +1120,18 @@ require(["jquery",
             checkCookie();
 
 		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS+regPlayerView+selectPlayerView+imageView+selectCatView+selectListView+optionsView+addUserView+removePlayerView+gridView);
-			
+
 			
 	on(regPlayerView, "beforeTransitionIn", 
 			 function(){
+			 	window.updatePlayerLoop = setInterval(updatePlayers,1500);
 				calliOSFunction("sayHello", ["On",window.email], "onSuccess", "onError");
 			});
 			
 	on(regPlayerView, "beforeTransitionOut",
 		      function(){
+		      	clearInterval(updatePlayerLoop);
+                rememberSelectPlayers();
 				calliOSFunction("sayHello", ["Off",window.email], "onSuccess", "onError");
 			});
 			
@@ -1181,6 +1194,10 @@ require(["jquery",
                         });
                     } else if (window.justCreatePlayer) {
                         updatePlayers();
+                        if(window.shuffle){
+                           // if random, then switch to normal!
+                           mediashuffle();
+                        }
                         updateImages(-1);
                     }
                 });
@@ -1796,7 +1813,7 @@ function swapview(newview){
 	hidemenu();
 
 	currView.performTransition("blankview", 1, "fade", null);
-	currView2.performTransition("ImageView", 1, "fade", null);
+	window.switchView= true;
 	//currView.hide();
 	updateImages(-1);
 	
@@ -1957,6 +1974,10 @@ function emailPW(){
 function refreshView() {
 // if user clicks on "now Showing" button it refreshes the view to what is presently being displayed
 	//alert("refresh view");
+	if(!window.email){
+		return;
+	}
+	
 	window.justRefresh = true;
 	window.switchView = true;
 	var currView = dijit.registry.byId("Intro0");
@@ -2251,7 +2272,7 @@ function onSuccess (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.result);
-        alert(obj.result);
+        //alert(obj.result);
 		hidemenu();
     }
 }
@@ -2262,7 +2283,7 @@ function onError (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.error);
-		        alert(obj.result);
+		        //alert(obj.result);
 		hidemenu();
     }
 }
