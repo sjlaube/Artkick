@@ -970,6 +970,7 @@ require(["jquery",
                             //playerList.destroyRecursive(true);
                             //$("#ownedPlayerList").html('');
                             playerList.destroyDescendants();
+
 					
                             for (var i in result["players"]) {
                                 var player = result["players"][i];
@@ -1017,9 +1018,22 @@ require(["jquery",
 
                         }
 
-
-                  		//if(result["players"].length == 0)
-						      //alert("There are no players registered.");
+						//check if we are in select player view and tell users if there are no players
+                
+							  var currView = dijit.registry.byId("select_player");
+	                          var currView2 = currView.getShowingView();
+							  if (currView2 == selectPlayerView)
+									{
+									 if(result["players"].length == 0)
+									 {
+										alert("There are no players registered.");
+							            currView2.performTransition("OptionsList", -1, "slide", null);
+									  }
+									
+									}
+            
+							  
+							  
 					    for (var i in result["players"]) {
                             var player = result["players"][i];
 
