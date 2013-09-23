@@ -17,7 +17,7 @@
     <script src="jPages-master/js/jPages.js"></script>
 	<script src="jPages-master/js/jquery.lazyload.js"></script>
 	
-	
+	<link rel="stylesheet" href="jPages-master/css/style.css">
     <link rel="stylesheet" href="jPages-master/css/jPages.css">
     <link rel="stylesheet" href="jPages-master/css/animate.css">
     <link rel="stylesheet" href="jPages-master/css/github.css">
@@ -26,7 +26,7 @@
 	<link rel="stylesheet" href="jQuery-contextMenu-master/src/jquery.contextMenu.css">
 
 </head>
-<body id="outerBody">
+<body>
     <table id="outerTable" border="0">
 		<tr>
 		<td colspan="2" id="header">
@@ -36,20 +36,30 @@
 
 		<tr>
 		<td >
-			<div id="divNavTreeLoading" style="width: 300px;height: 50px;" >
+			<div id="divNavTreeLoading" style="width: 300px;height: 50px;overflow: scroll;" >
 				<p>Loading...</p>
 			</div>
-			<div id="divNavTree2" style="width: 300px;overflow: scroll; display: none" >
+			<div id="divNavTree2" style="width: 300px;height: 600px;overflow: scroll; display: none" >
 				
 			</div>
 		</td>
-		<td valign="top" >
+		<td valign="top" style="height:200px">
 			
 			<table border="0">
-				
 				<tr>
 					<td valign="top">
-						<div id="divMainImages">
+						    <table border="0">
+								<tr>
+									<td > <div class="arrowPrev"></div> </td>			
+									<td valign="top"> <div class="holder" </div> </td>			
+									<td > <div class="arrowNext"></div> </td>
+								</tr>
+							</table>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<div id="divMain2" style="height: 250px;overflow: scroll;">
 							<p>Select ViewList from tree on the left to see images</p>
 						</div>
 					</td>	
@@ -57,7 +67,7 @@
 				<tr>
 					<td valign="bottom" >
 						<div id="divMainImageDetail">
-							<table id="tableImageDetail" width="100%">
+							<table width="100%">
 								<tr>	
 									<td> <label>Title:</label> </td> <td colspan="5"> <input type="text" id="imgTitle" style="width:100%"/> </td>						
 								</tr>
@@ -122,7 +132,6 @@
 					</td>
 				</tr>
 			</table>
-			</td>
 		</tr>
 
 		<tr>
@@ -131,8 +140,13 @@
 		</tr>
 	</table>
 
-	<div id="pendingTransactionDialog" title="Pending Changes">
-		<label>Please wait while changes are completed...</label>
+	<div id="renameDialog" title="Rename">
+		<label>Old Name:</label><input type="text" id="tbRenameOldName" style="border:0" readonly="true"></input>
+		</br>
+		<label>Enter New Name:</label><input type="text" id="tbRenameNewName"></input>
+		</br>
+		<input type="text" id="tbRenameId" style="border:0"></input>
+		<input type="text" id="tbRenameClass" style="border:0"></input>
 	</div>
 	
 	<div id="createDialog" title="Create">	
@@ -173,15 +187,18 @@
 			
 		});
 		
-		
+		//body_sizer();
+		//$(window).resize(body_sizer);
+		//$(window).resize(body_sizer);
 		
 		$('#btnSave').click(function () {
 			saveImageAttr();
 		});
 		
-		$( "#pendingTransactionDialog" ).dialog({ 
+		$( "#renameDialog" ).dialog({ 
 			autoOpen: false, modal: true, 
-			close: function ( event, ui ) {onPendingTransactionClosed(event, ui);} });
+			buttons: [ { text: "Ok", click: function() { $( this ).dialog( "close" ); } } ],
+			close: function ( event, ui ) {onRenameClosed(event, ui);} });
 		$( "#createDialog" ).dialog({ 
 			autoOpen: false, modal: true, 
 			buttons: [ { text: "Ok", click: function() { $('#tbCreateConfirmed').val('yes');$( this ).dialog( "close" ); } },
@@ -198,15 +215,9 @@
 				if (e.keyCode == 65 || e.keyCode == 97) { // 'A' or 'a'
 				  e.preventDefault();
 				  $('.viewListImage').addClass('selected');
-				  clearImageAttrUI();
-				  enableSaveImageAttr(false);
 				}
 			  }								
 		});
-		
-		body_sizer();
-		$(window).resize(body_sizer);
-		//$(window).resize(body_sizer);
 	});
 	
 	var myArr = [];
@@ -426,7 +437,7 @@
 					};
 					strImages = '<ul id="thumbs" viewListId="' + viewListId + '">' + vlImages.join('') + '</ul>';
 				});
-				$(document).find('#divMainImages').html(strImages);
+				$(document).find('#divMain2').html(strImages);
 				//$('#thumbs').bxSlider({ infiniteLoop: false, hideControlOnEnd: true, minSlides: 2, maxSlides: 2, slideWidth: 380, slideMargin: 10});
 				//$("#divMain2ImageNav").jPages({containerID : "thumbs"});
 				
@@ -445,9 +456,9 @@
 				});
 				
 				
-				$(document).find('#divMainImages').find('li.viewListImage').each(function () {
-				    $(this).click(function () {
-						
+				$(document).find('#divMain2').find('li.viewListImage').each(function () {
+				    $(this).click(function () {			    
+						fillImageAttrUI($(this));
 						
 						if (event.ctrlKey && $(this).hasClass('selected'))
 							$(this).removeClass("selected");
@@ -456,19 +467,7 @@
 						
 						//deselect as appropriate
 						if (!event.ctrlKey && !event.shiftKey)
-						  $(this).siblings().removeClass("selected");
-						
-						//currently we only support one selection
-						if ($('#divMainImages').find('li.selected').length == 1)
-						{
-							fillImageAttrUI($(this));
-							enableSaveImageAttr(true);
-						}
-						else
-						{
-							clearImageAttrUI();
-							enableSaveImageAttr(false);
-						}
+						  $(this).siblings().removeClass("selected");						
 				    });
 					
 					$.contextMenu({
@@ -522,8 +521,6 @@
 	{
 		if (str.indexOf('\"') != -1)
 			return str.replace(/\"/g, '&quot;');
-		else
-			return str;
 	}
 	
 	function getImageViewListAttribute(value) {
@@ -637,13 +634,8 @@
 		
 	}
 	
-	function clearImageAttrUI()
-	{
-		fillImageAttrUI($('#loadingImage img'));
-	}
-	
 	function clearViewListImages() {
-		$(document).find('#divMainImages').html('<ul id="thumbs"><li id="loadingImage"><img src="jPages-master/img/preload.png"></img></li></ul>');
+		$(document).find('#divMain2').html('<ul id="thumbs"><li id="loadingImage"><img src="jPages-master/img/preload.png"></img></li></ul>');
 				$("div.holder").jPages({
 				  containerID : "thumbs",
 				  perPage     : 50,
@@ -653,7 +645,6 @@
 				  animation   : "fadeInleft"
 				});
 		fillImageAttrUI($('#loadingImage img'));
-		enableSaveImageAttr(false);
 	}
 	
 	function saveImageAttr()
@@ -690,7 +681,11 @@
 		
 		// setup some local variables
 		var $form = $('#divMainImageDetail');
+		// let's select and cache all the fields
 		var $inputs = $form.find("input, select, button, textarea");
+		// serialize the data in the form
+		//var serializedData = $inputs.serialize();
+
 		// let's disable the inputs for the duration of the ajax request
 		$inputs.prop("disabled", true);
 
@@ -738,7 +733,13 @@
 		items.oncoming.find("img").trigger("turnpage");
 	}
 	
-	
+	function body_sizer() {
+	  var bodyheight = $(window).height();
+	  //var bodyheight = $('#outerTable').height();
+	  var headerheight = $('#header').height();
+	  var footerheight =  $('#footer').height();
+	  $("#divNavTree2").height(bodyheight - headerheight - footerheight - 5);
+	}
 	
 	function renameViewListOrCategory (obj)
 	{
@@ -748,12 +749,14 @@
 		{
 			$('#tbRenameId').val(objectId);
 			$('#tbRenameClass').val('viewList');
+			//$("#renameDialog").dialog("open");
 			$('#container').jstree("rename");
 		}
 		else if (objectClass.indexOf('category') != -1)
 		{
 			$('#tbRenameId').val(objectId);
 			$('#tbRenameClass').val('category');
+			//$("#renameDialog").dialog("open");
 			$('#container').jstree("rename");
 		}
 	}
@@ -814,9 +817,24 @@
 		});
 	}
 	
-	function onPendingTransactionClosed( event, ui ) 
+	function onRenameClosed( event, ui ) 
 	{
-		
+		//alert($('#tbRenameNewName').val() + $('#tbRenameId').val() + $('#tbRenameClass').val());
+		var id = $('#tbRenameId').val();
+		var newName = $('#tbRenameNewName').val();
+		var objClass = $('#tbRenameClass').val();
+		if (newName.length > 0)
+		{
+			if (objClass == 'viewList')
+			{
+				renameViewList(id, newName);
+			}
+			else
+			{
+				renameCategory(id, newName);
+			}
+			
+		}
 	}
 	
 	function createViewListOrCategory (obj)
@@ -852,9 +870,6 @@
 		params = 
 			'catName=' + id +
 			'&listName=' + newName;
-			
-		var success = false;
-		$("#pendingTransactionDialog").dialog("open");
 		
 		var request = $.ajax({
 			url: baseCmdUrl + cmd + "?" + params,
@@ -868,16 +883,8 @@
 				alert(response.Message);
 			else
 			{
+				//alert("Rename complete.");
 				//TODO: Should we verify changes?
-				success = true;
-			}
-		});
-		
-		request.always(function () {
-			$("#pendingTransactionDialog").dialog("close");
-			if (success == true)
-			{
-				alert("New view list has been created. Category/View list tree will be reloaded.");
 				location.reload();
 			}
 		});
@@ -891,9 +898,6 @@
 		cmd = 'CreateCategory';
 		params = 'name=' + newName;
 		
-		var success = false;
-		$("#pendingTransactionDialog").dialog("open");
-		
 		var request = $.ajax({
 			url: baseCmdUrl + cmd + "?" + params,
 			dataType: 'jsonp',	
@@ -906,16 +910,8 @@
 				alert(response.Message);
 			else
 			{
+				alert("Rename complete.");
 				//TODO: Should we verify changes?
-				success = true;
-			}
-		});
-		
-		request.always(function () {
-			$("#pendingTransactionDialog").dialog("close");
-			if (success == true)
-			{
-				alert("New category has been created. Category/View list tree will be reloaded.");
 				location.reload();
 			}
 		});
@@ -1053,9 +1049,6 @@
 					 
 		//alert(baseCmdUrl + cmd + '?' + params);
 		
-		var success = false;
-		$("#pendingTransactionDialog").dialog("open");
-		
 		var request = $.ajax({
 			url: baseCmdUrl + cmd + "?" + params,
 			dataType: 'jsonp',	
@@ -1070,14 +1063,7 @@
 			{
 				//TODO: Should we verify changes?
 				//TODO: What if current list?
-				success = true;
 			}
-		});
-		
-		request.always(function () {
-			$("#pendingTransactionDialog").dialog("close");
-			if (success == true)
-				alert("The selected images have been copied to the view list.");
 		});
 	}
 	
@@ -1086,9 +1072,9 @@
 		//jPages does not seem to handle multiple drag...
 		//so for now we will actually get selected items from the image list 
 		//rather than the drag object
-		//$(document).find('#divMainImages').html(strImages);
+		//$(document).find('#divMain2').html(strImages);
 		var imageArray = [];
-		$('#divMainImages').find('li.selected').each(function () {
+		$('#divMain2').find('li.selected').each(function () {
 			imageArray.push('images[]=' + $(this).attr('id'));
 		});
 		return imageArray.join('&');
@@ -1121,24 +1107,6 @@
 				getViewListImages(viewListId);
 			}
 		});
-	}
-	
-	function body_sizer() {
-	  var bodyheight = $('#outerBody').height();
-	  var headerheight = $('#header').height();
-	  var footerheight =  $('#footer').height();
-	  var imageDetailHeight = $('#divMainImageDetail').height()
-	  //$("#divNavTree2").height(bodyheight - headerheight - footerheight - 5);
-	  $("#divMainImages").height(bodyheight - imageDetailHeight - headerheight - footerheight - 40);
-	  $("#divNavTree2").height(bodyheight - headerheight - footerheight - 40);
-	}
-	
-	function enableSaveImageAttr(enable)
-	{
-		var $form = $('#divMainImageDetail');
-		var $inputs = $form.find("input, select, button, textarea");
-		// let's disable the inputs for the duration of the ajax request
-		$inputs.prop("disabled", !enable);
 	}
 	
 	</script>

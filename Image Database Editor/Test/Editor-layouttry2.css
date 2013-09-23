@@ -43,16 +43,6 @@ label
 	background: #66CCCC;
 }
 
-#divMainImages
-{
-	min-height: 110px;
-	overflow: scroll;
-}
-
-#divMainImageDetail
-{
-}
-
 #sectionMain
 {
 	float: left;

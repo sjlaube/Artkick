@@ -33,25 +33,24 @@ label
 	font: bold 14px Tahoma;
 }
 
-#divNavTree
+#divNavTree2
 {
 	float: left;
 	width: 300px;
-	min-height: 500px;
+	min-height: 200px;
 	margin: 3px 0px;
 	padding: 3px;
-	background: #66CCCC;
-}
-
-#divMainImages
-{
-	min-height: 110px;
 	overflow: scroll;
+	display: none;
 }
 
-#divMainImageDetail
+#divNavTreeLoading
 {
+	float: left;
+	width: 300px;
+	min-height: 200px;
 }
+
 
 #sectionMain
 {
