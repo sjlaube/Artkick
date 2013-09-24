@@ -1,0 +1,96 @@
+<!doctype html/>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Test JPages</title>
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="jPages-master/js/jPages.js"></script>
+	<script type="text/javascript" src="jPages-master/js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="jPages-master/js/highlight.pack.js"></script>
+    <script type="text/javascript" src="jPages-master/js/tabifier.js"></script>
+    <script src="jPages-master/js/js.js"></script>
+    <script src="jPages-master/js/jPages.js"></script>
+	<link rel="stylesheet" href="jPages-master/css/style.css">
+    <link rel="stylesheet" href="jPages-master/css/jPages.css">
+    <link rel="stylesheet" href="jPages-master/css/animate.css">
+    <link rel="stylesheet" href="jPages-master/css/github.css">
+
+</head>
+<body>
+	<div class="holder"></div>
+    <div class="thumbsDiv"> 
+	<ul id="thumbs"> 
+	<li> <img src="jPages-master\img\img (1).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (2).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (2).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (3).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (4).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (5).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (6).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (7).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (8).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (9).jpg" > </img> </li>
+	<li> <img src="jPages-master\img\img (10).jpg"> </img> </li>
+	<li> <img src="jPages-master\img\img (11).jpg"> </img> </li>
+	</ul>
+    </div>
+	<div class="holder"></div>
+	<script type="text/javascript">
+	
+	
+
+	//$("div.imageNav").jPages({containerID : "testUL"});
+	
+	$(function() {
+
+    /* initiate plugin */
+    $("div.holder").jPages({
+      containerID : "thumbs",
+      perPage     : 5,
+      previous    : ".prev",
+      next        : ".next",
+
+      direction   : "auto",
+      animation   : "fadeInUp"
+    });
+	});
+	
+	$("ul#thumbs li").click(function(){
+      $(this).addClass("selected")
+      .siblings()
+      .removeClass("selected");
+
+      //var img = $(this).children().clone().addClass("animated fadeInDown");
+      //$("div#img").html( img );
+
+    });
+	
+	$(document).ready(function () {
+		
+		//$(function() {
+			/* initiate plugin */
+		//	$("div.imageNav").jPages({
+		//	  containerID: "testUL"
+		//	});
+		//});
+	});
+
+	</script>
+	
+	<style type="text/css">
+  ul#thumbs { list-style: none; margin: 0px; padding:0px; margin-top: 10px; }
+  ul#thumbs li { float: left; margin-right: 10px; cursor:pointer; }
+  ul#thumbs li img { height: 75px; vertical-align: top; }
+  ul#thumbs li.selected { outline: 3px solid #FF4242; }
+
+  div#img img { width: 600px; height: 400px; }
+
+  div#btns{ position:relative; width: 600px; }
+  .prev, .next { width:29px; height:29px; position: absolute; top: -95px; cursor: pointer; }
+  .prev { background-image: url('img/back.gif'); left: -40px; }
+  .next { background-image: url('img/next.gif'); right: -40px; }
+
+  .jp-disabled{ display:none; }
+  </style>
+</body>
+</html>

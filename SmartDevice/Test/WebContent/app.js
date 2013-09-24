@@ -21,13 +21,16 @@ require(["jquery",
 		"dojo/hash",
 		"dojox/mobile",
 		"dojox/mobile/bookmarkable",
+		"dojox/mobile/IconMenu",
         "dojo/date/stamp",
         "dojo/data/ItemFileWriteStore",
         "dojo/_base/connect",
         "dijit/form/Select",
 		"dojox/form/Rating",
 		"dojox/form/PasswordValidator",
-        "dojo/dom-attr"
+        "dojo/dom-attr",
+		"dojox/mobile/Carousel",
+		"dojox/mobile/ScrollableView"			
     ],
     function ( 
         $,
@@ -43,13 +46,16 @@ require(["jquery",
 		hash,
 		mobile,
 		bookmarkable,
+		IconMenu,
         stamp,
         ItemFileWriteStore,
         connect,
         select,
 		Rating,
 		PasswordValidator,
-        domAttr) {
+        domAttr,
+		Carousel,
+				ScrollableView) {
 
 
 
@@ -147,54 +153,76 @@ require(["jquery",
 
             function checkCookie() {
                 var email = getCookie("email");
-                //     alert("checkCookie " + email);
+                  //   alert("checkCookie " + email);
                 var I0 = registry.byId("Intro0");
-                //         alert ("Io= " + I0 + I0.selected);
+                 //     alert ("Io= " + I0 + I0.selected);
                 var Iv = registry.byId("ImageView");
                 var splash = dojo.byId("splash");
-                //         alert("Imageview= "+ Iv + Iv.selected);
-                //      I0.startup();
-                //     alert ( "intro0 startup"); 
-                I0.show();
-                Iv.startup();
-                // alert ("try spash= " + splash);
+				var menx = registry.byId("Sharemenu2")
+				var opt = registry.byId("OptionsList");
+				
 
-                //   splash.style.display = "none";
-                //  alert ("did splash");
+             //  alert("Imageview= "+ Iv + I0 +splash+menx+registry.byId("OptionsList")+registry.byId("AccountSettings")+registry.byId("iframeview")
+			  // +registry.byId("Intro3")+registry.byId("Intro2")+registry.byId("Intro1")+registry.byId("blankview")+registry.byId("ImageView")
+			 //  );
+              //    I0.startup();
+               //   alert ( "intro0 startup"); 
+               I0.show();
+                Iv.startup();
+               //  alert ("try spash= " + splash+"Iv="+Iv);
+
+               //    splash.style.display = "none";
+				  // 		splash.style.visibility = "hidden";
+             //    alert ("did splash");
 
                 //     alert ("imageview startup");
 
-
+            //    alert("email1="+email);
                 if (email != null && email != "" && email != "null") {
-                    //alert ("good to go");
+           //        alert ("good to go");
 
 
                     //     alert("Welcome again " + email);
-                    var base = "http://evening-garden-3648.herokuapp.com/player/"
+                    var base = "http://evening-garden-3648.herokuapp.com/player/";
                     dojo.io.script.get({
                         url: base + "getUser?email=" + email,
                         callbackParamName: "callback",
                         load: function (result) {
+				//		alert("status="+result["Status"]);
                             if (result["Status"] == "success") {
-
+							//  splash.style.display = "none";
+                  //        alert("we are here");
                                 //        var currView = dijit.registry.byId("Intro0");
                                 //        var mycurrView = currView.getShowingView();
                                 window.email = email;
                                 Iv.selected = true;
-                                Iv.show();
-                                splash.style.display = "none";
-                                //       mycurrView.performTransition("ImageView", 1, "slide", null);
+						//		alert("before iv show");
+                               
+								splash.style.display = "none";splash.style.visibility = "hidden";
+                               Iv.show();
+							//	alert("showing imageview"+Iv);
+                                     //  I0.performTransition("ImageView", 1, "slide", null);
+									//   alert("transition done");
 
                                 //             var currView = registry.byId("Intro0");
                                 //        window.email = email;
                                 //         currView.performTransition("ImageView", 1, "slide", null);
 
-                            } else splash.style.display = "none";
+                            } else {splash.style.display = "none";}
                         }
 
                     });
 
-                } else splash.style.display = "none";
+                } else 
+				{
+			//	alert("email="+email);
+			//	splash.style.display = "none";
+			//	alert("none");
+				splash.style.visibility = "hidden";
+			//	alert("hidden");
+				I0.show();
+			//	alert("I0 show");
+				}
             }
             
             
@@ -259,13 +287,13 @@ require(["jquery",
 
             function loadImages(targImage,forward,numOfImg,include) {
 
-               
+
 
                 if (window.currList == null) {
                     window.currList = window.defList;
                 }
-           //     alert(base + "getViewlist3?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1");
-               // alert("updating"+currList);
+              //  alert(base + "getViewlist3?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1");
+             //   alert("updating"+currList);
 			//   alert("switchview="+window.switchView);
                 var url = base + "getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1";
                 if(window.shuffle){
@@ -279,19 +307,20 @@ require(["jquery",
                     load: function (viewlist) {
                         
                         if(viewlist["imageSet"].length==0){
-                        	alert("This viewlist is empty now, please star-rate some images and they will be added to it!");
+                        	alert("'My Top Rated Images' is empty, please star-rate some images and they will be added to it!");
                         	window.currList = window.defList;
                         	window.currCat = window.defCat;
                         	window.currImage = window.defImage;
+						    updateImages(-1);
                         	return;
                         }
                         
                         window.imageMap = {};
                         // get viewlist name
                         window.currViewList = viewlist["name"];
-                //        alert("currImage "+window.currImage);
-                 //       alert("tarImage "+window.tarImage);
-                        //	alert("category " +viewlist["name"]);
+                    //    alert("currImage "+window.currImage);
+                    //   alert("tarImage "+window.tarImage);
+                    //    alert("category " +viewlist["name"]);
                         if (window.currImage == window.tarImage) {
                             window.foundIndex = true;
                         }
@@ -372,7 +401,7 @@ require(["jquery",
                                 	
                                 }
                                 //update index
-                                //alert(window.currAbsIndex+"/"+window.listSize);
+                               // alert(window.currAbsIndex+"/"+window.listSize);
                             	
                                 imagesList.setStore(null);
                                 imagesList.setStore(window.imageCurrStore);
@@ -391,12 +420,15 @@ require(["jquery",
 					
                         //
                         loadmetadata();
-   
+   			//		    dijit.registry.byId("ImageView").show();
                         if(window.switchView){
                         	window.switchView = false;
+							setTimeout(function(){
                             var currView = dijit.registry.byId("blankview");
 							     var currView2 = currView.getShowingView();
-		                    currView2.performTransition("ImageView", 1, "fade", null);
+							// alert("view2="+currView2+"view="+currView);
+		                   currView.performTransition("ImageView", 1, "fade", null);
+                           },500);
                         }
                     }
                 });
@@ -414,7 +446,7 @@ require(["jquery",
                 window.imageCurrStore = new ItemFileWriteStore({
                     data: imageData
                 });
-           //    alert("update images");
+             //  alert("update images");
                 if (window.justLogin || window.justRefresh) {
 				   //  alert("justlogin");
 					 window.justRefresh = false;
@@ -434,7 +466,9 @@ require(["jquery",
                                 if(window.shuffle){
                                 	dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
                                 }
-                                
+                                 else{
+                                	dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
+                                }
                                 //alert(window.fill);
                                 var switchValue = "off";
                                 if (window.fill) {
@@ -450,7 +484,27 @@ require(["jquery",
                                 }
                                 
                                 $("option#" + result["autoInterval"]).attr('selected', 'selected');
-
+								// check if we were passed paramaters on invoking and go to that image instead
+								var curl=get('currList');
+								var curi=get('currImage');
+								var curc=get('currCat');
+								var curonce=get('once');
+						//		alert("start, check currList="+curl+"image"+curi+"cat:"+curc);
+								if (curl&&curi&&curc&&!curonce)
+								{
+							//	alert ('overriding to new image');
+				
+								window.tarImage = curi;
+                                window.currList = curl;
+                                window.currCat = curc;
+								// since this is already in the native app, we don't relauch
+								//var url="artkick://?currList="+curl+"&currImage="+curi+"&currCat="+curc+"&once="+"true";
+							//	alert("url:"+url);
+								//testlaunch(); 
+							//	openCustomURLinIFrame(url);		
+								//	alert("ret="+ret);
+											//open(url,"");
+								}
                             } else {
                                 window.tarImage = window.defImage;
                                 window.currList = window.defList;
@@ -459,10 +513,11 @@ require(["jquery",
                             }
                             loadImages(window.tarImage,1,15,1);
                             //alert(window.currCat);
-                            updateLists(window.currCat);
+                           // updateLists(window.currCat);
                         }
                     });
                 } else {
+			//	alert('load images target:'+targImage);
                     loadImages(targImage,1,15,1);
                 }
 				
@@ -586,7 +641,7 @@ require(["jquery",
            window.goToViewlists = function(){
                 	window.foundIndex = true;
                 	window.justLogin = false;
-                	
+
 				    if (window.currCat.length < 30)
                          dijit.registry.byId("PlaylistHeader").set("label", "<small>" +   window.currCat + "</small>");
                     else
@@ -600,6 +655,7 @@ require(["jquery",
                     }
                     
                 updateLists(window.currCat);
+
                 var currView = dijit.registry.byId("Intro0");
                 var mycurrView = currView.getShowingView();
 				//  reset the scrollable view to the top
@@ -609,12 +665,13 @@ require(["jquery",
                   top: 0,
                   left: 0
                     });
-                mycurrView.performTransition("PlaylistView", 1, "slide", null);
+                mycurrView.performTransition("PlaylistView", 1, "", null);
 
            }
 
             function updateCats() {
                 var base = "http://evening-garden-3648.herokuapp.com/content/";
+			//	 	dijit.registry.byId("ImageView").hide();
                 catList.destroyRecursive(true);
                 $("#catList").html('');
                 dojo.io.script.get({
@@ -630,6 +687,7 @@ require(["jquery",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
+								clickable: true,
                                 onClick: function () {
                                     //alert(this.id);
                                     window.currCat = this.id;
@@ -679,13 +737,17 @@ require(["jquery",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
+                                clickable: true,
                                 onClick: function () {
                                     //alert(this.id);
                                     window.currList = this.id;
-                                    updateImages(-1);
-
+                                     window.switchView = true;
+                                    var currView = dijit.registry.byId("ImageView");
+	                                var currView2 = currView.getShowingView();
+                                    currView2.performTransition("blankview", 1, "slide", null);
+                                    setTimeout(function(){updateImages(-1)},10);
                                 },
-                                moveTo: "#ImageView",
+                                moveTo: "",
 								transition: "fade"
                             });
                            listList.addChild(myTopList);    
@@ -699,13 +761,20 @@ require(["jquery",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
+								clickable: true,
                                 onClick: function () {
-                                    //alert(this.id);
+                                //    alert(this.id);
+									var currView = dijit.registry.byId("ImageView");
+	                                var currView2 = currView.getShowingView();
+									alert("currView2="+currView2);
+                                    currView2.performTransition("blankview", 1, "", null);
                                     window.currList = this.id;
-                                    updateImages(-1);
+
+                                    window.switchView = true;
+                                    setTimeout(function(){updateImages(-1)},10);
 
                                 },
-                                moveTo: "#ImageView",
+                                moveTo: "",
 								transition: "fade"
                             });
                             listList.addChild(newList);
@@ -792,7 +861,7 @@ require(["jquery",
                 // check if there is a video
 			//	alert("video="+imageMap[currImage]["Video"]);
 				if (imageMap[currImage]["Video"])			
-			           title = title +"  "+ "<a style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["Video"] + "\")' >" + "<img src='images/video_icon2.png' align='center' >" + "</a>";
+			           title = title +"  "+ "<a style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["Video"] + "\")' >" + "<img src='images/Play_Icon.png' align='center' >" + "</a>";
            
 				if(imageMap[currImage]["Type  Detail"])
 					type=imageMap[currImage]["Type  Detail"];
@@ -825,20 +894,19 @@ require(["jquery",
 				//alert("user rating2=" + userrating.value);
 				// get the other viewlists
 				dojo.empty(metaPlane10);
-				if (imageMap[currImage]["viewlists2"].length>1)
-				      dojo.byId("viewtableline6a").innerHTML="Also in:"
-			    else
-					dojo.byId("viewtableline6a").innerHTML=""
+			
 			//	metaPlane10.destroyDescendants();
 			//	alert("window currViewlist"+window.currList);
+			    var vcount=0;
 				for (var i in imageMap[currImage]["viewlists2"]){
 				
 				   //   alert ("view=" + imageMap[currImage]["viewlists2"][i][0]+imageMap[currImage]["viewlists2"][i][1]);
 					  vlnumber=imageMap[currImage]["viewlists2"][i][0];
 					  vlname=imageMap[currImage]["viewlists2"][i][1];
-					  if (vlname!=window.currViewList){
+					  if (vlname!=window.currViewList && vlname != "All"){
 					  // create button for each viewlist
-				  //    alert("create new button" + vlname + "number" +vlnumber);
+					  vcount += 1;
+				  //   alert("create new button" + vlname + "number" +vlnumber);
 					  var myButton = new Button({
 					  num: vlnumber,
                       label: vlname, 
@@ -857,23 +925,13 @@ require(["jquery",
 				   //   alert ("viewlists="+viewlists);
 					  }
 				}
-				//alert("done creating buttons vlnumber="+ vlnumber);
+			//	alert("done creating buttons vcount="+ vcount);
 
-		//		if(imageMap[currImage]["Cat1Viewlist"] != "" && imageMap[currImage]["Cat1Viewlist"] != window.currViewList)
-		//		{ viewlists="  "+imageMap[currImage]["Cat1Viewlist"]+"-"+"<img src='images/switch1.png' onclick=swapview(" +imageMap[currImage]["viewlists"][1]  +")>";
-		//		}
-		//		if( imageMap[currImage]["Cat2Viewlist"] != "" && imageMap[currImage]["Cat2Viewlist"] != window.currViewList)
-		//		{ viewlists=viewlists+"<br>"+"  "+imageMap[currImage]["Cat2Viewlist"]+"-"+"<img src='images/switch1.png' onclick=swapview(" +imageMap[currImage]["viewlists"][2]  +")>";
-		//		}
-		//		if( imageMap[currImage]["Cat3Viewlist"] != "" && imageMap[currImage]["Cat3Viewlist"] != window.currViewList)
-		//		{ viewlists=viewlists+"<br>"+"  "+imageMap[currImage]["Cat3Viewlist"]+"-"+"<img src='images/switch1.png' onclick=swapview(" +imageMap[currImage]["viewlists"][3]  +")>";
-		//		}
-				if (viewlists != "")
-				{
-							         viewlists = "Appears in other viewlists:<br>"+viewlists;
-				}
-			//		alert("viewlists= "+ viewlists);
-				//metaPlane9.innerHTML = viewlists;
+
+				if (vcount>0)
+				      dojo.byId("viewtableline6a").innerHTML="Also in:"
+			    else
+					dojo.byId("viewtableline6a").innerHTML=""
 				
 				
 				
@@ -919,6 +977,7 @@ require(["jquery",
                             //playerList.destroyRecursive(true);
                             //$("#ownedPlayerList").html('');
                             playerList.destroyDescendants();
+
 					
                             for (var i in result["players"]) {
                                 var player = result["players"][i];
@@ -966,9 +1025,22 @@ require(["jquery",
 
                         }
 
-
-                  		if(result["players"].length == 0)
-						      alert("There are no players registered.");
+						//check if we are in select player view and tell users if there are no players
+                
+							  var currView = dijit.registry.byId("select_player");
+	                          var currView2 = currView.getShowingView();
+							  if (currView2 == selectPlayerView)
+									{
+									 if(result["players"].length == 0)
+									 {
+										alert("There are no players registered.");
+							            currView2.performTransition("OptionsList", -1, "slide", null);
+									  }
+									
+									}
+            
+							  
+							  
 					    for (var i in result["players"]) {
                             var player = result["players"][i];
 
@@ -986,6 +1058,7 @@ require(["jquery",
                             //alert(player["account"]);
                             if (li == undefined) {
                                 //alert("new"+player["account"]);
+                                window.justCreatePlayer = true;
                                 li = new dojox.mobile.ListItem({
                                     id: "s" + player["account"],
                                     icon: status,
@@ -1018,43 +1091,78 @@ require(["jquery",
 
                             }
                         }
+                        
+                        
 
                         if (window.justCreatePlayer) {
                             //alert("justPlayer");
                             rememberSelectPlayers();
+                            window.currList = window.defList;
+                            window.currImage = window.defImage;
+                            window.currCat = window.defCat;
+                            if(window.shuffle){
+                            	// if random, then switch to normal!
+                            	mediashuffle();
+                            }
                             window.justCreatePlayer = false;
+                            updateImages(-1);
+                            var currView = dijit.registry.byId("Intro0");
+                            var mycurrView = currView.getShowingView();
+                            mycurrView.performTransition("ImageView", 1, "slide", null);
+                            
                         }
                     }
                 });
 
             }
-
+			window.BrowserDetect.init();
+			alert("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser+" version="+window.BrowserDetect.version);
+	//		if ((window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome") ||
+	//		(window.BrowserDetect.OS=="Windows" && window.BrowserDetect.browser!= "Chrome"))
+	//		{
+	//		alert("You must run Artkick under Chrome, please restart using the Chrome browser");
+	//		window.close();
+	//		}
+	window.tellbrowser();
+		    var curl=get('currList');
+			var curi=get('currImage');
+			var curc=get('currCat');
+			var curonce=get('once');
+			//		alert("start, check currList="+curl+"image"+curi+"cat:"+curc);
+			if (curl&&curi&&curc&&!curonce)
+			{
+				//	
+									
+				var url="artkick://?currList="+curl+"&currImage="+curi+"&currCat="+curc+"&once="+"true";
+				//	alert("url:"+url);
+				openCustomURLinIFrame(url);		
+			}
             hidemenu();
+
 
             getDefaults();
             checkCookie();
-			window.BrowserDetect.init();
-		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS);
-			if (window.BrowserDetect.OS=="Linus" && window.BrowserDetect.browser!= "Chrome")
-			{
-			alert("You must run Artkick under Chrome, please restart using the Chrome browser");
-			throw new Error();
-			}
+
+		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS+regPlayerView+selectPlayerView+imageView+selectCatView+selectListView+optionsView+addUserView+removePlayerView+gridView);
+
 			
 	on(regPlayerView, "beforeTransitionIn", 
 			 function(){
+			 	window.updatePlayerLoop = setInterval(updatePlayers,1500);
 				calliOSFunction("sayHello", ["On",window.email], "onSuccess", "onError");
 			});
 			
-		    on(regPlayerView, "beforeTransitionOut",
+	on(regPlayerView, "beforeTransitionOut",
 		      function(){
+		      	clearInterval(updatePlayerLoop);
+                rememberSelectPlayers();
 				calliOSFunction("sayHello", ["Off",window.email], "onSuccess", "onError");
 			});
 			
 			
         //   document.addEventListner("backbutton", function(){ alert ("back pushed");});
             // select player transition
-            on(selectPlayerView, "beforeTransitionIn",
+     on(selectPlayerView, "beforeTransitionIn",
 
                 function () {
                     //alert("Transition in!");
@@ -1064,28 +1172,32 @@ require(["jquery",
 
 
 
-            on(selectPlayerView, "beforeTransitionOut",
+     on(selectPlayerView, "beforeTransitionOut",
                 function () {
                     rememberSelectPlayers()
                 });
        
 
-            on(imageView, "beforeTransitionIn",
+     on(imageView, "beforeTransitionIn",
 
                 function () {
+			//	alert("transition to ImageView");
                 window.sliderIndex = 0;
 				   var mytabbar = dijit.registry.byId("myTabBar");
-				   var tabcategory = dijit.registry.byId("tabcategory");
-				   var tabshare = dijit.registry.byId("tabshare");
+				//   var tabcategory = dijit.registry.byId("tabcategory");
+				 //  var tabshare = dijit.registry.byId("tabshare");
 				   var tabnowshowing = dijit.registry.byId("tabnowshowing");
-               //     alert("Transition in!");    
-			   mytabbar.resize();
+             //       alert("Transition in!");    
+
+				//	mytabbar.resize();
+				//	alert("tab bar resize");
                     hidemenu();
 					// try to unset selected on buttonsvar fillsw = dijit.registry.byId("fillswitch");
 				//	tabplaylist.set('selected', false);
 				//	tabcategory.set('selected', false);
 				//    tabshare.set('selected', false);
-				    dijit.registry.byId("tabnowshowing").set('selected', true);
+				   dijit.registry.byId("tabnowshowing").set('selected', true);
+				//	alert("select tabnowshowing");
                     if (window.justLogin) {
                         updateImages(window.tarImage);
                         dojo.io.script.get({
@@ -1106,6 +1218,10 @@ require(["jquery",
                         });
                     } else if (window.justCreatePlayer) {
                         updatePlayers();
+                        if(window.shuffle){
+                           // if random, then switch to normal!
+                           mediashuffle();
+                        }
                         updateImages(-1);
                     }
                 });
@@ -1339,7 +1455,7 @@ require(["jquery",
 	        window.doPrev = function(imgId) {
 
 				//alert("currView id "+imgId);
-				//alert("Prev img "+window.prevImg);
+			//	alert("Prev img "+window.prevImg);
 
 				if((window.prevImg!=undefined)&&(window.prevImg!=imgId)){
 					//normal slide backward
@@ -1390,9 +1506,9 @@ require(["jquery",
 
 				
 				
-		      /*	
-               alert("next action detected!");
-               window.swipedImages++;
+		      	
+             //  alert("next action detected!");
+         /*      window.swipedImages++;
                if(Object.keys(window.imageMap).length-1==window.swipedImages){
                	 alert("wait!");
                	 window.sliderIndex = window.swipedImages;
@@ -1403,7 +1519,7 @@ require(["jquery",
  			  //updateIndex
  			  window.prevImg = imgId;
 			  window.currAbsIndex++;             
-              //alert(window.currAbsIndex+"/"+window.listSize);
+         //     alert(window.currAbsIndex+"/"+window.listSize);
             }
             	
 
@@ -1427,7 +1543,7 @@ require(["jquery",
                 //alert("changing view 0 on you");
                 window.currImage = view.getChildren()[0]['alt'];
                 if ((!window.foundIndex) && (window.currImage != window.tarImage)) {
-                    view.goTo(1);
+                   // view.goTo(1);
                     return;
                 }
                 // alert("changing view on you");
@@ -1541,43 +1657,41 @@ else
 updateImages(-1);
 }
 
+<<<<<<< HEAD
 //testgit
 function facebook2()
+=======
+
+function emailShare()
+
+>>>>>>> 6138d83434b0f9eeba7876d680416d5915ba819b
 {
 
-urlg="https://www.facebook.com/dialog/feed?app_id=633862919977898&link=http://developers.facebook.com/docs/reference/dialogs/&picture=http://fbrell.com/f8.jpg&name=Facebook%20Dialogs&caption=Reference%20Documentation&description=Using%20Dialogs%20to%20interact%20with%20users.&redirect_uri=https://test.artkick.net/windows.close.html/&display=popup"
- 
-urlg="http://www.facebook.com/sharer/sharer.php?s=100&p[url]=www.artkick.com&p[images][0]=&p[title]=test&p[summary]=test"
- window.open(urlg,'feedDialog');
+imageurl=imageMap[currImage]["thumbnail"];
+
+//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
+var url="http://prod.artkick.net/"
+url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
+//alert("url="+url);
+calliOSFunction("email", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+setTimeout(function(){hidemenu()},1000);
 }
-function facebook3()
+
+function twitter()
 {
-      FB.ui(
-       {
-         method: 'stream.publish',
-         message: 'Message here.',
-         attachment: {
-           name: 'Name here',
-           caption: 'Caption here.',
-           description: (
-             'description here'
-           ),
-           href: 'www.artkick.com'
-         },
-         
-         user_prompt_message: 'Personal message here'
-       },
-       function(response) {
-         if (response && response.post_id) {
-           alert('Post was published.');
-         } else {
-           alert('Post was not published.');
-         }
-       }
-     );     
+	//alert("facebook!");
+
+imageurl=imageMap[currImage]["thumbnail"];
+
+//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
+var url="http://prod.artkick.net/"
+url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
+calliOSFunction("twitter", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+setTimeout(function(){hidemenu()},1000);
 }
 
 
+<<<<<<< HEAD
 function emailShare()
 {
 
@@ -1598,25 +1712,42 @@ hidemenu();
 
 calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
 }
+=======
+function mytest()
+{
+alert("mytest");
+}
+
+>>>>>>> 6138d83434b0f9eeba7876d680416d5915ba819b
 
 function facebook()
 {
 	//alert("facebook!");
 
 imageurl=imageMap[currImage]["thumbnail"];
-hidemenu();
+
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
+<<<<<<< HEAD
 
 calliOSFunction("facebook", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
 
+=======
+var url="http://prod.artkick.net/"
+url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
+//alert ("url="+url);
+calliOSFunction("facebook", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+
+setTimeout(function(){hidemenu()},1000);
+>>>>>>> 6138d83434b0f9eeba7876d680416d5915ba819b
 
 var obj={
 //method: 'feed',
     name: 'Artkick rocks',
-    link: "http://www.artkick.com/",
+    link: "http://prod.artkick.net/",
     picture: imageurl,
 	//display:'popup',
     caption: 'Artkick',
+<<<<<<< HEAD
 //	redirect_uri: 'http://test.artkick.net',
     description: 'Check out this great image and thousands more at Artkick'
 }
@@ -1635,27 +1766,41 @@ var obj={
   }
   FB.ui(obj, callback);
 */
+=======
+//	redirect_uri: 'http://prod.artkick.net',
+    description: 'Check out this great image and thousands more at Artkick'
+}
+
+}
+
+function testlaunch()
+{
+ret=open("artkick://prod.artkick.net/?currList=1047&currImage=9508&currCat=Lifestyle","");
+//alert("return="+ret);
+>>>>>>> 6138d83434b0f9eeba7876d680416d5915ba819b
 }
 
 function showiframe(url) {
     var currView = dijit.registry.byId("ImageView");
   //  alert ("displayiframe currView= "+url);
-	window.iframe=dojo.create("iframe", {
+	ret=window.iframe=dojo.create("iframe", {
         "src": url,
         "style": "border: 0; width: 100%;height:700px"
     });
     dijit.registry.byId("displayiframe").set("content",window.iframe );
     currView.performTransition("iframeview", 1, "slide", null);
+	return(ret);
 }
 function showfullimage() {
     var currView = dijit.registry.byId("ImageView");
-	    hidebutton("GridView",true);
+	
+	hidebutton("GridView",true);
     document.getElementById("fullurl").setAttribute("src",window.imageMap[window.currImage]["url"]);
     currView.performTransition("fullimageview", 1, "flip", null);
 }
 function bigimage() {
 //check if menu up then close otherwise call showfullimage
- if (window.systemmenushow) 
+ if (window.sharemenushow) 
         hidemenu();
 	else
 	    showfullimage();
@@ -1690,7 +1835,9 @@ function showsharemenu(){
 		hidemenu();
    else
    {
-		dijit.registry.byId("Sharemenu").show();
+		dijit.registry.byId("Sharemenu2").show();		
+		//dojo.style("Sharemenu2","display", "block");
+				
 		window.sharemenushow=true;
 	}
 }
@@ -1703,71 +1850,52 @@ function showviewlistmenu2() {
         hidemenu();
     } else {
         menulist.show();
+
         window.viewmenushow2 = true;
     }
 }
 
-function showsystemmenu() {
-    var menulist = dijit.registry.byId("Systemmenu");
 
-
-    if (window.systemmenushow) {
-        hidemenu();
-    } else {
-        menulist.show();
-        window.systemmenushow = true;
-    }
-}
-
-function showsystemmenu2() {
-    var menulist = dijit.registry.byId("Systemmenu2");
-
-
-    if (window.systemmenushow2) {
-        hidemenu();
-    } else {
-        menulist.show();
-        window.systemmenushow2 = true;
-    }
-}
 
 function hidemenu() {
 
-    var syslist = dijit.registry.byId("Systemmenu");
-    var menulist = dijit.registry.byId("Viewlistmenu");
-    var syslist2 = dijit.registry.byId("Systemmenu2");
-    var menulist2 = dijit.registry.byId("Viewlistmenu2");
-    menulist.hide();
-    syslist.hide();
-    menulist2.hide();
-    syslist2.hide();
-	dijit.registry.byId("Sharemenu").hide();
+ 
+	dijit.registry.byId("Sharemenu2").hide();
+  //   shmenu=dijit.registry.byId("Sharemenu2");
+//	                 shmenu.style.display = "none";
+	//			   		shmenu.style.visibility = "hidden";
+						
+	dojo.style("Sharemenu2","display", "none");
+//	alert("sharemenu2="+dojo.style("Sharemenu2"));
 	window.sharemenushow = false;
     window.systemmenushow = false;
     window.viewmenushow = false;
     window.systemmenushow2 = false;
     window.viewmenushow2 = false;
-
+    
 
 }
 
 function goToLogin1() {
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView();
+//	alert("goto login"+mycurrView);
     mycurrView.performTransition("Login", 1, "slide", null);
 }
 function swapview(newview){
     
 	//alert ("swapview "+newview);
 	 var currView = dijit.registry.byId("ImageView");
-	 	 var currView2 = dijit.registry.byId("blankview");
+	 var currView2 = dijit.registry.byId("blankview");
 
 	window.currList = newview;
 	hidemenu();
 
 	currView.performTransition("blankview", 1, "fade", null);
-		currView2.performTransition("ImageView", 1, "fade", null);
+	window.switchView= true;
+	//currView.hide();
 	updateImages(-1);
+	
 				
 }
 
@@ -1925,8 +2053,17 @@ function emailPW(){
 function refreshView() {
 // if user clicks on "now Showing" button it refreshes the view to what is presently being displayed
 	//alert("refresh view");
+	if(!window.email){
+		return;
+	}
+	
 	window.justRefresh = true;
-	updateImages(-1);
+	window.switchView = true;
+	var currView = dijit.registry.byId("Intro0");
+    var mycurrView = currView.getShowingView();
+    //alert(mycurrView);
+    mycurrView.performTransition("blankview", 1, "fade", null);
+	setTimeout(function(){updateImages(-1)},10);
 }
 
 function removePlayersAction() {
@@ -2043,11 +2180,20 @@ function createPlayer() {
     if(window.createPlayerClickTime!=undefined && currTime - window.createPlayerClickTime < window.boucingTime)
         return;
 	window.createPlayerClickTime = currTime;
-	
+	if (dojo.byId("regPlayerCode").value =="")
+	{
+		alert("Player Code cannot be blank");
+		return;
+	}
+	if (dojo.byId("regPlayerName").value =="")
+	{
+		alert("You must name your player");
+		return;
+	}
 	
     var currView = dijit.registry.byId("registernewroku");
     var base = "http://evening-garden-3648.herokuapp.com/reg/";
-    //alert(base + "userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
+    alert(base + "userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
     dojo.io.script.get({
         url: base + "userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email,
         callbackParamName: "callback",
@@ -2151,18 +2297,18 @@ function sendfeedback() {
 
 // this routine forces external links to be shown in our own window.
 // this is important when we use iframe to show artist/work links and the user then clicks on another link on that webpage, it does not open another browser window
-$(document).ready(function(){
-    if (("standalone" in window.navigator) && window.navigator.standalone) {
+//$(document).ready(function(){
+ //   if (("standalone" in window.navigator) && window.navigator.standalone) {
       // For iOS Apps
-      $('a').on('click', function(e){
-        e.preventDefault();
-        var new_location = $(this).attr('href');
-        if (new_location != undefined && new_location.substr(0, 1) != '#' && $(this).attr('data-method') == undefined){
-          window.location = new_location;
-        }
-      });
-    }
-  });
+ //     $('a').on('click', function(e){
+ //       e.preventDefault();
+ //       var new_location = $(this).attr('href');
+ //       if (new_location != undefined && new_location.substr(0, 1) != '#' && $(this).attr('data-method') == undefined){
+ //         window.location = new_location;
+ //       }
+ //     });
+ //   }
+ // });
 function openCustomURLinIFrame(src)
 {
     var rootElm = document.documentElement;
@@ -2206,6 +2352,7 @@ function onSuccess (ret)
         var obj = JSON.parse(ret);
         //document.write(obj.result);
         //alert(obj.result);
+		hidemenu();
     }
 }
 
@@ -2215,8 +2362,82 @@ function onError (ret)
     {
         var obj = JSON.parse(ret);
         //document.write(obj.error);
+		        //alert(obj.result);
+		hidemenu();
     }
 }
 
+// this function used to parse paramaters off the http line
+function get(name){
+   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+}
 //alert("toCall");
+
+function tellbrowser(){
+var nVer = navigator.appVersion;
+var nAgt = navigator.userAgent;
+var browserName  = navigator.appName;
+var fullVersion  = ''+parseFloat(navigator.appVersion); 
+var majorVersion = parseInt(navigator.appVersion,10);
+var nameOffset,verOffset,ix;
+
+// In Opera, the true version is after "Opera" or after "Version"
+if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
+ browserName = "Opera";
+ fullVersion = nAgt.substring(verOffset+6);
+ if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+   fullVersion = nAgt.substring(verOffset+8);
+}
+// In MSIE, the true version is after "MSIE" in userAgent
+else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
+ browserName = "Microsoft Internet Explorer";
+ fullVersion = nAgt.substring(verOffset+5);
+}
+// In Chrome, the true version is after "Chrome" 
+else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
+ browserName = "Chrome";
+ fullVersion = nAgt.substring(verOffset+7);
+}
+// In Safari, the true version is after "Safari" or after "Version" 
+else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+ browserName = "Safari";
+ fullVersion = nAgt.substring(verOffset+7);
+ if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+   fullVersion = nAgt.substring(verOffset+8);
+}
+// In Firefox, the true version is after "Firefox" 
+else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
+ browserName = "Firefox";
+ fullVersion = nAgt.substring(verOffset+8);
+}
+// In most other browsers, "name/version" is at the end of userAgent 
+else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < 
+          (verOffset=nAgt.lastIndexOf('/')) ) 
+{
+ browserName = nAgt.substring(nameOffset,verOffset);
+ fullVersion = nAgt.substring(verOffset+1);
+ if (browserName.toLowerCase()==browserName.toUpperCase()) {
+  browserName = navigator.appName;
+ }
+}
+// trim the fullVersion string at semicolon/space if present
+if ((ix=fullVersion.indexOf(";"))!=-1)
+   fullVersion=fullVersion.substring(0,ix);
+if ((ix=fullVersion.indexOf(" "))!=-1)
+   fullVersion=fullVersion.substring(0,ix);
+
+majorVersion = parseInt(''+fullVersion,10);
+if (isNaN(majorVersion)) {
+ fullVersion  = ''+parseFloat(navigator.appVersion); 
+ majorVersion = parseInt(navigator.appVersion,10);
+}
+alert(''
+ +'Browser name  = '+browserName+'<br>'
+ +'Full version  = '+fullVersion+'<br>'
+ +'Major version = '+majorVersion+'<br>'
+ +'navigator.appName = '+navigator.appName+'<br>'
+ +'navigator.userAgent = '+navigator.userAgent+'<br>'
+)
+}
 
