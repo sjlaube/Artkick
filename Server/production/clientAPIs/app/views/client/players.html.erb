@@ -1,0 +1,52 @@
+<style>
+	.imageTitle{
+		font-family:"Times New Roman",Times,serif;
+		font-style:oblique;
+		font-size:20px;
+		text-align:center;
+	}
+	
+	div{
+		text-align:center;
+	}
+	img{
+     height:20px;
+     width:auto;
+    }
+	
+</style>
+<script>
+  var online = "/images/online.png"
+  var offline =  "/images/offline.png"
+  
+  function update(link){
+      $.getJSON(link,function(result){
+      $.each(result, function(i, field){
+      	var ident = "img#"+i;
+      	curr = new Date().getTime();
+      	if(curr-5000>field){
+      		$(ident).attr("src", offline);
+      	}
+      	else{
+      		$(ident).attr("src", online);
+      	}
+      });
+    });
+  }
+  
+  $(document).ready(function(){
+  	var link = "http://sleepy-scrubland-3038.herokuapp.com/client/lastVisitsAll.json";
+  	setInterval(function(){update(link);},2000);
+  });
+</script>
+
+<div>
+   <table>
+   <%@players.each do|player|%>
+   <tr><td><%=player["nickname"]%></td>
+   <td><img id =<%=player["account"]%> src= "/images/offline.png"></td><tr>   
+   <%end%>
+   </table>
+</div>
+<div id = "display">
+</div>
