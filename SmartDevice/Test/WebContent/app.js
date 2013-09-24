@@ -658,7 +658,6 @@ require(["jquery",
 
                 var currView = dijit.registry.byId("Intro0");
                 var mycurrView = currView.getShowingView();
-				
 				//  reset the scrollable view to the top
 				var c = dijit.byId("PlaylistView").containerNode;
                 dojo.setStyle(c, {
@@ -666,7 +665,7 @@ require(["jquery",
                   top: 0,
                   left: 0
                     });
-                mycurrView.performTransition("PlaylistView", 1, "slide", null);
+                mycurrView.performTransition("PlaylistView", 1, "", null);
 
            }
 
@@ -696,7 +695,8 @@ require(["jquery",
                                     
                                     goToViewlists();
                                     //updateLists(window.currCat);
-                                }
+                                },
+                                moveTo: "#"
 								//transition: "fade"
                                 //rightText:
                             });
@@ -764,19 +764,14 @@ require(["jquery",
 								clickable: true,
                                 onClick: function () {
                                 //    alert(this.id);
-							
-	                             setTimeout(function(){
-								   var currView = dijit.registry.byId("ImageView");
-								   var currView2 = currView.getShowingView()
-						
+									var currView = dijit.registry.byId("ImageView");
+	                                var currView2 = currView.getShowingView();
 									alert("currView2="+currView2);
                                     currView2.performTransition("blankview", 1, "", null);
-								//this.transitionTo("blankview");
                                     window.currList = this.id;
 
                                     window.switchView = true;
                                     setTimeout(function(){updateImages(-1)},10);
-									},5000);
 
                                 },
                                 moveTo: "",
@@ -1121,13 +1116,14 @@ require(["jquery",
 
             }
 			window.BrowserDetect.init();
-			//alert("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser);
-			if ((window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome") ||
-			(window.BrowserDetect.OS=="Windows" && window.BrowserDetect.browser!= "Chrome"))
-			{
-			alert("You must run Artkick under Chrome, please restart using the Chrome browser");
-			window.close();
-			}
+			alert("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser+" version="+window.BrowserDetect.version);
+	//		if ((window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome") ||
+	//		(window.BrowserDetect.OS=="Windows" && window.BrowserDetect.browser!= "Chrome"))
+	//		{
+	//		alert("You must run Artkick under Chrome, please restart using the Chrome browser");
+	//		window.close();
+	//		}
+	window.tellbrowser();
 		    var curl=get('currList');
 			var curi=get('currImage');
 			var curc=get('currCat');
@@ -2322,4 +2318,71 @@ function get(name){
       return decodeURIComponent(name[1]);
 }
 //alert("toCall");
+
+function tellbrowser(){
+var nVer = navigator.appVersion;
+var nAgt = navigator.userAgent;
+var browserName  = navigator.appName;
+var fullVersion  = ''+parseFloat(navigator.appVersion); 
+var majorVersion = parseInt(navigator.appVersion,10);
+var nameOffset,verOffset,ix;
+
+// In Opera, the true version is after "Opera" or after "Version"
+if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
+ browserName = "Opera";
+ fullVersion = nAgt.substring(verOffset+6);
+ if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+   fullVersion = nAgt.substring(verOffset+8);
+}
+// In MSIE, the true version is after "MSIE" in userAgent
+else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
+ browserName = "Microsoft Internet Explorer";
+ fullVersion = nAgt.substring(verOffset+5);
+}
+// In Chrome, the true version is after "Chrome" 
+else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
+ browserName = "Chrome";
+ fullVersion = nAgt.substring(verOffset+7);
+}
+// In Safari, the true version is after "Safari" or after "Version" 
+else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+ browserName = "Safari";
+ fullVersion = nAgt.substring(verOffset+7);
+ if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+   fullVersion = nAgt.substring(verOffset+8);
+}
+// In Firefox, the true version is after "Firefox" 
+else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
+ browserName = "Firefox";
+ fullVersion = nAgt.substring(verOffset+8);
+}
+// In most other browsers, "name/version" is at the end of userAgent 
+else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < 
+          (verOffset=nAgt.lastIndexOf('/')) ) 
+{
+ browserName = nAgt.substring(nameOffset,verOffset);
+ fullVersion = nAgt.substring(verOffset+1);
+ if (browserName.toLowerCase()==browserName.toUpperCase()) {
+  browserName = navigator.appName;
+ }
+}
+// trim the fullVersion string at semicolon/space if present
+if ((ix=fullVersion.indexOf(";"))!=-1)
+   fullVersion=fullVersion.substring(0,ix);
+if ((ix=fullVersion.indexOf(" "))!=-1)
+   fullVersion=fullVersion.substring(0,ix);
+
+majorVersion = parseInt(''+fullVersion,10);
+if (isNaN(majorVersion)) {
+ fullVersion  = ''+parseFloat(navigator.appVersion); 
+ majorVersion = parseInt(navigator.appVersion,10);
+}
+alert(''
+ +'Browser name  = '+browserName+'<br>'
+ +'Full version  = '+fullVersion+'<br>'
+ +'Major version = '+majorVersion+'<br>'
+ +'navigator.appName = '+navigator.appName+'<br>'
+ +'navigator.userAgent = '+navigator.userAgent+'<br>'
+)
+}
 
