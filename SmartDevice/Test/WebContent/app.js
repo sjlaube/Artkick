@@ -28,7 +28,11 @@ require(["jquery",
         "dijit/form/Select",
 		"dojox/form/Rating",
 		"dojox/form/PasswordValidator",
-        "dojo/dom-attr"
+        "dojo/dom-attr",
+			"dojox/mobile/DataCarousel",
+			"dojox/mobile/parser",
+			"dojox/mobile/compat",
+			"dojox/mobile/ScrollableView"			
     ],
     function ( 
         $,
@@ -51,7 +55,11 @@ require(["jquery",
         select,
 		Rating,
 		PasswordValidator,
-        domAttr) {
+        domAttr,
+		DataCarousel,
+		parser,
+		compat,
+		ScrollableView) {
 
 
 
@@ -158,7 +166,9 @@ require(["jquery",
 				var opt = registry.byId("OptionsList");
 				
 
-               alert("Imageview= "+ Iv + I0 +splash+menx+optionsView+opt);
+               alert("Imageview= "+ Iv + I0 +splash+menx+registry.byId("OptionsList")+registry.byId("AccountSettings")+registry.byId("iframeview")
+			   +registry.byId("Intro3")+registry.byId("Intro2")+registry.byId("Intro1")+registry.byId("blankview")+registry.byId("ImageView")
+			   );
               //    I0.startup();
                //   alert ( "intro0 startup"); 
                I0.show();

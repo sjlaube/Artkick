@@ -27,9 +27,13 @@
 require([
   "dijit/dijit",
   "dojo/parser",
+  "dojo/ready",
+  "dojo/data/ItemFileReadStore",
   "maqetta/space",
   "maqetta/AppStates",
   "dojox/mobile",
+  "dojox/mobile/parser",
+  "dojox/mobile/compat",
   "dojox/mobile/deviceTheme",
   "dojo/hash",
   "dojox/mobile/TextBox",
@@ -38,6 +42,7 @@ require([
   "dojox/mobile/ContentPane",
   "dojox/io/xhrScriptPlugin",
   "dojo/data/ItemFileReadStore",
+    "dojo/data/ItemFileWriteStore",
   "dojox/mobile/EdgeToEdgeDataList",
   "dojox/mobile/SwapView",
     "dojox/mobile/IconMenu",
@@ -52,15 +57,15 @@ require([
   "shapes/Line",
   "clipart/Image",
   "dojox/mobile/FixedSplitter",
-  //  "dojox/form/Rating",
+   "dojox/form/Rating",
   "dojox/mobile/SpinWheel",
   "dojox/mobile/ValuePicker",
   "dojox/mobile/ValuePickerSlot",
- // "dojox/mobile/DataCarousel",
+     "dojox/mobile/DataCarousel",
   "dijit/form/DataList",
   "dojox/mobile/ComboBox",
   "dojox/mobile/ProgressIndicator",
- // "dojox/mobile/TabBar",
+ "dojox/mobile/TabBar",
   "dojox/mobile/TabBarButton",
   "dojox/mobile/SearchBox",
   "clipart/Facebook"
@@ -71,20 +76,12 @@ require([
 @import "WebContent/lib/dojo/dojox/mobile/themes/common/domButtons/DomButtonRedBadge.css";@import "WebContent/app.css";
 </style>
 <script type="text/javascript" src="WebContent/app.js"></script>
-<script type="text/javascript" src="WebContent/Rating-ArtKick.js"></script> 
+<!-- <script type="text/javascript" src="WebContent/Rating-ArtKick.js"></script> 
 <script type="text/javascript" src="WebContent/TabBar-ArtKick.js"></script>
 <script type="text/javascript" src="WebContent/Carousel-ArtKick.js"></script>
-<script type="text/javascript" src="WebContent/CarouselItem-ArtKick.js"></script> 
-<script type="text/javascript" src="WebContent/Browser-Detect.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" src="WebContent/CarouselItem-ArtKick.js"></script> -->
+<script type="text/javascript" src="WebContent/Browser-Detect.js"></script> 
 
-require(["dojox/io/xhrScriptPlugin"],function(xhrScriptPlugin){
-	xhrScriptPlugin("WebContent/player.json","callback");
-	xhrScriptPlugin("WebContent/Playlist.json","callback");
-	xhrScriptPlugin("WebContent/Playlist.json","callback");
-	xhrScriptPlugin("WebContent/player.json","callback");
-});
-</script>
 </head>
 
 <body  data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" class="claro" data-maq-ws="collapse" data-maq-orientation="portrait" id="myapp" data-maq-appstates="{}">
@@ -340,6 +337,7 @@ Install Artkick</button>
      <button data-dojo-type="dojox/mobile/Button" style="top: 1em;" onclick="removePlayersAction()">
        Remove player(s)</button>
    </div>
+
  </div>
  
 
@@ -367,12 +365,13 @@ Install Artkick</button>
      <div  data-dojo-type="dojox/mobile/ToolBarButton" id="shufflebutton" data-dojo-props='toggle:"true", icon:"images/media-shuffle2.png"' onclick="mediashuffle()" style="float: right;"></div>
 	 <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/share_30x30.png"' onclick="showsharemenu()" style="float: left;"></div>
    </div>
-   <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_10" jsId="ItemFileReadStore_10" ></span>
+<div data-dojo-type="dojox/mobile/DataCarousel" onclick="bigimage()" id="ImageList" 
+ data-dojo-props="numVisible:1,pageIndicator:false,navButton:false" height="13em" style="width: 100%; height:50%" ></div>
 <div id="LoadImages"   style=" text-align:center;background-color:#c5ccd3;z-index: 1500; width: 100%;height: 100%; position: absolute; top: 2px;visibility:hidden">
 <br><br>Loading Images, Please wait<br><br>
 <img  src="images/waitcircle.gif" alt="wait" >
 </div>  
-<div data-dojo-type="dojox/mobile/DataCarousel" onclick="bigimage()" id="ImageList" title="&amp;nbsp;" data-dojo-props="numVisible:1,pageIndicator:false,navButton:false" height="13em" style="width: 100%; height:50%" store="ItemFileReadStore_10"></div>
+
    <table  onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; border:0;height: auto; position: relative; left: 1em; width: 90%;">
      <colgroup>
        <col></col>
@@ -441,6 +440,7 @@ Install Artkick</button>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  id="taboptions" data-dojo-props='moveTo:"OptionsList"'   style="color:white;font-size:11px" >Options</li>
 	</ul> 
  </div>
+ 
 
  <div data-dojo-type="dojox/mobile/SwapView" id="Intro1" style="background-color: #62adc9; height: 100%;">
    <button data-dojo-type="dojox/mobile/Button" style="position: absolute; z-index: 900; top: 1em; left: 94px;" onclick="goToLogin1()">
