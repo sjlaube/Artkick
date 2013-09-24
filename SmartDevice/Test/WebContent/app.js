@@ -29,10 +29,8 @@ require(["jquery",
 		"dojox/form/Rating",
 		"dojox/form/PasswordValidator",
         "dojo/dom-attr",
-			"dojox/mobile/DataCarousel",
-			"dojox/mobile/parser",
-			"dojox/mobile/compat",
-			"dojox/mobile/ScrollableView"			
+		"dojox/mobile/Carousel",
+		"dojox/mobile/ScrollableView"			
     ],
     function ( 
         $,
@@ -56,10 +54,8 @@ require(["jquery",
 		Rating,
 		PasswordValidator,
         domAttr,
-		DataCarousel,
-		parser,
-		compat,
-		ScrollableView) {
+		Carousel,
+				ScrollableView) {
 
 
 
@@ -166,9 +162,9 @@ require(["jquery",
 				var opt = registry.byId("OptionsList");
 				
 
-               alert("Imageview= "+ Iv + I0 +splash+menx+registry.byId("OptionsList")+registry.byId("AccountSettings")+registry.byId("iframeview")
-			   +registry.byId("Intro3")+registry.byId("Intro2")+registry.byId("Intro1")+registry.byId("blankview")+registry.byId("ImageView")
-			   );
+             //  alert("Imageview= "+ Iv + I0 +splash+menx+registry.byId("OptionsList")+registry.byId("AccountSettings")+registry.byId("iframeview")
+			  // +registry.byId("Intro3")+registry.byId("Intro2")+registry.byId("Intro1")+registry.byId("blankview")+registry.byId("ImageView")
+			 //  );
               //    I0.startup();
                //   alert ( "intro0 startup"); 
                I0.show();
@@ -405,7 +401,7 @@ require(["jquery",
                                 	
                                 }
                                 //update index
-                                //alert(window.currAbsIndex+"/"+window.listSize);
+                               // alert(window.currAbsIndex+"/"+window.listSize);
                             	
                                 imagesList.setStore(null);
                                 imagesList.setStore(window.imageCurrStore);
@@ -662,6 +658,7 @@ require(["jquery",
 
                 var currView = dijit.registry.byId("Intro0");
                 var mycurrView = currView.getShowingView();
+				
 				//  reset the scrollable view to the top
 				var c = dijit.byId("PlaylistView").containerNode;
                 dojo.setStyle(c, {
@@ -699,8 +696,7 @@ require(["jquery",
                                     
                                     goToViewlists();
                                     //updateLists(window.currCat);
-                                },
-                                moveTo: "#"
+                                }
 								//transition: "fade"
                                 //rightText:
                             });
@@ -767,14 +763,20 @@ require(["jquery",
                                 variableHeight: true,
 								clickable: true,
                                 onClick: function () {
-                                    //alert(this.id);
-									var currView = dijit.registry.byId("ImageView");
-	                                var currView2 = currView.getShowingView();
-                                    currView2.performTransition("blankview", 1, "slide", null);
+                                //    alert(this.id);
+							
+	                             setTimeout(function(){
+								   var currView = dijit.registry.byId("ImageView");
+								   var currView2 = currView.getShowingView()
+						
+									alert("currView2="+currView2);
+                                    currView2.performTransition("blankview", 1, "", null);
+								//this.transitionTo("blankview");
                                     window.currList = this.id;
 
                                     window.switchView = true;
                                     setTimeout(function(){updateImages(-1)},10);
+									},5000);
 
                                 },
                                 moveTo: "",
@@ -1457,7 +1459,7 @@ require(["jquery",
 	        window.doPrev = function(imgId) {
 
 				//alert("currView id "+imgId);
-				//alert("Prev img "+window.prevImg);
+			//	alert("Prev img "+window.prevImg);
 
 				if((window.prevImg!=undefined)&&(window.prevImg!=imgId)){
 					//normal slide backward
@@ -1508,9 +1510,9 @@ require(["jquery",
 
 				
 				
-		      /*	
-               alert("next action detected!");
-               window.swipedImages++;
+		      	
+             //  alert("next action detected!");
+         /*      window.swipedImages++;
                if(Object.keys(window.imageMap).length-1==window.swipedImages){
                	 alert("wait!");
                	 window.sliderIndex = window.swipedImages;
@@ -1521,7 +1523,7 @@ require(["jquery",
  			  //updateIndex
  			  window.prevImg = imgId;
 			  window.currAbsIndex++;             
-              //alert(window.currAbsIndex+"/"+window.listSize);
+         //     alert(window.currAbsIndex+"/"+window.listSize);
             }
             	
 
