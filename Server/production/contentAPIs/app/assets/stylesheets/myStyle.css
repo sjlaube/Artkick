@@ -1,0 +1,14 @@
+#headImg {
+	   position: relative;
+	   height: 180px;
+	   margin: auto;
+	   text-align:center;
+	   font-size:40px;
+}
+
+.head{
+	border-radius: 15px;
+	height:180px;
+}
+     
+
