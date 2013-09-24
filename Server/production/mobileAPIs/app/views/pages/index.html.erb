@@ -1,0 +1,393 @@
+<style>    
+	div.mainHead{
+		background: url(/images/fm1.png) repeat-x;
+		width:70%;
+	    height:100%;
+	    text-align:center;
+	    position:relative;
+	    margin:auto;
+	    top:20px;
+	    border-radius: 20px;
+	}
+	
+	div.mainCanvas{
+	    width:70%;
+	    height:100%;
+	    background: url(/images/background.png) repeat;
+	    text-align:center;
+	    position:relative;
+	    margin:auto;
+	    top:30px;
+	    border-bottom-left-radius: 20px;
+	    border-bottom-right-radius: 20px;
+	    padding-top:2px;
+	    padding-left:2px;
+	    padding-right:2px;
+	    padding-bottom:1px;
+	    
+	}
+	
+	div.viewlist{
+	    background: white;
+	    text-align:center;
+	    position:relative;
+        margin:auto;
+	    margin:0 0 5px 0;
+	    border-bottom-left-radius:10px;
+	    border-bottom-right-radius:10px;
+		
+	}
+	
+	div.{
+	    background: white;
+	    text-align:center;
+	    position:relative;
+        margin:auto;
+	    margin:0 0 5px 0;
+	    border-bottom-left-radius:10px;
+	    border-bottom-right-radius:10px;
+		
+	}
+	
+	.royalSlider {
+    text-align: left;
+    position:relative;
+    width: 90%;
+    margin: 0 auto;
+    }
+
+	
+	
+	.viewlist p{
+		background: white;
+	}
+	
+	
+	
+	img.headTag{
+		height:30px;
+		width:auto;
+	}
+	
+	img.thum{
+		position:relative;
+		width:80%;
+		margin:10px;
+		
+	}
+	img.thum:hover{
+		cursor:pointer;
+	}
+	
+	.mainHead div{
+	    display:inline;	
+	}
+	
+	.imageTitle{
+		font-family:"Times New Roman",Times,serif;
+		font-style:oblique;
+		font-size:20px;
+		text-align:center;
+		margin:5px;
+	}
+	
+	img.status{
+		width:10px;
+		position:relative;
+		margin:auto;
+	}
+	
+
+    li.selected{
+    	background-color:gray;
+    }
+    
+    
+	
+</style>	
+	
+	   <style>
+        body { font-family:Arial, Helvetica, Sans-Serif; font-size:12px; margin:0px 20px;}
+        /* menu */
+        #menu{ margin:0px; padding:0px; list-style:none; color:#fff; line-height:45px; display:inline-block;  z-index:1000; }
+        #menu a { color:#fff; text-decoration:none; }
+        #menu > li {cursor:pointer; float:left; position:relative;padding:0px 10px;}
+        #menu > li a:hover {color:#B0D730;}
+  
+        /* sub-menus*/
+        #menu ul { padding:0px; margin:0px; display:block; display:inline;}
+        #menu li ul { position:absolute; left:-10px; top:0px; margin-top:45px; width:150px; line-height:16px;
+         background-color:#172322; color:#0395CC; /* for IE */ display:none;}
+         
+        #menu li ul.free{
+        	width:auto;
+        } 
+         
+        #menu li:hover {color:red;}
+        #menu li:hover ul { display:block;}
+        #menu li ul li{ display:block; margin:5px 5px; color:black;
+        background-color:white; padding: 5px 0px;  border-top: dotted 1px #606060; list-style-type:none;
+        border-bottom-left-radius:5px;
+	    border-bottom-right-radius:5px;}
+        
+        #menu li ul li:first-child { border-top: none; }
+        #menu li ul li a { display:block; color:#0395CC; }
+        #menu li ul li a:hover { color:#7FCDFE; }
+        /* main submenu */
+        #menu #main { left:0px; top:-20px; padding-top:0px; padding-bottom:2px;
+        background: url(/images/background.png) repeat; color:#fff; z-index:999;border-bottom-left-radius:10px;
+	    border-bottom-right-radius:10px;}
+</style>
+
+<script>
+    var online = "/images/online.png"
+    var offline =  "/images/offline.png"
+    
+    function getImages(link){
+      $.getJSON(link,function(data){
+        for (var i=0, len=data.length; i < len; i++) {
+            var img = $('<img class="thum">'); 
+            img.attr('src', data[i]["thumbnail"]);
+            var div = $('<div class="viewlist">');
+            div.append(img);
+            $('div.mainCanvas').append(div);
+        }
+    });
+  }
+  
+  
+      function sliderReady($) {
+        $(".royalSlider").royalSlider({
+            // options go here
+            // as an example, enable keyboard arrows nav
+            keyboardNavEnabled: true,
+            controlNavigation: 'thumbnails',
+            fullscreen: {
+              enabled: true,
+              nativeFS: true
+            },
+
+        });  
+        
+        var slider = $(".royalSlider").data('royalSlider');
+        slider.ev.on('rsAfterSlideChange', function(event) {
+    	
+         // triggers after slide change
+        
+        var imageID = (slider.currSlide).holder.find('img').attr("imgid");
+        var players = [];
+        $(':checked').each(function() {
+           players.push();
+           var link = "http://evening-garden-3648.herokuapp.com/client/update.json?"+"snumber="+$(this).val()+"&imageID="+imageID;
+           $.getJSON(link,function(result){
+           });
+        });
+     
+       });
+    }
+  
+ function switchPlay(){
+ 	$('div#regCanv').hide();
+ 	if($('li#play').attr('class')=='selected'){
+ 		$('li#play').attr('class','unselected');
+ 		$('div#listCanv').show();
+ 		$('div#sliderCanv').hide();
+ 	}
+ 	
+ 	else{
+ 		$('li#play').attr('class','selected');
+ 		$('div#sliderCanv').show();
+ 		$('div#listCanv').hide();
+ 		
+ 	}
+ }
+
+ function submitReg(){
+ 	link="http://evening-garden-3648.herokuapp.com/reg/userReg?";
+ 	link+="email="+$("#email").val();
+ 	link+="&nickname="+$("#nickname").val();
+ 	link+="&regCode="+$("#regCode").val();
+ 	$('#formboard').empty();
+ 	$('#formboard').append("Processing...");
+    $.getJSON(link,function(result){
+       $('#formboard').empty();
+       $('#formboard').append(result["Status"]+", "+result["Message"]);
+    });
+ 	
+ }
+
+
+ function regPlayer(){
+ 	$('div#listCanv').hide();
+ 	$('div#sliderCanv').hide();
+ 	$('div#regCanv').empty();
+ 	$('div#regCanv').show();
+ 	var form = $('<div id="formboard" class="viewlist"></div>');
+    form.append($("<label>").text('Nickname of your player:'));
+ 	form.append($('<input/>').attr({ type: 'text', id: 'nickname', name: 'nickname' }));
+ 	form.append($('<br>'));
+    form.append($("<label>").text('Your Email:'));
+ 	form.append($('<input/>').attr({ type: 'text', id: 'email', name: 'email' }));
+ 	form.append($('<br>'));
+ 	form.append($("<label>").text('Registration code (5 characters):'));
+ 	form.append($('<input/>').attr({ type: 'text', id: 'regCode', name: 'regCode' }));
+ 	form.append($('<br>'));
+ 	var button = $('<button>Submit</button>');
+ 	button.attr({onclick:'submitReg()'});
+    form.append(button);
+ 	$('div#regCanv').append(form);
+ }
+ 
+ function deletePlayer(){
+ 	$('div#listCanv').hide();
+ 	$('div#sliderCanv').hide();
+ 	$('div#regCanv').empty();
+ 	$('div#regCanv').show();
+ 	
+ 	
+ }
+ 
+
+ function play(id){
+  	$('div#listCanv').hide();
+  	$('div#regCanv').hide();
+  	$('div#sliderCanv').show();
+  	$('div#sliderCanv').empty();
+  	var text =$('<div id="wait" class="viewlist">Loading...</div>');
+  	$('div#sliderCanv').append(text);
+  	$('li#play').attr('class','selected');
+  	var div = $('<div class="viewlist">');
+  	var rdiv = $('<div class="royalSlider rsDefault">');
+  	div.append(rdiv);
+  	$.getJSON("http://evening-garden-3648.herokuapp.com/client/getViewlist?id="+id, function(viewlist){
+  		for(var i=0; i<viewlist["imageSet"].length; i++){
+            var img = $('<img/>');
+            img.attr('class','rsImg');
+            img.attr('src',viewlist["imageSet"][i]["thumbnail"]);
+            img.attr('imgid',viewlist["imageSet"][i]["id"]);
+            img.attr('data-rsTmb',viewlist["imageSet"][i]["thumbnail"]);
+            img.attr('alt',viewlist["imageSet"][i]["Title"]);
+            rdiv.append(img);
+            if(i==viewlist["imageSet"].length-1){
+            	$('div#sliderCanv').append(div); 
+            	text.remove();
+            	sliderReady($);
+            }
+  		}
+  	});
+  }
+  
+  
+     function getViewlists(link){
+      $.getJSON(link,function(data){
+        for (var i=0, len=data.length; i < len; i++) {
+            var div = $('<div class="viewlist">');
+        	div.append('<div class="imageTitle">'+data[i]["name"]+'</div>');
+        	var img = $('<img class="thum">'); 
+        	img.attr('src', data[i]["coverImage"]);
+        	img.attr('id',data[i]["id"]); /*viewlist id*/ 
+        	img.click(function(){play(this.id)});       	
+        	div.append(img);
+            $('div#listCanv').append(div); 
+        }
+    });
+  }
+  
+
+  
+    function updatePlayers(link){
+      $.getJSON(link,function(result){
+      $.each(result, function(i, field){
+      	var ident = "img#"+i;
+      	curr = new Date().getTime();
+      	if($(ident).length==0){
+      		var li = $('<li>');
+      		var img = $('<img class="status">');
+      		$.getJSON("http://evening-garden-3648.herokuapp.com/client/getPlayer?snumber="+i, function(player){
+      			if(player["nickname"]!=null){
+      				li.append(player["nickname"]);
+      				img.attr('id',i);
+      		        li.append(img);
+      		        li.append(
+       $(document.createElement('input')).attr({
+           value: player["account"],
+           type:  'checkbox'
+       })
+    );
+      		        $('ul.players').append(li);
+      			}
+      		});
+      	}
+      	
+      	if(curr-5000>field){
+      		$(ident).attr("src", offline);
+      	}
+      	else{
+      		$(ident).attr("src", online);
+      	}
+      });
+    });
+  }
+  
+  
+  
+  $(document).ready(function(){
+  	var link = "http://evening-garden-3648.herokuapp.com/client/allViewlists.json";
+  	getViewlists(link);
+    var playerlink = "http://evening-garden-3648.herokuapp.com/client/lastVisitsAll.json";
+  	setInterval(function(){updatePlayers(playerlink);},2000);
+  });
+</script>
+
+<div class="mainHead">
+        <ul id="menu">
+            <li>
+                <img class="headTag" style="float:left;" alt="" src="/images/menu.png"/>
+                <ul id="main">
+                	<li onclick="regPlayer()">Register Player</li>
+                    <li>My account</li>
+                    <li>Friends</li>
+                    <li>Players</li>
+                    <li>Images</li>
+                    <li>Playing</li>
+                </ul>
+                
+            </li>
+            <li id="tv">
+            	<img  class="headTag" style="float:left;" alt="" src="/images/tv.png"/>
+            	<ul class="players" id="main">
+                </ul>
+            </li>
+            
+            
+            <li id="play" onclick="switchPlay()" class="unselected">
+            	<img class="headTag" style="float:left;" alt="" src="/images/play.png"/>
+            	<ul class="free" id="main">
+                </ul>
+            </li>
+            
+            
+            
+            
+            
+            <li id="people"><img  class="headTag" style="float:left;" alt="" src="/images/people.png"/>
+                <ul id="main">
+                </ul>
+                </div>
+            </li>
+        </ul>
+    <br>
+
+
+<div id="listCanv" class="mainCanvas">
+</div>
+	
+<div id="sliderCanv" class="mainCanvas">
+
+</div>
+<div id="regCanv" class="mainCanvas">
+
+</div>
+
+
+
