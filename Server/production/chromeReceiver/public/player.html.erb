@@ -1,0 +1,61 @@
+<style>
+	.imageTitle{
+		font-family:"Times New Roman",Times,serif;
+		font-style:oblique;
+		font-size:20px;
+		text-align:center;
+	}
+	
+	div{
+		text-align:center;
+	}
+	
+	img#screen{
+		width:100%;
+		height:auto;
+	}
+	
+</style>
+<script>
+  var url = "";
+  function update(link){
+  	  //$("div#display").empty();
+      $.getJSON(link,function(result){
+      $.each(result, function(i, field){
+        //$("div#display").append(field + " ");
+        if(i=="message"){
+        	$("label#message").text(field);
+        }
+        if(i=="currImage"&&field!=null){
+        	if(field["url"]!=url){
+        		$("img#screen").attr("src", field["url"]);
+        		url = field["url"];
+        	}
+        }
+        
+        
+      });
+    });
+    
+  }
+  
+  
+
+  $(document).ready(function(){
+  	 var link = "http://sleepy-scrubland-3038.herokuapp.com/client/checkin.json";
+     //var link = "http://sleepy-scrubland-3038.herokuapp.com/client/checkin.js";
+     //link+="?snumber="+$("#serialNumber").val();
+     link+="?snumber=56677test";
+     refreshIntervalId = setInterval(function(){update(link);},500);
+   
+  });
+</script>
+
+
+<div id = "display">
+    <label id="message">Message</label>
+</div>
+<div id = "screen">
+	<img id="screen" src="/images/blackscreen.png"></img>
+</div>
+

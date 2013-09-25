@@ -1,0 +1,93 @@
+<style>
+	.imageTitle{
+		font-family:"Times New Roman",Times,serif;
+		font-style:oblique;
+		font-size:20px;
+		text-align:center;
+	}
+	
+	div.players{
+		text-align:center;
+	}
+	div{
+	  margin:auto;
+	}
+	img.status{
+     height:20px;
+     width:auto;
+    }
+	
+</style>
+<script>
+  var online = "/images/online.png"
+  var offline =  "/images/offline.png"
+  
+  function update(link){
+      $.getJSON(link,function(result){
+      $.each(result, function(i, field){
+      	var ident = "img#"+i;
+      	curr = new Date().getTime();
+      	if(curr-5000>field){
+      		$(ident).attr("src", offline);
+      	}
+      	else{
+      		$(ident).attr("src", online);
+      	}
+      });
+    });
+  }
+  
+  $(document).ready(function(){
+  	var link = "http://evening-garden-3648.herokuapp.com/client/lastVisitsAll.json";
+  	setInterval(function(){update(link);},2000);
+  });
+</script>
+
+<div class="players">
+   <table>
+   <%@players.each do|player|%>
+   <tr><td><%=player["nickname"]%></td>
+   <td><img id =<%=player["account"]%> src= "/images/offline.png" class = "status"></td>
+   <td><%=check_box_tag 'players[]', player["account"]%></td><tr>   
+   <%end%>
+   </table>
+</div>
+
+<div class="royalSlider rsDefault">
+    <% @images.each do|image|%>
+        <img class="rsImg" src=<%=image["thumbnail"]%> imgid= <%=image["id"]%> data-rsTmb=<%=image["thumbnail"]%> alt="<%=image["Title"]%>" />
+	<% end %>
+</div>	
+
+<script> 
+    jQuery(document).ready(function($) {
+        $(".royalSlider").royalSlider({
+            // options go here
+            // as an example, enable keyboard arrows nav
+            keyboardNavEnabled: true,
+            controlNavigation: 'thumbnails',
+            fullscreen: {
+              enabled: true,
+              nativeFS: true
+            },
+
+        });  
+        
+        var slider = $(".royalSlider").data('royalSlider');
+        slider.ev.on('rsAfterSlideChange', function(event) {
+    	
+         // triggers after slide change
+        
+        var imageID = (slider.currSlide).holder.find('img').attr("imgid");
+        var players = [];
+        $(':checked').each(function() {
+           players.push();
+           var link = "http://evening-garden-3648.herokuapp.com/client/update.json?"+"snumber="+$(this).val()+"&imageID="+imageID;
+           $.getJSON(link,function(result){
+           });
+        });
+     
+    });
+    });
+
+</script>
