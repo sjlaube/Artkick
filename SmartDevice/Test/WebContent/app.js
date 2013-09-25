@@ -1717,14 +1717,9 @@ else
 	updateImages(-1);
 }
 
-<<<<<<< HEAD
-//testgit
-function facebook2()
-=======
 
 function emailShare()
 
->>>>>>> 6138d83434b0f9eeba7876d680416d5915ba819b
 {
 
 imageurl=imageMap[currImage]["thumbnail"];
@@ -1751,34 +1746,11 @@ setTimeout(function(){hidemenu()},1000);
 }
 
 
-<<<<<<< HEAD
-function emailShare()
-{
-
-imageurl=imageMap[currImage]["thumbnail"];
-hidemenu();
-//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("email", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-}
-
-function twitter()
-{
-	//alert("facebook!");
-
-imageurl=imageMap[currImage]["thumbnail"];
-hidemenu();
-//alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-
-calliOSFunction("twitter", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-}
-=======
 function mytest()
 {
 alert("mytest");
 }
 
->>>>>>> 6138d83434b0f9eeba7876d680416d5915ba819b
 
 function facebook()
 {
@@ -1787,18 +1759,12 @@ function facebook()
 imageurl=imageMap[currImage]["thumbnail"];
 
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-<<<<<<< HEAD
-
-calliOSFunction("facebook", ['Artkick rocks',"http://www.artkick.com/",imageMap[currImage]["thumbnail"],'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-
-=======
 var url="http://prod.artkick.net/"
 url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
 //alert ("url="+url);
 calliOSFunction("facebook", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
 
 setTimeout(function(){hidemenu()},1000);
->>>>>>> 6138d83434b0f9eeba7876d680416d5915ba819b
 
 var obj={
 //method: 'feed',
@@ -1807,26 +1773,6 @@ var obj={
     picture: imageurl,
 	//display:'popup',
     caption: 'Artkick',
-<<<<<<< HEAD
-//	redirect_uri: 'http://test.artkick.net',
-    description: 'Check out this great image and thousands more at Artkick'
-}
-
-
-
-
-
-/*
-  function callback(response) {
-    if (response && response.post_id) {
-      alert('Post was published.');
-    } else {
-     alert('Post was not published.');
-    }
-  }
-  FB.ui(obj, callback);
-*/
-=======
 //	redirect_uri: 'http://prod.artkick.net',
     description: 'Check out this great image and thousands more at Artkick'
 }
@@ -1837,7 +1783,6 @@ function testlaunch()
 {
 ret=open("artkick://prod.artkick.net/?currList=1047&currImage=9508&currCat=Lifestyle","");
 //alert("return="+ret);
->>>>>>> 6138d83434b0f9eeba7876d680416d5915ba819b
 }
 
 function showiframe(url) {
