@@ -20,7 +20,7 @@
 ['BlackBerry','',['WebContent/themes/blackberry/blackberry.css']],
 ['iPad','',['WebContent/themes/ipad/ipad.css']],['iPhone','',['WebContent/themes/iphone/iphone.css']],
 ['.*','',['WebContent/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script> 
-<!-- <script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
+ <script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script>
 
 <script type="text/javascript">
 
@@ -141,7 +141,7 @@ require([
    </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="select_category" >
    <div  data-dojo-type="dojox/mobile/Heading"  data-dojo-props='label:"Categories",fixed:"top"'>
-       <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left',transition:'fade', transitionDir:'-1', moveTo:'ImageView'"  style="float: left;" >Back</div>
+       <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left'" onclick="gotoView('select_category','ImageView')" style="float: left;" >Back</div>
 
    </div>
 
@@ -367,10 +367,10 @@ Install Artkick</button>
    </div>
 <div data-dojo-type="dojox/mobile/DataCarousel" onclick="bigimage()" id="ImageList" 
  data-dojo-props="numVisible:1,pageIndicator:false,navButton:false" height="13em" style="width: 100%; height:50%" ></div>
-<div id="LoadImages"   style=" text-align:center;background-color:#c5ccd3;z-index: 1500; width: 100%;height: 100%; position: absolute; top: 2px;visibility:hidden">
+<!--<div id="LoadImages"   style=" text-align:center;background-color:#c5ccd3;z-index: 1500; width: 100%;height: 100%; position: absolute; top: 2px;visibility:hidden">
 <br><br>Loading Images, Please wait<br><br>
 <img  src="images/waitcircle.gif" alt="wait" >
-</div>  
+</div>  -->
 
    <table  onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; border:0;height: auto; position: relative; left: 1em; width: 90%;">
      <colgroup>

@@ -64,7 +64,6 @@ require(["jquery",
 	
 		function () {
 
-
             var base = "http://evening-garden-3648.herokuapp.com/client/";
             var selectListView = registry.byId("PlaylistView");
             var listList = registry.byId("listList");
@@ -86,7 +85,7 @@ require(["jquery",
             var addUserView = registry.byId("add_user_player");
             var removePlayerView = registry.byId("removeplayer");
             var fillsw = dijit.registry.byId("fillswitch");
-			var LoadImages = document.getElementById("LoadImages");
+		//	var LoadImages = document.getElementById("LoadImages");
 			
 	
 			var	userrating = new Rating({
@@ -119,6 +118,7 @@ require(["jquery",
 		   window.sliderIndex = 0;
 		   window.gridset = false;
 		   window.currGridList = -1;
+		   window.transitiontype="slide";
 		
 
             function getCookie(c_name) {
@@ -200,6 +200,9 @@ require(["jquery",
                                
 								splash.style.display = "none";splash.style.visibility = "hidden";
                                Iv.show();
+                               
+
+                               window.afterLogin();
 							//	alert("showing imageview"+Iv);
                                      //  I0.performTransition("ImageView", 1, "slide", null);
 									//   alert("transition done");
@@ -225,7 +228,11 @@ require(["jquery",
 				}
             }
             
-            
+            window.gotoView = function(fromView,toView){
+            	//alert(fromView+' to '+toView);
+            	dojo.style(dojo.byId(fromView),"display", "none");
+            	dojo.style(dojo.byId(toView), "display", "block");
+            }
             
             window.getDefaults = function(){
             	var base = "http://evening-garden-3648.herokuapp.com/client/";
@@ -311,7 +318,7 @@ require(["jquery",
                         	window.currList = window.defList;
                         	window.currCat = window.defCat;
                         	window.currImage = window.defImage;
-						    updateImages(-1);
+						   	updateImages(-1);
                         	return;
                         }
                         
@@ -408,7 +415,7 @@ require(["jquery",
                                 // uncover the carousel!!!
                                 //alert(imagesList);
                                 //         alert("store set");
-								LoadImages.style.visibility = "hidden";	
+							//	LoadImages.style.visibility = "hidden";	
                             }
                         }
                         //alert(window.currImage);
@@ -426,9 +433,13 @@ require(["jquery",
 							setTimeout(function(){
                             var currView = dijit.registry.byId("blankview");
 							     var currView2 = currView.getShowingView();
-							// alert("view2="+currView2+"view="+currView);
-		                   currView.performTransition("ImageView", 1, "fade", null);
-                           },500);
+							// alert("loadimages: view2="+currView2+"view="+currView);
+		                   //currView2.performTransition("ImageView", 1, "fade", null);
+		                    gotoView('blankview','ImageView');
+		                    //window.sliderIndex = 0;
+		                    hidemenu();
+		                    dijit.registry.byId("tabnowshowing").set('selected', true);
+                           },50);
                         }
                     }
                 });
@@ -446,7 +457,7 @@ require(["jquery",
                 window.imageCurrStore = new ItemFileWriteStore({
                     data: imageData
                 });
-             //  alert("update images");
+               //alert("update images");
                 if (window.justLogin || window.justRefresh) {
 				   //  alert("justlogin");
 					 window.justRefresh = false;
@@ -517,7 +528,7 @@ require(["jquery",
                         }
                     });
                 } else {
-			//	alert('load images target:'+targImage);
+				//alert('load images target:'+targImage);
                     loadImages(targImage,1,15,1);
                 }
 				
@@ -665,7 +676,8 @@ require(["jquery",
                   top: 0,
                   left: 0
                     });
-                mycurrView.performTransition("PlaylistView", 1, "", null);
+                //mycurrView.performTransition("PlaylistView", 1, "", null);
+                gotoView("select_category","PlaylistView");
 
            }
 
@@ -744,8 +756,9 @@ require(["jquery",
                                      window.switchView = true;
                                     var currView = dijit.registry.byId("ImageView");
 	                                var currView2 = currView.getShowingView();
-                                    currView2.performTransition("blankview", 1, "slide", null);
-                                    setTimeout(function(){updateImages(-1)},10);
+                                    //currView2.performTransition("blankview", 1, "slide", null);
+                                    gotoView('PlaylistView','blankview');
+                                    updateImages(-1);
                                 },
                                 moveTo: "",
 								transition: "fade"
@@ -766,12 +779,13 @@ require(["jquery",
                                 //    alert(this.id);
 									var currView = dijit.registry.byId("ImageView");
 	                                var currView2 = currView.getShowingView();
-									alert("currView2="+currView2);
-                                    currView2.performTransition("blankview", 1, "", null);
+								//	alert("currView2="+currView2);
+                                    //currView2.performTransition("blankview", 1, "", null);
+                                    gotoView('PlaylistView','blankview');
                                     window.currList = this.id;
 
                                     window.switchView = true;
-                                    setTimeout(function(){updateImages(-1)},10);
+                                    updateImages(-1);
 
                                 },
                                 moveTo: "",
@@ -1034,7 +1048,8 @@ require(["jquery",
 									 if(result["players"].length == 0)
 									 {
 										alert("There are no players registered.");
-							            currView2.performTransition("OptionsList", -1, "slide", null);
+							            //currView2.performTransition("OptionsList", -1, "slide", null);
+							            gotoView("select_player","OptionsList");
 									  }
 									
 									}
@@ -1116,14 +1131,14 @@ require(["jquery",
 
             }
 			window.BrowserDetect.init();
-			alert("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser+" version="+window.BrowserDetect.version);
+		//	alert("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser+" version="+window.BrowserDetect.version);
 	//		if ((window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome") ||
 	//		(window.BrowserDetect.OS=="Windows" && window.BrowserDetect.browser!= "Chrome"))
 	//		{
 	//		alert("You must run Artkick under Chrome, please restart using the Chrome browser");
 	//		window.close();
 	//		}
-	window.tellbrowser();
+			//window.tellbrowser.init();
 		    var curl=get('currList');
 			var curi=get('currImage');
 			var curc=get('currCat');
@@ -1177,16 +1192,40 @@ require(["jquery",
                     rememberSelectPlayers()
                 });
        
+      window.afterLogin = function(){
+      	        dojo.style(dojo.byId("OptionsList"),"display", "none");
+                gotoView("Login","blankview");
+                window.switchView = true;
+                updateImages(window.tarImage);
+                dojo.io.script.get({
+                            url: base + "getSelectedPlayers?email=" + window.email,
+                            callbackParamName: "callback",
+                            load: function (result) {
+                                if (result["Status"] == "success") {
+                                    var selectedPlayers = {};
+                                    for (var i in result["selectedPlayers"]) {
+                                        selectedPlayers[result["selectedPlayers"][i]] = 1;
+                                        //alert(result["selectedPlayers"][i]);
+                                    }
 
-     on(imageView, "beforeTransitionIn",
+                                    updatePlayers(selectedPlayers);
+
+                                }
+                            }
+                });
+      }
+     /*on(imageView, "beforeTransitionIn",
 
                 function () {
-			//	alert("transition to ImageView");
+				//alert("transition to ImageView");
+				//var currView = dijit.registry.byId("blankview");
+							     //var currView2 = currView.getShowingView();
+							 //alert("Imageview: view2="+currView2+"view="+currView);
                 window.sliderIndex = 0;
-				   var mytabbar = dijit.registry.byId("myTabBar");
+				   //var mytabbar = dijit.registry.byId("myTabBar");
 				//   var tabcategory = dijit.registry.byId("tabcategory");
 				 //  var tabshare = dijit.registry.byId("tabshare");
-				   var tabnowshowing = dijit.registry.byId("tabnowshowing");
+				  // var tabnowshowing = dijit.registry.byId("tabnowshowing");
              //       alert("Transition in!");    
 
 				//	mytabbar.resize();
@@ -1197,9 +1236,12 @@ require(["jquery",
 				//	tabcategory.set('selected', false);
 				//    tabshare.set('selected', false);
 				   dijit.registry.byId("tabnowshowing").set('selected', true);
+				   
+				   
 				//	alert("select tabnowshowing");
                     if (window.justLogin) {
-                        updateImages(window.tarImage);
+                       // updateImages(window.tarImage);
+						updateImages(window.tarImage);
                         dojo.io.script.get({
                             url: base + "getSelectedPlayers?email=" + window.email,
                             callbackParamName: "callback",
@@ -1225,8 +1267,15 @@ require(["jquery",
                         updateImages(-1);
                     }
                 });
-
-
+                  */
+                 
+            on(imageView, "beforeTransitionIn", 
+                 function(){
+                 	dijit.registry.byId("tabnowshowing").set('selected', true);
+                 	
+                 	
+                 });
+            
             on(selectCatView, "beforeTransitionIn",
 
                 function () {
@@ -1237,7 +1286,7 @@ require(["jquery",
                     hidemenu();
                     updateCats();
 
-                });
+                }); 
 
 
             on(selectListView, "beforeTransitionIn",
@@ -1245,6 +1294,7 @@ require(["jquery",
                 function () {
 				dijit.registry.byId("tabcategory2").set('selected', true);
 				});
+				
              on(optionsView, "beforeTransitionIn",
 
                 function () {
@@ -1395,9 +1445,11 @@ require(["jquery",
 										window.gridset=true;
 										 window.switchView=true;
 										 updateImages(this.id);	 
+										// 	setTimeout(function(){updateImages(this.id)},10);
 
 
-										dijit.registry.byId("GridView").performTransition("blankview", 1, "fade", null);
+										//dijit.registry.byId("GridView").performTransition("blankview", 1, "fade", null);
+										gotoView('GridView','blankview');
 									   // loadImages(this.id,1,15,1);
 									  
 					            
@@ -1470,7 +1522,7 @@ require(["jquery",
 			        var imageData = {
                        "items": []
                     };
-  					LoadImages.style.visibility = "visible";	                  
+  				//	LoadImages.style.visibility = "visible";	                  
                     window.imageCurrStore = new ItemFileWriteStore({
                        data: imageData
                     });
@@ -1485,7 +1537,7 @@ require(["jquery",
 					var imageData = {
                        "items": []
                     };
-                    LoadImages.style.visibility = "visible";
+                //    LoadImages.style.visibility = "visible";
                     window.imageCurrStore = new ItemFileWriteStore({
                        data: imageData
                     });
@@ -1625,7 +1677,13 @@ function login() {
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
                 //alert(window.email);
                 setCookie("email", window.email, 365);
-                currView.performTransition("ImageView", 1, "slide", null);
+                //currView.performTransition("ImageView", 1, "slide", null);
+                
+                //for security, we need to make sure other possible showing view gone!!
+                window.afterLogin();
+                
+                
+                
             } else {
                 alert("login failed, please check your email and password or register!");
             }
@@ -1654,7 +1712,9 @@ else
 		window.shuffle=true;
 		dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
 }
-updateImages(-1);
+    gotoView('ImageView','blankview');
+    window.switchView = true;
+	updateImages(-1);
 }
 
 
@@ -1733,7 +1793,8 @@ function showiframe(url) {
         "style": "border: 0; width: 100%;height:700px"
     });
     dijit.registry.byId("displayiframe").set("content",window.iframe );
-    currView.performTransition("iframeview", 1, "slide", null);
+    //currView.performTransition("iframeview", 1, "slide", null);
+    gotoView("ImageView","iframeview")
 	return(ret);
 }
 function showfullimage() {
@@ -1836,10 +1897,13 @@ function swapview(newview){
 	window.currList = newview;
 	hidemenu();
 
-	currView.performTransition("blankview", 1, "fade", null);
+	//currView.performTransition("blankview", 1, "fade", null);
+	
+	gotoView('ImageView','blankview');
 	window.switchView= true;
 	//currView.hide();
 	updateImages(-1);
+
 	
 				
 }
@@ -1850,8 +1914,12 @@ function dologout() {
     window.email = null;
     // code to delete cookie and log out user goes here
     setCookie("email", null, 1);
-    currView.performTransition("Login", 1, "slide", null);
+    //currView.performTransition("Login", 1, "slide", null);
+    gotoView("LogOff","blankview");
     cleanUp();
+    setTimeout(function(){
+    	gotoView("blankview","Login");
+    },1000);
 
 }
 
@@ -2007,8 +2075,9 @@ function refreshView() {
 	var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView();
     //alert(mycurrView);
-    mycurrView.performTransition("blankview", 1, "fade", null);
-	setTimeout(function(){updateImages(-1)},10);
+    //mycurrView.performTransition("blankview", 1, "fade", null);
+    gotoView('ImageView','blankview');
+	updateImages(-1);
 }
 
 function removePlayersAction() {
@@ -2149,8 +2218,17 @@ function createPlayer() {
                 window.currList = window.defList;
                 window.currCat = window.defCat;
                 window.justCreatePlayer = true;
-                currView.performTransition("ImageView", 1, "slide", null);
+                //currView.performTransition("ImageView", 1, "slide", null);
                 updatePlayers();
+                if(window.shuffle){
+                           // if random, then switch to normal!
+                    mediashuffle();
+                }
+                //two possible cases, either from roku or chromecast, so we just make both registraion view gone
+                dojo.style(dojo.byId("registernewroku"),"display", "none");           
+                gotoView("registernewchromecast","blankview");
+                window.switchView = true;
+                updateImages(-1);
                
 
             } else {
@@ -2319,70 +2397,5 @@ function get(name){
 }
 //alert("toCall");
 
-function tellbrowser(){
-var nVer = navigator.appVersion;
-var nAgt = navigator.userAgent;
-var browserName  = navigator.appName;
-var fullVersion  = ''+parseFloat(navigator.appVersion); 
-var majorVersion = parseInt(navigator.appVersion,10);
-var nameOffset,verOffset,ix;
 
-// In Opera, the true version is after "Opera" or after "Version"
-if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
- browserName = "Opera";
- fullVersion = nAgt.substring(verOffset+6);
- if ((verOffset=nAgt.indexOf("Version"))!=-1) 
-   fullVersion = nAgt.substring(verOffset+8);
-}
-// In MSIE, the true version is after "MSIE" in userAgent
-else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
- browserName = "Microsoft Internet Explorer";
- fullVersion = nAgt.substring(verOffset+5);
-}
-// In Chrome, the true version is after "Chrome" 
-else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
- browserName = "Chrome";
- fullVersion = nAgt.substring(verOffset+7);
-}
-// In Safari, the true version is after "Safari" or after "Version" 
-else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
- browserName = "Safari";
- fullVersion = nAgt.substring(verOffset+7);
- if ((verOffset=nAgt.indexOf("Version"))!=-1) 
-   fullVersion = nAgt.substring(verOffset+8);
-}
-// In Firefox, the true version is after "Firefox" 
-else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
- browserName = "Firefox";
- fullVersion = nAgt.substring(verOffset+8);
-}
-// In most other browsers, "name/version" is at the end of userAgent 
-else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < 
-          (verOffset=nAgt.lastIndexOf('/')) ) 
-{
- browserName = nAgt.substring(nameOffset,verOffset);
- fullVersion = nAgt.substring(verOffset+1);
- if (browserName.toLowerCase()==browserName.toUpperCase()) {
-  browserName = navigator.appName;
- }
-}
-// trim the fullVersion string at semicolon/space if present
-if ((ix=fullVersion.indexOf(";"))!=-1)
-   fullVersion=fullVersion.substring(0,ix);
-if ((ix=fullVersion.indexOf(" "))!=-1)
-   fullVersion=fullVersion.substring(0,ix);
-
-majorVersion = parseInt(''+fullVersion,10);
-if (isNaN(majorVersion)) {
- fullVersion  = ''+parseFloat(navigator.appVersion); 
- majorVersion = parseInt(navigator.appVersion,10);
-}
-alert(''
- +'Browser name  = '+browserName+'<br>'
- +'Full version  = '+fullVersion+'<br>'
- +'Major version = '+majorVersion+'<br>'
- +'navigator.appName = '+navigator.appName+'<br>'
- +'navigator.userAgent = '+navigator.userAgent+'<br>'
-)
-}
 

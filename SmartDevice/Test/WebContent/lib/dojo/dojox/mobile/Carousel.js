@@ -22,8 +22,8 @@ define("dojox/mobile/Carousel", ["dojo/_base/array", "dojo/_base/connect", "dojo
 
                 }
             }
-           this.headerNode = _8.create("div", {className: "mblCarouselHeaderBar"}, this.domNode);
-			//this.headerNode = _8.create("div",  this.domNode);//artkick get rid of headerbar totally
+          // this.headerNode = _8.create("div", {className: "mblCarouselHeaderBar"}, this.domNode);
+			this.headerNode = _8.create("div",  this.domNode);//artkick get rid of headerbar totally
             if (this.navButton) {
                 this.btnContainerNode = _8.create("div", {
                     className: "mblCarouselBtnContainer"
