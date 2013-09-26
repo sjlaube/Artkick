@@ -81,6 +81,9 @@ require([
 <!--<script type="text/javascript" src="WebContent/Carousel-ArtKick.js"></script>
 <script type="text/javascript" src="WebContent/CarouselItem-ArtKick.js"></script>-->
 <script type="text/javascript" src="WebContent/Browser-Detect.js"></script> 
+<script type="text/javascript" src="WebContent/UserViewlists.js"></script> 
+<script type="text/javascript" src="WebContent/PlayerFunctions.js"></script> 
+<script type="text/javascript" src="WebContent/UserAccounts.js"></script> 
 
 </head>
 
@@ -252,8 +255,26 @@ Add user to player(s)</button>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabshare2" data-dojo-props='moveTo:"OptionsList"'  ><a style="color:white;font-size:11px"  >Options</a></li>
 	</ul> 
   </div>
+  
+ <div data-dojo-type="dojox/mobile/ScrollableView" id="MylistView"  >
+   <div   data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Personal Viewlists',fixed:'top'">
 
-        
+
+	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="arrow:'left',moveTo:'ImageView',transition:'none'">Back</div>
+
+	  <div   data-dojo-type="dojox/mobile/ToolBarButton"   onclick="CreateUserList()" style="float: right" >+</div>
+ </div>
+     	     <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="MyList"		     >
+		</ul>	     		   
+</div>
+
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="AddUserList" data-dojo-props='modal:true,top:"61px"' 
+style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+Create new Viewlist
+<input data-dojo-type="dojox/mobile/TextBox" style='width:300px' placeHolder="Viewlist Name" ><br></input>
+<button data-dojo-type="dojox/mobile/Button" onclick="CreateNewViewlist('OK')">OK</button>
+<button data-dojo-type="dojox/mobile/Button" onclick="CreateNewViewlist('Cancel')">Cancel</button>
+</div>
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="select_player" >
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Select Player',moveTo:'OptionsList', fixed:'top'">
@@ -545,6 +566,7 @@ Register</button>
   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Options"'>
    
    <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="arrow:'left',moveTo:'ImageView',transition:'slide',transitionDir:'-1'">Back</div>
+   <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: right;" data-dojo-props="moveTo:'MylistView'">new viewlist</div>
     
 
  </div>
@@ -599,7 +621,7 @@ Register</button>
     <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 65px; top: 170px;">  
 	<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 60px; top: 275px; color: #56575A;">
-Artkick Version 1.0 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
+Artkick Version 1.1 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
 
   </span>
   </div>

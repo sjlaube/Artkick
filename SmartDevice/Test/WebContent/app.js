@@ -55,7 +55,7 @@ require(["jquery",
 		PasswordValidator,
         domAttr,
 		Carousel,
-				ScrollableView) {
+		ScrollableView) {
 
 
 
@@ -1663,66 +1663,8 @@ require(["jquery",
 
 
 
-function login() {
-    //alert("login!");
-	var currTime = new Date().getTime();
-    if(window.loginClickTime!=undefined && currTime - window.loginClickTime < window.boucingTime)
-        return;
-	window.loginClickTime = currTime;
-    
-    
-    var base = "http://evening-garden-3648.herokuapp.com/client/";
-    var currView = dijit.registry.byId("Login");
-    dojo.io.script.get({
-        url: base + "login?email=" + dojo.byId("loginEmail").value+"&password="+dojo.byId("loginPassword").value,
-        callbackParamName: "callback",
-        load: function (result) {
-            //alert(result["message"]);
-            if (result["status"] == "success") {
-                userObj = result["userObj"];
-                alert("Welcome! " + userObj["name"]);
-                window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
-                //alert(window.email);
-                setCookie("email", window.email, 365);
-                //currView.performTransition("ImageView", 1, "slide", null);
-                
-                //for security, we need to make sure other possible showing view gone!!
-                window.afterLogin();
-                
-                
-                
-            } else {
-                alert("login failed, please check your email and password or register!");
-            }
-        }
-    });
-}
-
-function goToReg() {
-    var currView = dijit.registry.byId("Login");
-    currView.performTransition("registeruser", 1, "slide", null);
-}
 
 
-function goToresetpassword() {
-    var currView = dijit.registry.byId("Login");
-    currView.performTransition("reset_password", 1, "slide", null);
-}
-function mediashuffle() {
-if (window.shuffle)
-{
-       window.shuffle=false;
-	   dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
-}
-else
-{
-		window.shuffle=true;
-		dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
-}
-    gotoView('ImageView','blankview');
-    window.switchView = true;
-	updateImages(-1);
-}
 
 
 function emailShare()
@@ -1889,12 +1831,7 @@ function hidemenu() {
 
 }
 
-function goToLogin1() {
-    var currView = dijit.registry.byId("Intro0");
-    var mycurrView = currView.getShowingView();
-//	alert("goto login"+mycurrView);
-    mycurrView.performTransition("Login", 1, "slide", null);
-}
+
 function swapview(newview){
     
 	//alert ("swapview "+newview);
@@ -1915,44 +1852,6 @@ function swapview(newview){
 				
 }
 
-function dologout() {
-
-    var currView = dijit.registry.byId("LogOff");
-    window.email = null;
-    // code to delete cookie and log out user goes here
-    setCookie("email", null, 1);
-    //currView.performTransition("Login", 1, "slide", null);
-    gotoView("LogOff","blankview");
-    cleanUp();
-    setTimeout(function(){
-    	gotoView("blankview","Login");
-    },1000);
-
-}
-
-function regnewroku() {
-    var currView = dijit.registry.byId("registernewplayer");
-
-    // processes register new roku button
-    currView.performTransition("registernewroku", 1, "slide", null);
-
-}
-
-function installartkick() {
-    //alert ("install artkick");
-    //var win = window.open("https://owner.roku.com/add/ArtkickV0", '_blank');
-    //win.focus();
-    calliOSFunction("loadLink", ["https://owner.roku.com/add/ArtkickV0"], "onSuccess", "onError");
-    
-
-}
-
-function goToReg1() {
-    var currView = dijit.registry.byId("Intro0");
-    var mycurrView = currView.getShowingView()
-    mycurrView.performTransition("registeruser", 1, "slide", null);
-}
-
 function goToShare() {
     var currView = dijit.registry.byId("ImageView");
     var mycurrView = currView.getShowingView();
@@ -1966,109 +1865,10 @@ function notimplemented() {
     hidemenu();
 }
 
-function createUser() {
-    var currView = dijit.registry.byId("registeruser");
-    var base = "http://evening-garden-3648.herokuapp.com/client/";
-    var pw="";
-	var verifypw="";
-	pw=dojo.byId("regUserPW").value;
-	verifypw=dojo.byId("regUserPW2").value;
-	if (pw=="")
-	{
-		alert("Password cannot be blank");
-		return;
-	}
-	if (pw != verifypw)
-	{
-		alert("Passwords don't match");
-		return;
-	}
-	if (dojo.byId("regUserEmail").value =="")
-	{
-		alert("User email cannot be blank");
-		return;
-	}
-	if (dojo.byId("regUserName").value =="")
-	{
-		alert("User name cannot be blank");
-		return;
-	}
-		
-    dojo.io.script.get({
-        url: base + "regUser?email=" + dojo.byId("regUserEmail").value + "&name=" + dojo.byId("regUserName").value+"&password=" + pw,
-        callbackParamName: "callback",
-        load: function (result) {
-            if (result["status"] == "success") {
-                alert("Welcome " + dojo.byId("regUserName").value + "!");
-                currView.performTransition("ImageView", 1, "slide", null);
-                window.email = dojo.byId("regUserEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
-                //alert(window.email);
-            } else {
-                alert(result["message"]);
-            }
 
-        }
-    });
 
-}
 
-function changePwLogout(){
-	var currView = dijit.registry.byId("AccountSettings");
-    window.email = null;
-    // code to delete cookie and log out user goes here
-    setCookie("email", null, 1);
-    currView.performTransition("Login", 1, "slide", null);
-    cleanUp();
-}
 
-function changePW() {
-	var oldpw="";
-	var newpw1="";
-	var newpw2="";
-	oldpw=dojo.byId("changeOldPW").value;
-	newpw1=dojo.byId("changeNewPW1").value;
-	newpw2=dojo.byId("changeNewPW2").value;
-
-	if (newpw1 != newpw2)
-		alert("Passwords don't match!");
-	else
-	{  var base = "http://evening-garden-3648.herokuapp.com/client/";
-	   //alert(base+"resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1);
-       dojo.io.script.get({
-       	 url:base+"resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1,
-       	 callbackParamName: "callback",
-       	 load: function (result) {
-             alert(result["message"]);
-             if(result["status"]=="success"){
-             	changePwLogout();
-             }
-       	 }
-       });
-	}
-}
-
-function emailPwLogout(){
-	var currView = dijit.registry.byId("reset_password");
-    window.email = null;
-    // code to delete cookie and log out user goes here
-    setCookie("email", null, 1);
-    currView.performTransition("Login", 1, "slide", null);
-    cleanUp();
-}
-
-function emailPW(){
-	var base = "http://evening-garden-3648.herokuapp.com/client/";
-	dojo.io.script.get({
-		url:base+"emailPassword?email="+dojo.byId("recoveryEmail").value,
-		callbackParamName: "callback",
-		load: function(result){
-			 alert(result["message"]);
-			 if(result["status"]=="success"){
-			 	emailPwLogout();
-			 }
-		}
-	});
-}
 
 function refreshView() {
 // if user clicks on "now Showing" button it refreshes the view to what is presently being displayed
@@ -2086,203 +1886,6 @@ function refreshView() {
     gotoView('ImageView','blankview');
 	updateImages(-1);
 }
-
-function removePlayersAction() {
-	var currTime = new Date().getTime();
-	//alert("currTime"+currTime);
-	//alert("lastTime"+window.rmplayerClickTime);
-    if(window.rmplayerClickTime!=undefined && currTime - window.rmplayerClickTime < 7000)
-        return;
-	window.rmplayerClickTime = currTime;
-	
-    var r = confirm("Are you sure you want to delete the selected players?");
-    if (r == false) {
-        return;
-    }
-    var base = "http://evening-garden-3648.herokuapp.com/player/";
-    var currView = dijit.registry.byId("removeplayer");
-    var i = 0;
-    for (var key in window.removePlayers) {
-        if (window.removePlayers[key]) {
-            i++;
-        }
-    }
-    for (var key in window.removePlayers) {
-        if (window.removePlayers[key]) {
-            dojo.io.script.get({
-                url: base + "removePlayer?email=" + window.email + "&playerId=" + key,
-                callbackParamName: "callback",
-                load: function (result) {
-                	if(result["Status"]=="success")
-                        alert(result["Message"]);
-                    i--;
-                    if (i == 0) {
-                        currView.performTransition("select_player", 1, "slide", null);
-                    }
-                }
-            });
-        }
-
-    }
-}
-
-
-
-function addUserToPlayers() {
-    var currTime = new Date().getTime();
-    if(window.addUserClickTime!=undefined && currTime - window.addUserClickTime < window.boucingTime)
-        return;
-	window.addUserClickTime = currTime;
-	
-	
-    var email = dojo.byId("addPlayerEmail").value;
-
-    var base = "http://evening-garden-3648.herokuapp.com/player/";
-    for (var key in window.ownedPlayers) {
-        if (window.ownedPlayers[key]) {
-            dojo.io.script.get({
-                url: base + "addUserToPlayer?email=" + email + "&playerId=" + key,
-                callbackParamName: "callback",
-                load: function (result) {
-                    alert(result["Message"]);
-                }
-            });
-        }
-
-    }
-}
-
-
-
-function searchUser() {
-	var currTime = new Date().getTime();
-    if(window.searchuClickTime!=undefined && currTime - window.searchuClickTime < window.boucingTime)
-        return;
-	window.searchuClickTime = currTime;
-	
-	
-    var email = dojo.byId("addPlayerEmail").value;
-    //alert(email);
-    var base = "http://evening-garden-3648.herokuapp.com/player/";
-    dojo.io.script.get({
-        url: base + "getUser?email=" + email,
-        callbackParamName: "callback",
-        load: function (result) {
-            alert(result["Message"]);
-        }
-    });
-}
-
-
-
-function setAuto(interval) {
-    var base = "http://evening-garden-3648.herokuapp.com/client/";
-    for (var player in window.playerSet) {
-        if (window.playerSet[player]) {
-            //alert(base+"setAuto?email="+window.email+"&snumber="+player.substring(1)+"&autoInterval="+interval);
-            dojo.io.script.get({
-                url: base + "setAuto?email=" + window.email + "&snumber=" + player.substring(1) + "&autoInterval=" + interval,
-                callbackParamName: "callback",
-                load: function (result) {}
-            });
-
-        }
-
-
-    }
-
-}
-
-
-
-function createPlayer() {
-	
-	var currTime = new Date().getTime();
-    if(window.createPlayerClickTime!=undefined && currTime - window.createPlayerClickTime < window.boucingTime)
-        return;
-	window.createPlayerClickTime = currTime;
-	if (dojo.byId("regPlayerCode").value =="")
-	{
-		alert("Player Code cannot be blank");
-		return;
-	}
-	if (dojo.byId("regPlayerName").value =="")
-	{
-		alert("You must name your player");
-		return;
-	}
-	
-    var currView = dijit.registry.byId("registernewroku");
-    var base = "http://evening-garden-3648.herokuapp.com/reg/";
-    alert(base + "userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
-    dojo.io.script.get({
-        url: base + "userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email,
-        callbackParamName: "callback",
-        load: function (result) {
-            if (result["Status"] == "success") {
-                alert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
-                window.tarImage = window.defImage;
-                window.currList = window.defList;
-                window.currCat = window.defCat;
-                window.justCreatePlayer = true;
-                //currView.performTransition("ImageView", 1, "slide", null);
-                updatePlayers();
-                if(window.shuffle){
-                           // if random, then switch to normal!
-                    mediashuffle();
-                }
-                //two possible cases, either from roku or chromecast, so we just make both registraion view gone
-                dojo.style(dojo.byId("registernewroku"),"display", "none");           
-                gotoView("registernewchromecast","blankview");
-                window.switchView = true;
-                updateImages(-1);
-               
-
-            } else {
-                alert(result["Message"]);
-            }
-
-        }
-    });
-}
-
-function fillswitch() {
-    //alert(window.fill);
-	var fillsw = dijit.registry.byId("fillswitch");
-    if (window.fill) {
-	    fillsw.set('label', "Not Active");
-        window.fill = false;
-    } else {
-        window.fill = true;
-		fillsw.set('label', "Active");
-    }
-    syncImage();
-    //alert(window.fill);
-}
-function burninsaver() {
-    //alert(window.fill);
-	var fillsw = dijit.registry.byId("burninsaver");    
-	var autoplay = document.getElementById("AutoPlaySelect");
-    var autoplayfixed = document.getElementById("AutoPlayFixed");
-
-    if (window.burn) {
-	    fillsw.set('label', "Not Active");
-
-		 autoplay.style.visibility = "visible";
-		 autoplayfixed.style.visibility = "hidden";
-		 window.burn=false;
-    } else {
-
-		fillsw.set('label', "Active");
-		 autoplay.style.visibility = "hidden";
-		 autoplayfixed.style.visibility = "visible";
-		 setAuto(3600000);
-		 window.burn=true;
-    }
-    //alert(window.fill);
-}
-
-
 
 function setCookie(c_name, value, exdays) {
     var exdate = new Date();

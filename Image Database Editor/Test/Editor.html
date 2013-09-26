@@ -59,7 +59,10 @@
 						<div id="divMainImageDetail">
 							<table id="tableImageDetail" width="100%">
 								<tr>	
-									<td> <label>Title:</label> </td> <td colspan="5"> <textarea type="text" id="imgTitle" style="width:100%;resize:none"></textarea> </td>						
+									<td> <label>Title:</label> </td> <td colspan="5"> <textarea rows="4" id="imgTitle" style="width:100%;resize:none"></textarea> </td>						
+								</tr>
+								<tr>														
+									<td> <a class="linkLabel" href="javascript: void(0)">More Info:</a> </td> <td colSpan="5"> <input type="text" id="imgMoreInfoLink" style="width:100%"/> </td>
 								</tr>
 								<tr>								
 									<td> <label>Artist First Name:</label> </td> <td> <input type="text" id="imgArtist"/> </td>
@@ -99,22 +102,19 @@
 									<td> <label>Copyright Detail:</label> </td> <td colSpan="3"> <input type="text" id="imgCopyrightDetail" style="width:100%"/> </td>
 								</tr>
 								<tr>														
-									<td> <label>More Info:</label> </td> <td colSpan="5"> <input type="text" id="imgMoreInfoLink" style="width:100%"/> </td>
+									<td> <a class="linkLabel" href="javascript: void(0)">Video:</a> </td> <td colSpan="5"> <input type="text" id="imgVideo" style="width:100%"/> </td>
 								</tr>
 								<tr>														
-									<td> <label>Video:</label> </td> <td colSpan="5"> <input type="text" id="imgVideo" style="width:100%"/> </td>
+									<td> <a class="linkLabel" href="javascript: void(0)">Thumbnail:</a> </td> <td colSpan="5"> <input type="text" id="imgThumbnail" style="width:100%"/> </td>
 								</tr>
 								<tr>														
-									<td> <label>Thumbnail:</label> </td> <td colSpan="5"> <input type="text" id="imgThumbnail" style="width:100%"/> </td>
-								</tr>
-								<tr>														
-									<td> <label>Url:</label> </td> <td colSpan="5"> <input type="text" id="imgUrl" style="width:100%"/> </td>
+									<td> <a class="linkLabel" href="javascript: void(0)">Url:</a> </td> <td colSpan="5"> <input type="text" id="imgUrl" style="width:100%"/> </td>
 								</tr>
 								<tr>
 									<td> <label>Image #:</label> </td> <td> <input type="text" id="imgId" style="border:0" readonly="true"/></td>
 								</tr>
 								<tr>
-									<td> <label>View Lists:</label> </td> <td colSpan="4"> <label type="text" id="imgViewLists" style="width:100%;border:0" readonly="true"/> </td>
+									<td> <label>View Lists:</label> </td> <td colSpan="4"> <textarea rows="2" id="imgViewLists" style="width:100%;border:0;resize:none" readonly="true"></textarea> </td>
 									<td> <button type="button" id="btnSave">Save</button></td>
 								</tr>
 							</table>
@@ -127,7 +127,7 @@
 
 		<tr>
 		<td colspan="2" id="footer" >
-			Copyright © ArtKick</td>
+			Copyright 2013, Zwamy, Inc.</td>
 		</tr>
 	</table>
 
@@ -202,6 +202,15 @@
 				  enableSaveImageAttr(false);
 				}
 			  }								
+		});
+		
+		$('.linkLabel').click(function (e) {
+			//find the next input field to get the url 
+			var url = $(this).parent().next().find('input[type=text]').val();
+			//todo: can also check if valid url
+			if (url != null && url.length > 0)
+				window.open(url);
+			else alert('Not a valid url.');
 		});
 		
 		body_sizer();
@@ -516,31 +525,43 @@
 	
 	function getImageAttributes(value) {
 		var strAttrs =  
-			'title="' + escapedQuoteConversion(value["Title"]) + '" ' +
-			'artistFN="' + value["Artist First N"] + '" ' +
-			'artistLN="' + value["Artist Last N"] + '" ' +
-			'workDate="' + value["Year"] + '" ' +
-			'birthDate="' + value["Birthdate"] + '" ' +
-			'deathDate="' + value["Died"] + '" ' +
-			'artistInfo="' + value["Artist Info"] + '" ' +
-			'genre="' + value["Genre"] + '" ' +
-			'genreLink="' + value["Genre Link"] + '" ' +
-			'source="' + value["Source"] + '" ' +
-			'sourcePageLink="' + value["Source Page Link"] + '" ' +
-			'medium="' + value["Type"] + '" ' +
-			'mediumDetail="' + value["Type  Detail"] + '" ' +
-			'aspectRatio="' + value["Aspect Ratio"] + '" ' +
-			'subject="' + value["Subject"] + '" ' +
-			'credit="' + value["Credit"] + '" ' +
-			'copyright="' + value["Copyright"] + '" ' +
-			'copyrightDetail="' + value["Copyright Detail"] + '" ' +
-			'location="' + value["Location"] + '" ' +
-			'moreInfoLink="' + value["More Info Link"] + '" ' +
-			'video="' + value["Video"] + '" ' +
-			'thumbnail="' + value["thumbnail"] + '" ' +
-			'url="' + value["url"] + '" ' +
+			'title="' + getImageAttr(value, "Title", true) + '" ' +
+			'artistFN="' + getImageAttr(value, "Artist First N", false) + '" ' +
+			'artistLN="' + getImageAttr(value, "Artist Last N", false) + '" ' +
+			'workDate="' + getImageAttr(value, "Year", false) + '" ' +
+			'birthDate="' + getImageAttr(value, "Birthdate", false) + '" ' +
+			'deathDate="' + getImageAttr(value, "Died", false) + '" ' +
+			'artistInfo="' + getImageAttr(value, "Artist Info", false) + '" ' +
+			'genre="' + getImageAttr(value, "Genre", false) + '" ' +
+			'genreLink="' + getImageAttr(value, "Genre Link", false) + '" ' +
+			'source="' + getImageAttr(value, "Source", false) + '" ' +
+			'sourcePageLink="' + getImageAttr(value, "Source Page Link", false) + '" ' +
+			'medium="' + getImageAttr(value, "Type", false) + '" ' +
+			'mediumDetail="' + getImageAttr(value, "Type  Detail", false) + '" ' +
+			'aspectRatio="' + getImageAttr(value, "Aspect Ratio", false) + '" ' +
+			'subject="' + getImageAttr(value, "Subject", false) + '" ' +
+			'credit="' + getImageAttr(value, "Credit", false) + '" ' +
+			'copyright="' + getImageAttr(value, "Copyright", false) + '" ' +
+			'copyrightDetail="' + getImageAttr(value, "Copyright Detail", false) + '" ' +
+			'location="' + getImageAttr(value, "Location", false) + '" ' +
+			'moreInfoLink="' + getImageAttr(value, "More Info Link", false) + '" ' +
+			'video="' + getImageAttr(value, "Video", false) + '" ' +
+			'thumbnail="' + getImageAttr(value, "thumbnail", false) + '" ' +
+			'url="' + getImageAttr(value, "url", false) + '" ' +
 			'viewLists="' + getImageViewListAttribute(value["viewlists2"]) + '" ';
 		return strAttrs;
+	}
+	
+	function getImageAttr(value, attr, escape)
+	{
+		var attrValue = value[attr];
+		//note: returns undefined if attribute is not present at all
+		if (attrValue == null)
+			return '';
+		else if (escape == true)
+			return escapedQuoteConversion(attrValue);
+		else
+			return attrValue;
 	}
 	
 	function escapedQuoteConversion(str)
@@ -589,7 +610,7 @@
 		$('#imgVideo').val(image.attr('video'));
 		$('#imgThumbnail').val(image.attr('thumbnail'));
 		$('#imgUrl').val(image.attr('url'));
-		$('#imgViewLists').html(image.attr('viewLists'));
+		$('#imgViewLists').val(image.attr('viewLists'));
 		$('#imgId').val(image.attr('id'));
 	}
 	
@@ -965,7 +986,6 @@
 				//alert('create category ' + newName + id);
 				createCategory(id, newName);
 			}
-			
 		}
 	}
 	
