@@ -342,7 +342,7 @@ function(
 			}
 
 		},
-	
+		
 		_formatColumnHeaderLabel: function(d){
 			// summary:
 			//		Computes the column header label for the specified date.
@@ -355,6 +355,17 @@ function(
 
 			return this.renderData.dateLocaleModule.getNames('days', this.columnHeaderLabelLength ? this.columnHeaderLabelLength : 'wide', 'standAlone')[d.getDay()];
 		},
+		
+		// cellHeaderShortPattern: String
+		//		Custom date/time pattern for grid cell label to override default one coming from the CLDR.
+		//		See dojo/date/locale documentation for format string.
+		cellHeaderShortPattern: null,
+		
+		// cellHeaderLongPattern: String
+		//		Custom date/time pattern for grid cell label to override default one coming from the CLDR.
+		//		The long pattern is used for the first day of month or the first displayed day of a month.
+		//		See dojo/date/locale documentation for format string.
+		cellHeaderLongPattern: null,
 		
 		_formatGridCellLabel: function(d, row, col){
 			// summary:
@@ -369,7 +380,6 @@ function(
 			//		The column that displays the current date.
 			// tags:
 			//		protected
-
 
 			var isFirstDayOfMonth = row == 0 && col == 0 || d.getDate() == 1;
 			var format, rb;

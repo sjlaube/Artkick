@@ -1,15 +1,16 @@
 require({cache:{
 'url:dijit/layout/templates/TabContainer.html':"<div class=\"dijitTabContainer\">\n\t<div class=\"dijitTabListWrapper\" data-dojo-attach-point=\"tablistNode\"></div>\n\t<div data-dojo-attach-point=\"tablistSpacer\" class=\"dijitTabSpacer ${baseClass}-spacer\"></div>\n\t<div class=\"dijitTabPaneWrapper ${baseClass}-container\" data-dojo-attach-point=\"containerNode\"></div>\n</div>\n"}});
 define("dijit/layout/_TabContainerBase", [
-	"dojo/text!./templates/TabContainer.html",
-	"./StackContainer",
-	"./utils", // marginBox2contextBox, layoutChildren
-	"../_TemplatedMixin",
 	"dojo/_base/declare", // declare
 	"dojo/dom-class", // domClass.add
 	"dojo/dom-geometry", // domGeometry.contentBox
-	"dojo/dom-style" // domStyle.style
-], function(template, StackContainer, layoutUtils, _TemplatedMixin, declare, domClass, domGeometry, domStyle){
+	"dojo/dom-style", // domStyle.style
+	"./StackContainer",
+	"./utils", // marginBox2contextBox, layoutChildren
+	"../registry",
+	"../_TemplatedMixin",
+	"dojo/text!./templates/TabContainer.html"
+], function(declare, domClass, domGeometry, domStyle, StackContainer, layoutUtils, registry, _TemplatedMixin, template){
 
 	// module:
 	//		dijit/layout/_TabContainerBase
@@ -145,6 +146,18 @@ define("dijit/layout/_TabContainerBase", [
 				this.tablist.destroy(preserveDom);
 			}
 			this.inherited(arguments);
+		},
+
+		selectChild: function(/*dijit/_WidgetBase|String*/ page, /*Boolean*/ animate){
+			// Override _StackContainer.selectChild() so the page's focus isn't left in a strange state.
+
+			if(this._focused){
+				// Focus must be inside the currently selected tab,
+				// or on the currently selected tab label.
+				page = registry.byId(page);
+				this.tablist.pane2button(page.id).focus();
+			}
+			return this.inherited(arguments);
 		}
 	});
 });

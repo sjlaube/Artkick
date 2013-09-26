@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/storage/Provider", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
+define("dojox/storage/Provider", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
 dojo.provide("dojox.storage.Provider");
 
 dojo.declare("dojox.storage.Provider", null, {

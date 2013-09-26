@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/lang/functional/zip", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
+define("dojox/lang/functional/zip", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
 dojo.provide("dojox.lang.functional.zip");
 
 // This module adds high-level functions and related constructs:

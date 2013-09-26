@@ -141,6 +141,10 @@ define("dijit/_WidgetBase", [
 		"class": "",
 		_setClassAttr: { node: "domNode", type: "class" },
 
+		// Override automatic assigning type --> focusNode, it causes exception on IE6-8.
+		// Instead, type must be specified as ${type} in the template, as part of the original DOM.
+		_setTypeAttr: null,
+
 		// style: String||Object
 		//		HTML style attributes as cssText string or name/value hash
 		style: "",
@@ -1148,10 +1152,13 @@ define("dijit/_WidgetBase", [
 			//		Wrapper to setTimeout to avoid deferred functions executing
 			//		after the originating widget has been destroyed.
 			//		Returns an object handle with a remove method (that returns null) (replaces clearTimeout).
-			// fcn: function reference
-			// delay: Optional number (defaults to 0)
+			// fcn: Function
+			//		Function reference.
+			// delay: Number?
+			//		Delay, defaults to 0.
 			// tags:
-			//		protected.
+			//		protected
+
 			var timer = setTimeout(lang.hitch(this,
 				function(){
 					if(!timer){

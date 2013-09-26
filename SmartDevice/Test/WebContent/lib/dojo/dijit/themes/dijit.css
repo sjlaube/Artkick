@@ -827,18 +827,14 @@ body .dijitAlignClient { position: absolute; }
 .dijitFieldset {
 	border: 1px solid gray;
 }
-.dijitTitlePaneTitle, .dijitFieldset legend {
+.dijitTitlePaneTitle, .dijitFieldsetTitle {
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 }
-.dijitFixedOpen, .dijitFixedClosed {
+.dijitTitlePaneTitleFixedOpen, .dijitTitlePaneTitleFixedClosed,
+.dijitFieldsetTitleFixedOpen, .dijitFieldsetTitleFixedClosed {
 	
 	cursor: default;
-}
-.dijitFixedOpen .dijitArrowNode, .dijitFixedOpen .dijitArrowNodeInner,
-.dijitFixedClosed .dijitArrowNode, .dijitFixedClosed .dijitArrowNodeInner{
-	
-	display: none;
 }
 .dijitTitlePaneTitle * {
 	vertical-align: middle;
@@ -849,12 +845,19 @@ body .dijitAlignClient { position: absolute; }
 }
 .dj_a11y .dijitTitlePane .dijitArrowNodeInner, .dj_a11y .dijitFieldset .dijitArrowNodeInner {
 	
-	display:inline !important;
+	display: inline;
 	font-family: monospace;		
 }
 .dj_a11y .dijitTitlePane .dijitArrowNode, .dj_a11y .dijitFieldset .dijitArrowNode {
 	
-	display:none;
+	display: none;
+}
+.dijitTitlePaneTitleFixedOpen .dijitArrowNode, .dijitTitlePaneTitleFixedOpen .dijitArrowNodeInner,
+.dijitTitlePaneTitleFixedClosed .dijitArrowNode, .dijitTitlePaneTitleFixedClosed .dijitArrowNodeInner,
+.dijitFieldsetTitleFixedOpen .dijitArrowNode, .dijitFieldsetTitleFixedOpen .dijitArrowNodeInner,
+.dijitFieldsetTitleFixedClosed .dijitArrowNode, .dijitFieldsetTitleFixedClosed .dijitArrowNodeInner {
+	
+	display: none !important;	
 }
 .dj_ie6 .dijitTitlePaneContentOuter,
 .dj_ie6 .dijitTitlePane .dijitTitlePaneTitle {

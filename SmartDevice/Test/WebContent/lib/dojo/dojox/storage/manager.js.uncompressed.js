@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/storage/manager", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
+define("dojox/storage/manager", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
 dojo.provide("dojox.storage.manager");
 //dojo.require("dojo.AdapterRegistry");
 // FIXME: refactor this to use an AdapterRegistry

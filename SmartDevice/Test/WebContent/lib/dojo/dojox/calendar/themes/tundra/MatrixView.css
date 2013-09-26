@@ -1,3 +1,14 @@
+.event-header {
+  font-weight: bold;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-top-right-radius: 5px;
+  -moz-border-top-left-radius: 5px;
+  white-space: nowrap;
+  padding: 1px 2px 2px 1px;
+}
 .tundra .dojoxCalendarMatrixView {
   cursor: default;
   -moz-user-select: none;
@@ -20,6 +31,7 @@
   padding: 0;
   border-collapse: collapse;
   table-layout: fixed;
+  
 }
 .tundra .dojoxCalendarMatrixView .dojoxCalendarGridTable tr {
   -webkit-box-sizing: border-box;
@@ -101,6 +113,7 @@
   height: 100%;
   table-layout: fixed;
   border-collapse: collapse;
+  
 }
 .tundra .dojoxCalendarMatrixView .dojoxCalendarColumnHeaderTable td {
   overflow: hidden;
@@ -143,6 +156,7 @@
   table-layout: fixed;
   margin: 0;
   padding: 0;
+  
 }
 .tundra .dojoxCalendarMatrixView .dojoxCalendarRowHeaderTable tr {
   -webkit-box-sizing: border-box;
@@ -220,7 +234,7 @@
 .tundra .dojoxCalendarMatrixView .dojoxCalendarEvent {
   position: absolute;
   text-align: left;
-  color: #000000;
+  color: #000;
   cursor: default;
   white-space: nowrap;
 }
@@ -235,7 +249,7 @@
   right: 0;
   top: 0;
   bottom: 0;
-  color: #000000;
+  color: #000;
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -248,7 +262,7 @@
   background-color: #660000;
 }
 .tundra .dojoxCalendarMatrixView .dojoxCalendarEvent.Edited {
-  color: #fff;
+  color: #FFF;
   font-weight: bold;
   text-decoration: none;
 }
@@ -274,7 +288,7 @@
   color: #FFF;
 }
 .tundra .dojoxCalendarMatrixView .dojoxCalendarEvent.dojoxCalendarLabel.Focused {
-  border: dashed 1px #000000;
+  border: dashed 1px #000;
 }
 .tundra .dojoxCalendarMatrixView .dojoxCalendarEvent.dojoxCalendarHorizontal .labels {
   position: absolute;
@@ -292,7 +306,7 @@
 }
 .tundra .dojoxCalendarMatrixView .dojoxCalendarEvent .handle {
   z-index: 2;
-  background: #00FF00;
+  background-color: #F00;
   filter: alpha(opacity=0);
   opacity: 0;
   -moz-user-select: none;

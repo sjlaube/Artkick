@@ -1,0 +1,2 @@
+//>>built
+define("demos/mobileGallery/src/badges",["dojo/dom","dijit/registry","dojox/mobile/parser","dojox/mobile","dojox/mobile/compat","dojox/mobile/IconContainer","dojox/mobile/Badge","dojox/mobile/RoundRect"],function(_1,_2){setBadgeValue=function(i){var w=_2.byId("icon"+i);var _3=w.get("badge");var _4=_1.byId("val").value||"0";w.set("badge",_3?null:_4);};});

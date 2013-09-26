@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/data/demos/widgets/FlickrViewList", ["dijit","dojo","dojox","dojo/require!dojox/dtl/_Templated,dijit/_Widget"], function(dijit,dojo,dojox){
+define("dojox/data/demos/widgets/FlickrViewList", ["dojo","dijit","dojox","dojo/require!dojox/dtl/_Templated,dijit/_Widget"], function(dojo,dijit,dojox){
 dojo.provide("dojox.data.demos.widgets.FlickrViewList");
 dojo.require("dojox.dtl._Templated");
 dojo.require("dijit._Widget");

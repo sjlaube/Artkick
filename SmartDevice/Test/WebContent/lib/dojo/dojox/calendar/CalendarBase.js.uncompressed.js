@@ -177,10 +177,24 @@ _nls){
 		//		The end date of the displayed time interval (included).		
 		endDate: null,
 		
-		// date:Date
+		// date: Date
 		//		The reference date used to determine along with the <code>dateInterval</code> 
 		//		and <code>dateIntervalSteps</code> properties the time interval to display.
 		date: null,
+		
+		// minDate: Date
+		//		The minimum date. 
+		//		If date property is set, the displayed time interval the most in the past 
+		//		will the time interval containing this date.
+		//		If startDate property is set, this mininum value of startDate. 
+		minDate: null,
+
+		// maxDate: Date
+		//		The maximum date. 
+		//		If date is set, the displayed time interval the most in the future
+		//		will the time interval containing this date.
+		//		If endDate property is set, this mininum value of endDate.
+		maxDate: null,
 	
 		// dateInterval:String
 		//		The date interval used to compute along with the <code>date</code> and 
@@ -271,7 +285,7 @@ _nls){
 			this.views = [];
 			
 			this.invalidatingProperties = ["store", "items", "startDate", "endDate", "views", 
-				"date", "dateInterval", "dateIntervalSteps", "firstDayOfWeek"];
+				"date", "minDate", "maxDate", "dateInterval", "dateIntervalSteps", "firstDayOfWeek"];
 			
 			args = args || {};
 			this._calendar = args.datePackage ? args.datePackage.substr(args.datePackage.lastIndexOf(".")+1) : this._calendar;
@@ -304,16 +318,19 @@ _nls){
 		_setStartDateAttr: function(value){
 			this._set("startDate", value);
 			this._timeRangeInvalidated = true;
+			this._startDateChanged = true;
 		},
 		
 		_setEndDateAttr: function(value){
 			this._set("endDate", value);
 			this._timeRangeInvalidated = true;
+			this._endDateChanged = true;
 		},
 		
-		_setDateAttr: function(value){
+		_setDateAttr: function(value){				
 			this._set("date", value);
 			this._timeRangeInvalidated = true;
+			this._dateChanged = true;
 		},
 		
 		_setDateIntervalAttr: function(value){
@@ -338,6 +355,7 @@ _nls){
 				view.set("textDir", value);
 			});
 		},
+		
 		
 		///////////////////////////////////////////////////
 		//
@@ -379,6 +397,17 @@ _nls){
 				this._set("firstDayOfWeek", 0);
 			}
 			
+			var minDate = this.get("minDate");
+			var maxDate = this.get("maxDate");
+			
+			if(minDate && maxDate){
+				if(cal.compare(minDate, maxDate) > 0){
+					var t = minDate;
+					this._set("minDate", maxDate);
+					this._set("maxDate", t);					
+				}
+			}
+			
 			if(date == null && (startDate != null || endDate != null)){
 				
 				if(startDate == null){
@@ -393,7 +422,7 @@ _nls){
 					this._timeRangeInvalidated = true;
 				}
 				
-				if(cal.compare(startDate, endDate) >= 0){
+				if(cal.compare(startDate, endDate) > 0){
 					endDate = cal.add(startDate, "day", 1);
 					this._set("endDate", endDate);
 					this._timeRangeInvalidated = true;
@@ -425,17 +454,43 @@ _nls){
 			
 			if(this._timeRangeInvalidated){
 				this._timeRangeInvalidated = false;
+				
 				var timeInterval = this.computeTimeInterval();
 				
 				if(this._timeInterval == null || 
 					 cal.compare(this._timeInterval[0], timeInterval[0]) != 0 || 
 					 cal.compare(this._timeInterval[1], timeInterval[1]) != 0){
+					
+					if(this._dateChanged){
+						this._lastValidDate = this.get("date");;						
+						this._dateChanged = false;
+					}else if(this._startDateChanged || this._endDateChanged){
+						this._lastValidStartDate = this.get("startDate");
+						this._lastValidEndDate = this.get("endDate");						 
+						this._startDateChanged = false;
+						this._endDateChanged = false;
+					}					
+					
 					this.onTimeIntervalChange({
 						oldStartTime: this._timeInterval == null ? null : this._timeInterval[0],
 						oldEndTime: this._timeInterval == null ? null : this._timeInterval[1],
 						startTime: timeInterval[0],
 						endTime: timeInterval[1]
 					});
+				}else{		
+					
+					if(this._dateChanged){
+						this._dateChanged = false;
+						if(this.lastValidDate != null){
+							this._set("date", this.lastValidDate);
+						}
+					}else if(this._startDateChanged || this._endDateChanged){
+						this._startDateChanged = false;
+						this._endDateChanged = false;
+						this._set("startDate", this._lastValidStartDate);
+						this._set("endDate", this._lastValidEndDate);					 						
+					}					
+					return;
 				}
 				
 				this._timeInterval = timeInterval;
@@ -449,27 +504,60 @@ _nls){
 					return;
 				}
 				
-				if(this.animateRange && (!has("ie") || has("ie")>8) ){
-					if(this.currentView){ // there's a view to animate
-						var ltr = this.isLeftToRight();
-						var inLeft = this._animRangeInDir=="left" || this._animRangeInDir == null; 
-						var outLeft = this._animRangeOutDir=="left" || this._animRangeOutDir == null;
-						this._animateRange(this.currentView.domNode, outLeft && ltr, false, 0, outLeft ? -100 : 100, 
-							lang.hitch(this, function(){
-								this.animateRangeTimer = setTimeout(lang.hitch(this, function(){
-									this._applyViewChange(view, index, timeInterval, duration);
-									this._animateRange(this.currentView.domNode, inLeft && ltr, true, inLeft ? -100 : 100, 0);
-									this._animRangeInDir = null;
-									this._animRangeOutDir = null;
-								}), 100);	// setTimeout give time for layout of view.							
-							}));
-					}else{
-						this._applyViewChange(view, index, timeInterval, duration);						
-					}
-				}else{					
-					this._applyViewChange(view, index, timeInterval, duration);
-				}
+				this._performViewTransition(view, index, timeInterval, duration);							
 			}
+		},
+		
+		_performViewTransition: function(view, index, timeInterval, duration){
+			var oldView = this.currentView;
+			
+			if(this.animateRange && (!has("ie") || has("ie")>8) ){
+				if(oldView){ // there's a view to animate
+					oldView.beforeDeactivate();
+					var ltr = this.isLeftToRight();
+					var inLeft = this._animRangeInDir=="left" || this._animRangeInDir == null; 
+					var outLeft = this._animRangeOutDir=="left" || this._animRangeOutDir == null;						
+					this._animateRange(this.currentView.domNode, outLeft && ltr, false, 0, outLeft ? -100 : 100, 
+						lang.hitch(this, function(){
+							oldView.afterDeactivate();
+							view.beforeActivate();
+							this.animateRangeTimer = setTimeout(lang.hitch(this, function(){
+								this._applyViewChange(view, index, timeInterval, duration);
+								this._animateRange(this.currentView.domNode, inLeft && ltr, true, inLeft ? -100 : 100, 0, function(){
+									view.afterActivate();
+								});
+								this._animRangeInDir = null;
+								this._animRangeOutDir = null;
+							}), 100);	// setTimeout give time for layout of view.							
+						}));
+				}else{
+					view.beforeActivate();
+					this._applyViewChange(view, index, timeInterval, duration);	
+					view.afterActivate();
+				}
+			}else{
+				if(this.currentView){
+					oldView.beforeDeactivate();
+					
+				}
+				view.beforeActivate();
+				this._applyViewChange(view, index, timeInterval, duration);
+				if(this.currentView){
+					oldView.afterDeactivate();
+				}
+				view.afterActivate();
+			}
+		},
+		
+		onViewConfigurationChange: function(view){
+			// summary:
+			//		Event dispatched when the view has been configured after the queried 
+			//		time range and before the current view is changed (if needed).
+			//		
+			// view: ViewBase
+			//		The view that has been configured. 
+			// tags:
+			//		callback
 		},
 		
 		_applyViewChange: function(view, index, timeInterval, duration){			
@@ -487,6 +575,7 @@ _nls){
 			//		protected
 			
 			this._configureView(view, index, timeInterval, duration);
+			this.onViewConfigurationChange(view);
 			
 			if(index != this._currentViewIndex){
 				if(this.currentView == null){
@@ -514,19 +603,64 @@ _nls){
 		_timeInterval: null,
 		
 		computeTimeInterval: function(){
+			
+			var d = this.get("date");
+			var minDate = this.get("minDate");
+			var maxDate = this.get("maxDate");
+			var cal = this.dateModule;
+						
+			if(d == null){
+				var startDate = this.get("startDate");
+				var endDate = cal.add(this.get("endDate"), "day", 1);
+				
+				if(minDate != null || maxDate != null){
+					var dur = this.dateModule.difference(startDate, endDate, "day");
+					if(cal.compare(minDate, startDate) > 0){
+						startDate = minDate;
+						endDate = cal.add(startDate, "day", dur);
+					}
+					if(cal.compare(maxDate, endDate) < 0){
+						endDate = maxDate;
+						startDate = cal.add(endDate, "day", -dur);
+					}					
+					if(cal.compare(minDate, startDate) > 0){
+						startDate = minDate;
+						endDate = maxDate;
+					}					
+				}
+				return [ this.floorToDay(startDate), this.floorToDay(endDate) ];
+				
+			}else{
+								
+				var interval = this._computeTimeIntervalImpl(d);				
+								
+				if(minDate != null){					
+					var minInterval = this._computeTimeIntervalImpl(minDate);					
+					if(cal.compare(minInterval[0], interval[0]) > 0){
+						interval = minInterval;
+					}
+				}
+				
+				if(maxDate != null){					
+					var maxInterval = this._computeTimeIntervalImpl(maxDate);					
+					if(cal.compare(maxInterval[1], interval[1]) < 0){
+						interval = maxInterval;
+					}
+				}
+				
+				return interval;				
+			}
+		},
+		
+		_computeTimeIntervalImpl: function(d){
 			// summary:
 			//		Computes the displayed time interval according to the date, dateInterval and 
 			//		dateIntervalSteps if date is not null or startDate and endDate properties otherwise.
 			// tags:
 			//		protected
 					
-			var cal = this.dateModule;
-			var d = this.get("date");
+			var cal = this.dateModule;			
 			
-			if(d == null){
-				return [ this.floorToDay(this.get("startDate")), cal.add(this.get("endDate"), "day", 1) ];
-			}
-				
 			var s = this.floorToDay(d);
 			var di = this.get("dateInterval");
 			var dis = this.get("dateIntervalSteps");
@@ -544,6 +678,8 @@ _nls){
 					s.setDate(1);
 					e = cal.add(s, "month", dis);						
 					break;
+				default:
+					e = cal.add(s, "day", 1);
 			}				
 			return [s, e];						
 		},
@@ -1059,14 +1195,14 @@ _nls){
 			if(this.previousButton){
 				this.previousButton.set("label", _nls[rtl?"nextButton":"previousButton"]);
 				this.own(
-					on(this.previousButton, "click", lang.hitch(this, rtl?this.nextRange:this.previousRange))
+					on(this.previousButton, "click", lang.hitch(this, this.previousRange))
 				);	
 			}
 			
 			if(this.nextButton){
 				this.nextButton.set("label", _nls[rtl?"previousButton":"nextButton"]);
 				this.own(
-					on(this.nextButton, "click", lang.hitch(this, rtl?this.previousRange:this.nextRange))
+					on(this.nextButton, "click", lang.hitch(this, this.nextRange))
 				);	
 			}
 			

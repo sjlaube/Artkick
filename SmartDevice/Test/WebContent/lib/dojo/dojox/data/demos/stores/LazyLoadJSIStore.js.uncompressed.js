@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/data/demos/stores/LazyLoadJSIStore", ["dijit","dojo","dojox","dojo/require!dojo/data/ItemFileReadStore"], function(dijit,dojo,dojox){
+define("dojox/data/demos/stores/LazyLoadJSIStore", ["dojo","dijit","dojox","dojo/require!dojo/data/ItemFileReadStore"], function(dojo,dijit,dojox){
 dojo.provide("dojox.data.demos.stores.LazyLoadJSIStore");
 dojo.require("dojo.data.ItemFileReadStore");
 

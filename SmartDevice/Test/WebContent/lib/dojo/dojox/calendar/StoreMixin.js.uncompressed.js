@@ -38,6 +38,11 @@ define("dojox/calendar/StoreMixin", ["dojo/_base/declare", "dojo/_base/array", "
 		//		The attribute of the store item that contains the all day state of 
 		//		the events represented by this item.	Default is "allDay".
 		allDayAttr: "allDay",
+		
+		// subColumnAttr: String
+		//		The attribute of the store item that contains the sub column name of 
+		//		the events represented by this item.	Default is "calendar".
+		subColumnAttr: "calendar",
 	
 		// cssClassFunc: Function
 		//		Optional function that returns a css class name to apply to item renderers that are displaying the specified item in parameter. 
@@ -84,6 +89,7 @@ define("dojox/calendar/StoreMixin", ["dojo/_base/declare", "dojo/_base/array", "
 				startTime: (this.decodeDate && this.decodeDate(item[this.startTimeAttr])) || this.newDate(item[this.startTimeAttr], this.dateClassObj),
 				endTime: (this.decodeDate && this.decodeDate(item[this.endTimeAttr])) || this.newDate(item[this.endTimeAttr], this.dateClassObj),
 				allDay: item[this.allDayAttr] != null ? item[this.allDayAttr] : false,
+				subColumn: item[this.subColumnAttr],   
 				cssClass: this.cssClassFunc ? this.cssClassFunc(item) : null 
 			};
 		},
@@ -114,7 +120,10 @@ define("dojox/calendar/StoreMixin", ["dojo/_base/declare", "dojo/_base/array", "
 			item[this.summaryAttr] = renderItem.summary;
 			item[this.startTimeAttr] = (this.encodeDate && this.encodeDate(renderItem.startTime)) || renderItem.startTime;
 			item[this.endTimeAttr] = (this.encodeDate && this.encodeDate(renderItem.endTime)) || renderItem.endTime;
-			return lang.mixin(store.get(renderItem.id), item);
+			if(renderItem.subColumn){
+				item[this.subColumnAttr] = renderItem.subColumn;
+			}
+			return this.getItemStoreState(renderItem) == "unstored" ? item : lang.mixin(renderItem._item, item);
 		},			
 		
 		_computeVisibleItems: function(renderData){
@@ -179,6 +188,21 @@ define("dojox/calendar/StoreMixin", ["dojo/_base/declare", "dojo/_base/array", "
 				}
 			}else if(newIndex!=-1){
 				// this is a add
+				
+				var tempId = object.temporaryId;
+				if(tempId){
+					// this item had a temporary id that was changed
+					var l = this.items.length; 
+					for(var i=l-1; i>=0; i--){
+						if(this.items[i].id == tempId){
+							this.items[i] = newItem;
+							break;
+						}
+					}
+					this._cleanItemStoreState(tempId);
+					this._setItemStoreState(newItem, "storing");
+				}
+				
 				var s = this._getItemStoreStateObj(newItem);
 				if(s){
 					// if the item is at the correct index (creation)
@@ -287,6 +311,20 @@ define("dojox/calendar/StoreMixin", ["dojo/_base/declare", "dojo/_base/array", "
 				return s.state;								
 			}
 			return "stored";		
+		},
+		
+		_cleanItemStoreState: function(id){	
+			
+			if(this.owner){
+				return this.owner._cleanItemStoreState(id);				
+			}
+			
+			var s = this._itemStoreState[id];
+			if(s){
+				delete this._itemStoreState[id];
+				return true;
+			}
+			return false;
 		},
 		
 		_setItemStoreState: function(/*Object*/item, /*String*/state){

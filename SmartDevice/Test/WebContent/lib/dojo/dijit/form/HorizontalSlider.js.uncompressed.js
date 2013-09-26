@@ -210,7 +210,7 @@ define("dijit/form/HorizontalSlider", [
 			this.valueNode.value = value;
 			this.focusNode.setAttribute("aria-valuenow", value);
 			this.inherited(arguments);
-			var percent = (value - this.minimum) / (this.maximum - this.minimum);
+			var percent = this.maximum > this.minimum ? ((value - this.minimum) / (this.maximum - this.minimum)) : 0;
 			var progressBar = (this._descending === false) ? this.remainingBar : this.progressBar;
 			var remainingBar = (this._descending === false) ? this.progressBar : this.remainingBar;
 			if(this._inProgressAnim && this._inProgressAnim.status != "stopped"){
@@ -246,7 +246,7 @@ define("dijit/form/HorizontalSlider", [
 		},
 
 		_bumpValue: function(signedChange, /*Boolean?*/ priorityChange){
-			if(this.disabled || this.readOnly){
+			if(this.disabled || this.readOnly || (this.maximum <= this.minimum)){
 				return;
 			}
 			var s = domStyle.getComputedStyle(this.sliderBarContainer);

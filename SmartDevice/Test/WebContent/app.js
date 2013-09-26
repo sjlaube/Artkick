@@ -440,6 +440,12 @@ require(["jquery",
 		                    hidemenu();
 		                    dijit.registry.byId("tabnowshowing").set('selected', true);
                            },50);
+						   if(firstdisplay)
+						   {
+						   setTimeout(function(){dijit.registry.byId('Swipehint').show()},200);
+				           setTimeout(function(){dijit.registry.byId('Swipehint').hide()},1500);
+						   firstdisplay=false;
+						   }
                         }
                     }
                 });
@@ -1272,7 +1278,8 @@ require(["jquery",
             on(imageView, "beforeTransitionIn", 
                  function(){
                  	dijit.registry.byId("tabnowshowing").set('selected', true);
-                 	
+
+					
                  	
                  });
             
@@ -2290,6 +2297,7 @@ function cleanUp() {
     window.foundIndex = false;
     window.selectedPlayers = {};
     window.justLogin = true;
+	window.firstdisplay = true;
 	window.justRefresh = false;
     window.imageMap = {};
     window.email = null;

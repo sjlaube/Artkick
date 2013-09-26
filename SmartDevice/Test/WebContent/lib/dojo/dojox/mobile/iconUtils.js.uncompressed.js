@@ -115,7 +115,7 @@ define("dojox/mobile/iconUtils", [
 					nDiv = this._domButtons[btnClass];
 				}
 				var props = null;
-				if(has("bb") && config["mblBBBoxShadowWorkaround"] !== false){
+				if(has("bb") && config.mblBBBoxShadowWorkaround !== false){
 					// Removes box-shadow because BlackBerry incorrectly renders it.
 					props = {style:"-webkit-box-shadow:none"};
 				}
