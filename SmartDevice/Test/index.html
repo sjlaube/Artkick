@@ -20,7 +20,7 @@
 ['BlackBerry','',['WebContent/themes/blackberry/blackberry.css']],
 ['iPad','',['WebContent/themes/ipad/ipad.css']],['iPhone','',['WebContent/themes/iphone/iphone.css']],
 ['.*','',['WebContent/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script> 
- <script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script>
+ <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
 
 <script type="text/javascript">
 
@@ -84,7 +84,10 @@ require([
 <script type="text/javascript" src="WebContent/UserViewlists.js"></script> 
 <script type="text/javascript" src="WebContent/PlayerFunctions.js"></script> 
 <script type="text/javascript" src="WebContent/UserAccounts.js"></script> 
-
+<style>
+.viewlistid{
+float:left;margin-right:2px}
+</style>
 </head>
 
 <body  data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" class="claro" data-maq-ws="collapse" data-maq-orientation="portrait" id="myapp" data-maq-appstates="{}">
@@ -264,14 +267,14 @@ Add user to player(s)</button>
 
 	  <div   data-dojo-type="dojox/mobile/ToolBarButton"   onclick="CreateUserList()" style="float: right" >+</div>
  </div>
-     	     <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="MyList"		     >
+     	     <ul data-dojo-type="dojox/mobile/RoundRectList" id="MyList"		     >
 		</ul>	     		   
 </div>
 
 <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddUserList" data-dojo-props='modal:true,top:"61px"' 
 style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
 Create new Viewlist
-<input data-dojo-type="dojox/mobile/TextBox" style='width:300px' placeHolder="Viewlist Name" ><br></input>
+<input data-dojo-type="dojox/mobile/TextBox" type="text" id="NewListName" style='width:300px' placeHolder="Viewlist Name" ><br></input>
 <button data-dojo-type="dojox/mobile/Button" onclick="CreateNewViewlist('OK')">OK</button>
 <button data-dojo-type="dojox/mobile/Button" onclick="CreateNewViewlist('Cancel')">Cancel</button>
 </div>
@@ -364,19 +367,24 @@ Install Artkick</button>
 
 
 
-<div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:true,left:"0px",top:"21px"' style="border:0px!important;outline:none!important;height:125px;width:230px;background-image:none!important">
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:true,left:"0px",top:"21px"' 
+     style="border:0px!important;outline:none!important;height:125px;width:350px;background-image:none!important">
 
-<ul  data-dojo-type="dojox/mobile/IconMenu" data-dojo-props='cols:3' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
+<ul  data-dojo-type="dojox/mobile/IconMenu" data-dojo-props='cols:5' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
 	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="facebook()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true,label:"Facebook",icon:"images/FB-f-Logo__blue_50.png"'  ></li>
 	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="twitter()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true, label:"Twitter", icon:"images/twitter-share.png"' ></li>
 	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="emailShare()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true, label:"Mail", icon:"images/email-share.png"' ></li>
+	<li data-dojo-type="dojox/mobile/IconMenuItem" style="border:none!important"
+	  data-dojo-props='closeOnAction:true, label:"Talk to Art", moveTo:"TalkToArt", icon:"images/ARTKICKlogoFULLCOLOR-APP_50x50.png"' ></li>
+	<li data-dojo-type="dojox/mobile/IconMenuItem" style="border:none!important"
+	  data-dojo-props='closeOnAction:true, label:"Add to Viewlist", moveTo:"MylistView", icon:"images/folder.png"' ></li>
 
 
 </ul>
-	  <button data-dojo-type="dojox/mobile/Button" style="width:140px;height:20px;position:absolute;top:99px;left:40px;padding:none!important;line-height:20px!important" onclick='hidemenu()'>Close
+	  <button data-dojo-type="dojox/mobile/Button" style="width:270px;height:20px;position:absolute;top:99px;left:40px;padding:none!important;line-height:20px!important" onclick='hidemenu()'>Close
 	  
 	  </button>
 </div>
@@ -640,7 +648,18 @@ Artkick Version 1.1 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserve
 	</ul>  
 
 </div>
+<div data-dojo-type="dojox/mobile/View" id="TalkToArt" >
 
+<div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Talk to Art"'>
+ <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='moveTo:"ImageView",transition:"slide", transitionDir:"-1",arrow:"left"' style="float: left;" >Back</div>
+</div>
+<div data-dojo-type="dojox/mobile/RoundRect" style="width: auto; height: auto;">
+   <textarea data-dojo-type="dojox/mobile/TextArea" id="ArtText" placeHolder="Enter feedback here" style="width: 250px;height:500px; left: 1em; position: relative;"></textarea>
+     <br><br>
+   <button data-dojo-type="dojox/mobile/Button" style="width: 250px; position: relative; left: 1em;" onclick="SendToArt()">
+     Send Message</button>
+ </div>
+</div>
 
 
 </body>

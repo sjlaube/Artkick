@@ -443,7 +443,7 @@ require(["jquery",
 						   if(firstdisplay)
 						   {
 						   setTimeout(function(){dijit.registry.byId('Swipehint').show()},200);
-				           setTimeout(function(){dijit.registry.byId('Swipehint').hide()},1500);
+				           setTimeout(function(){dijit.registry.byId('Swipehint').hide()},5000);
 						   firstdisplay=false;
 						   }
                         }
@@ -773,10 +773,20 @@ require(["jquery",
                         
                        }  
                         for (var i in lists) {
-                            newList = new dojox.mobile.ListItem({
+						//alert(lists[i]["coverImage"]);
+						  var listcoverimage="images/ARTKICKlogoFULLCOLOR-APP_50x50.png";
+						if (lists[i]["coverImage"])
+							listcoverimage=lists[i]["coverImage"];
+						    
+						  var linelabel= '<img class="viewlistid" src="'+listcoverimage+'" alt="" height="60px" > ';
+						//  alert(linelabel);
+						  linelabel=linelabel+lists[i]["name"] + "<br><i><small>" + lists[i]["images"].length + " pictures</small></i></br>";
+					//	alert(linelabel);
+
+						   newList = new dojox.mobile.ListItem({
                                 id: lists[i]["id"],
 
-                                label: lists[i]["name"] + "<br><i><small>" + lists[i]["images"].length + " pictures</small></i></br>",
+                                label: linelabel ,
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
@@ -1163,7 +1173,7 @@ require(["jquery",
 
             getDefaults();
             checkCookie();
-
+			BrowserDetect.init();
 		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS+regPlayerView+selectPlayerView+imageView+selectCatView+selectListView+optionsView+addUserView+removePlayerView+gridView);
 
 			
