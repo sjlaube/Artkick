@@ -81,26 +81,21 @@
 								</tr>
 								<tr>								
 									<td> <label>Genre:</label> </td> <td> <input type="text" id="imgGenre"/> </td>
-									<td> <label>Subject:</label> </td> <td> <input type="text" id="imgSubject"/> </td>
-									<td> <label>Credit:</label> </td> <td> <input type="text" id="imgCredit" style="width:100%"/> </td>
+									<td> <label>Genre Link:</label> </td> <td colSpan="3"> <input type="text" id="imgGenreLink" style="width:100%"/> </td>
 								</tr>
-								<tr>									
-									<td> <a class="linkLabel" href="javascript: void(0)">Genre Link:</a> </td> <td colSpan="5"> <input type="text" id="imgGenreLink" style="width:100%"/> </td>
-								</tr>
+								
 								<tr>								
 									<td> <label>Medium:</label> </td> <td> <input type="text" id="imgMedium"/> </td>
 									<td> <label>Medium Detail:</label> </td> <td colSpan="3"> <input type="text" id="imgMediumDetail" style="width:100%"/> </td>
 								</tr>
 								<tr>								
 									<td> <label>Aspect Ratio:</label> </td> <td> <input type="text" id="imgAspectRatio"/> </td>
-									<td> <label>Height (cm):</label> </td> <td> <input type="text" id="imgHeightCm"/> </td>
-									<td> <label>Width (cm):</label> </td> <td> <input type="text" id="imgWidthCm" style="width:100%"/> </td>
+									<td> <label>Subject:</label> </td> <td> <input type="text" id="imgSubject"/> </td>
+									<td> <label>Credit:</label> </td> <td> <input type="text" id="imgCredit" style="width:100%"/> </td>
 								</tr>
 								<tr>							
 									<td> <label>Source:</label> </td> <td> <input type="text" id="imgSource"/> </td>
-								</tr>
-								<tr>							
-									<td> <a class="linkLabel" href="javascript: void(0)">Source Page Link:</a> </td> <td colSpan="5"> <input type="text" id="imgSourcePageLink" style="width:100%"/> </td>
+									<td> <label>Source Page Link:</label> </td> <td colSpan="3"> <input type="text" id="imgSourcePageLink" style="width:100%"/> </td>
 								</tr>
 								<tr>								
 									<td> <label>Copyright:</label> </td> <td> <input type="text" id="imgCopyright"/> </td>
@@ -153,17 +148,13 @@
 	<div id="removeDialog" title="Remove">	
 		<label>Are you sure you want to remove the following item?</label>
 		</br></br>
-		<label id="tbRemoveItems"></label>
+		<input type="text" id="tbRemoveItems" class="borderless" readonly="true"></input>
 		<input type="text" id="tbRemoveId" class="hidden"></input>
 		<input type="text" id="tbRemoveCat" class="hidden"></input>
 		<input type="text" id="tbRemoveClass" class="hidden"></input>
 		<input type="text" id="tbRemoveConfirmed" class="hidden"></input>
 	</div>
 	
-	<div id="unsavedAttrDialog" title="Save">	
-		<label>You have unsaved changes in the image metadata. Would you like to save first?</label>
-		<input type="text" id="tbNewViewListId" class="hidden"></input>
-	</div>
 	
 </menu>
 	
@@ -201,11 +192,6 @@
 			buttons: [ { text: "Ok", click: function() { $('#tbRemoveConfirmed').val('yes');$( this ).dialog( "close" ); } },
 					   { text: "Cancel", click: function() { $( this ).dialog( "close" ); } }],
 			close: function ( event, ui ) {onRemoveClosed(event, ui);} });
-		$( "#unsavedAttrDialog" ).dialog({ 
-			autoOpen: false, modal: true, 
-			buttons: [ { text: "Yes", click: function() { saveImageAttr();$( this ).dialog( "close" ); } },
-					   { text: "No", click: function() { $( this ).dialog( "close" ); } }],
-			close: function ( event, ui ) {onUnsavedClosed(event, ui);} });
 			
 		$(document).keydown(function (e) {	
 			if (e.ctrlKey) {
@@ -215,22 +201,8 @@
 				  clearImageAttrUI();
 				  enableSaveImageAttr(false);
 				}
-			}
-			else if (e.keyCode == 39) //right arrow
-			{
-				e.preventDefault();
-				selectAdjacentImage(true);
-			}
-			else if (e.keyCode == 37) //left arrow
-			{
-				e.preventDefault();
-				selectAdjacentImage(false);
-			}
+			  }								
 		});
-		
-		//$('#divMainImages').bind("keydown", function (e) {	
-		//	alert('divMainImages key down');						
-		//}, false);
 		
 		$('.linkLabel').click(function (e) {
 			//find the next input field to get the url 
@@ -241,13 +213,6 @@
 			else alert('Not a valid url.');
 		});
 		
-		enableSaveImageAttr(false);
-		
-		//track any changes to the image attributes
-		$('#divMainImageDetail').find('input').keydown(function() {
-			imageAttrDirty = true;
-		});
-		
 		body_sizer();
 		$(window).resize(body_sizer);
 		//$(window).resize(body_sizer);
@@ -256,7 +221,6 @@
 	var myArr = [];
 	var myCategories = [];
 	var categoriesLoaded = 0;
-	var imageAttrDirty = false;
 	//<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
 	$.ajax({
 			  url: baseContentUrl + 'allCategories',
@@ -287,14 +251,11 @@
 			
 	function convertNameToId(name) {
 		//must not have spaces in Id
-		//return name.replace(' ','__');
-		/\"/g
-		return name.replace(/ /g,'__');
+		return name.replace(' ','__');
 	}
 	
 	function convertIdToName(id) {
-		//return id.replace('__',' ');
-		return id.replace(/__/g,' ');
+		return name.replace('__',' ');
 	}
 	
 	function getCatViewLists(cat) {
@@ -322,14 +283,8 @@
 				});
 				$(document).find('#' + convertNameToId(cat)).children('ul').html(strViewLists);
 				$(document).find('#' + convertNameToId(cat)).find('li.viewList').each(function () {
-					$(this).click(function (e) {
+					$(this).click(function () {
 						//alert($(this).attr('id') + 'viewList clicked!');
-						if (imageAttrDirty)
-						{
-							$("#tbNewViewListId").val($(this).attr('id'));
-							$("#unsavedAttrDialog").dialog("open");
-							return;
-						}
 						clearViewListImages();
 						getViewListImages($(this).attr('id'));
 					});
@@ -522,13 +477,7 @@
 				
 				$(document).find('#divMainImages').find('li.viewListImage').each(function () {
 				    $(this).click(function () {
-						if (imageAttrDirty)
-						{
-							//$("#tbNewViewListId").val($(this).attr('id'));
-							//$("#unsavedAttrDialog").dialog("open");
-							alert('Please save changes first');
-							return;
-						}
+						
 						
 						if (event.ctrlKey && $(this).hasClass('selected'))
 							$(this).removeClass("selected");
@@ -556,22 +505,14 @@
 						window.open($(this).attr("url"));
 				    });
 					
-					//never seems to get keydown
-					//$(this).bind("keydown", function (e) {	
-					//		alert('image key down');						
-					//}, false);
-					
 					$.contextMenu({
 						selector: 'li.viewListImage', 
 						callback: function(key, options) {
 							if (key == "Delete")
 								removeSelectedImagesFromViewlist();
-							else if (key == "Open")
-								openSelectedImages();
 						},
 						items: {
-							"Open": {name: "Open selected image", icon: "open"},
-							"Delete": {name: "Remove selected image(s) from this view list", icon: "delete"},
+							"Delete": {name: "Remove selected Image(s) from ViewList", icon: "delete"},		
 						}
 					});
 			    });
@@ -598,8 +539,6 @@
 			'medium="' + getImageAttr(value, "Type", false) + '" ' +
 			'mediumDetail="' + getImageAttr(value, "Type  Detail", false) + '" ' +
 			'aspectRatio="' + getImageAttr(value, "Aspect Ratio", false) + '" ' +
-			'heightCm="' + getImageAttr(value, "Height cm", false) + '" ' +
-			'widthCm="' + getImageAttr(value, "Width cm", false) + '" ' +
 			'subject="' + getImageAttr(value, "Subject", false) + '" ' +
 			'credit="' + getImageAttr(value, "Credit", false) + '" ' +
 			'copyright="' + getImageAttr(value, "Copyright", false) + '" ' +
@@ -648,7 +587,6 @@
 	
 	function fillImageAttrUI(image)
 	{
-		imageAttrDirty = false;
 		$('#imgTitle').val(image.attr('title'));
 		$('#imgArtist').val(image.attr('artistFN'));
 		$('#imgArtistLastName').val(image.attr('artistLN'));
@@ -662,8 +600,6 @@
 		$('#imgSourcePageLink').val(image.attr('sourcePageLink'));
 		$('#imgMedium').val(image.attr('medium'));
 		$('#imgMediumDetail').val(image.attr('mediumDetail'));
-		$('#imgHeightCm').val(image.attr('heightCm'));
-		$('#imgWidthCm').val(image.attr('widthCm'));
 		$('#imgAspectRatio').val(image.attr('aspectRatio'));
 		$('#imgSubject').val(image.attr('subject'));
 		$('#imgCredit').val(image.attr('credit'));
@@ -680,7 +616,6 @@
 	
 	function refreshImageAttrUI(imageId)
 	{
-		imageAttrDirty = false;
 		var cmd = "getImage";
 		var params = "id=" + imageId;
 		// fire off the request to /form.php
@@ -714,8 +649,6 @@
 						$(selector).attr('medium', value["Type"]);
 						$(selector).attr('mediumDetail', value["Type  Detail"]);
 						$(selector).attr('aspectRatio', value["Aspect Ratio"]);
-						$(selector).attr('heightCm', value["Height cm"]);
-						$(selector).attr('widthCm', value["Width cm"]);
 						$(selector).attr('subject', value["Subject"]);
 						$(selector).attr('credit', value["Credit"]);
 						$(selector).attr('copyright', value["Copyright"]);
@@ -776,8 +709,7 @@
 		var imageId = $('#imgId').val();
 		var params = 
 			'id=' + imageId + 
-			//'&Title=' + encodeURI($('#imgTitle').val()) +
-			addSaveImageAttrParamIfChanged(imageId, 'Title', 'title', 'imgTitle') +
+			'&Title=' + encodeURI($('#imgTitle').val()) +
 			'&Artist%20First%20N=' + encodeURI($('#imgArtist').val()) +
 			'&Artist%20Last%20N=' + encodeURI($('#imgArtistLastName').val()) +
 			'&Year=' + encodeURI($('#imgWorkDate').val()) +
@@ -791,8 +723,6 @@
 			'&Type=' + encodeURI($('#imgMedium').val()) +
 			'&Type%20%20Detail=' + encodeURI($('#imgMediumDetail').val()) +
 			'&Aspect%20Ratio=' + encodeURI($('#imgAspectRatio').val()) +
-			'&Height%20cm=' + encodeURI($('#imgHeightCm').val()) +
-			'&Width%20cm=' + encodeURI($('#imgWidthCm').val()) +
 			'&Subject=' + encodeURI($('#imgSubject').val()) +
 			'&Credit=' + encodeURI($('#imgCredit').val()) +
 			'&Copyright=' + encodeURI($('#imgCopyright').val()) +
@@ -810,12 +740,6 @@
 		// let's disable the inputs for the duration of the ajax request
 		$inputs.prop("disabled", true);
 
-		//temp to track saves
-		console.log(baseCmdUrl + cmd + "?" + params);
-		
-		var success = false;
-		$("#pendingTransactionDialog").dialog("open");
-		
 		// fire off the request to /form.php
 		var request = $.ajax({
 			url: baseCmdUrl + cmd + "?" + params,
@@ -829,9 +753,8 @@
 				alert(response.Message);
 			else
 			{
-				//alert("Changes have been saved.");
-				//refreshImageAttrUI(imageId);
-				success = true;
+				alert("Changes have been saved.");
+				refreshImageAttrUI(imageId);
 			}
 		});
 
@@ -849,25 +772,8 @@
 		request.always(function () {
 			// reenable the inputs
 			$inputs.prop("disabled", false);
-			$("#pendingTransactionDialog").dialog("close");
-			if (success)
-			{
-				alert("Changes have been saved.");
-				refreshImageAttrUI(imageId);
-			}
 		});
 		
-	}
-	
-	//TODO: Will not need all of theses params if standardize on all of the ids
-	function addSaveImageAttrParamIfChanged(imageId, attr, attrId, attrUiId)
-	{
-		currentValue = $('#' + imageId).attr(attrId);
-		newValue = $('#' + attrUiId).val();
-		if (newValue == currentValue)
-			return '';
-		else
-			return '&' + attr + '=' + encodeURI(newValue);
 	}
 	
 	function lazyLoadImages (pages, items) 
@@ -888,9 +794,6 @@
 		{
 			$('#tbRenameId').val(objectId);
 			$('#tbRenameClass').val('viewList');
-			//workaround as view list name has (#images) appended
-			//$('#container').jstree('rename_node', '#' + objectId , 'Enter New Name' );
-
 			$('#container').jstree("rename");
 		}
 		else if (objectClass.indexOf('category') != -1)
@@ -936,7 +839,7 @@
 		
 		cmd = 'RenameCategory';
 		params = 
-			'oldname=' + convertIdToName(id) +
+			'oldname=' + id +
 			'&newname=' + newName;
 		
 		var request = $.ajax({
@@ -993,7 +896,7 @@
 		
 		cmd = 'CreateViewlist';
 		params = 
-			'catName=' + convertIdToName(id) +
+			'catName=' + id +
 			'&listName=' + newName;
 			
 		var success = false;
@@ -1095,7 +998,7 @@
 		if (objectClass.indexOf(viewListType) != -1)
 		{
 			$('#tbRemoveId').val(objectId);
-			$('#tbRemoveItems').html(objectDisplayName + ' View List');
+			$('#tbRemoveItems').val(objectDisplayName + ' View List');
 			$('#tbRemoveCat').val(obj[0].parentNode.parentNode.parentNode.id);
 			$('#tbRemoveClass').val('viewList');
 			$('#tbRemoveConfirmed').val('');
@@ -1104,7 +1007,7 @@
 		else if (objectClass.indexOf(categoryType) != -1)
 		{
 			$('#tbRemoveId').val(objectId);
-			$('#tbRemoveItems').html(objectDisplayName + ' Category');
+			$('#tbRemoveItems').val(objectDisplayName + ' Category');
 			$('#tbRemoveClass').val('category');
 			$('#tbRemoveConfirmed').val('');
 			$("#removeDialog").dialog("open");	
@@ -1119,7 +1022,7 @@
 		cmd = 'RemoveViewlistFromCategory';
 		params = 
 			'listId=' + id +
-			'&catName=' + convertIdToName(catName);
+			'&catName=' + catName;
 		
 		var request = $.ajax({
 			url: baseCmdUrl + cmd + "?" + params,
@@ -1143,7 +1046,7 @@
 	{
 		var cmd = 'RemoveCategory';
 		var params = 
-			'name=' + convertIdToName(id);
+			'name=' + id;
 		
 		var request = $.ajax({
 			url: baseCmdUrl + cmd + "?" + params,
@@ -1265,33 +1168,6 @@
 		});
 	}
 	
-	function openSelectedImages()
-	{
-		$('#divMainImages').find('li.selected').each(function () {
-			window.open($(this).attr("url"));
-		});
-	}
-	
-	//select next image (selects first if none)
-	function selectAdjacentImage(next)
-	{
-		var currentSelectedItem = next ? $('#divMainImages').find('li.selected:last') : $('#divMainImages').find('li.selected:first');
-		if (currentSelectedItem == null)
-		{
-			$('#divMainImages').find('li:first').addClass('selected');
-			return;
-		}
-		
-		var nextprevImage = next ? currentSelectedItem.next() : currentSelectedItem.prev();
-		if (nextprevImage.length != 0)
-		{
-			//currentSelectedItem.removeClass("selected");
-			//currentSelectedItem.siblings().removeClass("selected");
-			//nextprevImage.addClass('selected');
-			nextprevImage.trigger("click");
-		}
-	}
-	
 	function body_sizer() {
 	  var bodyheight = $('#outerBody').height();
 	  var headerheight = $('#header').height();
@@ -1308,12 +1184,6 @@
 		var $inputs = $form.find("input, select, button, textarea");
 		// let's disable the inputs for the duration of the ajax request
 		$inputs.prop("disabled", !enable);
-	}
-	
-	function onUnsavedClosed()
-	{
-		clearViewListImages();
-		getViewListImages($('#tbNewViewListId').val());
 	}
 	
 	</script>

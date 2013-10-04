@@ -183,7 +183,7 @@ define("dojox/mobile/_EditableListMixin", [
 			domClass.add(this.domNode, "mblEditableRoundRectList");
 			array.forEach(this.getChildren(), function(child){
 				if(!child.deleteIconNode){
-					child.set("rightIcon", this.rightIconForEdit);
+				//	child.set("rightIcon", this.rightIconForEdit);
 					if(child.rightIconNode){
 						domAttr.set(child.rightIconNode, "role", "button");
 						domAttr.set(child.rightIconNode, "aria-grabbed", "false");

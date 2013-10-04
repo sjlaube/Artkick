@@ -89,9 +89,14 @@ function createUser() {
         callbackParamName: "callback",
         load: function (result) {
             if (result["status"] == "success") {
-                alert("Welcome " + dojo.byId("regUserName").value + "!");
+                usermessage("Welcome " + dojo.byId("regUserName").value + "!");
                 currView.performTransition("ImageView", 1, "slide", null);
                 window.email = dojo.byId("regUserEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
+				setCookie("email", window.email, 365);
+                //currView.performTransition("ImageView", 1, "slide", null);
+                
+                //for security, we need to make sure other possible showing view gone!!
+                window.afterLogin();
                 //alert(window.email);
             } else {
                 alert(result["message"]);
@@ -148,6 +153,7 @@ function login() {
             if (result["status"] == "success") {
                 userObj = result["userObj"];
                 alert("Welcome! " + userObj["name"]);
+
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
                 //alert(window.email);
                 setCookie("email", window.email, 365);

@@ -144,7 +144,13 @@ function installartkick() {
     //var win = window.open("https://owner.roku.com/add/ArtkickV0", '_blank');
     //win.focus();
     calliOSFunction("loadLink", ["https://owner.roku.com/add/ArtkickV0"], "onSuccess", "onError");
-    
+    try{
+	//alert("loading android artkick roku");
+    	Android.loadLink("https://owner.roku.com/add/ArtkickV0");
+    }
+    catch(err){
+    	
+    }
 
 }
 function setAuto(interval) {

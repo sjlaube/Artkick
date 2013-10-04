@@ -153,17 +153,13 @@
 	<div id="removeDialog" title="Remove">	
 		<label>Are you sure you want to remove the following item?</label>
 		</br></br>
-		<label id="tbRemoveItems"></label>
+		<input type="text" id="tbRemoveItems" class="borderless" readonly="true"></input>
 		<input type="text" id="tbRemoveId" class="hidden"></input>
 		<input type="text" id="tbRemoveCat" class="hidden"></input>
 		<input type="text" id="tbRemoveClass" class="hidden"></input>
 		<input type="text" id="tbRemoveConfirmed" class="hidden"></input>
 	</div>
 	
-	<div id="unsavedAttrDialog" title="Save">	
-		<label>You have unsaved changes in the image metadata. Would you like to save first?</label>
-		<input type="text" id="tbNewViewListId" class="hidden"></input>
-	</div>
 	
 </menu>
 	
@@ -201,11 +197,6 @@
 			buttons: [ { text: "Ok", click: function() { $('#tbRemoveConfirmed').val('yes');$( this ).dialog( "close" ); } },
 					   { text: "Cancel", click: function() { $( this ).dialog( "close" ); } }],
 			close: function ( event, ui ) {onRemoveClosed(event, ui);} });
-		$( "#unsavedAttrDialog" ).dialog({ 
-			autoOpen: false, modal: true, 
-			buttons: [ { text: "Yes", click: function() { saveImageAttr();$( this ).dialog( "close" ); } },
-					   { text: "No", click: function() { $( this ).dialog( "close" ); } }],
-			close: function ( event, ui ) {onUnsavedClosed(event, ui);} });
 			
 		$(document).keydown(function (e) {	
 			if (e.ctrlKey) {
@@ -215,22 +206,12 @@
 				  clearImageAttrUI();
 				  enableSaveImageAttr(false);
 				}
-			}
-			else if (e.keyCode == 39) //right arrow
-			{
-				e.preventDefault();
-				selectAdjacentImage(true);
-			}
-			else if (e.keyCode == 37) //left arrow
-			{
-				e.preventDefault();
-				selectAdjacentImage(false);
-			}
+			  }								
 		});
 		
-		//$('#divMainImages').bind("keydown", function (e) {	
-		//	alert('divMainImages key down');						
-		//}, false);
+		//$('#divMainImages').keydown(function (e) {	
+		//	alert('image key down');						
+		//});
 		
 		$('.linkLabel').click(function (e) {
 			//find the next input field to get the url 
@@ -243,11 +224,6 @@
 		
 		enableSaveImageAttr(false);
 		
-		//track any changes to the image attributes
-		$('#divMainImageDetail').find('input').keydown(function() {
-			imageAttrDirty = true;
-		});
-		
 		body_sizer();
 		$(window).resize(body_sizer);
 		//$(window).resize(body_sizer);
@@ -256,7 +232,6 @@
 	var myArr = [];
 	var myCategories = [];
 	var categoriesLoaded = 0;
-	var imageAttrDirty = false;
 	//<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
 	$.ajax({
 			  url: baseContentUrl + 'allCategories',
@@ -287,14 +262,11 @@
 			
 	function convertNameToId(name) {
 		//must not have spaces in Id
-		//return name.replace(' ','__');
-		/\"/g
-		return name.replace(/ /g,'__');
+		return name.replace(' ','__');
 	}
 	
 	function convertIdToName(id) {
-		//return id.replace('__',' ');
-		return id.replace(/__/g,' ');
+		return id.replace('__',' ');
 	}
 	
 	function getCatViewLists(cat) {
@@ -322,14 +294,8 @@
 				});
 				$(document).find('#' + convertNameToId(cat)).children('ul').html(strViewLists);
 				$(document).find('#' + convertNameToId(cat)).find('li.viewList').each(function () {
-					$(this).click(function (e) {
+					$(this).click(function () {
 						//alert($(this).attr('id') + 'viewList clicked!');
-						if (imageAttrDirty)
-						{
-							$("#tbNewViewListId").val($(this).attr('id'));
-							$("#unsavedAttrDialog").dialog("open");
-							return;
-						}
 						clearViewListImages();
 						getViewListImages($(this).attr('id'));
 					});
@@ -522,13 +488,6 @@
 				
 				$(document).find('#divMainImages').find('li.viewListImage').each(function () {
 				    $(this).click(function () {
-						if (imageAttrDirty)
-						{
-							//$("#tbNewViewListId").val($(this).attr('id'));
-							//$("#unsavedAttrDialog").dialog("open");
-							alert('Please save changes first');
-							return;
-						}
 						
 						if (event.ctrlKey && $(this).hasClass('selected'))
 							$(this).removeClass("selected");
@@ -556,10 +515,9 @@
 						window.open($(this).attr("url"));
 				    });
 					
-					//never seems to get keydown
-					//$(this).bind("keydown", function (e) {	
+					//$(this).keydown(function (e) {	
 					//		alert('image key down');						
-					//}, false);
+					//});
 					
 					$.contextMenu({
 						selector: 'li.viewListImage', 
@@ -648,7 +606,6 @@
 	
 	function fillImageAttrUI(image)
 	{
-		imageAttrDirty = false;
 		$('#imgTitle').val(image.attr('title'));
 		$('#imgArtist').val(image.attr('artistFN'));
 		$('#imgArtistLastName').val(image.attr('artistLN'));
@@ -680,7 +637,6 @@
 	
 	function refreshImageAttrUI(imageId)
 	{
-		imageAttrDirty = false;
 		var cmd = "getImage";
 		var params = "id=" + imageId;
 		// fire off the request to /form.php
@@ -813,9 +769,6 @@
 		//temp to track saves
 		console.log(baseCmdUrl + cmd + "?" + params);
 		
-		var success = false;
-		$("#pendingTransactionDialog").dialog("open");
-		
 		// fire off the request to /form.php
 		var request = $.ajax({
 			url: baseCmdUrl + cmd + "?" + params,
@@ -829,9 +782,8 @@
 				alert(response.Message);
 			else
 			{
-				//alert("Changes have been saved.");
-				//refreshImageAttrUI(imageId);
-				success = true;
+				alert("Changes have been saved.");
+				refreshImageAttrUI(imageId);
 			}
 		});
 
@@ -849,12 +801,6 @@
 		request.always(function () {
 			// reenable the inputs
 			$inputs.prop("disabled", false);
-			$("#pendingTransactionDialog").dialog("close");
-			if (success)
-			{
-				alert("Changes have been saved.");
-				refreshImageAttrUI(imageId);
-			}
 		});
 		
 	}
@@ -888,9 +834,6 @@
 		{
 			$('#tbRenameId').val(objectId);
 			$('#tbRenameClass').val('viewList');
-			//workaround as view list name has (#images) appended
-			//$('#container').jstree('rename_node', '#' + objectId , 'Enter New Name' );
-
 			$('#container').jstree("rename");
 		}
 		else if (objectClass.indexOf('category') != -1)
@@ -936,7 +879,7 @@
 		
 		cmd = 'RenameCategory';
 		params = 
-			'oldname=' + convertIdToName(id) +
+			'oldname=' + id +
 			'&newname=' + newName;
 		
 		var request = $.ajax({
@@ -1095,7 +1038,7 @@
 		if (objectClass.indexOf(viewListType) != -1)
 		{
 			$('#tbRemoveId').val(objectId);
-			$('#tbRemoveItems').html(objectDisplayName + ' View List');
+			$('#tbRemoveItems').val(objectDisplayName + ' View List');
 			$('#tbRemoveCat').val(obj[0].parentNode.parentNode.parentNode.id);
 			$('#tbRemoveClass').val('viewList');
 			$('#tbRemoveConfirmed').val('');
@@ -1104,7 +1047,7 @@
 		else if (objectClass.indexOf(categoryType) != -1)
 		{
 			$('#tbRemoveId').val(objectId);
-			$('#tbRemoveItems').html(objectDisplayName + ' Category');
+			$('#tbRemoveItems').val(objectDisplayName + ' Category');
 			$('#tbRemoveClass').val('category');
 			$('#tbRemoveConfirmed').val('');
 			$("#removeDialog").dialog("open");	
@@ -1143,7 +1086,7 @@
 	{
 		var cmd = 'RemoveCategory';
 		var params = 
-			'name=' + convertIdToName(id);
+			'name=' + id;
 		
 		var request = $.ajax({
 			url: baseCmdUrl + cmd + "?" + params,
@@ -1275,21 +1218,12 @@
 	//select next image (selects first if none)
 	function selectAdjacentImage(next)
 	{
-		var currentSelectedItem = next ? $('#divMainImages').find('li.selected:last') : $('#divMainImages').find('li.selected:first');
-		if (currentSelectedItem == null)
-		{
-			$('#divMainImages').find('li:first').addClass('selected');
-			return;
-		}
-		
-		var nextprevImage = next ? currentSelectedItem.next() : currentSelectedItem.prev();
-		if (nextprevImage.length != 0)
-		{
-			//currentSelectedItem.removeClass("selected");
-			//currentSelectedItem.siblings().removeClass("selected");
-			//nextprevImage.addClass('selected');
-			nextprevImage.trigger("click");
-		}
+		//var startSelectedImage;
+		//$('#divMainImages').find('li.selected').each(function () {
+		//	if (startSelectedImage == null)
+		//		startSelectedImage = $(this);
+		//});
+		$(this).siblings('li.selected:last').next().addClass('selected');
 	}
 	
 	function body_sizer() {
@@ -1308,12 +1242,6 @@
 		var $inputs = $form.find("input, select, button, textarea");
 		// let's disable the inputs for the duration of the ajax request
 		$inputs.prop("disabled", !enable);
-	}
-	
-	function onUnsavedClosed()
-	{
-		clearViewListImages();
-		getViewListImages($('#tbNewViewListId').val());
 	}
 	
 	</script>
