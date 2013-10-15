@@ -1,0 +1,1535 @@
+<!doctype html/>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Editor</title>
+	<link rel="stylesheet" href="Editor.css">
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"  type="text/javascript"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+	<script src="jquery.jstree.js"></script>
+	<script src="jPages-master/js/jPages.js"></script>
+    <script type="text/javascript" src="jPages-master/js/highlight.pack.js"></script>
+    <script type="text/javascript" src="jPages-master/js/tabifier.js"></script>
+    <script src="jPages-master/js/js.js"></script>
+    <script src="jPages-master/js/jPages.js"></script>
+	<script src="jPages-master/js/jquery.lazyload.js"></script>
+
+    <link rel="stylesheet" href="jPages-master/css/jPages.css">
+    <link rel="stylesheet" href="jPages-master/css/animate.css">
+    <link rel="stylesheet" href="jPages-master/css/github.css">
+	
+	<script src="jQuery-contextMenu-master/src/jquery.contextMenu.js"></script>
+	<link rel="stylesheet" href="jQuery-contextMenu-master/src/jquery.contextMenu.css">
+	
+	<script src="purl/js/purl.js"></script>
+
+</head>
+<body id="outerBody">
+    <table id="outerTable" border="0">
+		<tr>
+		<td colspan="2" id="header">
+			<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
+			<a id="stagingServerLink" href="#" style="display: none;">Staging</a>
+			<a id="productionServerLink" href="#" style="display: none;">Production</a>
+		</td>
+		</tr>
+
+		<tr>
+		<td >
+			<div id="divNavTreeLoading" style="width: 300px;height: 50px;" >
+				<p>Loading...</p>
+			</div>
+			<div id="divNavTree2" style="width: 300px;overflow: scroll; display: none" >
+				
+			</div>
+		</td>
+		<td valign="top" >
+			
+			<table border="0">
+				
+				<tr>
+					<td valign="top">
+						<div id="divMainImages">
+							<p>Select ViewList from tree on the left to see images</p>
+						</div>
+					</td>	
+				</tr>
+				<tr>
+					<td valign="bottom" >
+						<div id="divMainImageDetail">
+							<table id="tableImageDetail" width="100%">
+								<tr>	
+									<td> <label>Title:</label> </td> <td colspan="5"> <textarea rows="4" id="imgTitle" style="width:100%;resize:none"></textarea> </td>						
+								</tr>
+								<tr>														
+									<td> <a class="linkLabel" href="javascript: void(0)">More Info:</a> </td> <td colSpan="5"> <input type="text" id="imgMoreInfoLink" style="width:100%"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Artist First Name:</label> </td> <td> <input type="text" id="imgArtist"/> </td>
+									<td> <label>Artist Last Name:</label> </td> <td> <input type="text" id="imgArtistLastName"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Birth:</label> </td> <td> <input type="text" id="imgBirth"/> </td>
+									<td> <label>Death:</label> </td> <td> <input type="text" id="imgDeath"/> </td>
+								</tr>
+								<tr>														
+									<td> <label>Artist Info:</label> </td> <td colSpan="5"> <input type="text" id="imgArtistInfo" style="width:100%"/> </td>
+								</tr>
+								<tr>	
+									<td> <label>Completed:</label> </td> <td> <input type="text" id="imgWorkDate"/> </td>
+									<td> <label>Location:</label> </td> <td colSpan="3"> <input type="text" id="imgLocation" style="width:100%"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Genre:</label> </td> <td> <input type="text" id="imgGenre"/> </td>
+									<td> <label>Subject:</label> </td> <td> <input type="text" id="imgSubject"/> </td>
+									<td> <label>Credit:</label> </td> <td> <input type="text" id="imgCredit" style="width:100%"/> </td>
+								</tr>
+								<tr>									
+									<td> <a class="linkLabel" href="javascript: void(0)">Genre Link:</a> </td> <td colSpan="5"> <input type="text" id="imgGenreLink" style="width:100%"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Medium:</label> </td> <td> <input type="text" id="imgMedium"/> </td>
+									<td> <label>Medium Detail:</label> </td> <td colSpan="3"> <input type="text" id="imgMediumDetail" style="width:100%"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Aspect Ratio:</label> </td> <td> <input type="text" id="imgAspectRatio"/> </td>
+									<td> <label>Height (cm):</label> </td> <td> <input type="text" id="imgHeightCm"/> </td>
+									<td> <label>Width (cm):</label> </td> <td> <input type="text" id="imgWidthCm" style="width:100%"/> </td>
+								</tr>
+								<tr>							
+									<td> <label>Source:</label> </td> <td> <input type="text" id="imgSource"/> </td>
+								</tr>
+								<tr>							
+									<td> <a class="linkLabel" href="javascript: void(0)">Source Page Link:</a> </td> <td colSpan="5"> <input type="text" id="imgSourcePageLink" style="width:100%"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Copyright:</label> </td> <td> <input type="text" id="imgCopyright"/> </td>
+									<td> <label>Copyright Detail:</label> </td> <td colSpan="3"> <input type="text" id="imgCopyrightDetail" style="width:100%"/> </td>
+								</tr>
+								<tr>														
+									<td> <a class="linkLabel" href="javascript: void(0)">Video:</a> </td> <td colSpan="5"> <input type="text" id="imgVideo" style="width:100%"/> </td>
+								</tr>
+								<tr>														
+									<td> <a class="linkLabel" href="javascript: void(0)">Thumbnail:</a> </td> <td colSpan="5"> <input type="text" id="imgThumbnail" style="width:100%"/> </td>
+								</tr>
+								<tr>														
+									<td> <a class="linkLabel" href="javascript: void(0)">Url:</a> </td> <td colSpan="5"> <input type="text" id="imgUrl" style="width:100%"/> </td>
+								</tr>
+								<tr>
+									<td> <label>Image #:</label> </td> <td> <input type="text" id="imgId" style="border:0" readonly="true"/></td>
+								</tr>
+								<tr>
+									<td> <label>View Lists:</label> </td> <td colSpan="4"> <textarea rows="2" id="imgViewLists" style="width:100%;border:0;resize:none" readonly="true"></textarea> </td>
+									<td> <button type="button" id="btnSave">Save</button></td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+			</td>
+		</tr>
+
+		<tr>
+		<td colspan="2" id="footer" >
+			Copyright 2013, Zwamy, Inc.</td>
+		</tr>
+	</table>
+
+	<div id="pendingTransactionDialog" title="Pending Changes">
+		<label>Please wait while changes are completed...</label>
+	</div>
+	
+	<div id="createDialog" title="Create">	
+		<label>Enter Name:</label><input type="text" id="tbCreateNewName"></input>
+		</br></br>
+		
+		<label id="tbCreateUnderCategory"></label>
+		<input type="text" id="tbCreateId" class="hidden"></input>
+		<input type="text" id="tbCreateClass" class="hidden"></input>
+		<input type="text" id="tbCreateConfirmed" class="hidden"></input>
+	</div>
+	
+	<div id="removeDialog" title="Remove">	
+		<label>Are you sure you want to remove the following item?</label>
+		</br></br>
+		<label id="tbRemoveItems"></label>
+		<input type="text" id="tbRemoveId" class="hidden"></input>
+		<input type="text" id="tbRemoveCat" class="hidden"></input>
+		<input type="text" id="tbRemoveClass" class="hidden"></input>
+		<input type="text" id="tbRemoveConfirmed" class="hidden"></input>
+	</div>
+	
+	<div id="unsavedAttrDialog" title="Save">	
+		<label>You have unsaved changes in the image metadata. Would you like to save first?</label>
+		<input type="text" id="tbNewViewListId" class="hidden"></input>
+		<input type="text" id="tbNewImageId" class="hidden"></input>
+	</div>
+	
+</menu>
+	
+	<script type="text/javascript">
+	
+	//var baseCmdUrl = 'http://fierce-basin-2977.herokuapp.com/client/';
+	//var baseCmd2Url = 'http://evening-garden-3648.herokuapp.com/client/'; //TODO: why this?
+	//var baseContentUrl = 'http://evening-garden-3648.herokuapp.com/content/';
+	var baseCmdUrlProd = 'http://fierce-basin-2977.herokuapp.com/prod/'
+	var baseCmdUrlStag = 'http://fierce-basin-2977.herokuapp.com/stag/'
+	var baseCmdUrl = baseCmdUrlStag;
+	var serverProd = 'Production';
+	var serverStag = 'Staging';
+	var server = serverStag;
+	var viewListType = "viewList";
+	var categoryType = "category";
+	var rootType = "root";
+	var imageType = "image";
+	
+	$(document).ready(function () {
+		jQuery(function($) {
+			
+		});
+		
+		$('#btnSave').click(function () {
+			saveImageAttr();
+		});
+		
+		$( "#pendingTransactionDialog" ).dialog({ 
+			autoOpen: false, modal: true, 
+			close: function ( event, ui ) {onPendingTransactionClosed(event, ui);} });
+		$( "#createDialog" ).dialog({ 
+			autoOpen: false, modal: true, 
+			buttons: [ { text: "Ok", click: function() { $('#tbCreateConfirmed').val('yes');$( this ).dialog( "close" ); } },
+					   { text: "Cancel", click: function() { $('#tbCreateConfirmed').val('');$( this ).dialog( "close" ); } }],
+			close: function ( event, ui ) {onCreateClosed(event, ui);} });
+		$( "#removeDialog" ).dialog({ 
+			autoOpen: false, modal: true, 
+			buttons: [ { text: "Ok", click: function() { $('#tbRemoveConfirmed').val('yes');$( this ).dialog( "close" ); } },
+					   { text: "Cancel", click: function() { $( this ).dialog( "close" ); } }],
+			close: function ( event, ui ) {onRemoveClosed(event, ui);} });
+		$( "#unsavedAttrDialog" ).dialog({ 
+			autoOpen: false, modal: true, 
+			buttons: [ { text: "Yes", click: function() { saveImageAttr();$( this ).dialog( "close" ); } },
+					   { text: "No", click: function() { $( this ).dialog( "close" ); } }],
+			close: function ( event, ui ) {onUnsavedClosed(event, ui);} });
+			
+		$(document).keydown(function (e) {	
+			if (e.ctrlKey) {
+				if (e.keyCode == 65 || e.keyCode == 97) { // 'A' or 'a'
+				  e.preventDefault();
+				  $('.viewListImage').addClass('selected');
+				  clearImageAttrUI();
+				  enableSaveImageAttr(false);
+				}
+			}
+			else if (e.keyCode == 39) //right arrow
+			{
+				e.preventDefault();
+				selectAdjacentImage(true);
+			}
+			else if (e.keyCode == 37) //left arrow
+			{
+				e.preventDefault();
+				selectAdjacentImage(false);
+			}
+		});
+		
+		//$('#divMainImages').bind("keydown", function (e) {	
+		//	alert('divMainImages key down');						
+		//}, false);
+		
+		$('.linkLabel').click(function (e) {
+			//find the next input field to get the url 
+			var url = $(this).parent().next().find('input[type=text]').val();
+			//todo: can also check if valid url
+			if (url != null && url.length > 0)
+				window.open(url);
+			else alert('Not a valid url.');
+		});
+		
+		enableSaveImageAttr(false);
+		
+		//track any changes to the image attributes
+		$('#divMainImageDetail').find('input').keydown(function() {
+			imageAttrDirty = true;
+		});
+		
+		body_sizer();
+		$(window).resize(body_sizer);
+		//$(window).resize(body_sizer);
+	});
+	
+	var myArr = [];
+	var myCategories = [];
+	var categoriesLoaded = 0;
+	var imageAttrDirty = false;
+	
+	//point to request database (default is staging)
+	var databaseParam = $.url().param('database');
+	var baseEditorUrl = $.url().attr('protocol') + ':' + $.url().attr('path');
+	$('#productionServerLink').attr('href', baseEditorUrl + '?database=production');
+	$('#stagingServerLink').attr('href', baseEditorUrl + '?database=staging');
+	$('#stagingServerLink').click(function (e) {
+		window.location = $("#stagingServerLink").attr('href');
+		e.preventDefault();
+	});
+	$('#productionServerLink').click(function (e) {
+		window.location = $("#productionServerLink").attr('href');
+		e.preventDefault();
+	});
+
+	if (databaseParam == "production")
+	{
+		alert('WARNING: You are about to edit live production data. Proceed with caution.');
+		server = serverProd;
+		baseCmdUrl = baseCmdUrlProd;
+	}
+	
+	console.log('Editor Host: ' + baseEditorUrl + " Database Param: " + databaseParam);
+	console.log('Database Server: ' + server + " Base Url: " + baseCmdUrl);
+	
+	//<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
+	$.ajax({
+			  url: baseCmdUrl + 'allCategories',
+			  dataType: 'jsonp',
+			  async: false,
+			  
+			  success: function(data) {
+							myArr.push('<div id="container"> <ul> <li id="treetop" class="root" rel="root" displayName="ArtKick"><a>ArtKick - ' + server + '</a><ul>');
+							$.each(data, function(key, value) {
+								$(this).each(function(key, value) {
+									//var catViewList = getCatViewLists(value["name"]);
+								    myArr.push("<li " + 'class="category" rel="category" id=' + convertNameToId(value["name"]) + ' displayName="' + value["name"] + '"' + "><a>" + value["name"] + "</a><ul><a>...</a></ul></li>" );
+									myCategories.push(value["name"]);
+								});
+							});
+							myArr.push('</ul></li></ul></div>');
+							$('#divNavTree2').html(myArr.join(''));
+							//$('#container').jstree();
+							for (var i = 0; i < myCategories.length; i++) {
+							   getCatViewLists(myCategories[i]);
+							}
+							
+						},
+				error: function(data) {
+							alert('Error: could not retreive json data for categories');
+						}
+			});
+			
+	function convertNameToId(name) {
+		//must not have spaces in Id
+		//return name.replace(' ','__');
+		/\"/g
+		return name.replace(/ /g,'__');
+	}
+	
+	function convertIdToName(id) {
+		//return id.replace('__',' ');
+		return id.replace(/__/g,' ');
+	}
+	
+	function getCatViewLists(cat) {
+		var viewLists = [];
+		var strViewLists = "";
+		var vlURL = encodeURI(baseCmdUrl + 'getViewlistsByCategory?catName=' + cat);
+		$.ajax({
+			  url: vlURL,
+			  dataType: 'jsonp',
+			  async: false,
+			  
+			  success: function(data) {
+				$.each(data, function(key, value) {
+					if (key == 'viewlists') {
+						$(this).each(function(key, value) {
+							if (value["name"] != " All")
+								viewLists.push('<li class="viewList" id="' + value["id"] + '"' +
+								                    ' displayName="' + value["name"] + '"' + 
+													'><a>' + value["name"] + ' (' + getViewListImageCount(value["images"]) + ')' + '</a>' +
+											   '</li>');
+						//myCategories.push(value["name"], 
+						});
+					};
+					strViewLists = "<ul>" + viewLists.join('') + "</ul>";
+				});
+				$(document).find('#' + convertNameToId(cat)).children('ul').html(strViewLists);
+				$(document).find('#' + convertNameToId(cat)).find('li.viewList').each(function () {
+					$(this).click(function (e) {
+						//alert($(this).attr('id') + 'viewList clicked!');
+						if (imageAttrDirty)
+						{
+							$("#tbNewViewListId").val($(this).attr('id'));
+							$("#tbNewImageId").val('');
+							$("#unsavedAttrDialog").dialog("open");
+							return;
+						}
+						clearViewListImages();
+						getViewListImages($(this).attr('id'));
+					});
+				});
+				
+				//Note: We are getting viewLists asynch, so need to load tree was we have the last view list
+				categoriesLoaded = categoriesLoaded + 1;
+				console.log(cat + " " + categoriesLoaded);
+				if (categoriesLoaded == myCategories.length)
+					buildNavTree();
+			  }
+		});
+	}
+	
+	function buildNavTree()
+	{ 
+		console.log("Info: building tree as we have gotten " + categoriesLoaded + " of " + myCategories.length + " view lists");
+		//builds the navigation tree once all viewlists are loaded		
+		$('#container').jstree({
+			
+			"plugins" : ["themes","html_data","ui","crrm","contextmenu", "dnd", "types"], 
+
+			"contextmenu": { 
+				items: function(node) {
+                    if (node.attr('rel') == 'root' ) 
+						return { 
+							ccp: false, 
+							create: { 
+								label: "Create new category", 
+								action: function (obj) 
+									{ createViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+							changeDatabase: { 
+								label: "Change database", 
+								action: function (obj) 
+									{ toggleDatabase() }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+						} // end items 
+					else if (node.attr('rel') == 'category' ) 
+						return { 
+							ccp: false, 
+							rename: { 
+								label: "Rename", 
+								action: function (obj) 
+									{ renameViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}, 
+							create: { 
+								label: "Create new view list", 
+								action: function (obj) 
+									{ createViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+							remove: { 
+								label: "Remove", 
+								action: function (obj) 
+									{ removeViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+						} // end items 
+					else 
+						return { 
+							ccp: false, 
+							rename: { 
+								label: "Rename", 
+								action: function (obj) 
+									{ renameViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}, 
+							create: { 
+								label: "Create new image", 
+								action: function (obj) 
+									{ addNewImageToViewList(obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}, 
+							remove: { 
+								label: "Remove", 
+								action: function (obj) 
+									{ removeViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+						} // end items 
+				}
+			},
+			
+			"dnd" : { 
+				"drag_target" : ".viewListImage", 
+				"drop_finish" : function () {  
+					alert("DROP");  
+				}, 
+				"drag_check" : function (data) { 
+					 if(data.r.attr("class").indexOf('viewList') == -1) { 
+						 return false; 
+					 } 
+					 return {  
+						 after : false,  
+						 before : false,  
+						 inside : true 
+					 }; 
+				 }, 
+				 "drag_finish" : function (data) {  
+					 handleImagesDropped(data);  
+				 } 
+			}, 
+
+			"themes" : {
+				
+				"dots" : false,
+				"icons" : true
+			},
+			
+			"types": {
+			"valid_children": ["root"],
+			"types": {
+				"root": {
+					"valid_children" : ["category"],
+					"icon" : {
+						"image" : "jstree-v.pre1.0/_demo/root.png"
+					}
+				},
+				"category": {
+					"valid_children" : ["default"],
+					"icon" : {
+						"image" : "jstree-v.pre1.0/_demo/folder.png"
+					}
+				},
+				"default": {
+					"valid_children" : "none",
+					"icon" : {
+						"image" : "jstree-v.pre1.0/_demo/file.png"
+					 }
+				}
+			}
+			},
+			
+			"core": {
+				"initially_open": ["treetop"]
+			
+			}
+			
+			}).bind("move_node.jstree rename_node.jstree create_node.jstree", function(event, data) {
+				var type = event.type;
+				//alert(type);
+				if (type === 'move_node') {
+					//handle move_node.jstree here
+				} else if (type === 'rename_node') {
+					var id = data.args[0][0].id;
+					var newName = data.args[1];
+					var objectClass = $('li#' + id).attr('class');
+					if (objectClass.indexOf('viewList') != -1)
+					{
+						renameViewList(id, newName);
+					}
+					else if (objectClass.indexOf('category') != -1)
+					{
+						renameCategory(id, newName);
+					}
+					
+				} else if (type === 'create_node') {
+					//handle create_node.jstree here
+				}
+
+			});
+			
+		$('#divNavTreeLoading').hide();
+		$('#divNavTree2').show();
+	}
+	
+	function getViewListImageCount(value) {
+		var viewLists = [];
+		var imageCount = 0;
+		$(value).each(function(key, value) {
+			$(this).each(function(key, value) {
+				imageCount = imageCount + 1;			
+			});
+		});
+		return imageCount;
+	}
+	
+	function getViewListImages(viewListId) {
+		var vlImages = [];
+		var strImages = "";
+
+		var vlImagesURL = encodeURI(baseCmdUrl + 'getViewlist?id=' + viewListId);
+		$.ajax({
+			   
+			  url: vlImagesURL,
+			  dataType: 'jsonp',
+			  async: true,
+			  beforeSend: function(x) {
+				  //if(x && x.overrideMimeType) {
+				  // x.overrideMimeType("application/javascript;charset=UTF-8");
+				  //}
+				  var y = x;
+				 },
+			  success: function(data) {
+				$.each(data, function(key, value) {
+					if (key == 'imageSet') {
+						$(this).each(function(key, value) {
+							vlImages.push('<li class="viewListImage" id="' + value["id"] + '" ' +
+								getImageAttributes(value) + 
+								'><img src="' + value["thumbnail"] + '" width="100" height="100"</img>' + '</li>');
+						});
+					};
+					strImages = '<ul id="thumbs" viewListId="' + viewListId + '">' + vlImages.join('') + '</ul>';
+				});
+				$(document).find('#divMainImages').html(strImages);
+				//$('#thumbs').bxSlider({ infiniteLoop: false, hideControlOnEnd: true, minSlides: 2, maxSlides: 2, slideWidth: 380, slideMargin: 10});
+				//$("#divMain2ImageNav").jPages({containerID : "thumbs"});
+				
+				$('ul li img').lazyload({
+					event: "turnpage",
+					effect: "fadeIn"
+				});
+				$("div.holder").jPages({
+				  containerID : "thumbs",
+				  perPage     : 10000,
+				  previous    : "div.arrowPrev",
+				  next        : "div.arrowNext",
+				  direction   : "auto",
+				  animation   : "fadeInleft",
+				  callback    : lazyLoadImages
+				});
+				
+				$(document).find('#divMainImages').find('li.viewListImage').each(function () {
+				    $(this).click(function () {
+						if (imageAttrDirty)
+						{
+							$("#tbNewViewListId").val('');
+							$("#tbNewImageId").val($(this).attr('id'));
+							$("#unsavedAttrDialog").dialog("open");
+							//alert('Please save changes first');
+							return;
+						}
+						
+						handleClickSelectImage(event.ctrlKey, event.shiftKey, $(this));
+						
+				    });
+					
+					$(this).dblclick(function () {
+						window.open($(this).attr("url"));
+				    });
+					
+					//never seems to get keydown
+					//$(this).bind("keydown", function (e) {	
+					//		alert('image key down');						
+					//}, false);
+					
+					$.contextMenu({
+						selector: 'li.viewListImage', 
+						callback: function(key, options) {
+							if (key == "Delete")
+								removeSelectedImagesFromViewlist();
+							else if (key == "Open")
+								openSelectedImages();
+						},
+						items: {
+							"Open": {name: "Open selected image", icon: "open"},
+							"Delete": {name: "Remove selected image(s) from this view list", icon: "delete"},
+						}
+					});
+			    });
+				
+				//select first item automatically
+				selectAdjacentImage(true);
+			  },
+			  
+		});
+		
+		//return strViewLists;
+	}
+	
+	function getImageAttributes(value) {
+		var strAttrs =  
+			'title="' + getImageAttr(value, "Title", true) + '" ' +
+			'artistFN="' + getImageAttr(value, "Artist First N", false) + '" ' +
+			'artistLN="' + getImageAttr(value, "Artist Last N", false) + '" ' +
+			'workDate="' + getImageAttr(value, "Year", false) + '" ' +
+			'birthDate="' + getImageAttr(value, "Birthdate", false) + '" ' +
+			'deathDate="' + getImageAttr(value, "Died", false) + '" ' +
+			'artistInfo="' + getImageAttr(value, "Artist Info", false) + '" ' +
+			'genre="' + getImageAttr(value, "Genre", false) + '" ' +
+			'genreLink="' + getImageAttr(value, "Genre Link", false) + '" ' +
+			'source="' + getImageAttr(value, "Source", false) + '" ' +
+			'sourcePageLink="' + getImageAttr(value, "Source Page Link", false) + '" ' +
+			'medium="' + getImageAttr(value, "Type", false) + '" ' +
+			'mediumDetail="' + getImageAttr(value, "Type  Detail", false) + '" ' +
+			'aspectRatio="' + getImageAttr(value, "Aspect Ratio", false) + '" ' +
+			'heightCm="' + getImageAttr(value, "Height cm", false) + '" ' +
+			'widthCm="' + getImageAttr(value, "Width cm", false) + '" ' +
+			'subject="' + getImageAttr(value, "Subject", false) + '" ' +
+			'credit="' + getImageAttr(value, "Credit", false) + '" ' +
+			'copyright="' + getImageAttr(value, "Copyright", false) + '" ' +
+			'copyrightDetail="' + getImageAttr(value, "Copyright Detail", false) + '" ' +
+			'location="' + getImageAttr(value, "Location", false) + '" ' +
+			'moreInfoLink="' + getImageAttr(value, "More Info Link", false) + '" ' +
+			'video="' + getImageAttr(value, "Video", false) + '" ' +
+			'thumbnail="' + getImageAttr(value, "thumbnail", false) + '" ' +
+			'url="' + getImageAttr(value, "url", false) + '" ' +
+			'viewLists="' + getImageViewListAttribute(value["viewlists2"]) + '" ';
+		return strAttrs;
+	}
+	
+	function getImageAttr(value, attr, escape)
+	{
+		var attrValue = value[attr];
+		//note: returns undefined if attribute is not present at all
+		if (attrValue == null)
+			return '';
+		else if (escape == true)
+			return escapedQuoteConversion(attrValue);
+		else
+			return attrValue;
+	}
+	
+	function escapedQuoteConversion(str)
+	{
+		if (str.indexOf('\"') != -1)
+			return str.replace(/\"/g, '&quot;');
+		else
+			return str;
+	}
+	
+	function getImageViewListAttribute(value) {
+		var viewLists = [];
+		var strViewLists = "";
+		$(value).each(function(key, value) {
+			$(this).each(function(key, value) {
+				if (key == "1" && value != "All")
+					viewLists.push(value);			
+			});
+		});
+		strViewLists = viewLists.join();
+		return strViewLists;
+	}
+	
+	function fillImageAttrUI(image)
+	{
+		imageAttrDirty = false;
+		$('#imgTitle').val(image.attr('title'));
+		$('#imgArtist').val(image.attr('artistFN'));
+		$('#imgArtistLastName').val(image.attr('artistLN'));
+		$('#imgWorkDate').val(image.attr('workDate'));
+		$('#imgBirth').val(image.attr('birthDate'));
+		$('#imgDeath').val(image.attr('deathDate'));
+		$('#imgArtistInfo').val(image.attr('artistInfo'));
+		$('#imgGenre').val(image.attr('genre'));
+		$('#imgGenreLink').val(image.attr('genreLink'));
+		$('#imgSource').val(image.attr('source'));
+		$('#imgSourcePageLink').val(image.attr('sourcePageLink'));
+		$('#imgMedium').val(image.attr('medium'));
+		$('#imgMediumDetail').val(image.attr('mediumDetail'));
+		$('#imgHeightCm').val(image.attr('heightCm'));
+		$('#imgWidthCm').val(image.attr('widthCm'));
+		$('#imgAspectRatio').val(image.attr('aspectRatio'));
+		$('#imgSubject').val(image.attr('subject'));
+		$('#imgCredit').val(image.attr('credit'));
+		$('#imgLocation').val(image.attr('location'));		
+		$('#imgCopyright').val(image.attr('copyright'));
+		$('#imgCopyrightDetail').val(image.attr('copyrightDetail'));
+		$('#imgMoreInfoLink').val(image.attr('moreInfoLink'));
+		$('#imgVideo').val(image.attr('video'));
+		$('#imgThumbnail').val(image.attr('thumbnail'));
+		$('#imgUrl').val(image.attr('url'));
+		$('#imgViewLists').val(image.attr('viewLists'));
+		$('#imgId').val(image.attr('id'));
+	}
+	
+	function refreshImageAttrUI(imageId)
+	{
+		imageAttrDirty = false;
+		var cmd = "getImage";
+		var params = "id=" + imageId;
+		// fire off the request to /form.php
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status == 'failure')
+				alert(response.Message);
+			else
+			{
+				$.each(response, function(key, value) {
+					if (key == 'Image')
+					{
+						var selector = "#" + imageId;
+						$(selector).attr('title', value["Title"]);
+						$(selector).attr('artistFN', value["Artist First N"]);
+						$(selector).attr('artistLN', value["Artist Last N"]);
+						$(selector).attr('workDate', value["Year"]);
+						$(selector).attr('birthDate', value["Birthdate"]);
+						$(selector).attr('deathDate', value["Died"]);
+						$(selector).attr('artistInfo', value["Artist Info"]);
+						$(selector).attr('genre', value["Genre"]);
+						$(selector).attr('genreLink', value["Genre Link"]);
+						$(selector).attr('source', value["Source"]);
+						$(selector).attr('sourcePageLink', value["Source Page Link"]);
+						$(selector).attr('medium', value["Type"]);
+						$(selector).attr('mediumDetail', value["Type  Detail"]);
+						$(selector).attr('aspectRatio', value["Aspect Ratio"]);
+						$(selector).attr('heightCm', value["Height cm"]);
+						$(selector).attr('widthCm', value["Width cm"]);
+						$(selector).attr('subject', value["Subject"]);
+						$(selector).attr('credit', value["Credit"]);
+						$(selector).attr('copyright', value["Copyright"]);
+						$(selector).attr('copyrightDetail', value["Copyright Detail"]);
+						$(selector).attr('location', value["Location"]);
+						$(selector).attr('moreInfoLink', value["More Info Link"]);
+						$(selector).attr('video', value["Video"]);
+						$(selector).attr('thumbnail', value["thumbnail"]);
+						$(selector).attr('url', value["url"]);
+						
+						fillImageAttrUI($(selector));
+					}
+				});
+			}
+		});
+
+		// callback handler that will be called on failure
+		request.fail(function (jqXHR, textStatus, errorThrown){
+			// log the error to the console
+			alert(
+				"The following error occured: "+
+				textStatus, errorThrown
+			);
+		});
+
+		// callback handler that will be called regardless
+		// if the request failed or succeeded
+		request.always(function () {
+			// reenable the inputs
+			//$inputs.prop("disabled", false);
+		});
+		
+	}
+	
+	function clearImageAttrUI()
+	{
+		fillImageAttrUI($('#loadingImage img'));
+	}
+	
+	function clearViewListImages() {
+		$(document).find('#divMainImages').html('<ul id="thumbs"><li id="loadingImage"><img src="jPages-master/img/preload.png"></img></li></ul>');
+				$("div.holder").jPages({
+				  containerID : "thumbs",
+				  perPage     : 50,
+				  previous    : "div.arrowPrev",
+				  next        : "div.arrowNext",
+				  direction   : "auto",
+				  animation   : "fadeInleft"
+				});
+		fillImageAttrUI($('#loadingImage img'));
+		enableSaveImageAttr(false);
+	}
+	
+	function saveImageAttr()
+	{
+	//note: imgId is a hidden field in the image attribute section
+		var cmd="SaveImgAttr"
+		var imageId = $('#imgId').val();
+		var params = 
+			'id=' + imageId + 
+			//'&Title=' + encodeURI($('#imgTitle').val()) +
+			addSaveImageAttrParamIfChanged(imageId, 'Title', 'title', 'imgTitle') +
+			'&Artist%20First%20N=' + encodeURI($('#imgArtist').val()) +
+			'&Artist%20Last%20N=' + encodeURI($('#imgArtistLastName').val()) +
+			'&Year=' + encodeURI($('#imgWorkDate').val()) +
+			'&Birthdate=' + encodeURI($('#imgBirth').val()) +
+			'&Died=' + encodeURI($('#imgDeath').val()) +
+			'&Artist%20Info=' + encodeURI($('#imgArtistInfo').val()) +
+			'&Genre=' + encodeURI($('#imgGenre').val()) +
+			'&Genre%20Link=' + encodeURI($('#imgGenreLink').val()) +
+			'&Source=' + encodeURI($('#imgSource').val()) +
+			'&Source%20Page%20Link=' + encodeURI($('#imgSourcePageLink').val()) +
+			'&Type=' + encodeURI($('#imgMedium').val()) +
+			'&Type%20%20Detail=' + encodeURI($('#imgMediumDetail').val()) +
+			'&Aspect%20Ratio=' + encodeURI($('#imgAspectRatio').val()) +
+			'&Height%20cm=' + encodeURI($('#imgHeightCm').val()) +
+			'&Width%20cm=' + encodeURI($('#imgWidthCm').val()) +
+			'&Subject=' + encodeURI($('#imgSubject').val()) +
+			'&Credit=' + encodeURI($('#imgCredit').val()) +
+			'&Copyright=' + encodeURI($('#imgCopyright').val()) +
+			'&Copyright%20Detail=' + encodeURI($('#imgCopyrightDetail').val()) +
+			'&Location=' + encodeURI($('#imgLocation').val()) +
+			'&More%20Info%20Link=' + encodeURI($('#imgMoreInfoLink').val()) +
+			'&Video=' + encodeURI($('#imgVideo').val()) +
+			'&thumbnail=' + encodeURI($('#imgThumbnail').val()) +
+			'&url=' + encodeURI($('#imgUrl').val()) +
+			'';
+		
+		// setup some local variables
+		var $form = $('#divMainImageDetail');
+		var $inputs = $form.find("input, select, button, textarea");
+		// let's disable the inputs for the duration of the ajax request
+		$inputs.prop("disabled", true);
+
+		//temp to track saves
+		console.log(baseCmdUrl + cmd + "?" + params);
+		
+		var success = false;
+		$("#pendingTransactionDialog").dialog("open");
+		
+		// fire off the request to /form.php
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status == 'failure')
+				alert(response.Message);
+			else
+			{
+				//alert("Changes have been saved.");
+				//refreshImageAttrUI(imageId);
+				success = true;
+			}
+		});
+
+		// callback handler that will be called on failure
+		request.fail(function (jqXHR, textStatus, errorThrown){
+			// log the error to the console
+			alert(
+				"The following error occured: "+
+				textStatus, errorThrown
+			);
+		});
+
+		// callback handler that will be called regardless
+		// if the request failed or succeeded
+		request.always(function () {
+			// reenable the inputs
+			$inputs.prop("disabled", false);
+			$("#pendingTransactionDialog").dialog("close");
+			if (success)
+			{
+				alert("Changes have been saved.");
+				refreshImageAttrUI(imageId);
+			}
+		});
+		
+	}
+	
+	//TODO: Will not need all of theses params if standardize on all of the ids
+	function addSaveImageAttrParamIfChanged(imageId, attr, attrId, attrUiId)
+	{
+		currentValue = $('#' + imageId).attr(attrId);
+		newValue = $('#' + attrUiId).val();
+		if (newValue == currentValue)
+			return '';
+		else
+			return '&' + attr + '=' + encodeURI(newValue);
+	}
+	
+	function lazyLoadImages (pages, items) 
+	{
+		//lazy load current
+		items.showing.find("img").trigger("turnpage");
+		//lazy load next page images
+		items.oncoming.find("img").trigger("turnpage");
+	}
+	
+	
+	
+	function renameViewListOrCategory (obj)
+	{
+		var objectId = obj[0].id;
+		var objectClass = $('#' + objectId).attr('class');
+		if (objectClass.indexOf('viewList') != -1)
+		{
+			$('#tbRenameId').val(objectId);
+			$('#tbRenameClass').val('viewList');
+			//workaround as view list name has (#images) appended
+			//$('#container').jstree('rename_node', '#' + objectId , 'Enter New Name' );
+
+			$('#container').jstree("rename");
+		}
+		else if (objectClass.indexOf('category') != -1)
+		{
+			$('#tbRenameId').val(objectId);
+			$('#tbRenameClass').val('category');
+			$('#container').jstree("rename");
+		}
+	}
+	
+	function renameViewList(id, newName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'RenameViewlist';
+		params = 
+			'id=' + id +
+			'&name=' + newName;
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//alert("Rename complete.");
+				//TODO: Should we verify changes?
+			}
+		});
+	}
+	
+	function renameCategory(id, newName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'RenameCategory';
+		params = 
+			'oldname=' + convertIdToName(id) +
+			'&newname=' + newName;
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				alert("Rename complete.");
+				//TODO: Should we verify changes?
+			}
+		});
+	}
+	
+	function onPendingTransactionClosed( event, ui ) 
+	{
+		
+	}
+	
+	function createViewListOrCategory (obj)
+	{
+		var objectId = obj[0].id;
+		var objectClass = $('#' + objectId).attr('class');
+		var objectDisplayName = $('#' + objectId).attr('displayName');
+		//if on a category, create a view list
+		if (objectClass.indexOf('category') != -1)
+		{
+			$('#tbCreateUnderCategory').html('<a>Click Ok to create a new View List under ' + objectDisplayName + '</a>');
+			$('#tbCreateId').val(objectId);
+			$('#tbCreateClass').val('viewList');
+			$('#tbCreateConfirmed').val('');
+			$("#createDialog").dialog("open");	
+		}
+		else if (objectClass.indexOf('root') != -1)
+		{
+			$('#tbCreateUnderCategory').html('<a>Click Ok to create a new category under ArtKick</a>');
+			$('#tbCreateId').val(objectId);
+			$('#tbCreateClass').val('category');
+			$('#tbCreateConfirmed').val('');
+			$("#createDialog").dialog("open");	
+		}
+	}
+	
+	function createViewList(id, newName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'CreateViewlist';
+		params = 
+			'catName=' + convertIdToName(id) +
+			'&listName=' + newName;
+			
+		var success = false;
+		$("#pendingTransactionDialog").dialog("open");
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				success = true;
+			}
+		});
+		
+		request.always(function () {
+			$("#pendingTransactionDialog").dialog("close");
+			if (success == true)
+			{
+				alert("New view list has been created. Category/View list tree will be reloaded.");
+				location.reload();
+			}
+		});
+	}
+	
+	function createCategory(id, newName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'CreateCategory';
+		params = 'name=' + newName;
+		
+		var success = false;
+		$("#pendingTransactionDialog").dialog("open");
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				success = true;
+			}
+		});
+		
+		request.always(function () {
+			$("#pendingTransactionDialog").dialog("close");
+			if (success == true)
+			{
+				alert("New category has been created. Category/View list tree will be reloaded.");
+				location.reload();
+			}
+		});
+	}
+	
+	function onCreateClosed( event, ui ) 
+	{
+		//alert($('#tbRenameNewName').val() + $('#tbRenameId').val() + $('#tbRenameClass').val());
+		var id = $('#tbCreateId').val();
+		var newName = $('#tbCreateNewName').val();
+		var objClass = $('#tbCreateClass').val();
+		var confirmation = $('#tbCreateConfirmed').val();
+		if (confirmation.length > 0 && newName.length > 0)
+		{
+			if (objClass == viewListType)
+			{
+				//alert('create viewlist ' + newName + id);
+				createViewList(id, newName);
+			}
+			else if (objClass == categoryType)
+			{
+				//alert('create category ' + newName + id);
+				createCategory(id, newName);
+			}
+		}
+	}
+	
+	function removeViewListOrCategory (obj)
+	{
+		var objectId = obj[0].id;
+		var objectClass = $('#' + objectId).attr('class');
+		var objectDisplayName = $('#' + objectId).attr('displayName');
+		//if on a category, create a view list
+		if (objectClass.indexOf(viewListType) != -1)
+		{
+			$('#tbRemoveId').val(objectId);
+			$('#tbRemoveItems').html(objectDisplayName + ' View List');
+			$('#tbRemoveCat').val(obj[0].parentNode.parentNode.parentNode.id);
+			$('#tbRemoveClass').val('viewList');
+			$('#tbRemoveConfirmed').val('');
+			$("#removeDialog").dialog("open");	
+		}
+		else if (objectClass.indexOf(categoryType) != -1)
+		{
+			$('#tbRemoveId').val(objectId);
+			$('#tbRemoveItems').html(objectDisplayName + ' Category');
+			$('#tbRemoveClass').val('category');
+			$('#tbRemoveConfirmed').val('');
+			$("#removeDialog").dialog("open");	
+		}
+	}
+	
+	function removeViewListFromCat(id, catName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'RemoveViewlistFromCategory';
+		params = 
+			'listId=' + id +
+			'&catName=' + convertIdToName(catName);
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				$("#container").jstree("remove"); 
+			}
+		});
+	}
+	
+	function removeCategory(id)
+	{
+		var cmd = 'RemoveCategory';
+		var params = 
+			'name=' + convertIdToName(id);
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				$("#container").jstree("remove");
+			}
+		});
+	}
+	
+	function onRemoveClosed( event, ui ) 
+	{
+		var id = $('#tbRemoveId').val();
+		var confirmation = $('#tbRemoveConfirmed').val();
+		var objClass = $('#tbRemoveClass').val();
+		var objCat = $('#tbRemoveCat').val();
+		if (confirmation.length > 0)
+		{
+			if (objClass == viewListType)
+			{
+				removeViewListFromCat(id, objCat);
+			}
+			else if (objClass == categoryType)
+			{
+				removeCategory(id);
+			}	
+		}
+	}
+	
+	function handleImagesDropped(data)
+	{
+		//jPages does not seem to handle multiple drag...
+		//so for now we will actually get selected items from the image list 
+		//rather than the drag object
+		var viewListId = data.r.attr('id');
+		
+		var cmd = "AddImagesToViewlist";
+		var params = 'listId=' + viewListId +
+					 '&' + buildSelectedImageList();
+					 
+		//alert(baseCmdUrl + cmd + '?' + params);
+		
+		var success = false;
+		$("#pendingTransactionDialog").dialog("open");
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				//TODO: What if current list?
+				success = true;
+			}
+		});
+		
+		request.always(function () {
+			$("#pendingTransactionDialog").dialog("close");
+			if (success == true)
+				alert("The selected images have been copied to the view list.");
+		});
+	}
+	
+	function buildSelectedImageList()
+	{
+		//jPages does not seem to handle multiple drag...
+		//so for now we will actually get selected items from the image list 
+		//rather than the drag object
+		//$(document).find('#divMainImages').html(strImages);
+		var imageArray = [];
+		$('#divMainImages').find('li.selected').each(function () {
+			imageArray.push('images[]=' + $(this).attr('id'));
+		});
+		return imageArray.join('&');
+	}
+	
+	function removeSelectedImagesFromViewlist()
+	{
+		var viewListId = $('#thumbs').attr('viewListId');
+		var cmd = "RemoveImagesFromViewlist";
+		var params = 'listId=' + viewListId +
+					 '&' + buildSelectedImageList();
+					 
+		//alert(baseCmdUrl + cmd + '?' + params);
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				//TODO: How to delete image? hide it?  reload images?
+				clearViewListImages();
+				getViewListImages(viewListId);
+			}
+		});
+	}
+	
+	function openSelectedImages()
+	{
+		$('#divMainImages').find('li.selected').each(function () {
+			window.open($(this).attr("url"));
+		});
+	}
+	
+	//select next image (selects first if none)
+	function selectAdjacentImage(next)
+	{
+		var currentSelectedItem = next ? $('#divMainImages').find('li.selected:last') : $('#divMainImages').find('li.selected:first');
+		if (currentSelectedItem.length == 0)
+		{
+			$('#divMainImages').find('li:first').trigger("click");
+			return;
+		}
+		
+		var nextprevImage = next ? currentSelectedItem.next() : currentSelectedItem.prev();
+		if (nextprevImage.length != 0)
+		{
+			//currentSelectedItem.removeClass("selected");
+			//currentSelectedItem.siblings().removeClass("selected");
+			//nextprevImage.addClass('selected');
+			nextprevImage.trigger("click");
+		}
+	}
+	
+	function handleClickSelectImageId(ctrlKey, shiftKey, imageId)
+	{
+		targetImage = $(document).find('#divMainImages').find('li.viewListImage#' + imageId);
+		handleClickSelectImage(ctrlKey, shiftKey, targetImage)
+	}
+	
+	function handleClickSelectImage(ctrlKey, shiftKey, targetImage)
+	{
+		if (ctrlKey && targetImage.hasClass('selected'))
+			targetImage.removeClass("selected");
+		else
+			targetImage.addClass("selected");
+		
+		//deselect as appropriate
+		if (!ctrlKey && !shiftKey)
+		  targetImage.siblings().removeClass("selected");
+		  
+		if (shiftKey)
+		{
+			//$(this).next('.selected') does not seem to work, so need to do the hard way
+			var hasPrevSelected = false;
+			var prevSelectedNode;
+			var hasNextSelected = false;
+			var prevSelectedNode;
+			currentNode = targetImage.next();
+			while (currentNode.length != 0 && !hasNextSelected)
+			{
+				if (currentNode.hasClass('selected'))
+				{
+					hasNextSelected = true;
+					nextSelectedNode = currentNode;
+				}
+				else
+					currentNode = currentNode.next();
+			}
+			currentNode = targetImage.prev();
+			while (currentNode.length != 0 && !hasPrevSelected)
+			{
+				if (currentNode.hasClass('selected'))
+				{
+					hasPrevSelected = true;
+					prevSelectedNode = currentNode;
+				}
+				else
+					currentNode = currentNode.prev();
+			}
+			
+			targetImage.siblings().removeClass("selected");
+			
+			if (hasNextSelected)
+			{
+				var foundNextSelected = false;
+				currentNode = targetImage.next();
+				while (currentNode.length != 0 && !foundNextSelected)
+				{
+					currentNode.addClass('selected');
+					if (currentNode[0].id == nextSelectedNode[0].id)
+						foundNextSelected = true;
+					else
+						currentNode = currentNode.next();
+				}
+				
+			}
+			else if (hasPrevSelected)
+			{
+				var foundPrevSelected = false;
+				var currentNode = targetImage.prev();
+				while (currentNode.length != 0 && !foundPrevSelected)
+				{
+					currentNode.addClass('selected');
+					if (currentNode[0].id == prevSelectedNode[0].id)
+						foundPrevSelected = true;
+					else
+						currentNode = currentNode.prev();
+				}
+			}
+		}
+		
+		//currently we only support one selection for metadata section
+		if ($('#divMainImages').find('li.selected').length == 1)
+		{
+			fillImageAttrUI($('#divMainImages').find('li.selected'));
+			enableSaveImageAttr(true);
+		}
+		else
+		{
+			clearImageAttrUI();
+			enableSaveImageAttr(false);
+		}
+	}
+	
+	function body_sizer() {
+	  var bodyheight = $('#outerBody').height();
+	  var headerheight = $('#header').height();
+	  var footerheight =  $('#footer').height();
+	  var imageDetailHeight = $('#divMainImageDetail').height()
+	  //$("#divNavTree2").height(bodyheight - headerheight - footerheight - 5);
+	  $("#divMainImages").height(bodyheight - imageDetailHeight - headerheight - footerheight - 40);
+	  $("#divNavTree2").height(bodyheight - headerheight - footerheight - 40);
+	}
+	
+	function enableSaveImageAttr(enable)
+	{
+		var $form = $('#divMainImageDetail');
+		var $inputs = $form.find("input, select, button, textarea");
+		// let's disable the inputs for the duration of the ajax request
+		$inputs.prop("disabled", !enable);
+	}
+	
+	function onUnsavedClosed()
+	{
+		var newViewListId = $('#tbNewViewListId').val();
+		var newImageId = $('#tbNewImageId').val();
+		if (newViewListId != '')
+		{
+			clearViewListImages();
+			getViewListImages($('#tbNewViewListId').val());
+		}
+		else if (newImageId != '')
+		{
+			handleClickSelectImageId(event.ctrlKey, event.shiftKey, newImageId);
+		}
+	}
+	
+	function addNewImageToViewList(obj)
+	{
+		//jPages does not seem to handle multiple drag...
+		//so for now we will actually get selected items from the image list 
+		//rather than the drag object
+		var viewListId = obj[0].id;
+		
+		var cmd = "createImage";
+		var params = 'listId=' + viewListId;
+					 
+		alert(baseCmdUrl + cmd + '?' + params);
+		
+		var success = false;
+		$("#pendingTransactionDialog").dialog("open");
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				//TODO: What if current list?
+				success = true;
+			}
+		});
+		
+		request.always(function () {
+			$("#pendingTransactionDialog").dialog("close");
+			if (success == true)
+			{
+				alert("A new image has been created...will refresh the images");
+				getViewListImages(viewListId);
+			}
+		});
+	}
+	
+	function toggleDatabase()
+	{
+		if (databaseParam == "staging")
+			$('#productionServerLink').trigger('click');
+		else
+			$('#stagingServerLink').trigger('click');
+	}
+	
+	</script>
+	
+</body>
+</html>

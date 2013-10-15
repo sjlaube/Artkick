@@ -31,6 +31,7 @@ require(["jquery",
 		"dojox/form/PasswordValidator",
         "dojo/dom-attr",
 		"dojox/mobile/Carousel",
+		"dojox/mobile/LongListMixin",
 		"dojox/mobile/ScrollableView"			
     ],
     function ( 
@@ -57,6 +58,7 @@ require(["jquery",
 		PasswordValidator,
         domAttr,
 		Carousel,
+		LongListMixin,
 		ScrollableView) {
 
 
@@ -66,8 +68,11 @@ require(["jquery",
 	
 		function () {
 
-            var base = "http://evening-garden-3648.herokuapp.com/client/";
+            window.base = "http://ancient-caverns-7624.herokuapp.com/"; // Artkick Staging Server
+            //window.base = "http://evening-garden-3648.herokuapp.com/";  // Production Server
             var selectListView = registry.byId("PlaylistView");
+			var selectArtistListView = registry.byId("ArtistlistView");
+			var selectMuseumListView = registry.byId("MuseumlistView");
 
             var playerList = registry.byId("playerList");
             var imagesList = registry.byId("ImageList");
@@ -94,11 +99,13 @@ require(["jquery",
 			window.btn1 = registry.byId("btn1");
 				button2 = registry.byId("btn1");
 		    window.listList = registry.byId("listList");
+			window.artistList = registry.byId("ArtistList");
+			window.museumList = registry.byId("MuseumList");
 			window.checkforparameters = true;
 			
 			window.delItem = "";
 			var handler;
-	
+			var updatelistcount=0;
 			var	userrating = new Rating({
 							numStars:5});	
             window.boucingTime = 3000;
@@ -126,6 +133,8 @@ require(["jquery",
 			window.iframe = {};
 			window.url=null;
 			window.shuffle= false;
+			window.loadartistview = false;
+			window.loadmuseumview = false;
          
            window.switchView = false;
 		
@@ -197,9 +206,8 @@ require(["jquery",
 
 
                     //     alert("Welcome again " + email);
-                    var base = "http://evening-garden-3648.herokuapp.com/player/";
                     dojo.io.script.get({
-                        url: base + "getUser?email=" + email,
+                        url: base + "player/getUser?email=" + email,
                         callbackParamName: "callback",
                         load: function (result) {
 				//		alert("status="+result["Status"]);
@@ -250,9 +258,8 @@ require(["jquery",
             }
             
             window.getDefaults = function(){
-            	var base = "http://evening-garden-3648.herokuapp.com/client/";
             	dojo.io.script.get({
-                     url: base + "getDefault",
+                     url: base + "client/getDefault",
                      callbackParamName: "callback",
                      load: function (result) {
                      	if(result["Status"]=="success"){
@@ -269,7 +276,7 @@ require(["jquery",
            
 
             window.syncImage = function() {
-            	var url = base+"update2?imageID="+window.currImage+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat;
+            	var url = base+"client/update2?imageID="+window.currImage+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat;
                 for (var player in window.playerSet) {
                 	if (window.playerSet[player]) {
                 		url += "&players[]="+ player.substring(1);
@@ -317,7 +324,7 @@ require(["jquery",
               //  alert(base + "getViewlist3?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1");
              //   alert("updating"+currList);
 			//   alert("switchview="+window.switchView);
-                var url = base + "getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1";
+                var url = base + "client/getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1";
                 if(window.shuffle){
                 	url += "&shuffle=1";
                 }else{
@@ -483,7 +490,7 @@ require(["jquery",
 				   //  alert("justlogin");
 					 window.justRefresh = false;
                     dojo.io.script.get({
-                        url: base + "getUserStatus?email=" + window.email,
+                        url: base + "client/getUserStatus?email=" + window.email,
                         callbackParamName: "callback",
                         load: function (result) {
                             if (result["Status"] == "success") {
@@ -530,6 +537,19 @@ require(["jquery",
                                 window.currList = curl;
                                 window.currCat = curc;
 								window.checkforparameters = false;
+								
+								// try to save the view list
+							    dojo.io.script.get({
+                                         url: base + "user/saveAsMyViewlist?email=" + window.email+"&token=123&listId="+curl,
+                                         callbackParamName: "callback",
+                                         load: function (result) {
+		                                     console.log(result['Message']);
+								         }
+								});
+								
+								
+								
+								
 		
 								}
                             } else {
@@ -552,7 +572,6 @@ require(["jquery",
             }
 
             function updateRemovePlayers() {
-                var base = "http://evening-garden-3648.herokuapp.com/player/";
                 window.removePlayers = {};
                 var playerData = {
                     "items": []
@@ -565,7 +584,7 @@ require(["jquery",
                 removePlayerList.setStore(playerStore);
                 //alert(base + "getPlayers?email="+window.email);
                 dojo.io.script.get({
-                    url: base + "getPlayers?email=" + window.email,
+                    url: base + "player/getPlayers?email=" + window.email,
                     callbackParamName: "callback",
                     load: function (result) {
                         var players = result["players"];
@@ -603,7 +622,6 @@ require(["jquery",
             }
 
             function updateOwnedPlayers() {
-                var base = "http://evening-garden-3648.herokuapp.com/player/";
                 window.ownedPlayers = {};
                 var playerData = {
                     "items": []
@@ -614,7 +632,7 @@ require(["jquery",
                 ownedPlayerList.setStore(null);
                 ownedPlayerList.setStore(playerStore);
                 dojo.io.script.get({
-                    url: base + "getOwnedPlayers?email=" + window.email,
+                    url: base + "player/getOwnedPlayers?email=" + window.email,
                     callbackParamName: "callback",
                     load: function (result) {
                         //alert( result["players"].length);
@@ -653,22 +671,30 @@ require(["jquery",
                     
                 updateLists(window.currCat);
 
-                var currView = dijit.registry.byId("Intro0");
-                var mycurrView = currView.getShowingView();
+          
 				//  reset the scrollable view to the top
 				var c = dijit.byId("PlaylistView").containerNode;
+				if (currCat=="Artist")
+				   var c = dijit.byId("ArtistlistView").containerNode;
+				if (currCat=="Museums")
+				   var c = dijit.byId("MuseumlistView").containerNode;
+
                 dojo.setStyle(c, {
                  webkitTransform: '',
                   top: 0,
                   left: 0
                     });
                 //mycurrView.performTransition("PlaylistView", 1, "", null);
-                gotoView("select_category","PlaylistView");
+				if (currCat=="Artist")
+					gotoView("select_category","ArtistlistView");
+				else if (currCat == "Museums")
+					gotoView("select_category","MuseumlistView");
+				else
+					gotoView("select_category","PlaylistView");
 
            }
 
             function updateCats() {
-                var base = "http://evening-garden-3648.herokuapp.com/content/";
 			//	 	dijit.registry.byId("ImageView").hide();
                 catList.destroyRecursive(true);
                 $("#catList").html('');
@@ -696,7 +722,7 @@ require(["jquery",
                             //alert("new");
                             catList.addChild(newCat);
                 dojo.io.script.get({
-                    url: base + "allCategories",
+                    url: base + "content/allCategories2",
                     callbackParamName: "callback",
                     load: function (result) {
                         var cats = result["categories"];
@@ -704,7 +730,7 @@ require(["jquery",
                             newCat = new dojox.mobile.ListItem({
                                 id: cats[i]["name"],
 
-                                label: cats[i]["name"] + "<br><i><small>" + cats[i]["viewlists"].length + " viewlists</small></i></br>",
+                                label: cats[i]["name"] + "<br><i><small>" + cats[i]["viewlistNum"] + " viewlists</small></i></br>",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
@@ -737,20 +763,30 @@ require(["jquery",
 
 
             function updateLists(catName) {
-                var base = "http://evening-garden-3648.herokuapp.com/";
-				var url;
-                listList.destroyRecursive(true);
-                $("#listList").html('');
-				window.MyViewlist.destroyDescendants();
-				//alert("updatelists called name:"+catName);
+		
+		        if (catName == "Artist")
+				{
+					updateArtistLists();
+					return;
+				}
+				if (catName == "Museums")
+				{
+					updateMuseumLists();
+					return;
+				}
                 if (catName == "My Viewlists")
 				{
 				     url=base+"user/getMyViewlists?email="+ window.email+"&token=99999";
 				}
 				else
 				{
-					url=base + "content/getViewlistsByCategory?catName=" + catName;
+					url=base + "content/getViewlistsByCategory2?catName=" + catName;
 				}
+				
+				alert("catname="+catName);
+				listList.destroyRecursive(true);
+                $("#listList").html('');
+			    window.MyViewlist.destroyDescendants();
                 dojo.io.script.get({
                     url: url,
                     callbackParamName: "callback",
@@ -784,6 +820,7 @@ require(["jquery",
                            listList.addChild(myTopList);    
                         
                        }  
+					 //  alert("load up the lists count:"+lists.length);
                         for (var i in lists) {
 						//alert(lists[i]["coverImage"]);
 						  var listcoverimage="images/ARTKICKlogoFULLCOLOR-APP_50x50.png";
@@ -792,7 +829,7 @@ require(["jquery",
 						    
 						  var linelabel= '<img class="viewlistid" src="'+listcoverimage+'" alt="" height="60px" > ';
 					//	  alert(linelabel);
-						  linelabel=linelabel+lists[i]["name"] + "<br><i><small>" + lists[i]["images"].length + " pictures</small></i></br>";
+						  linelabel=linelabel+lists[i]["name"] + "<br><i><small>" + lists[i]["imageNum"] + " pictures</small></i></br>";
 				//		alert("label:"+linelabel+"lists:"+lists[i]["id"]);
 
 						   var newList = new dojox.mobile.ListItem({
@@ -832,10 +869,89 @@ require(["jquery",
                 });
             }
 
+    function updateArtistLists() {
+		
+                 if (window.loadartistview)
+					return; // already did this
+				window.loadartistview = true;
+				url=base + "content/getViewlistsByCategory2?catName=Artist";
+				alert("updateArtlistLists");
+				loadlists(url,artistList);
 
+				
+            }
+	function updateMuseumLists() {
+		
+                 if (window.loadmuseumview)
+					return; // already did this
+				window.loadmuseumview = true;
+				url=base + "content/getViewlistsByCategory2?catName=Museums";
+			alert("updateMuseumLists");
+				loadlists(url,museumList);
+
+				
+            }
+	function loadlists(url,listname){
+	
+	                dojo.io.script.get({
+                    url: url,
+                    callbackParamName: "callback",
+                    load: function (result) {
+                        var lists = result["viewlists"]; 
+								 
+					   alert("load up the lists count:"+lists.length+"listname="+listname);
+                        for (var i in lists) {
+						//alert(lists[i]["coverImage"]);
+						  var listcoverimage="images/ARTKICKlogoFULLCOLOR-APP_50x50.png";
+						if (lists[i]["coverImage"])
+							listcoverimage=lists[i]["coverImage"];
+						    
+						  var linelabel= '<img class="viewlistid" src="'+listcoverimage+'" alt="" height="60px" > ';
+						  var imagecount = "??"
+						  if (lists[i]["imageNum"])
+							imagecount = lists[i]["imageNum"];
+					//	  alert(linelabel);
+						  linelabel=linelabel+lists[i]["name"] + "<br><i><small>" + imagecount + " pictures</small></i></br>";
+						//alert("label:"+linelabel+"lists:"+lists[i]["id"]);
+							var nowview = 'ArtistlistView';
+							if (listname == museumList)
+								nowview = 'MuseumlistView';
+							//	alert(nowview);
+						   var newList = new dojox.mobile.ListItem({
+                                id2: lists[i]["id"],
+								
+                                label: linelabel ,
+
+                                rightIcon: "mblDomButtonArrow",
+                                variableHeight: true,
+								clickable: true,
+                                onClick: function () {
+                                  
+									gotoView(nowview,'blankview');
+                                    window.currList = this.id2;
+
+                                    window.switchView = true;
+                                    updateImages(-1);
+
+                                },
+                                moveTo: "",
+								transition: "fade"
+                            });
+						//	alert("label:"+lists[i]["name"] );
+                            listname.addChild(newList);
+
+                        }
+                        alert("done loading artists last label:"+lists[i]["name"]);
+                        
+                       
+                    }
+                    
+
+                });
+			}
             function rememberSelectPlayers() {
                 //alert("remembering");
-                var url = base + "selectPlayers?email=" + window.email;
+                var url = base + "client/selectPlayers?email=" + window.email;
                 var count = 0;
                 for (var player in window.playerSet) {
                     //alert(playerSet[player]);
@@ -1003,12 +1119,11 @@ require(["jquery",
 		
 
             function updatePlayers(selectedPlayers) {
-                var base = "http://evening-garden-3648.herokuapp.com/player/";
                 //alert("players");
 
 
                 dojo.io.script.get({
-                    url: base + "getPlayers?email=" + window.email,
+                    url: base + "player/getPlayers?email=" + window.email,
                     callbackParamName: "callback",
                     load: function (result) {
 
@@ -1077,8 +1192,8 @@ require(["jquery",
 									 if(result["players"].length == 0)
 									 {
 										alert("There are no players registered.");
-							            //currView2.performTransition("OptionsList", -1, "slide", null);
-							            gotoView("select_player","OptionsList");
+							            currView2.performTransition("OptionsList", -1, "slide", null);
+							          //  gotoView("select_player","OptionsList");
 									  }
 									
 									}
@@ -1181,7 +1296,7 @@ require(["jquery",
 									
 				var url="artkick://?currList="+curl+"&currImage="+curi+"&currCat="+curc+"&once="+"true";
 				//	alert("url:"+url);
-				openCustomURLinIFrame(url);		
+				//openCustomURLinIFrame(url);		
 			}
             hidemenu();
 
@@ -1257,7 +1372,7 @@ require(["jquery",
                 window.switchView = true;
                 updateImages(window.tarImage);
                 dojo.io.script.get({
-                            url: base + "getSelectedPlayers?email=" + window.email,
+                            url: base + "client/getSelectedPlayers?email=" + window.email,
                             callbackParamName: "callback",
                             load: function (result) {
                                 if (result["Status"] == "success") {
@@ -1301,6 +1416,16 @@ require(["jquery",
 
                 function () {
 				dijit.registry.byId("tabcategory2").set('selected', true);
+				});
+			 on(selectArtistListView, "beforeTransitionIn",
+
+                function () {
+				dijit.registry.byId("tabcategory5").set('selected', true);
+				});
+			on(selectMuseumListView, "beforeTransitionIn",
+
+                function () {
+				dijit.registry.byId("tabcategory6").set('selected', true);
 				});
 				
              on(optionsView, "beforeTransitionIn",
@@ -1418,7 +1543,7 @@ require(["jquery",
 					if (window.currGridPage ==1)
 					   hidebutton("GridPrevious", true);
 				}
-                var url = base + "getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+window.targImageGrid+"&forward="+forward+"&numOfImg=20"+"&include="+include;
+                var url = base + "client/getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+window.targImageGrid+"&forward="+forward+"&numOfImg=20"+"&include="+include;
                 if(window.shuffle){
                 	url += "&shuffle=1";
                 }else{
@@ -1491,11 +1616,10 @@ require(["jquery",
 			function(){
 			//alert("change ratings"+userrating.value);
 			//  LEON here is where you need to store value of user's rating for the image in the database!
-			   var base = "http://evening-garden-3648.herokuapp.com/client/";
 		//	   alert(imageMap[window.currImage]["User Rating"]);
 			   imageMap[window.currImage]["User Rating"]=userrating.value;
 			   dojo.io.script.get({
-                   url: base + "rateImage?imageId=" + window.currImage + "&email=" + window.email + "&rating=" + userrating.value,
+                   url: base + "client/rateImage?imageId=" + window.currImage + "&email=" + window.email + "&rating=" + userrating.value,
                    callbackParamName: "callback",
                    load: function (result) {
                    }
@@ -1609,8 +1733,7 @@ function hideDeleteButton(){
 function onClick(e){
 				var item = registry.getEnclosingWidget(e.target);
 			//	alert("deleting item2:"+item+"id:"+item.id+"name:"+item.label);
-				   var base = "http://evening-garden-3648.herokuapp.com/user/";
-				var url=base + "removeMyViewlist?"  + "email=" + window.email+"&token=9999&listId="+item.id;
+				var url=base + "user/removeMyViewlist?"  + "email=" + window.email+"&token=9999&listId="+item.id;
 				
 				    dojo.io.script.get({
 					url: url,
@@ -1699,7 +1822,7 @@ window.EditViewlists =function  (forceflag)
                 
                 
                 
-                var url = base+"update2?imageID="+view.getChildren()[0]['alt']+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat;
+                var url = base+"client/update2?imageID="+view.getChildren()[0]['alt']+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat;
                 
                 for (var player in window.playerSet) {
                 	if (window.playerSet[player]) {
@@ -2004,6 +2127,8 @@ function cleanUp() {
     window.removePlayers = {};
     window.menushow = false;
     window.justCreatePlayer = false;
+	window.loadartistview = false;
+	window.loadmuseumview = false;
     $("#addPlayerEmail").attr('value', '');
     getDefaults();
 }
@@ -2102,9 +2227,11 @@ function usermessage(message){
     var messagebox = dijit.registry.byId('UserMessage');
 
 	dojo.byId('UserMessage').innerHTML=message;
-	 setTimeout(function(){messagebox.show()},200);
+	 setTimeout(function(){messagebox.show()},100);
 	 setTimeout(function(){messagebox.hide()},2000);
 }
+
+
 
 
 

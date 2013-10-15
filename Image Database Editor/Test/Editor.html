@@ -8,22 +8,21 @@
 	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"  type="text/javascript"></script>
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
 	<script src="jquery.jstree.js"></script>
-    <script src="jquery.bxslider.min.js"></script>
-	<link href="jquery.bxslider.css" rel="stylesheet" />
 	<script src="jPages-master/js/jPages.js"></script>
     <script type="text/javascript" src="jPages-master/js/highlight.pack.js"></script>
     <script type="text/javascript" src="jPages-master/js/tabifier.js"></script>
     <script src="jPages-master/js/js.js"></script>
     <script src="jPages-master/js/jPages.js"></script>
 	<script src="jPages-master/js/jquery.lazyload.js"></script>
-	
-	
+
     <link rel="stylesheet" href="jPages-master/css/jPages.css">
     <link rel="stylesheet" href="jPages-master/css/animate.css">
     <link rel="stylesheet" href="jPages-master/css/github.css">
 	
 	<script src="jQuery-contextMenu-master/src/jquery.contextMenu.js"></script>
 	<link rel="stylesheet" href="jQuery-contextMenu-master/src/jquery.contextMenu.css">
+	
+	<script src="purl/js/purl.js"></script>
 
 </head>
 <body id="outerBody">
@@ -31,6 +30,8 @@
 		<tr>
 		<td colspan="2" id="header">
 			<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
+			<a id="stagingServerLink" href="#" style="display: none;">Staging</a>
+			<a id="productionServerLink" href="#" style="display: none;">Production</a>
 		</td>
 		</tr>
 
@@ -163,26 +164,32 @@
 	<div id="unsavedAttrDialog" title="Save">	
 		<label>You have unsaved changes in the image metadata. Would you like to save first?</label>
 		<input type="text" id="tbNewViewListId" class="hidden"></input>
+		<input type="text" id="tbNewImageId" class="hidden"></input>
 	</div>
 	
 </menu>
 	
 	<script type="text/javascript">
 	
-	var baseCmdUrl = 'http://fierce-basin-2977.herokuapp.com/client/';
-	var baseCmd2Url = 'http://evening-garden-3648.herokuapp.com/client/'; //TODO: why this?
-	var baseContentUrl = 'http://evening-garden-3648.herokuapp.com/content/';
+	//var baseCmdUrl = 'http://fierce-basin-2977.herokuapp.com/client/';
+	//var baseCmd2Url = 'http://evening-garden-3648.herokuapp.com/client/'; //TODO: why this?
+	//var baseContentUrl = 'http://evening-garden-3648.herokuapp.com/content/';
+	var baseCmdUrlProd = 'http://fierce-basin-2977.herokuapp.com/prod/'
+	var baseCmdUrlStag = 'http://fierce-basin-2977.herokuapp.com/stag/'
+	var baseCmdUrl = baseCmdUrlStag;
+	var serverProd = 'Production';
+	var serverStag = 'Staging';
+	var server = serverStag;
 	var viewListType = "viewList";
 	var categoryType = "category";
 	var rootType = "root";
 	var imageType = "image";
+	var tempRename = false;  //hack for rename not including image count
 	
 	$(document).ready(function () {
 		jQuery(function($) {
 			
 		});
-		
-		
 		
 		$('#btnSave').click(function () {
 			saveImageAttr();
@@ -257,14 +264,39 @@
 	var myCategories = [];
 	var categoriesLoaded = 0;
 	var imageAttrDirty = false;
+	
+	//point to request database (default is staging)
+	var databaseParam = $.url().param('database');
+	var baseEditorUrl = $.url().attr('protocol') + ':' + $.url().attr('path');
+	$('#productionServerLink').attr('href', baseEditorUrl + '?database=production');
+	$('#stagingServerLink').attr('href', baseEditorUrl + '?database=staging');
+	$('#stagingServerLink').click(function (e) {
+		window.location = $("#stagingServerLink").attr('href');
+		e.preventDefault();
+	});
+	$('#productionServerLink').click(function (e) {
+		window.location = $("#productionServerLink").attr('href');
+		e.preventDefault();
+	});
+
+	if (databaseParam == "production")
+	{
+		alert('WARNING: You are about to edit live production data. Proceed with caution.');
+		server = serverProd;
+		baseCmdUrl = baseCmdUrlProd;
+	}
+	
+	console.log('Editor Host: ' + baseEditorUrl + " Database Param: " + databaseParam);
+	console.log('Database Server: ' + server + " Base Url: " + baseCmdUrl);
+	
 	//<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
 	$.ajax({
-			  url: baseContentUrl + 'allCategories',
+			  url: baseCmdUrl + 'allCategories',
 			  dataType: 'jsonp',
 			  async: false,
 			  
 			  success: function(data) {
-							myArr.push('<div id="container"> <ul> <li id="treetop" class="root" rel="root" displayName="ArtKick"><a>ArtKick</a><ul>');
+							myArr.push('<div id="container"> <ul> <li id="treetop" class="root" rel="root" displayName="ArtKick"><a>ArtKick - ' + server + '</a><ul>');
 							$.each(data, function(key, value) {
 								$(this).each(function(key, value) {
 									//var catViewList = getCatViewLists(value["name"]);
@@ -300,7 +332,7 @@
 	function getCatViewLists(cat) {
 		var viewLists = [];
 		var strViewLists = "";
-		var vlURL = encodeURI(baseContentUrl + 'getViewlistsByCategory?catName=' + cat);
+		var vlURL = encodeURI(baseCmdUrl + 'getViewlistsByCategory?catName=' + cat);
 		$.ajax({
 			  url: vlURL,
 			  dataType: 'jsonp',
@@ -311,11 +343,14 @@
 					if (key == 'viewlists') {
 						$(this).each(function(key, value) {
 							if (value["name"] != " All")
+							{
+								var imageCount = getViewListImageCount(value["images"]);
 								viewLists.push('<li class="viewList" id="' + value["id"] + '"' +
-								                    ' displayName="' + value["name"] + '"' + 
-													'><a>' + value["name"] + ' (' + getViewListImageCount(value["images"]) + ')' + '</a>' +
+								                    ' displayName="' + value["name"] + '"' +
+													' imageCount="' + imageCount + '"' +
+													'><a>' + value["name"] + ' (' + imageCount + ')' + '</a>' +
 											   '</li>');
-						//myCategories.push(value["name"], 
+							}
 						});
 					};
 					strViewLists = "<ul>" + viewLists.join('') + "</ul>";
@@ -327,6 +362,7 @@
 						if (imageAttrDirty)
 						{
 							$("#tbNewViewListId").val($(this).attr('id'));
+							$("#tbNewImageId").val('');
 							$("#unsavedAttrDialog").dialog("open");
 							return;
 						}
@@ -353,31 +389,76 @@
 			"plugins" : ["themes","html_data","ui","crrm","contextmenu", "dnd", "types"], 
 
 			"contextmenu": { 
-				items: { 
-					 
-					ccp: false, 
-					rename: { 
-						label: "Rename", 
-						action: function (obj) 
-							{ renameViewListOrCategory (obj) }, 
-						seperator_after : false, 
-						seperator_before : false 
-						}, 
-					create: { 
-						label: "Create New", 
-						action: function (obj) 
-							{ createViewListOrCategory (obj) }, 
-						seperator_after : false, 
-						seperator_before : false 
-						},
-					remove: { 
-						label: "Remove", 
-						action: function (obj) 
-							{ removeViewListOrCategory (obj) }, 
-						seperator_after : false, 
-						seperator_before : false 
-						},
-				} // end items 
+				items: function(node) {
+                    if (node.attr('rel') == 'root' ) 
+						return { 
+							ccp: false, 
+							create: { 
+								label: "Create new category", 
+								action: function (obj) 
+									{ createViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+							changeDatabase: { 
+								label: "Change database", 
+								action: function (obj) 
+									{ toggleDatabase() }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+						} // end items 
+					else if (node.attr('rel') == 'category' ) 
+						return { 
+							ccp: false, 
+							rename: { 
+								label: "Rename", 
+								action: function (obj) 
+									{ renameViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}, 
+							create: { 
+								label: "Create new view list", 
+								action: function (obj) 
+									{ createViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+							remove: { 
+								label: "Remove", 
+								action: function (obj) 
+									{ removeViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+						} // end items 
+					else 
+						return { 
+							ccp: false, 
+							rename: { 
+								label: "Rename", 
+								action: function (obj) 
+									{ renameViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}, 
+							create: { 
+								label: "Create new image", 
+								action: function (obj) 
+									{ addNewImageToViewList(obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}, 
+							remove: { 
+								label: "Remove", 
+								action: function (obj) 
+									{ removeViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+						} // end items 
+				}
 			},
 			
 			"dnd" : { 
@@ -441,16 +522,19 @@
 				if (type === 'move_node') {
 					//handle move_node.jstree here
 				} else if (type === 'rename_node') {
-					var id = data.args[0][0].id;
-					var newName = data.args[1];
-					var objectClass = $('li#' + id).attr('class');
-					if (objectClass.indexOf('viewList') != -1)
+					if (!tempRename)
 					{
-						renameViewList(id, newName);
-					}
-					else if (objectClass.indexOf('category') != -1)
-					{
-						renameCategory(id, newName);
+						var id = data.args[0][0].id;
+						var newName = data.args[1];
+						var objectClass = $('li#' + id).attr('class');
+						if (objectClass.indexOf('viewList') != -1)
+						{
+							renameViewList(id, newName);
+						}
+						else if (objectClass.indexOf('category') != -1)
+						{
+							renameCategory(id, newName);
+						}
 					}
 					
 				} else if (type === 'create_node') {
@@ -478,7 +562,7 @@
 		var vlImages = [];
 		var strImages = "";
 
-		var vlImagesURL = encodeURI(baseCmd2Url + 'getViewlist?id=' + viewListId);
+		var vlImagesURL = encodeURI(baseCmdUrl + 'getViewlist?id=' + viewListId);
 		$.ajax({
 			   
 			  url: vlImagesURL,
@@ -519,37 +603,19 @@
 				  callback    : lazyLoadImages
 				});
 				
-				
 				$(document).find('#divMainImages').find('li.viewListImage').each(function () {
 				    $(this).click(function () {
 						if (imageAttrDirty)
 						{
-							//$("#tbNewViewListId").val($(this).attr('id'));
-							//$("#unsavedAttrDialog").dialog("open");
-							alert('Please save changes first');
+							$("#tbNewViewListId").val('');
+							$("#tbNewImageId").val($(this).attr('id'));
+							$("#unsavedAttrDialog").dialog("open");
+							//alert('Please save changes first');
 							return;
 						}
 						
-						if (event.ctrlKey && $(this).hasClass('selected'))
-							$(this).removeClass("selected");
-						else
-							$(this).addClass("selected");
+						handleClickSelectImage(event.ctrlKey, event.shiftKey, $(this));
 						
-						//deselect as appropriate
-						if (!event.ctrlKey && !event.shiftKey)
-						  $(this).siblings().removeClass("selected");
-						
-						//currently we only support one selection
-						if ($('#divMainImages').find('li.selected').length == 1)
-						{
-							fillImageAttrUI($(this));
-							enableSaveImageAttr(true);
-						}
-						else
-						{
-							clearImageAttrUI();
-							enableSaveImageAttr(false);
-						}
 				    });
 					
 					$(this).dblclick(function () {
@@ -575,6 +641,9 @@
 						}
 					});
 			    });
+				
+				//select first item automatically
+				selectAdjacentImage(true);
 			  },
 			  
 		});
@@ -699,34 +768,35 @@
 				$.each(response, function(key, value) {
 					if (key == 'Image')
 					{
-						var selector = "#" + imageId;
-						$(selector).attr('title', value["Title"]);
-						$(selector).attr('artistFN', value["Artist First N"]);
-						$(selector).attr('artistLN', value["Artist Last N"]);
-						$(selector).attr('workDate', value["Year"]);
-						$(selector).attr('birthDate', value["Birthdate"]);
-						$(selector).attr('deathDate', value["Died"]);
-						$(selector).attr('artistInfo', value["Artist Info"]);
-						$(selector).attr('genre', value["Genre"]);
-						$(selector).attr('genreLink', value["Genre Link"]);
-						$(selector).attr('source', value["Source"]);
-						$(selector).attr('sourcePageLink', value["Source Page Link"]);
-						$(selector).attr('medium', value["Type"]);
-						$(selector).attr('mediumDetail', value["Type  Detail"]);
-						$(selector).attr('aspectRatio', value["Aspect Ratio"]);
-						$(selector).attr('heightCm', value["Height cm"]);
-						$(selector).attr('widthCm', value["Width cm"]);
-						$(selector).attr('subject', value["Subject"]);
-						$(selector).attr('credit', value["Credit"]);
-						$(selector).attr('copyright', value["Copyright"]);
-						$(selector).attr('copyrightDetail', value["Copyright Detail"]);
-						$(selector).attr('location', value["Location"]);
-						$(selector).attr('moreInfoLink', value["More Info Link"]);
-						$(selector).attr('video', value["Video"]);
-						$(selector).attr('thumbnail', value["thumbnail"]);
-						$(selector).attr('url', value["url"]);
+						var targetImage = $(document).find('#divMainImages').find('li.viewListImage#' + imageId);
+						//var selector = "li.viewListImage#" + imageId;
+						targetImage.attr('title', value["Title"]);
+						targetImage.attr('artistFN', value["Artist First N"]);
+						targetImage.attr('artistLN', value["Artist Last N"]);
+						targetImage.attr('workDate', value["Year"]);
+						targetImage.attr('birthDate', value["Birthdate"]);
+						targetImage.attr('deathDate', value["Died"]);
+						targetImage.attr('artistInfo', value["Artist Info"]);
+						targetImage.attr('genre', value["Genre"]);
+						targetImage.attr('genreLink', value["Genre Link"]);
+						targetImage.attr('source', value["Source"]);
+						targetImage.attr('sourcePageLink', value["Source Page Link"]);
+						targetImage.attr('medium', value["Type"]);
+						targetImage.attr('mediumDetail', value["Type  Detail"]);
+						targetImage.attr('aspectRatio', value["Aspect Ratio"]);
+						targetImage.attr('heightCm', value["Height cm"]);
+						targetImage.attr('widthCm', value["Width cm"]);
+						targetImage.attr('subject', value["Subject"]);
+						targetImage.attr('credit', value["Credit"]);
+						targetImage.attr('copyright', value["Copyright"]);
+						targetImage.attr('copyrightDetail', value["Copyright Detail"]);
+						targetImage.attr('location', value["Location"]);
+						targetImage.attr('moreInfoLink', value["More Info Link"]);
+						targetImage.attr('video', value["Video"]);
+						targetImage.attr('thumbnail', value["thumbnail"]);
+						targetImage.attr('url', value["url"]);
 						
-						fillImageAttrUI($(selector));
+						fillImageAttrUI(targetImage);
 					}
 				});
 			}
@@ -889,7 +959,10 @@
 			$('#tbRenameId').val(objectId);
 			$('#tbRenameClass').val('viewList');
 			//workaround as view list name has (#images) appended
-			//$('#container').jstree('rename_node', '#' + objectId , 'Enter New Name' );
+			var actualName = $('#divNavTree2').find('#' + objectId).attr('displayName');
+			tempRename = true;
+			$('#container').jstree('rename_node', '#' + objectId, actualName);
+			tempRename = false;
 
 			$('#container').jstree("rename");
 		}
@@ -923,8 +996,16 @@
 				alert(response.Message);
 			else
 			{
-				//alert("Rename complete.");
 				//TODO: Should we verify changes?
+			
+				//update display name
+				var viewList = $('#divNavTree2').find('#' + id);
+				viewList.attr('displayName', newName);
+				
+				//workaround as view list name has (#images) appended
+				tempRename = true;
+				$('#container').jstree('rename_node', '#' + id, newName + ' (' + viewList.attr('imageCount') + ')');
+				tempRename = false;
 			}
 		});
 	}
@@ -1276,9 +1357,9 @@
 	function selectAdjacentImage(next)
 	{
 		var currentSelectedItem = next ? $('#divMainImages').find('li.selected:last') : $('#divMainImages').find('li.selected:first');
-		if (currentSelectedItem == null)
+		if (currentSelectedItem.length == 0)
 		{
-			$('#divMainImages').find('li:first').addClass('selected');
+			$('#divMainImages').find('li:first').trigger("click");
 			return;
 		}
 		
@@ -1289,6 +1370,97 @@
 			//currentSelectedItem.siblings().removeClass("selected");
 			//nextprevImage.addClass('selected');
 			nextprevImage.trigger("click");
+		}
+	}
+	
+	function handleClickSelectImageId(ctrlKey, shiftKey, imageId)
+	{
+		targetImage = $(document).find('#divMainImages').find('li.viewListImage#' + imageId);
+		handleClickSelectImage(ctrlKey, shiftKey, targetImage)
+	}
+	
+	function handleClickSelectImage(ctrlKey, shiftKey, targetImage)
+	{
+		if (ctrlKey && targetImage.hasClass('selected'))
+			targetImage.removeClass("selected");
+		else
+			targetImage.addClass("selected");
+		
+		//deselect as appropriate
+		if (!ctrlKey && !shiftKey)
+		  targetImage.siblings().removeClass("selected");
+		  
+		if (shiftKey)
+		{
+			//$(this).next('.selected') does not seem to work, so need to do the hard way
+			var hasPrevSelected = false;
+			var prevSelectedNode;
+			var hasNextSelected = false;
+			var prevSelectedNode;
+			currentNode = targetImage.next();
+			while (currentNode.length != 0 && !hasNextSelected)
+			{
+				if (currentNode.hasClass('selected'))
+				{
+					hasNextSelected = true;
+					nextSelectedNode = currentNode;
+				}
+				else
+					currentNode = currentNode.next();
+			}
+			currentNode = targetImage.prev();
+			while (currentNode.length != 0 && !hasPrevSelected)
+			{
+				if (currentNode.hasClass('selected'))
+				{
+					hasPrevSelected = true;
+					prevSelectedNode = currentNode;
+				}
+				else
+					currentNode = currentNode.prev();
+			}
+			
+			targetImage.siblings().removeClass("selected");
+			
+			if (hasNextSelected)
+			{
+				var foundNextSelected = false;
+				currentNode = targetImage.next();
+				while (currentNode.length != 0 && !foundNextSelected)
+				{
+					currentNode.addClass('selected');
+					if (currentNode[0].id == nextSelectedNode[0].id)
+						foundNextSelected = true;
+					else
+						currentNode = currentNode.next();
+				}
+				
+			}
+			else if (hasPrevSelected)
+			{
+				var foundPrevSelected = false;
+				var currentNode = targetImage.prev();
+				while (currentNode.length != 0 && !foundPrevSelected)
+				{
+					currentNode.addClass('selected');
+					if (currentNode[0].id == prevSelectedNode[0].id)
+						foundPrevSelected = true;
+					else
+						currentNode = currentNode.prev();
+				}
+			}
+		}
+		
+		//currently we only support one selection for metadata section
+		if ($('#divMainImages').find('li.selected').length == 1)
+		{
+			fillImageAttrUI($('#divMainImages').find('li.selected'));
+			enableSaveImageAttr(true);
+		}
+		else
+		{
+			clearImageAttrUI();
+			enableSaveImageAttr(false);
 		}
 	}
 	
@@ -1312,8 +1484,73 @@
 	
 	function onUnsavedClosed()
 	{
-		clearViewListImages();
-		getViewListImages($('#tbNewViewListId').val());
+		var newViewListId = $('#tbNewViewListId').val();
+		var newImageId = $('#tbNewImageId').val();
+		if (newViewListId != '')
+		{
+			clearViewListImages();
+			getViewListImages($('#tbNewViewListId').val());
+		}
+		else if (newImageId != '')
+		{
+			handleClickSelectImageId(event.ctrlKey, event.shiftKey, newImageId);
+		}
+	}
+	
+	function addNewImageToViewList(obj)
+	{
+		//jPages does not seem to handle multiple drag...
+		//so for now we will actually get selected items from the image list 
+		//rather than the drag object
+		var viewListId = obj[0].id;
+		
+		var cmd = "createImage";
+		var params = 'listId=' + viewListId;
+		
+		var success = false;
+		$("#pendingTransactionDialog").dialog("open");
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				//TODO: What if current list?
+				success = true;
+			}
+		});
+		
+		request.always(function () {
+			$("#pendingTransactionDialog").dialog("close");
+			if (success == true)
+			{
+				var viewList = $('#divNavTree2').find('#' + viewListId);
+				//workaround as view list name has (#images) appended
+				var imageCount = parseInt(viewList.attr('imageCount')) + 1;
+				viewList.attr('imageCount', imageCount);
+				tempRename = true;
+				$('#container').jstree('rename_node', '#' + viewListId, viewList.attr('displayName') + ' (' + imageCount + ')');
+				tempRename = false;
+				alert("A new image has been created...image list will be refreshed.");
+				getViewListImages(viewListId);
+			}
+		});
+	}
+	
+	function toggleDatabase()
+	{
+		if (databaseParam == "staging")
+			$('#productionServerLink').trigger('click');
+		else
+			$('#stagingServerLink').trigger('click');
 	}
 	
 	</script>

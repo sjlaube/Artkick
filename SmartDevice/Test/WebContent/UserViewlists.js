@@ -22,8 +22,8 @@ function showmyviewlists()
 {
 // alert("switch to personal viewlist view Myviewlists="+window.MyViewlist);
 // get the personal viewlists
-	var base = "http://evening-garden-3648.herokuapp.com/user/";
-
+	
+				var listcount=0;
 				 window.MyViewlist.destroyDescendants();
 				 window.listList.destroyRecursive(true);
                 $("#listList").html('');
@@ -31,7 +31,7 @@ function showmyviewlists()
              //     $("#MyViewList").html('');
 
                 dojo.io.script.get({
-                    url: base + "getMyViewlists?email="+ window.email+"&token=99999",
+                    url: base + "user/getMyViewlists?email="+ window.email+"&token=99999",
                     callbackParamName: "callback",
                     load: function (result) {
                         var lists = result["viewlists"]; 
@@ -39,8 +39,9 @@ function showmyviewlists()
 					//	alert("return from getmyviewlists="+result);
                         for (var i in lists) {
 					//	alert(lists[i]["id"]+" Myviewlist="+window.MyViewlist+" name:"+lists[i]["name"] );
-						  
-
+						 if ( lists[i]["name"] != "Last Search") // user can't manually add to Last Search viewlist
+						 {
+							listcount += 1;
 						   newList2 = new dojox.mobile.ListItem({
                                 id: lists[i]["id"],
                                 label: lists[i]["name"] ,
@@ -58,9 +59,14 @@ function showmyviewlists()
                               //   alert("add child"+lists[i]["name"]);
 							     window.MyViewlist.addChild(newList2);
 								// alert("added child");
+						}
 
                         }
-					//	alert("done loading ");
+					//	alert("done loading number:"+listcount);
+						if(listcount == 0)
+						{
+							alert("Use the '+' button to create personal viewlists");
+						}
                         
                         
                        
@@ -99,8 +105,8 @@ function CreateUserList()
 	return;
    }
 
-   var base = "http://evening-garden-3648.herokuapp.com/user/";
-   var url=base + "createMyViewlist?"  + "email=" + window.email+"&token=9999&listName="+newlistname;
+
+   var url=base + "user/createMyViewlist?"  + "email=" + window.email+"&token=9999&listName="+newlistname;
    var newlistid;
  //  alert ("creating new viewlist:"+newlistname+" user:"+window.email+" url:"+url);
     dojo.io.script.get({
@@ -108,8 +114,9 @@ function CreateUserList()
         callbackParamName: "callback",
         load: function (result) {
             if (result["Status"] == "success") {
-              //  alert("Viewlist " + newlistname + " ID:"+result["listId"]+" created!");
+             //   alert("Viewlist " + newlistname + " ID:"+result["listId"]+" created!");
                   newlistid=    result["listId"];     
+				  	AddImageToViewlist (newlistid,newlistname);
 
             } else {
                 alert(result["Message"]);
@@ -120,15 +127,16 @@ function CreateUserList()
   
      dijit.registry.byId('AddUserList').hide(); 
 	 dojo.byId("NewListName").value="";
-	 showmyviewlists();
+	// showmyviewlists();
+
  }
  
  function AddImageToViewlist (toviewlist,toviewlistname)
  {
 	hidemenu();// need to check when user clicks add to viewlist, we need to hide menu when we bring up the personal viewlist view
 
-	var base = "http://evening-garden-3648.herokuapp.com/user/";
-    var url=base + "addImageToMyViewlist?"  + "email=" + window.email+"&token=9999&listId="+toviewlist+"&imgId="+window.currImage;
+	
+    var url=base + "user/addImageToMyViewlist?"  + "email=" + window.email+"&token=9999&listId="+toviewlist+"&imgId="+window.currImage;
  //   alert("adding image:"+window.currImage+" to viewlist:"+toviewlist+" url:"+url);
     dojo.io.script.get({
         url: url,
@@ -136,7 +144,7 @@ function CreateUserList()
         load: function (result) {
             if (result["Status"] == "success") {
                // alert("added image:"+imageMap[currImage]["Title"]+" to viewlist:"+toviewlistname);  
-				usermessage("added image:"+imageMap[currImage]["Title"]+" to viewlist:"+toviewlistname);
+				usermessage("Added image:"+imageMap[currImage]["Title"]+" to viewlist:"+toviewlistname);
 
             } else {
                 alert(result["Message"]);

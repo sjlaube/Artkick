@@ -10,7 +10,6 @@ function removePlayersAction() {
     if (r == false) {
         return;
     }
-    var base = "http://evening-garden-3648.herokuapp.com/player/";
     var currView = dijit.registry.byId("removeplayer");
     var i = 0;
     for (var key in window.removePlayers) {
@@ -21,7 +20,7 @@ function removePlayersAction() {
     for (var key in window.removePlayers) {
         if (window.removePlayers[key]) {
             dojo.io.script.get({
-                url: base + "removePlayer?email=" + window.email + "&playerId=" + key,
+                url: base + "player/removePlayer?email=" + window.email + "&playerId=" + key,
                 callbackParamName: "callback",
                 load: function (result) {
                 	if(result["Status"]=="success")
@@ -45,12 +44,17 @@ function addUserToPlayers() {
 	
 	
     var email = dojo.byId("addPlayerEmail").value;
-
-    var base = "http://evening-garden-3648.herokuapp.com/player/";
+	if (email =="")
+	{
+		alert("You must first search for an Artkick user to add them to a player");
+	}
+	else
+	{
+// add check to see if any player is checked
     for (var key in window.ownedPlayers) {
         if (window.ownedPlayers[key]) {
             dojo.io.script.get({
-                url: base + "addUserToPlayer?email=" + email + "&playerId=" + key,
+                url: base + "player/addUserToPlayer?email=" + email + "&playerId=" + key,
                 callbackParamName: "callback",
                 load: function (result) {
                     alert(result["Message"]);
@@ -59,6 +63,7 @@ function addUserToPlayers() {
         }
 
     }
+	}
 }
 
 function searchUser() {
@@ -70,14 +75,15 @@ function searchUser() {
 	
     var email = dojo.byId("addPlayerEmail").value;
     //alert(email);
-    var base = "http://evening-garden-3648.herokuapp.com/player/";
+   
     dojo.io.script.get({
-        url: base + "getUser?email=" + email,
+        url: base + "player/getUser?email=" + email,
         callbackParamName: "callback",
         load: function (result) {
             alert(result["Message"]);
         }
     });
+	dojo.byId("addPlayerEmail").value = "";
 }
 
 function createPlayer() {
@@ -98,10 +104,9 @@ function createPlayer() {
 	}
 	
     var currView = dijit.registry.byId("registernewroku");
-    var base = "http://evening-garden-3648.herokuapp.com/reg/";
-    alert(base + "userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
+    //alert(base + "reg/userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
     dojo.io.script.get({
-        url: base + "userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email,
+        url: base + "reg/userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email,
         callbackParamName: "callback",
         load: function (result) {
             if (result["Status"] == "success") {
@@ -154,12 +159,11 @@ function installartkick() {
 
 }
 function setAuto(interval) {
-    var base = "http://evening-garden-3648.herokuapp.com/client/";
     for (var player in window.playerSet) {
         if (window.playerSet[player]) {
             //alert(base+"setAuto?email="+window.email+"&snumber="+player.substring(1)+"&autoInterval="+interval);
             dojo.io.script.get({
-                url: base + "setAuto?email=" + window.email + "&snumber=" + player.substring(1) + "&autoInterval=" + interval,
+                url: base + "client/setAuto?email=" + window.email + "&snumber=" + player.substring(1) + "&autoInterval=" + interval,
                 callbackParamName: "callback",
                 load: function (result) {}
             });
@@ -215,11 +219,13 @@ if (window.shuffle)
 {
        window.shuffle=false;
 	   dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
+	   usermessage("Shuffle OFF");
 }
 else
 {
 		window.shuffle=true;
 		dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
+		usermessage("Shuffle ON");
 }
     gotoView('ImageView','blankview');
     window.switchView = true;

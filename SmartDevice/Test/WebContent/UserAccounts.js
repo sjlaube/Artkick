@@ -8,9 +8,8 @@ function emailPwLogout(){
 }
 
 function emailPW(){
-	var base = "http://evening-garden-3648.herokuapp.com/client/";
 	dojo.io.script.get({
-		url:base+"emailPassword?email="+dojo.byId("recoveryEmail").value,
+		url:base+"client/emailPassword?email="+dojo.byId("recoveryEmail").value,
 		callbackParamName: "callback",
 		load: function(result){
 			 alert(result["message"]);
@@ -41,10 +40,10 @@ function changePW() {
 	if (newpw1 != newpw2)
 		alert("Passwords don't match!");
 	else
-	{  var base = "http://evening-garden-3648.herokuapp.com/client/";
+	{  
 	   //alert(base+"resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1);
        dojo.io.script.get({
-       	 url:base+"resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1,
+       	 url:base+"client/resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1,
        	 callbackParamName: "callback",
        	 load: function (result) {
              alert(result["message"]);
@@ -58,7 +57,6 @@ function changePW() {
 
 function createUser() {
     var currView = dijit.registry.byId("registeruser");
-    var base = "http://evening-garden-3648.herokuapp.com/client/";
     var pw="";
 	var verifypw="";
 	pw=dojo.byId("regUserPW").value;
@@ -85,7 +83,7 @@ function createUser() {
 	}
 		
     dojo.io.script.get({
-        url: base + "regUser?email=" + dojo.byId("regUserEmail").value + "&name=" + dojo.byId("regUserName").value+"&password=" + pw,
+        url: base + "client/regUser?email=" + dojo.byId("regUserEmail").value + "&name=" + dojo.byId("regUserName").value+"&password=" + pw,
         callbackParamName: "callback",
         load: function (result) {
             if (result["status"] == "success") {
@@ -143,16 +141,16 @@ function login() {
 	window.loginClickTime = currTime;
     
     
-    var base = "http://evening-garden-3648.herokuapp.com/client/";
+
     var currView = dijit.registry.byId("Login");
     dojo.io.script.get({
-        url: base + "login?email=" + dojo.byId("loginEmail").value+"&password="+dojo.byId("loginPassword").value,
+        url: base + "client/login?email=" + dojo.byId("loginEmail").value+"&password="+dojo.byId("loginPassword").value,
         callbackParamName: "callback",
         load: function (result) {
             //alert(result["message"]);
             if (result["status"] == "success") {
                 userObj = result["userObj"];
-                alert("Welcome! " + userObj["name"]);
+                usermessage("Welcome! " + userObj["name"]);
 
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
                 //alert(window.email);
