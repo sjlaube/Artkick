@@ -59,6 +59,7 @@ require([
   "clipart/Image",
   "dojox/mobile/FixedSplitter",
   "dojox/mobile/LongListMixin",
+  "dojox/mobile/FilteredListMixin",
   "dojox/mobile/SpinWheel",
   "dojox/mobile/ValuePicker",
   "dojox/mobile/ValuePickerSlot",
@@ -105,6 +106,21 @@ float:left;margin-right:2px}
 		border: 1px outset #9cacc0;
 		border-radius: 5px;
 		background: -webkit-gradient(linear, left top, left bottom, from(#d3656d), to(#bc1320), color-stop(0.5, #c9404b), color-stop(0.5, #bc1421));
+		background-color: #c9404b;
+		text-align: center;
+	}
+	.mblDomButtonMyBlueButton_0 {
+		position: relative;
+		height: 29px;
+		line-height: 29px;
+		padding: 0px 8px;
+		color: white;
+		font-family: Helvetica;
+		font-size: 13px;
+		font-weight: bold;
+		border: 1px outset #9cacc0;
+		border-radius: 5px;
+		background: -webkit-gradient(linear, left top, left bottom, from(#7a9de9), to(#2362dd), color-stop(0.5, #366edf), color-stop(0.5, #215fdc));
 		background-color: #c9404b;
 		text-align: center;
 	}
@@ -290,7 +306,7 @@ Add user to player(s)</button>
    </div>       			  
    <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="ArtistList"  data-dojo-mixins="dojox/mobile/LongListMixin"   >
    </ul>
-   <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarArtistlistView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"'  style="border-bottom:none">
+   <ul data-dojo-type="dojox/mobile/TabBar" id="myTabBarArtistlistView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"'  style="border-bottom:none">
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabnowshowing5" data-dojo-props='moveTo:"ImageView"' ><a style="color:white;font-size:11px" >Now Showing</a></li>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"GridView"'><a style="color:white;font-size:11px" >Grid</a></li>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabcategory5" data-dojo-props='moveTo:"select_category", selected:"true"'><a style="color:white;font-size:11px" >More Art</a></li>

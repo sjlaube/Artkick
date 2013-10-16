@@ -141,6 +141,10 @@
 		<label>Please wait while changes are completed...</label>
 	</div>
 	
+	<div id="transactionCompletedDialog" title="Pending Changes">
+		<label id="message">Changes have been saved.</label>
+	</div>
+	
 	<div id="createDialog" title="Create">	
 		<label>Enter Name:</label><input type="text" id="tbCreateNewName"></input>
 		</br></br>
@@ -184,6 +188,7 @@
 	var categoryType = "category";
 	var rootType = "root";
 	var imageType = "image";
+	var tempRename = false;  //hack for rename not including image count
 	
 	$(document).ready(function () {
 		jQuery(function($) {
@@ -197,6 +202,10 @@
 		$( "#pendingTransactionDialog" ).dialog({ 
 			autoOpen: false, modal: true, 
 			close: function ( event, ui ) {onPendingTransactionClosed(event, ui);} });
+		$( "#transactionCompletedDialog" ).dialog({ 
+			autoOpen: false, modal: true, 
+			buttons: [ { text: "Ok", click: function() { $( this ).dialog( "close" ); } }],
+			close: function ( event, ui ) { } });
 		$( "#createDialog" ).dialog({ 
 			autoOpen: false, modal: true, 
 			buttons: [ { text: "Ok", click: function() { $('#tbCreateConfirmed').val('yes');$( this ).dialog( "close" ); } },
@@ -331,7 +340,7 @@
 	function getCatViewLists(cat) {
 		var viewLists = [];
 		var strViewLists = "";
-		var vlURL = encodeURI(baseCmdUrl + 'getViewlistsByCategory?catName=' + cat);
+		var vlURL = encodeURI(baseCmdUrl + 'getViewlistsByCategory2?catName=' + cat);
 		$.ajax({
 			  url: vlURL,
 			  dataType: 'jsonp',
@@ -342,11 +351,15 @@
 					if (key == 'viewlists') {
 						$(this).each(function(key, value) {
 							if (value["name"] != " All")
+							{
+								//var imageCount = getViewListImageCount(value["images"]);
+								imageCount = value["imageNum"];
 								viewLists.push('<li class="viewList" id="' + value["id"] + '"' +
-								                    ' displayName="' + value["name"] + '"' + 
-													'><a>' + value["name"] + ' (' + getViewListImageCount(value["images"]) + ')' + '</a>' +
+								                    ' displayName="' + value["name"] + '"' +
+													' imageCount="' + imageCount + '"' +
+													'><a>' + value["name"] + ' (' + imageCount + ')' + '</a>' +
 											   '</li>');
-						//myCategories.push(value["name"], 
+							}
 						});
 					};
 					strViewLists = "<ul>" + viewLists.join('') + "</ul>";
@@ -387,6 +400,12 @@
 			"contextmenu": { 
 				items: function(node) {
                     if (node.attr('rel') == 'root' ) 
+						{
+						var otherServer;
+						if (server == serverStag)
+							otherServer = serverProd;
+						else
+							otherServer = serverStag;
 						return { 
 							ccp: false, 
 							create: { 
@@ -397,13 +416,14 @@
 								seperator_before : false 
 								},
 							changeDatabase: { 
-								label: "Change database", 
+								label: "Change to " + otherServer, 
 								action: function (obj) 
 									{ toggleDatabase() }, 
 								seperator_after : false, 
 								seperator_before : false 
 								},
 						} // end items 
+						}
 					else if (node.attr('rel') == 'category' ) 
 						return { 
 							ccp: false, 
@@ -518,16 +538,19 @@
 				if (type === 'move_node') {
 					//handle move_node.jstree here
 				} else if (type === 'rename_node') {
-					var id = data.args[0][0].id;
-					var newName = data.args[1];
-					var objectClass = $('li#' + id).attr('class');
-					if (objectClass.indexOf('viewList') != -1)
+					if (!tempRename)
 					{
-						renameViewList(id, newName);
-					}
-					else if (objectClass.indexOf('category') != -1)
-					{
-						renameCategory(id, newName);
+						var id = data.args[0][0].id;
+						var newName = data.args[1];
+						var objectClass = $('li#' + id).attr('class');
+						if (objectClass.indexOf('viewList') != -1)
+						{
+							renameViewList(id, newName);
+						}
+						else if (objectClass.indexOf('category') != -1)
+						{
+							renameCategory(id, newName);
+						}
 					}
 					
 				} else if (type === 'create_node') {
@@ -554,6 +577,7 @@
 	function getViewListImages(viewListId) {
 		var vlImages = [];
 		var strImages = "";
+		var imageCount = 0;
 
 		var vlImagesURL = encodeURI(baseCmdUrl + 'getViewlist?id=' + viewListId);
 		$.ajax({
@@ -571,6 +595,7 @@
 				$.each(data, function(key, value) {
 					if (key == 'imageSet') {
 						$(this).each(function(key, value) {
+							imageCount++;
 							vlImages.push('<li class="viewListImage" id="' + value["id"] + '" ' +
 								getImageAttributes(value) + 
 								'><img src="' + value["thumbnail"] + '" width="100" height="100"</img>' + '</li>');
@@ -578,9 +603,12 @@
 					};
 					strImages = '<ul id="thumbs" viewListId="' + viewListId + '">' + vlImages.join('') + '</ul>';
 				});
+				
 				$(document).find('#divMainImages').html(strImages);
 				//$('#thumbs').bxSlider({ infiniteLoop: false, hideControlOnEnd: true, minSlides: 2, maxSlides: 2, slideWidth: 380, slideMargin: 10});
 				//$("#divMain2ImageNav").jPages({containerID : "thumbs"});
+				
+				updateImageCount(viewListId, imageCount);
 				
 				$('ul li img').lazyload({
 					event: "turnpage",
@@ -761,34 +789,35 @@
 				$.each(response, function(key, value) {
 					if (key == 'Image')
 					{
-						var selector = "#" + imageId;
-						$(selector).attr('title', value["Title"]);
-						$(selector).attr('artistFN', value["Artist First N"]);
-						$(selector).attr('artistLN', value["Artist Last N"]);
-						$(selector).attr('workDate', value["Year"]);
-						$(selector).attr('birthDate', value["Birthdate"]);
-						$(selector).attr('deathDate', value["Died"]);
-						$(selector).attr('artistInfo', value["Artist Info"]);
-						$(selector).attr('genre', value["Genre"]);
-						$(selector).attr('genreLink', value["Genre Link"]);
-						$(selector).attr('source', value["Source"]);
-						$(selector).attr('sourcePageLink', value["Source Page Link"]);
-						$(selector).attr('medium', value["Type"]);
-						$(selector).attr('mediumDetail', value["Type  Detail"]);
-						$(selector).attr('aspectRatio', value["Aspect Ratio"]);
-						$(selector).attr('heightCm', value["Height cm"]);
-						$(selector).attr('widthCm', value["Width cm"]);
-						$(selector).attr('subject', value["Subject"]);
-						$(selector).attr('credit', value["Credit"]);
-						$(selector).attr('copyright', value["Copyright"]);
-						$(selector).attr('copyrightDetail', value["Copyright Detail"]);
-						$(selector).attr('location', value["Location"]);
-						$(selector).attr('moreInfoLink', value["More Info Link"]);
-						$(selector).attr('video', value["Video"]);
-						$(selector).attr('thumbnail', value["thumbnail"]);
-						$(selector).attr('url', value["url"]);
+						var targetImage = $(document).find('#divMainImages').find('li.viewListImage#' + imageId);
+						//var selector = "li.viewListImage#" + imageId;
+						targetImage.attr('title', value["Title"]);
+						targetImage.attr('artistFN', value["Artist First N"]);
+						targetImage.attr('artistLN', value["Artist Last N"]);
+						targetImage.attr('workDate', value["Year"]);
+						targetImage.attr('birthDate', value["Birthdate"]);
+						targetImage.attr('deathDate', value["Died"]);
+						targetImage.attr('artistInfo', value["Artist Info"]);
+						targetImage.attr('genre', value["Genre"]);
+						targetImage.attr('genreLink', value["Genre Link"]);
+						targetImage.attr('source', value["Source"]);
+						targetImage.attr('sourcePageLink', value["Source Page Link"]);
+						targetImage.attr('medium', value["Type"]);
+						targetImage.attr('mediumDetail', value["Type  Detail"]);
+						targetImage.attr('aspectRatio', value["Aspect Ratio"]);
+						targetImage.attr('heightCm', value["Height cm"]);
+						targetImage.attr('widthCm', value["Width cm"]);
+						targetImage.attr('subject', value["Subject"]);
+						targetImage.attr('credit', value["Credit"]);
+						targetImage.attr('copyright', value["Copyright"]);
+						targetImage.attr('copyrightDetail', value["Copyright Detail"]);
+						targetImage.attr('location', value["Location"]);
+						targetImage.attr('moreInfoLink', value["More Info Link"]);
+						targetImage.attr('video', value["Video"]);
+						targetImage.attr('thumbnail', value["thumbnail"]);
+						targetImage.attr('url', value["url"]);
 						
-						fillImageAttrUI($(selector));
+						fillImageAttrUI(targetImage);
 					}
 				});
 			}
@@ -914,7 +943,8 @@
 			$("#pendingTransactionDialog").dialog("close");
 			if (success)
 			{
-				alert("Changes have been saved.");
+				//alert("Changes have been saved.");
+				$("#transactionCompletedDialog").dialog("open");
 				refreshImageAttrUI(imageId);
 			}
 		});
@@ -951,7 +981,10 @@
 			$('#tbRenameId').val(objectId);
 			$('#tbRenameClass').val('viewList');
 			//workaround as view list name has (#images) appended
-			//$('#container').jstree('rename_node', '#' + objectId , 'Enter New Name' );
+			var actualName = $('#divNavTree2').find('#' + objectId).attr('displayName');
+			tempRename = true;
+			$('#container').jstree('rename_node', '#' + objectId, actualName);
+			tempRename = false;
 
 			$('#container').jstree("rename");
 		}
@@ -985,8 +1018,16 @@
 				alert(response.Message);
 			else
 			{
-				//alert("Rename complete.");
 				//TODO: Should we verify changes?
+			
+				//update display name
+				var viewList = $('#divNavTree2').find('#' + id);
+				viewList.attr('displayName', newName);
+				
+				//workaround as view list name has (#images) appended
+				tempRename = true;
+				$('#container').jstree('rename_node', '#' + id, newName + ' (' + viewList.attr('imageCount') + ')');
+				tempRename = false;
 			}
 		});
 	}
@@ -1013,7 +1054,7 @@
 				alert(response.Message);
 			else
 			{
-				alert("Rename complete.");
+				//alert("Rename complete.");
 				//TODO: Should we verify changes?
 			}
 		});
@@ -1487,8 +1528,6 @@
 		
 		var cmd = "createImage";
 		var params = 'listId=' + viewListId;
-					 
-		alert(baseCmdUrl + cmd + '?' + params);
 		
 		var success = false;
 		$("#pendingTransactionDialog").dialog("open");
@@ -1515,10 +1554,24 @@
 			$("#pendingTransactionDialog").dialog("close");
 			if (success == true)
 			{
-				alert("A new image has been created...will refresh the images");
+				alert("A new image has been created...image list will be refreshed.");
 				getViewListImages(viewListId);
 			}
 		});
+	}
+	
+	function updateImageCount(viewListId, newImageCount)
+	{
+		var viewList = $('#divNavTree2').find('#' + viewListId);
+		var currentImageCount = parseInt(viewList.attr('imageCount'));
+		if (newImageCount != currentImageCount)
+		{
+			viewList.attr('imageCount', newImageCount);
+			//workaround as view list name has (#images) appended
+			tempRename = true;
+			$('#container').jstree('rename_node', '#' + viewListId, viewList.attr('displayName') + ' (' + newImageCount + ')');
+			tempRename = false;
+		}
 	}
 	
 	function toggleDatabase()

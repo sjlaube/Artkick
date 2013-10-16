@@ -834,14 +834,7 @@ require(["jquery",
 						    
 						  var linelabel= '<img class="viewlistid" src="'+listcoverimage+'" alt="" height="60px" > ';
 					//	  alert(linelabel);
-					if (lists[i]["imageNum"])
-					{
 						  linelabel=linelabel+lists[i]["name"] + "<br><i><small>" + lists[i]["imageNum"] + " pictures</small></i></br>";
-					}
-					else
-					{
-					       linelabel=linelabel+lists[i]["name"];
-					}
 				//		alert("label:"+linelabel+"lists:"+lists[i]["id"]);
 
 						   var newList = new dojox.mobile.ListItem({
@@ -1745,12 +1738,16 @@ function showDeleteButton(item){
 		
 				hideDeleteButton();
 				window.delItem = item;
-				item.rightIconNode.style.display = "none";
+				item.rightIconNode.style.display = "";
 				if(!item.rightIcon2Node){
 					item.set("rightIcon2", "mblDomButtonMyRedButton_0");
 					item.rightIcon2Node.tabIndex = "0";
 					item.rightIcon2Node.firstChild.innerHTML = "Delete";
 					connect.connect(item.rightIcon2Node, "onkeydown", onDelete);
+					item.set("rightIcon", "mblDomButtonMyBlueButton_0");
+					item.rightIconNode.tabIndex = "0";
+					item.rightIconNode.firstChild.innerHTML = "Rename";
+					connect.connect(item.rightIconNode, "onkeydown", onRename);
 				}
 				item.rightIcon2Node.style.display = "";
 				handler = connect.connect(window.MyViewlist.domNode, "onclick", onClick);
@@ -1759,15 +1756,25 @@ function showDeleteButton(item){
 function hideDeleteButton(){
 				if(window.delItem){
 					window.delItem.rightIconNode.style.display = "";
-					window.delItem.rightIcon2Node.style.display = "none";
+					window.delItem.rightIcon2Node.style.display = "";
 					window.delItem = null;
 				}
 				connect.disconnect(handler);
 			}
-
+function onRename(e)
+{
+alert("rename");
+}
 function onClick(e){
+				
 				var item = registry.getEnclosingWidget(e.target);
-			//	alert("deleting item2:"+item+"id:"+item.id+"name:"+item.label);
+			    alert("deleting/renaming item2:"+item+"id:"+item.id+"name:"+item.label);
+				hideDeleteButton();
+				if(domClass.contains(e.target, "mblDomButtonMyRedButton_0")){
+					setTimeout(function(){
+						item.destroy();
+					}, 0);
+				
 				var url=base + "user/removeMyViewlist?"  + "email=" + window.email+"&token=9999&listId="+item.id;
 				
 				    dojo.io.script.get({
@@ -1785,19 +1792,19 @@ function onClick(e){
 
 					}
 					});
-				/* do call here to delete item*/
-				if(domClass.contains(e.target, "mblDomButtonMyRedButton_0")){
-					setTimeout(function(){
-						item.destroy();
-					}, 0);
+				}else if(domClass.contains(e.target, "mblDomButtonMyBlueButton_0"))
+				{
+				alert("rename");
 				}
-				hideDeleteButton();
+				/* do call here to delete item*/
+				
+				
 			}
 
 function onDelete(e){
 				if(e && e.type === "keydown" && e.keyCode !== 13){ return; }
 				var item = registry.getEnclosingWidget(e.target);
-				//alert("deleting item:"+item);
+				alert("deleting item:"+item);
 				setTimeout(function(){
 					item.destroy();
 				}, 0);
