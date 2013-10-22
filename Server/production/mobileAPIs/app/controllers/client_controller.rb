@@ -3,6 +3,7 @@ class ClientController < ApplicationController
   require 'mongo'
   include Mongo
   require 'net/smtp'
+  require 'curb'
   
   @@server = 'ds031948.mongolab.com'
   @@port = 31948
@@ -390,7 +391,7 @@ class ClientController < ApplicationController
     end
     
     @db['users'].update({"email"=>params[:email]},"$set"=>{"curr_image"=>params[:imageID],"curr_list"=>params[:list],"curr_cat"=>params[:cat], "fill"=>stretch,
-      "curr_list_images"=>list["images"]})
+      "curr_list_images"=>list["images"], "last_visit"=>utcMillis()})
     result = {"result"=>"success", "message"=>"updated!"}   
     render :json=>result, :callback => params[:callback]    
   end  
@@ -868,7 +869,7 @@ class ClientController < ApplicationController
       return  
     end
     
-    if(user["curr_cat"]==nil or user["curr_cat"]=='') or (@db["categories"].find({"name"=>user["curr_cat"]}).count==0)
+    if(user["curr_cat"]==nil or user["curr_cat"]=='') #or (@db["categories"].find({"name"=>user["curr_cat"]}).count==0)
       result = {"Status"=>"failure", "Message"=>"No category!"}
       render :json=>result, :callback => params[:callback]
       return  
@@ -1445,6 +1446,53 @@ def getViewlist4
  end 
  
  
-  
+ 
+ 
+  def feedback
+    if params[:email] == nil or params[:email].strip.length == 0
+      result = {"status"=>"failure", "message"=>"user email is missing!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+
+    if params[:text] == nil or params[:text].strip.length == 0
+      result = {"status"=>"failure", "message"=>"text is missing!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
+    
+    userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
+    if userSet.count == 0
+      result = {"status"=>"failure", "message"=>"No user found!"}
+      render :json=>result, :callback => params[:callback]
+      return
+      
+    end
+    
+    userObj = userSet.to_a[0]
+    subject = 'inquiry from application'
+    if params[:subject]!=nil
+      subject = params[:subject]
+    end
+    
+    username = "sheldon@artkick.com" 
+    password = "Sunnie" 
+    url = 'https://artkick.zendesk.com/api/v2/tickets.json'
+    ticket = {"ticket"=>{"requester"=>{"name"=>userObj['name'],"email"=>params[:email].strip.downcase}, "subject"=>subject, "comment"=>{ "body"=>params[:text]}}}
+    json_string = ticket.to_json()
+    c = Curl::Easy.http_post(url, json_string) do |curl|
+      curl.headers['Content-Type'] = 'application/json'
+      curl.headers['Accept'] = 'application/json'
+      curl.username = username
+      curl.password = password
+    end
+    
+    result = {'result'=>'Your ticket is submitted!'}
+    render :json=>result, :callback => params[:callback]
+  end
     
 end  
