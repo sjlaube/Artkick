@@ -20,11 +20,11 @@ function removePlayersAction() {
     for (var key in window.removePlayers) {
         if (window.removePlayers[key]) {
             dojo.io.script.get({
-                url: base + "player/removePlayer?email=" + window.email + "&playerId=" + key,
+                url: base + "player/removePlayer?email=" + window.email + "&playerId=" + key+"&token="+window.token,
                 callbackParamName: "callback",
                 load: function (result) {
                 	if(result["Status"]=="success")
-                        alert(result["Message"]);
+                        usermessage(result["Message"]);
                     i--;
                     if (i == 0) {
                         currView.performTransition("select_player", 1, "slide", null);
@@ -54,16 +54,17 @@ function addUserToPlayers() {
     for (var key in window.ownedPlayers) {
         if (window.ownedPlayers[key]) {
             dojo.io.script.get({
-                url: base + "player/addUserToPlayer?email=" + email + "&playerId=" + key,
+                url: base + "player/addUserToPlayer?queryEmail=" + email + "&playerId=" + key+"&token="+window.token+"&myEmail="+window.email,
                 callbackParamName: "callback",
                 load: function (result) {
-                    alert(result["Message"]);
+                    usermessage(result["Message"]);
                 }
             });
         }
 
     }
 	}
+
 }
 
 function searchUser() {
@@ -77,13 +78,13 @@ function searchUser() {
     //alert(email);
    
     dojo.io.script.get({
-        url: base + "player/getUser?email=" + email,
+        url: base + "player/getUser?queryEmail=" + email+"&token="+window.token+"&myEmail="+window.email,
         callbackParamName: "callback",
         load: function (result) {
-            alert(result["Message"]);
+            usermessage(result["Message"]);
         }
     });
-	dojo.byId("addPlayerEmail").value = "";
+	//dojo.byId("addPlayerEmail").value = "";
 }
 
 function createPlayer() {
@@ -106,7 +107,7 @@ function createPlayer() {
     var currView = dijit.registry.byId("registernewroku");
     //alert(base + "reg/userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
     dojo.io.script.get({
-        url: base + "reg/userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email,
+        url: base + "reg/userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email+"&token="+window.token,
         callbackParamName: "callback",
         load: function (result) {
             if (result["Status"] == "success") {
@@ -115,13 +116,19 @@ function createPlayer() {
                 window.currList = window.defList;
                 window.currCat = window.defCat;
                 window.justCreatePlayer = true;
+				window.autoIntro = true;
                 //currView.performTransition("ImageView", 1, "slide", null);
-                updatePlayers();
+				dojo.byId("regPlayerCode").value = "";
+				dojo.byId("regPlayerName").value = "";
                 if(window.shuffle){
                            // if random, then switch to normal!
                     mediashuffle();
                 }
+				updatePlayers();
                 //two possible cases, either from roku or chromecast, so we just make both registraion view gone
+				console.log("trying to hide register view");
+				dojo.byId("regPlayerCode").value = "";
+				dojo.byId("regPlayerName").value = "";
                 dojo.style(dojo.byId("registernewroku"),"display", "none");           
                 gotoView("registernewchromecast","blankview");
                 window.switchView = true;
@@ -163,7 +170,7 @@ function setAuto(interval) {
         if (window.playerSet[player]) {
             //alert(base+"setAuto?email="+window.email+"&snumber="+player.substring(1)+"&autoInterval="+interval);
             dojo.io.script.get({
-                url: base + "client/setAuto?email=" + window.email + "&snumber=" + player.substring(1) + "&autoInterval=" + interval,
+                url: base + "client/setAuto?email=" + window.email + "&snumber=" + player.substring(1) + "&autoInterval=" + interval+"&token="+window.token,
                 callbackParamName: "callback",
                 load: function (result) {}
             });
@@ -230,5 +237,33 @@ else
     gotoView('ImageView','blankview');
     window.switchView = true;
 	updateImages(-1);
+}
+
+function registerroku()
+{
+window.currentView = "registernewroku";   
+
+dijit.registry.byId("newuserintro").performTransition("registernewroku", 1, "", null);
+
+}
+function buyroku()
+{
+console.log("buy roku");
+   calliOSFunction("loadLink", ["http://www.amazon.com/Roku-Streaming-Player-Black-2710R/dp/B00F5NB7JK/ref=sr_1_2?ie=UTF8&qid=1382460219&sr=8-2&keywords=roku+1"], "onSuccess", "onError");
+    try{
+	//alert("loading android artkick roku");
+    	Android.loadLink("http://www.amazon.com/Roku-Streaming-Player-Black-2710R/dp/B00F5NB7JK/ref=sr_1_2?ie=UTF8&qid=1382460219&sr=8-2&keywords=roku+1");
+    }
+    catch(err){
+    	
+    }
+}
+
+function noregisterTV()
+{
+	window.currentView = "blankview";
+	window.afterLogin();
+    dijit.registry.byId("newuserintro").performTransition("blankview", 1, "slide", null);
+
 }
 

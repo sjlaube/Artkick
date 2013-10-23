@@ -37,10 +37,10 @@
 
 		<tr>
 		<td >
-			<div id="divNavTreeLoading" style="width: 300px;height: 50px;" >
+			<div id="divNavTreeLoading" style="width: 450px;height: 50px;" >
 				<p>Loading...</p>
 			</div>
-			<div id="divNavTree2" style="width: 300px;overflow: scroll; display: none" >
+			<div id="divNavTree2" style="width: 450px;overflow: scroll; display: none" >
 				
 			</div>
 		</td>
@@ -185,9 +185,14 @@
 	var serverStag = 'Staging';
 	var server = serverStag;
 	var viewListType = "viewList";
+	var viewListFeaturedType = "viewListFeatured";
 	var categoryType = "category";
 	var rootType = "root";
 	var imageType = "image";
+	
+	var trashName = "Trash";
+	var trashId = -99999;
+	
 	var tempRename = false;  //hack for rename not including image count
 	
 	$(document).ready(function () {
@@ -312,9 +317,26 @@
 									myCategories.push(value["name"]);
 								});
 							});
+							
+							//manually add trash
+							var trashCount = '-'; //TODO: Need API call
+							//TODO: Duplicate code from getViewListImages -- need to combine
+							var strTrashViewList = '<li class="trashViewList" rel="trashViewList" id="' + trashId + '"' +
+								                    ' displayName="' + trashName + '"' +
+													' imageCount="' + trashCount + '"' +
+													'><a>' + trashName + ' (' + trashCount + ')' + '</a>' +
+											   '</li>';
+							myArr.push("<li " + 'class="trashCategory" rel="trashCategory" id=' + convertNameToId(trashName) + ' displayName="' + trashName + '"' +
+										"><a>" + trashName + "</a><ul>" + strTrashViewList + "</ul></li>" );
+							
+							//myCategories.push("Trash");
 							myArr.push('</ul></li></ul></div>');
 							$('#divNavTree2').html(myArr.join(''));
 							//$('#container').jstree();
+							
+							//manually add trash click handler
+							AddCatViewListClickHandlers(trashName);
+							
 							for (var i = 0; i < myCategories.length; i++) {
 							   getCatViewLists(myCategories[i]);
 							}
@@ -340,52 +362,79 @@
 	function getCatViewLists(cat) {
 		var viewLists = [];
 		var strViewLists = "";
-		var vlURL = encodeURI(baseCmdUrl + 'getViewlistsByCategory2?catName=' + cat);
-		$.ajax({
+		var cmd = 'getViewlistsByCategory2';	
+		var vlURL = encodeURI(baseCmdUrl + cmd + '?catName=' + cat);
+		
+		var request = $.ajax({
 			  url: vlURL,
 			  dataType: 'jsonp',
-			  async: false,
-			  
-			  success: function(data) {
-				$.each(data, function(key, value) {
-					if (key == 'viewlists') {
-						$(this).each(function(key, value) {
-							if (value["name"] != " All")
-							{
-								//var imageCount = getViewListImageCount(value["images"]);
-								imageCount = value["imageNum"];
-								viewLists.push('<li class="viewList" id="' + value["id"] + '"' +
-								                    ' displayName="' + value["name"] + '"' +
-													' imageCount="' + imageCount + '"' +
-													'><a>' + value["name"] + ' (' + imageCount + ')' + '</a>' +
-											   '</li>');
-							}
-						});
-					};
-					strViewLists = "<ul>" + viewLists.join('') + "</ul>";
-				});
-				$(document).find('#' + convertNameToId(cat)).children('ul').html(strViewLists);
-				$(document).find('#' + convertNameToId(cat)).find('li.viewList').each(function () {
-					$(this).click(function (e) {
-						//alert($(this).attr('id') + 'viewList clicked!');
-						if (imageAttrDirty)
+			  async: true,
+			  timeout: 60000,
+		});
+		
+		request.done(function (data, textStatus, jqXHR) {
+			var featuredLists = data['featuredLists'];
+			$.each(data, function(key, value) {
+				if (key == 'viewlists') {
+					$(this).each(function(key, value) {
+						if (value["name"] != " All")
 						{
-							$("#tbNewViewListId").val($(this).attr('id'));
-							$("#tbNewImageId").val('');
-							$("#unsavedAttrDialog").dialog("open");
-							return;
+							//var imageCount = getViewListImageCount(value["images"]);
+							var imageCount = value["imageNum"];
+							//var isFeatured = value["featured"] != null && value["featured"] == "true";
+							var isFeatured = jQuery.inArray(value["id"], featuredLists) >= 0;
+							var relType = isFeatured ? "viewListFeatured" : "viewList";
+							viewLists.push('<li class="viewList" rel="' + relType + '" id="' + value["id"] + '"' +
+												' displayName="' + value["name"] + '"' +
+												' imageCount="' + imageCount + '"' +
+												'><a>' + value["name"] + ' (' + imageCount + ')' + '</a>' +
+										   '</li>');
 						}
-						clearViewListImages();
-						getViewListImages($(this).attr('id'));
 					});
-				});
-				
-				//Note: We are getting viewLists asynch, so need to load tree was we have the last view list
-				categoriesLoaded = categoriesLoaded + 1;
-				console.log(cat + " " + categoriesLoaded);
-				if (categoriesLoaded == myCategories.length)
-					buildNavTree();
-			  }
+				};
+				strViewLists = "<ul>" + viewLists.join('') + "</ul>";
+			});
+			$(document).find('#' + convertNameToId(cat)).children('ul').html(strViewLists);
+			AddCatViewListClickHandlers(cat);
+			
+			//Note: We are getting viewLists asynch, so need to load tree was we have the last view list
+			categoriesLoaded = categoriesLoaded + 1;
+			console.log(cat + " " + categoriesLoaded);
+			if (categoriesLoaded == myCategories.length)
+				buildNavTree();
+		});
+		
+		request.fail(function (jqXHR, textStatus, errorThrown){
+			alert(
+				"Could not load viewlists for category " + cat + '.' +
+				"\nThe following error occured: " +
+				textStatus + " " + errorThrown
+			);
+			// log the error to the console
+			categoriesLoaded = categoriesLoaded + 1;
+			console.log(cat + " failed to load!");
+			if (categoriesLoaded == myCategories.length)
+				buildNavTree();
+			
+		});
+	}
+	
+	function AddCatViewListClickHandlers(cat)
+	{
+		var viewListClass = (cat == trashName) ? "trashViewList" : "viewList";
+		$(document).find('#' + convertNameToId(cat)).find('li.' + viewListClass).each(function () {
+			$(this).click(function (e) {
+				//alert($(this).attr('id') + 'viewList clicked!');
+				if (imageAttrDirty)
+				{
+					$("#tbNewViewListId").val($(this).attr('id'));
+					$("#tbNewImageId").val('');
+					$("#unsavedAttrDialog").dialog("open");
+					return;
+				}
+				clearViewListImages();
+				getViewListImages($(this).attr('id'));
+			});
 		});
 	}
 	
@@ -449,7 +498,7 @@
 								seperator_before : false 
 								},
 						} // end items 
-					else 
+					else if (node.attr('rel') == 'viewList' || node.attr('rel') == 'viewListFeatured')
 						return { 
 							ccp: false, 
 							rename: { 
@@ -458,7 +507,14 @@
 									{ renameViewListOrCategory (obj) }, 
 								seperator_after : false, 
 								seperator_before : false 
-								}, 
+								},
+							toggleFeatured: { 
+								label: "Toggle Featured", 
+								action: function (obj) 
+									{ toggleFeaturedViewList (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
 							create: { 
 								label: "Create new image", 
 								action: function (obj) 
@@ -474,6 +530,7 @@
 								seperator_before : false 
 								},
 						} // end items 
+					else return { }
 				}
 			},
 			
@@ -513,9 +570,33 @@
 					}
 				},
 				"category": {
-					"valid_children" : ["default"],
+					"valid_children" : ["viewList", "viewListFeatured", "default"],
 					"icon" : {
 						"image" : "jstree-v.pre1.0/_demo/folder.png"
+					}
+				},
+				"trashCategory": {
+					"valid_children" : ["trashViewList", "default"],
+					"icon" : {
+						"image" : "jstree-v.pre1.0/_demo/trash.png"
+					}
+				},
+				"viewList": {
+					"valid_children" : ["none"],
+					"icon" : {
+						"image" : "jstree-v.pre1.0/_demo/file.png"
+					}
+				},
+				"viewListFeatured": {
+					"valid_children" : ["none"],
+					"icon" : {
+						"image" : "jstree-v.pre1.0/_demo/file2.png"
+					}
+				},
+				"trashViewList": {
+					"valid_children" : ["none"],
+					"icon" : {
+						"image" : "jstree-v.pre1.0/_demo/trash.png"
 					}
 				},
 				"default": {
@@ -578,21 +659,19 @@
 		var vlImages = [];
 		var strImages = "";
 		var imageCount = 0;
+		var cmd = (viewListId == trashId) ? 'getTrashImages' : 'getViewlist';
+		var params = '?id=' + viewListId;
 
-		var vlImagesURL = encodeURI(baseCmdUrl + 'getViewlist?id=' + viewListId);
-		$.ajax({
-			   
+		var vlImagesURL = encodeURI(baseCmdUrl + cmd + params);
+		var request = $.ajax({	   
 			  url: vlImagesURL,
 			  dataType: 'jsonp',
-			  async: true,
-			  beforeSend: function(x) {
-				  //if(x && x.overrideMimeType) {
-				  // x.overrideMimeType("application/javascript;charset=UTF-8");
-				  //}
-				  var y = x;
-				 },
-			  success: function(data) {
-				$.each(data, function(key, value) {
+			  timeout: 60000,
+			  async: true,		  
+		});
+		
+		request.done(function (data, textStatus, jqXHR) {
+			$.each(data, function(key, value) {
 					if (key == 'imageSet') {
 						$(this).each(function(key, value) {
 							imageCount++;
@@ -658,15 +737,22 @@
 						},
 						items: {
 							"Open": {name: "Open selected image", icon: "open"},
-							"Delete": {name: "Remove selected image(s) from this view list", icon: "delete"},
+							"Delete": {name: "Remove selected image(s)", icon: "delete"},
 						}
 					});
 			    });
 				
 				//select first item automatically
 				selectAdjacentImage(true);
-			  },
-			  
+		});
+		
+		// callback handler that will be called on failure
+		request.fail(function (jqXHR, textStatus, errorThrown){
+			// log the error to the console
+			alert(
+				"The following error occured: " +
+				textStatus + " " + errorThrown
+			);
 		});
 		
 		//return strViewLists;
@@ -1342,7 +1428,7 @@
 	function removeSelectedImagesFromViewlist()
 	{
 		var viewListId = $('#thumbs').attr('viewListId');
-		var cmd = "RemoveImagesFromViewlist";
+		var cmd = (viewListId == trashId) ? "clearImages" : "RemoveImagesFromViewlist";
 		var params = 'listId=' + viewListId +
 					 '&' + buildSelectedImageList();
 					 
@@ -1580,6 +1666,51 @@
 			$('#productionServerLink').trigger('click');
 		else
 			$('#stagingServerLink').trigger('click');
+	}
+	
+	function toggleFeaturedViewList (obj)
+	{
+		var objectId = obj[0].id;
+		var objectClass = $('#' + objectId).attr('class');
+		var objectDisplayName = $('#' + objectId).attr('displayName');
+		
+		//if on a category, create a view list
+		if (objectClass.indexOf(viewListType) != -1)
+		{
+			var isFeatured = $('#' + objectId).attr('rel') == viewListFeaturedType;
+			var objectType = isFeatured ?  viewListType : viewListFeaturedType;
+			
+			$('#' + objectId).attr('rel', objectType);
+			setViewListFeatured(objectId, !isFeatured);	
+		}
+		
+	}
+	
+	function setViewListFeatured(viewListId, isFeatured)
+	{
+		//var viewListId = $('#thumbs').attr('viewListId');
+		var cmd = "setFeatured";
+		var params = 'listId=' + viewListId +
+					 '&flag=' + (isFeatured ? "true" : "false");
+					 
+		//alert(baseCmdUrl + cmd + '?' + params);
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+			}
+		});
+		
 	}
 	
 	</script>

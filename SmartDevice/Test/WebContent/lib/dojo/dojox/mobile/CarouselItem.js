@@ -47,7 +47,8 @@ define("dojox/mobile/CarouselItem", [
 			this.domNode.tabIndex = "0";
 			this.headerTextNode = domConstruct.create("div", { className: "mblCarouselItemHeaderText" }, this.domNode);
 			this.imageNode = domConstruct.create("img", { className: "mblCarouselItemImage" }, this.domNode);
-			domStyle.set(this.imageNode, "max-width", 90+"%");
+		//	console.log("item");
+			domStyle.set(this.imageNode, "max-width", 99+"%");
 			domStyle.set(this.imageNode, "box-shadow","none");
 			
 		//	domStyle.set(this.imageNode, "width", 90+"%");

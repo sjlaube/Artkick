@@ -13,7 +13,7 @@ window.ticket={
 //alert("ticket="+ticket+ticket.requester.name);
 var feedbacktext = dojo.byId("ArtText").value
 
-var url = base+"client/feedback?text="+encodeURIComponent(feedbacktext)+"&email=" + window.email;
+var url = base+"client/feedback?text="+encodeURIComponent(feedbacktext)+"&email=" + window.email+"&token="+window.token;
 //alert("feedback:"+url);
 dojo.io.script.get({
 url:url,

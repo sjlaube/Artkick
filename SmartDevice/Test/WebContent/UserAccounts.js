@@ -3,21 +3,29 @@ function emailPwLogout(){
     window.email = null;
     // code to delete cookie and log out user goes here
     setCookie("email", null, 1);
+    setCookie("token", null, 1);
     currView.performTransition("Login", 1, "slide", null);
     cleanUp();
 }
 
 function emailPW(){
+	if (is_email(dojo.byId("recoveryEmail").value))
+	{
 	dojo.io.script.get({
 		url:base+"client/emailPassword?email="+dojo.byId("recoveryEmail").value,
 		callbackParamName: "callback",
 		load: function(result){
-			 alert(result["message"]);
-			 if(result["status"]=="success"){
+			 alert(result["Message"]);
+			 if(result["Status"]=="success"){
 			 	emailPwLogout();
 			 }
 		}
 	});
+	}
+	else
+	{
+		alert("Please enter a valid email address");
+	}
 }
 
 function changePwLogout(){
@@ -25,7 +33,8 @@ function changePwLogout(){
     window.email = null;
     // code to delete cookie and log out user goes here
     setCookie("email", null, 1);
-    currView.performTransition("Login", 1, "slide", null);
+    setCookie("token", null, 1);
+    currView.performTransition("Login", 1, "", null);
     cleanUp();
 }
 
@@ -46,15 +55,15 @@ function changePW() {
        	 url:base+"client/resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1,
        	 callbackParamName: "callback",
        	 load: function (result) {
-             alert(result["message"]);
-             if(result["status"]=="success"){
+             alert(result["Message"]);
+             if(result["Status"]=="success"){
              	changePwLogout();
              }
        	 }
        });
 	}
 }
-
+function is_email(a){return /^([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+$/.test(a);}
 function createUser() {
     var currView = dijit.registry.byId("registeruser");
     var pw="";
@@ -71,9 +80,15 @@ function createUser() {
 		alert("Passwords don't match");
 		return;
 	}
-	if (dojo.byId("regUserEmail").value =="")
+	var emailaddress=dojo.byId("regUserEmail").value;
+	if (emailaddress =="")
 	{
 		alert("User email cannot be blank");
+		return;
+	}
+	if (!is_email(emailaddress))
+	{
+		alert("User email must be a valid email address");
 		return;
 	}
 	if (dojo.byId("regUserName").value =="")
@@ -86,16 +101,25 @@ function createUser() {
         url: base + "client/regUser?email=" + dojo.byId("regUserEmail").value + "&name=" + dojo.byId("regUserName").value+"&password=" + pw,
         callbackParamName: "callback",
         load: function (result) {
-            if (result["status"] == "success") {
+            if (result["Status"] == "success") {
                 usermessage("Welcome " + dojo.byId("regUserName").value + "!");
-                currView.performTransition("ImageView", 1, "slide", null);
+            //    currView.performTransition("ImageView", 1, "slide", null);
+
                 window.email = dojo.byId("regUserEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
+				window.token = result['token'];
 				setCookie("email", window.email, 365);
+				setCookie("token",result['token'], 365);
                 //currView.performTransition("ImageView", 1, "slide", null);
                 
                 //for security, we need to make sure other possible showing view gone!!
-                window.afterLogin();
+
                 //alert(window.email);
+				dojo.byId("regUserPW").value="";
+				dojo.byId("regUserPW2").value="";
+				dojo.byId("regUserName").value="";
+				dojo.byId("regUserEmail").value="";
+				window.currentView = "newuserintro";
+			    dijit.registry.byId("registeruser").performTransition("newuserintro", 1, "", null);
             } else {
                 alert(result["message"]);
             }
@@ -111,6 +135,7 @@ function dologout() {
     window.email = null;
     // code to delete cookie and log out user goes here
     setCookie("email", null, 1);
+    setCookie("token", null, 1);
     //currView.performTransition("Login", 1, "slide", null);
     gotoView("LogOff","blankview");
     cleanUp();
@@ -123,14 +148,14 @@ function dologout() {
 function goToReg1() {
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView()
-    mycurrView.performTransition("registeruser", 1, "slide", null);
+    mycurrView.performTransition("registeruser", 1, "", null);
 }
 
 function goToLogin1() {
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView();
 //	alert("goto login"+mycurrView);
-    mycurrView.performTransition("Login", 1, "slide", null);
+    mycurrView.performTransition("Login", 1, "", null);
 }
 
 function login() {
@@ -140,7 +165,8 @@ function login() {
         return;
 	window.loginClickTime = currTime;
     
-    
+    if (is_email(dojo.byId("loginEmail").value))
+	{
 
     var currView = dijit.registry.byId("Login");
     dojo.io.script.get({
@@ -148,13 +174,15 @@ function login() {
         callbackParamName: "callback",
         load: function (result) {
             //alert(result["message"]);
-            if (result["status"] == "success") {
+            if (result["Status"] == "success") {
                 userObj = result["userObj"];
                 usermessage("Welcome! " + userObj["name"]);
 
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
+                window.token = result['token'];
                 //alert(window.email);
                 setCookie("email", window.email, 365);
+                setCookie("token",result['token'], 365);
                 //currView.performTransition("ImageView", 1, "slide", null);
                 
                 //for security, we need to make sure other possible showing view gone!!
@@ -167,15 +195,20 @@ function login() {
             }
         }
     });
+	}
+	else
+	{
+		alert("Please enter a valid email address");
+	}
 }
 
 function goToReg() {
     var currView = dijit.registry.byId("Login");
-    currView.performTransition("registeruser", 1, "slide", null);
+    currView.performTransition("registeruser", 1, "", null);
 }
 
 
 function goToresetpassword() {
     var currView = dijit.registry.byId("Login");
-    currView.performTransition("reset_password", 1, "slide", null);
+    currView.performTransition("reset_password", 1, "", null);
 }

@@ -3,7 +3,7 @@ function usersearch()
 	var searchstring;
 	searchstring = dojo.byId("searchbox").value;
 	if (searchstring == "") return;
-	var url=base + "user/search?"  + "email=" + window.email+"&token=9999&keyword="+searchstring;
+	var url=base + "user/search?"  + "email=" + window.email+"&keyword="+searchstring+"&token="+window.token;
 
 //	alert("search called:"+url);
 
@@ -14,7 +14,7 @@ function usersearch()
             if (result["Status"] == "success") {
 			    if (result["images"].length>0)
 				{
-               // alert("Search done, viewlist created:"+result["listId"]);
+                 usermessage(result["images"].length+' images found & stored in "Last Search"');
 
 				gotoView("select_category","blankview");
 				swapview(result["listId"]);

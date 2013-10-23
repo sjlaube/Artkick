@@ -31,7 +31,7 @@ function showmyviewlists()
              //     $("#MyViewList").html('');
 
                 dojo.io.script.get({
-                    url: base + "user/getMyViewlists?email="+ window.email+"&token=99999",
+                    url: base + "user/getMyViewlists?email="+ window.email+"&token="+window.token,
                     callbackParamName: "callback",
                     load: function (result) {
                         var lists = result["viewlists"]; 
@@ -106,7 +106,7 @@ function CreateUserList()
    }
 
 
-   var url=base + "user/createMyViewlist?"  + "email=" + window.email+"&token=9999&listName="+newlistname;
+   var url=base + "user/createMyViewlist?"  + "email=" + window.email+"&listName="+newlistname+"&token="+window.token;
    var newlistid;
  //  alert ("creating new viewlist:"+newlistname+" user:"+window.email+" url:"+url);
     dojo.io.script.get({
@@ -136,7 +136,7 @@ function CreateUserList()
 	hidemenu();// need to check when user clicks add to viewlist, we need to hide menu when we bring up the personal viewlist view
 
 	
-    var url=base + "user/addImageToMyViewlist?"  + "email=" + window.email+"&token=9999&listId="+toviewlist+"&imgId="+window.currImage;
+    var url=base + "user/addImageToMyViewlist?"  + "email=" + window.email+"&listId="+toviewlist+"&imgId="+window.currImage+"&token="+window.token;
  //   alert("adding image:"+window.currImage+" to viewlist:"+toviewlist+" url:"+url);
     dojo.io.script.get({
         url: url,

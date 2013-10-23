@@ -69,9 +69,8 @@ require(["jquery",
 	
 		function () {
 
-            window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";
+            window.base = "http://ancient-caverns-7624.herokuapp.com/"; // Artkick Staging Server
             //window.base = "http://evening-garden-3648.herokuapp.com/";  // Production Server
-			//window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
             var selectListView = registry.byId("PlaylistView");
 			var selectArtistListView = registry.byId("ArtistlistView");
 			var selectMuseumListView = registry.byId("MuseumlistView");
@@ -86,7 +85,6 @@ require(["jquery",
             var selectCatView = registry.byId("select_category");
             var imageView = registry.byId("ImageView");
 			var optionsView = registry.byId("OptionsList");
-			var aboutView = registry.byId("About");
 			var pictureGrid = registry.byId("Picturegrid");
 			var gridView = registry.byId("GridView");
 			var MylistView = registry.byId("MylistView");
@@ -95,7 +93,6 @@ require(["jquery",
 
             var regRokuView = registry.byId("registernewroku");
 			var accountsettings = registry.byId("AccountSettings");
-			var logoff = registry.byId("LogOff");
 			var regnewplayer = registry.byId("RegisterNew");
             var addUserView = registry.byId("add_user_player");
             var removePlayerView = registry.byId("removeplayer");
@@ -222,14 +219,13 @@ require(["jquery",
                         url: base + "client/verifyUser?email="+email+"&token="+token,
                         callbackParamName: "callback",
                         load: function (result) {
-				//		alert("Status="+result["Status"]);
+				//		alert("tatus="+result["Status"]);
                             if (result["Status"] == "success") {
 							//  splash.style.display = "none";
                   //        alert("we are here");
                                 //        var currView = dijit.registry.byId("Intro0");
                                 //        var mycurrView = currView.getShowingView();
                                 window.email = email;
-                                window.token = token;
                                 Iv.selected = true;
 						//		alert("before iv show");
 								window.firstdisplay = false;
@@ -290,7 +286,7 @@ require(["jquery",
            
 
             window.syncImage = function() {
-            	var url = base+"client/update2?imageID="+window.currImage+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat+"&token="+window.token;
+            	var url = base+"client/update2?imageID="+window.currImage+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat;
                 for (var player in window.playerSet) {
                 	if (window.playerSet[player]) {
                 		url += "&players[]="+ player.substring(1);
@@ -338,7 +334,7 @@ require(["jquery",
               //  alert(base + "getViewlist3?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1");
              //   alert("updating"+currList);
 			//   alert("switchview="+window.switchView);
-                var url = base + "client/getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1"+"&token="+window.token;
+                var url = base + "client/getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1";
                 if(window.shuffle){
                 	url += "&shuffle=1";
                 }else{
@@ -504,7 +500,7 @@ require(["jquery",
 				   //  alert("justlogin");
 					 window.justRefresh = false;
                     dojo.io.script.get({
-                        url: base + "client/getUserStatus?email=" + window.email+"&token="+window.token,
+                        url: base + "client/getUserStatus?email=" + window.email,
                         callbackParamName: "callback",
                         load: function (result) {
                             if (result["Status"] == "success") {
@@ -554,7 +550,7 @@ require(["jquery",
 								
 								// try to save the view list
 							    dojo.io.script.get({
-                                         url: base + "user/saveAsMyViewlist?email=" + window.email+"&token="+window.token+"&listId="+curl, 
+                                         url: base + "user/saveAsMyViewlist?email=" + window.email+"&token=123&listId="+curl,
                                          callbackParamName: "callback",
                                          load: function (result) {
 		                                     console.log(result['Message']);
@@ -598,7 +594,7 @@ require(["jquery",
                 removePlayerList.setStore(playerStore);
                 //alert(base + "getPlayers?email="+window.email);
                 dojo.io.script.get({
-                    url: base + "player/getPlayers?email=" + window.email+"&token="+window.token,
+                    url: base + "player/getPlayers?email=" + window.email,
                     callbackParamName: "callback",
                     load: function (result) {
                         var players = result["players"];
@@ -646,7 +642,7 @@ require(["jquery",
                 ownedPlayerList.setStore(null);
                 ownedPlayerList.setStore(playerStore);
                 dojo.io.script.get({
-                    url: base + "player/getOwnedPlayers?email=" + window.email+"&token="+window.token,
+                    url: base + "player/getOwnedPlayers?email=" + window.email,
                     callbackParamName: "callback",
                     load: function (result) {
                         //alert( result["players"].length);
@@ -688,7 +684,10 @@ require(["jquery",
           
 				//  reset the scrollable view to the top
 				var c = dijit.byId("PlaylistView").containerNode;
-			
+			/*	if (currCat=="Artist")
+				   var c = dijit.byId("ArtistlistView").containerNode;
+				if (currCat=="Museums")
+				   var c = dijit.byId("MuseumlistView").containerNode;*/
 
                 dojo.setStyle(c, {
                  webkitTransform: '',
@@ -710,7 +709,7 @@ require(["jquery",
 
             function updateCats() {
 			//	 	dijit.registry.byId("ImageView").hide();
-				window.currentView="select_category";
+			window.currentView="select_category";
                 catList.destroyRecursive(true);
                 $("#catList").html('');
 				// create a My Viewlists category manually
@@ -737,7 +736,7 @@ require(["jquery",
                             //alert("new");
                             catList.addChild(newCat);
                 dojo.io.script.get({
-                    url: base + "content/allCategories2?featured=true",
+                    url: base + "content/allCategories2",
                     callbackParamName: "callback",
                     load: function (result) {
                         var cats = result["categories"];
@@ -779,7 +778,7 @@ require(["jquery",
 
             function updateLists(catName) {
 		
-		        if (catName == "Artists")
+		        if (catName == "Artist")
 				{
 					updateArtistLists();
 					return;
@@ -791,11 +790,11 @@ require(["jquery",
 				}
                 if (catName == "My Viewlists")
 				{
-				     url=base+"user/getMyViewlists?email="+ window.email+"&token="+window.token;
+				     url=base+"user/getMyViewlists?email="+ window.email+"&token=99999";
 				}
 				else
 				{
-					url=base + "content/getViewlistsByCategory2?catName=" + catName+"&featured=true";
+					url=base + "content/getViewlistsByCategory2?catName=" + catName;
 				}
 				
 			//	alert("catname="+catName);
@@ -841,8 +840,6 @@ require(["jquery",
 						  var listcoverimage="images/ARTKICKlogoFULLCOLOR-APP_50x50.png";
 						if (lists[i]["coverImage"])
 							listcoverimage=lists[i]["coverImage"];
-						else
-							listcoverimage="";
 						    
 						  var linelabel= '<img class="viewlistid" src="'+listcoverimage+'" alt="" height="60px" > ';
 					//	  alert(linelabel);
@@ -904,7 +901,7 @@ require(["jquery",
 					return; // already did this
 				}	
 				window.loadartistview = true;
-				url=base + "content/getViewlistsByCategory2?catName=Artists&featured=true";
+				url=base + "content/getViewlistsByCategory2?catName=Artist";
 			//	alert("updateArtlistLists");
 				loadlists(url,artistList);
 
@@ -919,7 +916,7 @@ require(["jquery",
 					return; // already did this
 				  }
 				window.loadmuseumview = true;
-				url=base + "content/getViewlistsByCategory2?catName=Museums&featured=true";
+				url=base + "content/getViewlistsByCategory2?catName=Museums";
 		//	alert("updateMuseumLists");
 				loadlists(url,museumList);
 
@@ -940,8 +937,6 @@ require(["jquery",
 						  var listcoverimage="images/ARTKICKlogoFULLCOLOR-APP_50x50.png";
 						if (lists[i]["coverImage"])
 							listcoverimage=lists[i]["coverImage"];
-						else
-							listcoverimage="";
 						  var firstName = lists[i]["name"].split(' ').slice(0, -1).join(' ');
 						  var lastName = lists[i]["name"].split(' ').slice(-1).join(' ');
 						  var linelabel= '<img class="viewlistid" src="'+listcoverimage+'" alt="" height="60px" > ';
@@ -985,8 +980,8 @@ require(["jquery",
                             listname.addChild(newList);
 
                         }
-                        console.log("done loading artists last label:"+lists[i]["name"]);
-						if (currCat=="Artists")
+                     //   alert("done loading artists last label:"+lists[i]["name"]);
+						if (currCat=="Artist")
 							gotoView("blankview","ArtistlistView");
 						else if (currCat == "Museums")
 							gotoView("blankview","MuseumlistView");
@@ -1000,7 +995,7 @@ require(["jquery",
 			}
             function rememberSelectPlayers() {
                 //alert("remembering");
-                var url = base + "client/selectPlayers?email=" + window.email+"&token="+window.token;
+                var url = base + "client/selectPlayers?email=" + window.email;
                 var count = 0;
                 for (var player in window.playerSet) {
                     //alert(playerSet[player]);
@@ -1065,14 +1060,12 @@ require(["jquery",
 					artist = imageMap[currImage]["Artist First N"] + " " + imageMap[currImage]["Artist Last N"];
 				else
 					artist = imageMap[currImage]["Artist Last N"] 
-                title = "<b>" + imageMap[currImage]["Title"].replace("'", "", "") + "</b>" ;
-				if (imageMap[currImage]["Year"])
-					title = title  + " " + imageMap[currImage]["Year"];
+                title = "<b>" + imageMap[currImage]["Title"].replace("'", "", "") + "</b>" + " " + imageMap[currImage]["Year"];
                 // check if there is a video
 			//	alert("video="+imageMap[currImage]["Video"]);
 				if (imageMap[currImage]["Video"])			
-			           title = title +"  "+ "<a style=\"color:#568BFF\" onclick='showiframe(\"" + imageMap[currImage]["Video"] + "\")' >" + "<img src='images/Play_Icon2.png' align='center' >" + "</a>";
-
+			           title = title +"  "+ "<a style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["Video"] + "\")' >" + "<img src='images/Play_Icon.png' align='center' >" + "</a>";
+           
 				if(imageMap[currImage]["Type  Detail"])
 					type=imageMap[currImage]["Type  Detail"];
 				else
@@ -1150,21 +1143,21 @@ require(["jquery",
 				
                 if (imageMap[currImage]["More Info Link"]) {
                     if (imageMap[currImage]["More Info Link"].substring(0, 4) == "http")
-                        metaPlane3.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + imageMap[currImage]["More Info Link"] + "\")' >"+ title+"</a>";
+                        metaPlane3.innerHTML = "<a   style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["More Info Link"] + "\")' >"+ title+"</a>";
                     else
-                        metaPlane3.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["More Info Link"] + "\")' >" + title+ "</a>";
+                        metaPlane3.innerHTML = "<a   style=\"color:#2518b5\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["More Info Link"] + "\")' >" + title+ "</a>";
                 } 
 				if (imageMap[currImage]["Artist Info"]) {
                     if (imageMap[currImage]["Artist Info"].substring(0, 4) == "http")
-                        metaPlane4.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + imageMap[currImage]["Artist Info"] + "\")' >"+ artist+"</a>";
+                        metaPlane4.innerHTML = "<a   style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["Artist Info"] + "\")' >"+ artist+"</a>";
                     else
-                        metaPlane4.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["Artist Info"] + "\")' >" + artist+ "</a>";
+                        metaPlane4.innerHTML = "<a   style=\"color:#2518b5\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["Artist Info"] + "\")' >" + artist+ "</a>";
                 }
 				if (imageMap[currImage]["Genre Link"]) {
                     if (imageMap[currImage]["Genre Link"].substring(0, 4) == "http")
-                        metaPlane7.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + imageMap[currImage]["Genre Link"] + "\")' >"+ genre+"</a>";
+                        metaPlane7.innerHTML = "<a   style=\"color:#2518b5\" onclick='showiframe(\"" + imageMap[currImage]["Genre Link"] + "\")' >"+ genre+"</a>";
                     else
-                        metaPlane7.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["Genre Link"] + "\")' >" + genre+ "</a>";
+                        metaPlane7.innerHTML = "<a   style=\"color:#2518b5\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["Genre Link"] + "\")' >" + genre+ "</a>";
                 }
             }
 		
@@ -1174,7 +1167,7 @@ require(["jquery",
 
 
                 dojo.io.script.get({
-                    url: base + "player/getPlayers?email=" + window.email+"&token="+window.token,
+                    url: base + "player/getPlayers?email=" + window.email,
                     callbackParamName: "callback",
                     load: function (result) {
 
@@ -1234,6 +1227,21 @@ require(["jquery",
 
                         }
 
+						//check if we are in select player view and tell users if there are no players
+                
+							  var currView = dijit.registry.byId("select_player");
+	                          var currView2 = currView.getShowingView();
+							  if (currView2 == selectPlayerView)
+									{
+									 if(result["players"].length == 0)
+									 {
+										alert("There are no players registered.");
+										window.currentView = "OptionsList";
+							            currView2.performTransition("OptionsList", -1, "slide", null);
+							          //  gotoView("select_player","OptionsList");
+									  }
+									
+									}
             
 							  
 							  
@@ -1288,30 +1296,9 @@ require(["jquery",
                             }
                         }
                         
-      						//check if we are in select player view and tell users if there are no players
-                
-							  var currView = dijit.registry.byId("select_player");
-	                          var currView2 = currView.getShowingView();
-							  if (currView2 == selectPlayerView)
-									{
-									 if(result["players"].length == 0)
-									 {
-										alert("There are no players registered.");
-							            currView2.performTransition("OptionsList", -1, "", null);
-							            removePlayerView.hide();
-							            //gotoView("select_player","OptionsList");
-									  }
-									
-									}                 
-                        
-                        
                         
 
                         if (window.justCreatePlayer) {
-							if(!window.autoIntro) {
-                            	//alert("auto disabled!");
-                            	return;
-                            }
                             //alert("justPlayer");
                             rememberSelectPlayers();
                             window.currList = window.defList;
@@ -1327,8 +1314,7 @@ require(["jquery",
                             var currView = dijit.registry.byId("Intro0");
                             var mycurrView = currView.getShowingView();
 							window.currentView = "blankview";
-                            optionsView.hide();
-                            mycurrView.performTransition("blankview", 1, "", null);
+                            mycurrView.performTransition("blankview", 1, "slide", null);
                             updateImages(-1);
                             
                         }
@@ -1356,7 +1342,7 @@ require(["jquery",
 									
 				var url="artkick://?currList="+curl+"&currImage="+curi+"&currCat="+curc+"&once="+"true";
 				//	alert("url:"+url);
-				openCustomURLinIFrame(url);		
+				//openCustomURLinIFrame(url);		
 			}
             hidemenu();
 
@@ -1391,7 +1377,7 @@ require(["jquery",
 			
 	on(regPlayerView, "beforeTransitionIn", 
 			 function(){
-				window.currentView ="registernewchromecast";
+			 window.currentView ="registernewchromecast";
 			 	window.updatePlayerLoop = setInterval(updatePlayers,1500);
 				calliOSFunction("sayHello", ["On",window.email], "onSuccess", "onError");
 				try{
@@ -1442,9 +1428,8 @@ require(["jquery",
                 gotoView("Login","blankview");
                 window.switchView = true;
                 updateImages(window.tarImage);
-      	        imageView.hide();
                 dojo.io.script.get({
-                            url: base + "client/getSelectedPlayers?email=" + window.email+"&token="+window.token,
+                            url: base + "client/getSelectedPlayers?email=" + window.email,
                             callbackParamName: "callback",
                             load: function (result) {
                                 if (result["Status"] == "success") {
@@ -1505,16 +1490,9 @@ require(["jquery",
 				dijit.registry.byId("tabcategory6").set('selected', true);
 				});
 			on(accountsettings, "beforeTransitionIn",
+
                 function () {
 				window.currentView = "AccountSettings";
-				});
-			on(aboutView, "beforeTransitionIn",
-                function () {
-				window.currentView = "About";
-				});
-			on(logoff, "beforeTransitionIn",
-                function () {
-				window.currentView = "LogOff";
 				});
 				
              on(optionsView, "beforeTransitionIn",
@@ -1545,7 +1523,6 @@ require(["jquery",
             on(addUserView, "beforeTransitionIn",
                 function () {
 				window.currentView = "add_user_player";
-				dojo.byId("addPlayerEmail").value = "";
                     //alert ("adduser transitionin");
                     updateOwnedPlayers();
                 });
@@ -1639,7 +1616,7 @@ require(["jquery",
 					if (window.currGridPage ==1)
 					   hidebutton("GridPrevious", true);
 				}
-                var url = base + "client/getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+window.targImageGrid+"&forward="+forward+"&numOfImg=20"+"&include="+include+"&token="+window.token;
+                var url = base + "client/getViewlist4?id=" + window.currList+"&email="+window.email+"&tarImage="+window.targImageGrid+"&forward="+forward+"&numOfImg=20"+"&include="+include;
                 if(window.shuffle){
                 	url += "&shuffle=1";
                 }else{
@@ -1715,7 +1692,7 @@ require(["jquery",
 		//	   alert(imageMap[window.currImage]["User Rating"]);
 			   imageMap[window.currImage]["User Rating"]=userrating.value;
 			   dojo.io.script.get({
-                   url: base + "client/rateImage?imageId=" + window.currImage + "&email=" + window.email + "&rating=" + userrating.value+"&token="+window.token,
+                   url: base + "client/rateImage?imageId=" + window.currImage + "&email=" + window.email + "&rating=" + userrating.value,
                    callbackParamName: "callback",
                    load: function (result) {
                    }
@@ -1829,7 +1806,7 @@ function hideDeleteButton(){
 function onClick(e){
 				var item = registry.getEnclosingWidget(e.target);
 			//	alert("deleting item2:"+item+"id:"+item.id+"name:"+item.label);
-				var url=base + "user/removeMyViewlist?"  + "email=" + window.email+"&token=9999&listId="+item.id+"&token="+window.token;
+				var url=base + "user/removeMyViewlist?"  + "email=" + window.email+"&token=9999&listId="+item.id;
 				
 				    dojo.io.script.get({
 					url: url,
@@ -1918,7 +1895,7 @@ window.EditViewlists =function  (forceflag)
                 
                 
                 
-                var url = base+"client/update2?imageID="+view.getChildren()[0]['alt']+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat+"&token="+window.token;
+                var url = base+"client/update2?imageID="+view.getChildren()[0]['alt']+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat;
                 
                 for (var player in window.playerSet) {
                 	if (window.playerSet[player]) {
@@ -2058,7 +2035,6 @@ function showfullimage() {
 	
 	hidebutton("GridView",true);
     document.getElementById("fullurl").setAttribute("src",window.imageMap[window.currImage]["url"]);
-	
 	window.currentView = "fullimageview";
     currView.performTransition("fullimageview", 1, "flip", null);
 }
@@ -2074,7 +2050,7 @@ function destroyiframe(){
    var currView = dijit.registry.byId("iframeview");
       hidebutton("GridView",true);
    dojo.destroy(window.iframe);
-   currView.performTransition("ImageView", -1, "", null);
+   currView.performTransition("ImageView", -1, "slide", null);
 }
 
 function destroyfullimageview(){
@@ -2239,7 +2215,7 @@ function sendfeedback() {
     window.location = "mailto:feedback@artkick.com?Subject=Artkick%20feedback";
     //  win.focus();
 	window.currentView = "ImageView";
-    currView.performTransition("ImageView", 1, "", null);
+    currView.performTransition("ImageView", 1, "slide", null);
 }
 
 // this routine forces external links to be shown in our own window.
@@ -2331,12 +2307,8 @@ function usermessage(message){
 	 setTimeout(function(){messagebox.hide()},2000);
 }
 
-function setAutoIntro(flag){
-	//alert(""+flag);
-	window.autoIntro = flag;
 
 
 
-}
 
 
