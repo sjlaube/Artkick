@@ -14,10 +14,25 @@ class Reg1Controller < ApplicationController
     (Time.now.to_f*1000).to_i
   end
   
+  def filtCode(code,length)
+    index = 0
+    exs = ['1','i','0','o','l']
+    while index < length
+      if exs.include? code[index]
+         code[index] = 'x'
+      end
+      index += 1
+    end
+    return code
+  end
+  
   def genCode(length,db)
-    code = rand(36**length).to_s(36)
+    code = filtCode(rand(36**length).to_s(36),length)
+    
+    
+    
     while db['tclients'].find({"reg_code"=>code}).count>0
-      code = rand(36**length).to_s(36)
+      code = filtCode(rand(36**length).to_s(36),length)
     end  
     return code  
   end

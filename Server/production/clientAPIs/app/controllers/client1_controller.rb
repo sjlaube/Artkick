@@ -231,15 +231,24 @@ class Client1Controller < ApplicationController
       return
     end
     
-    utctime = utcMillis() #current utc millis
-    
-    
+        
     @player = @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId]}).to_a[0]
+    utctime = utcMillis()
+    
+    image_time_stamp = @player["image_time_stamp"]
+    if image_time_stamp == nil
+      image_time_stamp = utctime
+    end
+    
+    if utctime - image_time_stamp > 30*60000
+      pullInterval = 4000
+    else
+      pullInterval = 500
+    end
     
     
     
-    
-    pullInterval = 500
+
     
     if @player["autoInterval"].to_i == -1  #every morning
       if @player['lastMorning']==nil
@@ -280,10 +289,7 @@ class Client1Controller < ApplicationController
            currImage = @db["images"].find({"id"=>defaultObj["image"]})
          end 
          
-         image_time_stamp = @player["image_time_stamp"]
-         if image_time_stamp == nil
-            image_time_stamp = utctime
-         end
+
     
          stretch = "false"
          if @player["stretch"] != nil
@@ -298,7 +304,7 @@ class Client1Controller < ApplicationController
          end
                     
          result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"],"title"=>currImage["Title"],
-            "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>500}
+            "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval}
             
          if currImage["Artist Last N"]==nil
             result["caption"]=""
@@ -355,10 +361,7 @@ class Client1Controller < ApplicationController
            currImage = @db["images"].find({"id"=>defaultObj["image"]})
          end 
          
-         image_time_stamp = @player["image_time_stamp"]
-         if image_time_stamp == nil
-            image_time_stamp = utctime
-         end
+
     
          stretch = "false"
          if @player["stretch"] != nil
@@ -373,7 +376,7 @@ class Client1Controller < ApplicationController
          end
                     
          result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"],"title"=>currImage["Title"],
-            "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>500}
+            "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval}
             
          if currImage["Artist Last N"]==nil
             result["caption"]=""
@@ -410,10 +413,7 @@ class Client1Controller < ApplicationController
     end
     
     
-    image_time_stamp = @player["image_time_stamp"]
-    if image_time_stamp == nil
-      image_time_stamp = utctime
-    end
+
     
     stretch = "false"
     if @player["stretch"] != nil
@@ -422,7 +422,7 @@ class Client1Controller < ApplicationController
     @db['clients'].update({'account'=>params[:deviceMaker]+params[:deviceId]},"$set"=>{'last_visit'=>utctime})
     
     result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"],"title"=>currImage["Title"],
-      "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>500}
+      "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval}
     if currImage["Artist Last N"]==nil
       result["caption"]=""
     else

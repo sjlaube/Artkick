@@ -35,9 +35,25 @@ class ClientController < ApplicationController
     @player = @db['clients'].find({'account'=>params[:snumber]}).to_a[0]
     utctime = utcMillis()
     
+    image_time_stamp = @player["image_time_stamp"]
+    if image_time_stamp == nil
+      image_time_stamp = utctime
+    end
     
-        
-    pullInterval = 500
+    stretch = "false"
+    if @player["stretch"] != nil
+       stretch = @player["stretch"].to_s
+    end
+    
+    if utctime - image_time_stamp > 30*60000
+      pullInterval = 4000
+    else
+      pullInterval = 500
+    end
+    
+    
+    
+
     
     
     if @player["autoInterval"].to_i == -1  #every morning
@@ -80,10 +96,7 @@ class ClientController < ApplicationController
            currImage = @db["images"].find({"id"=>defaultObj['image']})
          end 
          
-         image_time_stamp = @player["image_time_stamp"]
-         if image_time_stamp == nil
-            image_time_stamp = utctime
-         end
+
     
          stretch = "false"
          if @player["stretch"] != nil
@@ -98,7 +111,7 @@ class ClientController < ApplicationController
          end
                      
          result = {"result"=>"success", "message"=>"updated "+utctime.to_s+" "+@player["nickname"], "player"=>@player["nickname"],
-               "currImage"=>currImage, "image_time_stamp"=>image_time_stamp}    
+               "currImage"=>currImage, "image_time_stamp"=>image_time_stamp,'nextPull'=>pullInterval, 'stretch'=>stretch}    
         
          render :json=>result, :callback => params[:callback]     
   
@@ -151,10 +164,6 @@ class ClientController < ApplicationController
            currImage = @db["images"].find({"id"=>defaultObj['image']})
          end 
          
-         image_time_stamp = @player["image_time_stamp"]
-         if image_time_stamp == nil
-            image_time_stamp = utctime
-         end
     
          stretch = "false"
          if @player["stretch"] != nil
@@ -169,7 +178,7 @@ class ClientController < ApplicationController
          end
                      
          result = {"result"=>"success", "message"=>"updated "+utctime.to_s+" "+@player["nickname"], "player"=>@player["nickname"],
-               "currImage"=>currImage, "image_time_stamp"=>image_time_stamp}    
+               "currImage"=>currImage, "image_time_stamp"=>image_time_stamp, 'nextPull'=>pullInterval, 'stretch'=>stretch}    
         
                 
          render :json=>result, :callback => params[:callback] 
@@ -195,7 +204,7 @@ class ClientController < ApplicationController
     
     @db['clients'].update({'account'=>params[:snumber]},"$set"=>{'last_visit'=>utctime})
     result = {"result"=>"success", "message"=>"updated "+utctime.to_s+" "+@player["nickname"], "player"=>@player["nickname"],
-               "currImage"=>currImage, "image_time_stamp"=>@player["image_time_stamp"]}
+               "currImage"=>currImage, "image_time_stamp"=>@player["image_time_stamp"], 'nextPull'=>pullInterval, 'stretch'=>stretch}
     render :json=>result, :callback => params[:callback]
   end
   
