@@ -200,7 +200,13 @@ class Player1Controller < ApplicationController
       return
     end
     
+    
     @db["users"].update({"id"=>user["id"]},{"$pull"=>{"playable_clients"=>player["account"]}})
+    
+    player["playable_users"].each do |userId|
+      @db['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
+    end
+    
     result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is dismissed by user "+user["email"].strip.downcase+"!"}
     render :json=>result, :callback => params[:callback]
   end
