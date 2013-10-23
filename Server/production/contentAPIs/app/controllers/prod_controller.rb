@@ -5,11 +5,17 @@ class ProdController < ApplicationController
   include Mongo
 
   
-  @@server = 'ds031948.mongolab.com'
-  @@port = 31948
-  @@db_name = 'zwamy'
-  @@username = 'leonzwamy'
-  @@password = 'zw12artistic'
+  #@@server = 'ds031948.mongolab.com'
+  #@@port = 31948
+  #@@db_name = 'zwamy'
+  #@@username = 'leonzwamy'
+  #@@password = 'zw12artistic'
+  
+  @@server = 'ds047478.mongolab.com'
+  @@port = 47478
+  @@db_name = 'heroku_app16778260'
+  @@username = 'luckyleon'
+  @@password = 'artkick123rocks'
   
  def setFeatured 
    if params[:listId] == nil or params[:listId].strip.length==0

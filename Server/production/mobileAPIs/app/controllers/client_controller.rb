@@ -5,11 +5,17 @@ class ClientController < ApplicationController
   require 'net/smtp'
   require 'curb'
   
-  @@server = 'ds031948.mongolab.com'
-  @@port = 31948
-  @@db_name = 'zwamy'
-  @@username = 'leonzwamy'
-  @@password = 'zw12artistic'
+  #@@server = 'ds031948.mongolab.com'
+  #@@port = 31948
+  #@@db_name = 'zwamy'
+  #@@username = 'leonzwamy'
+  #@@password = 'zw12artistic'
+  
+  @@server = 'ds047478.mongolab.com'
+  @@port = 47478
+  @@db_name = 'heroku_app16778260'
+  @@username = 'luckyleon'
+  @@password = 'artkick123rocks'
   
   @@gmailAccount = 'leonzfarm'  
   @@gmailPassword = 'aljzcsjusqohrujk' 
@@ -869,11 +875,6 @@ class ClientController < ApplicationController
       return  
     end
     
-    if(user["curr_cat"]==nil or user["curr_cat"]=='') #or (@db["categories"].find({"name"=>user["curr_cat"]}).count==0)
-      result = {"Status"=>"failure", "Message"=>"No category!"}
-      render :json=>result, :callback => params[:callback]
-      return  
-    end
     
     
     shuffle = "false"
