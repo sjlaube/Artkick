@@ -1,3 +1,9 @@
+/*
+
+Copyright 2013, Zwamy, Inc.  All Rights Reserved
+
+*/
+
 window.backbutton=function ()
 // handles the hardware backbutton on android devices
 {	

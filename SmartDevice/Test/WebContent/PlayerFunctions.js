@@ -1,3 +1,9 @@
+/*
+
+Copyright 2013, Zwamy, Inc.  All Rights Reserved
+
+*/
+
 function removePlayersAction() {
 	var currTime = new Date().getTime();
 	//alert("currTime"+currTime);

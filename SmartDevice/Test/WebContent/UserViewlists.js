@@ -1,4 +1,10 @@
 /*
+
+Copyright 2013, Zwamy, Inc.  All Rights Reserved
+
+*/
+/*
+
 routines for user viewlists
 
 How it should work 

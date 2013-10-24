@@ -1,3 +1,9 @@
+/*
+
+Copyright 2013, Zwamy, Inc.  All Rights Reserved
+
+*/
+
 function emailPwLogout(){
 	var currView = dijit.registry.byId("reset_password");
     window.email = null;
