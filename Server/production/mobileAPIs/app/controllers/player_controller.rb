@@ -4,11 +4,17 @@ class PlayerController < ApplicationController
   include Mongo
   require 'securerandom'
   
-  @@server = 'ds031948.mongolab.com'
-  @@port = 31948
-  @@db_name = 'zwamy'
-  @@username = 'leonzwamy'
-  @@password = 'zw12artistic'
+  #@@server = 'ds031948.mongolab.com'
+  #@@port = 31948
+  #@@db_name = 'zwamy'
+  #@@username = 'leonzwamy'
+  #@@password = 'zw12artistic'
+  
+  @@server = 'ds047478.mongolab.com'
+  @@port = 47478
+  @@db_name = 'heroku_app16778260'
+  @@username = 'luckyleon'
+  @@password = 'artkick123rocks'
   
   def utcMillis
     (Time.now.to_f*1000).to_i
@@ -145,6 +151,11 @@ class PlayerController < ApplicationController
     end
     
     @db["users"].update({"id"=>user["id"]},{"$pull"=>{"playable_clients"=>player["account"]}})
+    
+    player["playable_users"].each do |userId|
+      @db['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
+    end
+    
     result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is dismissed by user "+user["email"].strip.downcase+"!"}
     render :json=>result, :callback => params[:callback]
   end

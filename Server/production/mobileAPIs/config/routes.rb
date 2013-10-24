@@ -57,6 +57,47 @@ Userpages::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   match 'registration/v1.0/getRegCode'=> 'reg1#getRegCode'
   match 'registration/v1.0/getRegStatus'=> 'reg1#getRegStatus'
+  
+  
+  match 'api/v1.1/client/getDefault' => 'client1#getDefault'
+  match 'api/v1.1/client/getViewlist4' => 'client1#getViewlist4'
+  match 'api/v1.1/client/getUserStatus'=> 'client1#getUserStatus'
+  match 'api/v1.1/client/selectPlayers' => 'client1#selectPlayers'
+  match 'api/v1.1/client/getSelectedPlayers' => 'client1#getSelectedPlayers'
+  match 'api/v1.1/client/rateImage' => 'client1#rateImage'
+  match 'api/v1.1/client/update2' => 'client1#update2'
+  match 'api/v1.1/client/feedback' => 'client1#feedback'
+  match 'api/v1.1/client/resetPassword' => 'client1#resetPassword'
+  match 'api/v1.1/client/regUser' => 'client1#regUser'
+  match 'api/v1.1/client/login' => 'client1#login'
+  match 'api/v1.1/client/emailPassword' => 'client1#emailPassword'
+  match 'api/v1.1/client/setAuto' => 'client1#setAuto'
+  match 'api/v1.1/client/verifyUser' => 'client1#verifyUser'
+  
+  
+  match 'api/v1.1/user/saveAsMyViewlist' => 'user1#saveAsMyViewlist'
+  match 'api/v1.1/user/getMyViewlists' => 'user1#getMyViewlists'
+  match 'api/v1.1/user/removeMyViewlist' => 'user1#removeMyViewlist'
+  match 'api/v1.1/user/createMyViewlist' => 'user1#createMyViewlist'
+  match 'api/v1.1/user/addImageToMyViewlist' => 'user1#addImageToMyViewlist'
+  match 'api/v1.1/user/search' => 'user1#search'
+  
+  
+  match 'api/v1.1/content/allCategories' =>  'content1#allCategories'
+  match 'api/v1.1/content/allCategories2' =>  'content1#allCategories2'
+  match 'api/v1.1/content/getViewlistsByCategory' => 'content1#getViewlistsByCategory'
+  match 'api/v1.1/content/getViewlistsByCategory2' => 'content1#getViewlistsByCategory2'
+  
+  
+  match 'api/v1.1/player/getUser' => 'player1#getUser'
+  match 'api/v1.1/player/getPlayers' => 'player1#getPlayers'
+  match 'api/v1.1/player/getOwnedPlayers' => 'player1#getOwnedPlayers'
+  match 'api/v1.1/player/addUserToPlayer' => 'player1#addUserToPlayer'
+  match 'api/v1.1/player/removePlayer' => 'player1#removePlayer'
+  
+  
+  match 'api/v1.1/reg/userReg' => 'reg1#userReg'
+  
   match ':controller(/:action(/:id))(.:format)'
 
 end

@@ -1,4 +1,4 @@
-class PlayerController < ApplicationController
+class Player1Controller < ApplicationController
   require 'rubygems'
   require 'mongo'
   include Mongo
@@ -27,17 +27,25 @@ class PlayerController < ApplicationController
       return
     end
      
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     
     
-    userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
-    if userSet.count==0
-      result = {"Status"=>"failure", "Message"=>"No user found!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
 
     players = @db["clients"].find({"owner"=>userSet.to_a[0]["id"]}).to_a
@@ -53,17 +61,25 @@ class PlayerController < ApplicationController
       return
     end
     
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     
     
-    userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
-    if userSet.count==0
-      result = {"Status"=>"failure", "Message"=>"No user found!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     user = userSet.to_a[0]
     players=[]
@@ -87,16 +103,40 @@ class PlayerController < ApplicationController
   end
   
   def getUser
-    if(params[:email]==nil)
-      result = {"Status"=>"failure", "Message"=>"No email!"}
+    if(params[:myEmail]==nil)
+      result = {"Status"=>"failure", "Message"=>"No my email!"}
       render :json=>result, :callback => params[:callback]
       return
     end
     
+    if(params[:queryEmail]==nil)
+      result = {"Status"=>"failure", "Message"=>"No query email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
-    userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
+    
+    
+    selfUserSet = @db['users'].find({"email"=>(params[:myEmail].strip).downcase,'tokens'=>params[:token].strip})
+    if selfUserSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end     
+    
+    
+    userSet = @db['users'].find({"email"=>params[:queryEmail].strip.downcase})
     if userSet.count==0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
       render :json=>result, :callback => params[:callback]
@@ -106,6 +146,7 @@ class PlayerController < ApplicationController
     result = {"Status"=>"success", "Message"=>"Found "+user["name"]+"!"}
     render :json=>result, :callback => params[:callback]
   end
+  
   
   def removePlayer
     if(params[:playerId]==nil)
@@ -120,16 +161,25 @@ class PlayerController < ApplicationController
       return
     end
     
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     
-    userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
-    if userSet.count==0
-      result = {"Status"=>"failure", "Message"=>"No user found!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     playerSet = @db['clients'].find({"account"=>params[:playerId]})
     if playerSet.count==0
@@ -150,7 +200,13 @@ class PlayerController < ApplicationController
       return
     end
     
+    
     @db["users"].update({"id"=>user["id"]},{"$pull"=>{"playable_clients"=>player["account"]}})
+    
+    player["playable_users"].each do |userId|
+      @db['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
+    end
+    
     result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is dismissed by user "+user["email"].strip.downcase+"!"}
     render :json=>result, :callback => params[:callback]
   end
@@ -163,17 +219,40 @@ class PlayerController < ApplicationController
       return
     end
     
-    if(params[:email]==nil)
-      result = {"Status"=>"failure", "Message"=>"No email!"}
+    if(params[:myEmail]==nil)
+      result = {"Status"=>"failure", "Message"=>"No my email!"}
       render :json=>result, :callback => params[:callback]
       return
     end
+    
+    
+    if(params[:queryEmail]==nil)
+      result = {"Status"=>"failure", "Message"=>"No query email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
     
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     
-    userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
+    
+    selfUserSet = @db['users'].find({"email"=>(params[:myEmail].strip).downcase,'tokens'=>params[:token].strip})
+    if selfUserSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end     
+    
+    userSet = @db['users'].find({"email"=>params[:queryEmail].strip.downcase})
     if userSet.count==0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
       render :json=>result, :callback => params[:callback]
@@ -202,23 +281,9 @@ class PlayerController < ApplicationController
       return
     end
     
-    @db["users"].update({"email"=>params[:email].strip.downcase},{"$push"=>{"playable_clients"=>player["account"]}}) 
+    @db["users"].update({"email"=>params[:queryEmail].strip.downcase},{"$push"=>{"playable_clients"=>player["account"]}}) 
     result = {"Status"=>"success", "Message"=>user["email"].strip.downcase+" is now permitted to play on Player "+player["nickname"]+"!"}
     render :json=>result, :callback => params[:callback]  
-  end
-  
-  def clear
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
-    players = @db["clients"].find({}).to_a
-    players.each do |player|
-      @db["users"].update({"id"=>player["owner"]},{"$push"=>{"owned_clients"=>player["account"]}})
-    end
-    
-    result = {"Status"=>"success", "Message"=>"database is clean!"}
-    render :json=>result, :callback => params[:callback]
-    
   end
   
 end  

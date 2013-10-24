@@ -4,11 +4,17 @@ class Reg1Controller < ApplicationController
   include Mongo
   require 'securerandom'
   
-  @@server = 'ds031948.mongolab.com'
-  @@port = 31948
-  @@db_name = 'zwamy'
-  @@username = 'leonzwamy'
-  @@password = 'zw12artistic'
+  #@@server = 'ds031948.mongolab.com'
+  #@@port = 31948
+  #@@db_name = 'zwamy'
+  #@@username = 'leonzwamy'
+  #@@password = 'zw12artistic'
+  
+  @@server = 'ds047478.mongolab.com'
+  @@port = 47478
+  @@db_name = 'heroku_app16778260'
+  @@username = 'luckyleon'
+  @@password = 'artkick123rocks'
   
   def utcMillis
     (Time.now.to_f*1000).to_i
@@ -95,9 +101,25 @@ class Reg1Controller < ApplicationController
       return
     end
     
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     if @db["tclients"].find({"reg_code"=>params[:regCode]}).count == 0
       result = {"Status"=>"failure","Message"=>"No device matches!"}
@@ -126,13 +148,9 @@ class Reg1Controller < ApplicationController
       end  
     end
   
-    if @db["users"].find({"email"=>params[:email].strip.downcase}).count == 0
-      result = {"Status"=>"failure", "Message"=>"No user found!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+
     
-    user = @db["users"].find({"email"=>params[:email].strip.downcase}).to_a[0]
+    user = userSet.to_a[0]
     player = {"account"=>tplayer["account"],"reg_code"=>tplayer["reg_code"],"owner"=>user["id"],"curr_play"=>-1,
       "curr_image"=>-1,"nickname"=>params[:nickname],"last_visit"=>-1,"playable_users"=>[],"creation_time"=>currTime,
       "reg_token"=>SecureRandom.hex}  

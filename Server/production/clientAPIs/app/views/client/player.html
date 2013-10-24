@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
   <style>
 	.imageTitle{
@@ -8,29 +10,10 @@
 	}
 	
 	
-	#playButton {
-		position:fixed;
-		margin-left: -125px;
-		margin-top: -40px;
-		
-		top: 50%;
-		left: 50%;
-		width: 250px;
-		height: 80px;
-		background-color:yellow;
-		font-size:60px;
-                text-align:center;
-                padding:2px;
-                color:blue;
-                border-radius: 30px;
-		
-	}
-	
     div#screen {
         background-size: contain;
         position: absolute;
         background-position: center;
-        background-color: black;
         background-repeat: no-repeat;
         height: 100%;
         width: 100%;
@@ -65,74 +48,6 @@
   
   
   <script type="text/javascript">
-
-
-(function() {
-    var
-        fullScreenApi = {
-            supportsFullScreen: false,
-            isFullScreen: function() { return false; },
-            requestFullScreen: function() {},
-            cancelFullScreen: function() {},
-            fullScreenEventName: '',
-            prefix: ''
-        },
-        browserPrefixes = 'webkit moz o ms khtml'.split(' ');
- 
-    // check for native support
-    if (typeof document.cancelFullScreen != 'undefined') {
-        fullScreenApi.supportsFullScreen = true;
-    } else {
-        // check for fullscreen support by vendor prefix
-        for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
-            fullScreenApi.prefix = browserPrefixes[i];
- 
-            if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] != 'undefined' ) {
-                fullScreenApi.supportsFullScreen = true;
- 
-                break;
-            }
-        }
-    }
- 
-    // update methods to do something useful
-    if (fullScreenApi.supportsFullScreen) {
-        fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
- 
-        fullScreenApi.isFullScreen = function() {
-            switch (this.prefix) {
-                case '':
-                    return document.fullScreen;
-                case 'webkit':
-                    return document.webkitIsFullScreen;
-                default:
-                    return document[this.prefix + 'FullScreen'];
-            }
-        }
-        fullScreenApi.requestFullScreen = function(el) {
-            return (this.prefix === '') ? el.requestFullScreen() : el[this.prefix + 'RequestFullScreen']();
-        }
-        fullScreenApi.cancelFullScreen = function(el) {
-            return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + 'CancelFullScreen']();
-        }
-    }
- 
-    // jQuery plugin
-    if (typeof jQuery != 'undefined') {
-        jQuery.fn.requestFullScreen = function() {
- 
-            return this.each(function() {
-                if (fullScreenApi.supportsFullScreen) {
-                    fullScreenApi.requestFullScreen(this);
-                }
-            });
-        };
-    }
- 
-    // export api
-    window.fullScreenApi = fullScreenApi;
-})();
-
 
 
   $(document).ready(function(){
@@ -330,32 +245,15 @@
         });   
       }
     
-    window.play = function() {
-    	
-    	
-    	
-    	
-       $('#playButton').css('display','none');
-       
-       
-       if (fullScreenApi.supportsFullScreen) { 
-       	   console.log('full screen is supported!');
-       	   var screenElement = document.getElementById('screen');
-           fullScreenApi.requestFullScreen(screenElement);
-       
-       }
-       
-       
-       
-       var sURL = window.document.URL.toString(); 
-       var snumber = sURL.split('snumber=')[1];
-       if(snumber==undefined){
-    	 snumber="56677test";
-       }
-       var link =base+snumber;
-       update(link);
-  
+    var sURL = window.document.URL.toString(); 
+    var snumber = sURL.split('snumber=')[1];
+    if(snumber==undefined){
+    	snumber="56677test";
     }
+    var link =base+snumber;
+    update(link);
+  
+    
     
 
 
@@ -374,12 +272,12 @@
   <title>Media Player App</title>
   <body>
    
+<div id="message"> hello! </div>
 <div id = "screen"  style="position:absolute;top:0;left:0;height:100%;width:100%">
- <div id= "playButton" onclick="play()">
- 	Play
- </div>
 <div id = "caption">
 	
 </div>
    
   </body>
+
+</html>

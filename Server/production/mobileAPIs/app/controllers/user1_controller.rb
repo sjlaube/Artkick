@@ -1,10 +1,9 @@
-class UserController < ApplicationController
+class User1Controller < ApplicationController
   require 'rubygems'
   require 'mongo'
   include Mongo
   require 'net/smtp'
 
-  
   #@@server = 'ds031948.mongolab.com'
   #@@port = 31948
   #@@db_name = 'zwamy'
@@ -32,15 +31,7 @@ class UserController < ApplicationController
       render :json=>result, :callback => params[:callback]
       return
    end
-   
-   
-   if params[:token]==nil or params[:token].length==0
-      result = {"Status"=>"failure", "Message"=>"error, no token provided!"}
-      render :json=>result, :callback => params[:callback]
-      return
-   end
-   
-   
+      
    if params[:listId]==nil or params[:listId].length==0
       result = {"Status"=>"failure", "Message"=>"error, no viewlist id!"}
       render :json=>result, :callback => params[:callback]
@@ -54,16 +45,25 @@ class UserController < ApplicationController
       return
    end
    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
-
-    userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
-      result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     userObj = userSet.to_a[0]
     
@@ -112,14 +112,7 @@ class UserController < ApplicationController
       return
    end
    
-   
-   if params[:token]==nil or params[:token].length==0
-      result = {"Status"=>"failure", "Message"=>"error, no token provided!"}
-      render :json=>result, :callback => params[:callback]
-      return
-   end
-   
-   
+      
    if params[:listId]==nil or params[:listId].length==0
       result = {"Status"=>"failure", "Message"=>"error, no viewlist id!"}
       render :json=>result, :callback => params[:callback]
@@ -133,16 +126,25 @@ class UserController < ApplicationController
       return
    end
    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
-
-    userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
-      result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     userObj = userSet.to_a[0]
     
@@ -200,30 +202,32 @@ class UserController < ApplicationController
       return
    end
    
-   
-   if params[:token]==nil or params[:token].length==0
-      result = {"Status"=>"failure", "Message"=>"error, no token provided!"}
-      render :json=>result, :callback => params[:callback]
-      return
-   end
-   
-   
+      
    if params[:listId]==nil or params[:listId].length==0
       result = {"Status"=>"failure", "Message"=>"error, no listId provided!"}
       render :json=>result, :callback => params[:callback]
       return
    end
    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
-
-    userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
-      result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     userObj = userSet.to_a[0]
     
@@ -241,6 +245,166 @@ class UserController < ApplicationController
  end
  
  
+ def search
+   if params[:email]==nil or params[:email].length==0
+      result = {"Status"=>"failure", "Message"=>"error, no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+      
+   if params[:keyword] == nil or params[:keyword].strip.length == 0
+      result = {"Status"=>"failure", "Message"=>"error, no keyword provided!"}
+      render :json=>result, :callback => params[:callback]
+      return      
+    end
+ 
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]
+    
+    #search
+    imageSet = @db['images'].find({'topics'=>params[:keyword].strip.downcase},{:fields=>['id','thumbnail']}).limit(200)
+    listObj = {'images'=>[]}
+    if imageSet.count > 0
+      #listObj['coverImage'] = imageSet.to_a[0]['thumbnail']
+      index = 0
+      imageSet.to_a.each do |imageObj|
+        listObj['images'].push(imageObj['id'].to_i)
+        if index == 0
+          listObj['coverImage'] = imageObj['thumbnail']
+        end
+        index += 1
+      end
+    end    
+    
+    if userObj['search_list']!=nil
+      @db['users'].update({'email'=>userObj['email']},{'$pull'=>{'private_lists'=>userObj['search_list'].to_i}})
+      @db['viewlists'].remove({'id'=>userObj['search_list'].to_i})
+    end
+          
+    currIndex = @db['index'].find().to_a[0]['viewlist'].to_i+1
+    listObj['name'] = 'Last Search'
+    listObj['id'] = currIndex
+    listObj['datetime_created']=Time.now.utc.to_s
+    listObj['private_user']=userObj['email']
+    @db['viewlists'].insert(listObj)
+    if userObj['private_lists'] == nil
+       @db['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[currIndex]}})
+    else
+       @db['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>currIndex}})
+    end 
+    @db['index'].update({},{'$set'=>{'viewlist'=>currIndex}}) 
+    @db['users'].update({'email'=>userObj['email']},{'$set'=>{'search_list'=>currIndex}})
+    userObj['search_list'] = currIndex
+      
+        
+    result = {"Status"=>"success", "Message"=>"A viewlist has been created based on your search", "listId"=>userObj['search_list'].to_i, "images"=>listObj['images']}
+    render :json=>result, :callback => params[:callback]     
+    
+ 
+ end
+ 
+ 
+ def saveAsMyViewlist
+   if params[:email]==nil or params[:email].length==0
+      result = {"Status"=>"failure", "Message"=>"error, no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+      
+  if params[:listId]==nil or params[:listId].length==0
+      result = {"Status"=>"failure", "Message"=>"error, no viewlist id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+   
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]
+    
+    
+    fromListSet = @db['viewlists'].find({'id'=>params[:listId].to_i})
+    if fromListSet.count == 0
+      result = {"Status"=>"failure", "Message"=>"error, list doesn't exist!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    fromListObj = fromListSet.to_a[0]
+    if fromListObj['private_user'] == nil
+      result = {"Status"=>"failure", "Message"=>"error, this list is not a private list, you don't need to save it!"}
+      render :json=>result, :callback => params[:callback]
+      return      
+    end
+    
+    newname = fromListObj['name']
+    fromUserSet = @db['users'].find({'email'=>fromListObj['private_user']})
+    if fromUserSet.count > 0
+      fromUserObj = fromUserSet.to_a[0]
+      if fromUserObj['email']==userObj['email']
+        result = {"Status"=>"failure", "Message"=>"error, this is your own viewlist, you don't have to save it again!"}
+        render :json=>result, :callback => params[:callback]
+        return   
+      end
+      
+      
+      newname = fromUserObj['name']+': '+newname
+    end
+    
+    
+    currIndex = @db['index'].find().to_a[0]['viewlist'].to_i+1
+    
+    
+    listObj = {'name'=>newname, 'datetime_created'=>Time.now.utc.to_s,
+      'id'=>currIndex,'images'=>fromListObj['images'], 'private_user'=>userObj['email'], 'coverImage'=>fromListObj['coverImage']}
+      
+    @db['viewlists'].insert(listObj)
+    if userObj['private_lists'] == nil
+      @db['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[currIndex]}})
+    else
+      @db['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>currIndex}})
+    end 
+    @db['index'].update({},{'$set'=>{'viewlist'=>currIndex}})
+    
+    result = {"Status"=>"success","Message"=>"Viewlist "+newname+" is created!", "listId"=>currIndex}
+    render :json=>result, :callback => params[:callback] 
+ end 
  
  
  
@@ -252,29 +416,32 @@ class UserController < ApplicationController
    end
    
    
-   if params[:token]==nil or params[:token].length==0
-      result = {"Status"=>"failure", "Message"=>"error, no token provided!"}
-      render :json=>result, :callback => params[:callback]
-      return
-   end
-   
-   
+         
   if params[:listName]==nil or params[:listName].length==0
       result = {"Status"=>"failure", "Message"=>"error, no viewlist name!"}
       render :json=>result, :callback => params[:callback]
       return
    end
    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
-
-    userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
-      result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     userObj = userSet.to_a[0]
     currIndex = @db['index'].find().to_a[0]['viewlist'].to_i+1
@@ -300,14 +467,7 @@ class UserController < ApplicationController
       render :json=>result, :callback => params[:callback]
       return
    end
-   
-   
-   if params[:token]==nil or params[:token].length==0
-      result = {"Status"=>"failure", "Message"=>"error, no token provided!"}
-      render :json=>result, :callback => params[:callback]
-      return
-   end
-   
+      
    if params[:listId]==nil or params[:listId].length==0
       result = {"Status"=>"failure", "Message"=>"error, no viewlist id!"}
       render :json=>result, :callback => params[:callback]
@@ -321,17 +481,25 @@ class UserController < ApplicationController
       return
    end
    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
-
-    #userSet = @db['users'].find({'email'=>params[:email].strip.downcase, 'pass_digest'=>params[:token]})
-    userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
-      result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     userObj = userSet.to_a[0]
     if not userObj['private_lists'].include? params[:listId].to_i
@@ -353,22 +521,25 @@ class UserController < ApplicationController
    end
    
    
-   if params[:token]==nil or params[:token].length==0
-      result = {"Status"=>"failure", "Message"=>"error, no token provided!"}
-      render :json=>result, :callback => params[:callback]
-      return
-   end
-   
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
-
-    userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
+    
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
-      result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
-      render :json=>result, :callback => params[:callback]
-      return
-    end
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
     
     userObj = userSet.to_a[0]
     if userObj['private_lists'] == nil
