@@ -130,6 +130,8 @@ float:left;margin-right:2px}
 	.mblCarouselItemImage {
 
 		height:200px;
+		max-width:99%;
+		box-shadow:none;
 	}
 	
 	</style>
@@ -702,8 +704,8 @@ Share your favorite images in personal viewlists and share them with your friend
     data-dojo-props='moveTo:"AccountSettings"'>Account</li>
 	   <li data-dojo-type="dojox/mobile/ListItem" 
      data-dojo-props='moveTo:"About"'>About</li>
-	 	   <li data-dojo-type="dojox/mobile/ListItem" 
-     data-dojo-props='moveTo:"newuserintro"'>newregister</li>
+<!--	 	   <li data-dojo-type="dojox/mobile/ListItem" 
+     data-dojo-props='moveTo:"newuserintro"'>newregister</li> -->
 </ul>
 
  <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBar4" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"' style="border-bottom:none">
@@ -774,10 +776,7 @@ Artkick Version 1.2 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserve
      Cancel</button>
  </div>
 </div>
- <div data-dojo-type="dojox/mobile/View" id="newuserintro" style="height:100%;background-color: #62adc9;">
-
-
-
+ <div data-dojo-type="dojox/mobile/View" id="newuserintro" style="height:100%;background-color: #62adc9">
 <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; text-align:center;left:1em;top:1em;font-family: Verdana,Geneva,sans-serif; font-size: 15px;">
 Congratulations <br>
 Welcome to Artkick
@@ -795,7 +794,9 @@ Connect your TV to Artkick
      Buy a Roku</button>
  <br><br>
  <span data-dojo-type="shapes/Text" style=" position:absolute;top:185px;z-index: 900; font-family: Verdana,Geneva,sans-serif; font-size: 15px;left:45px">
-** Coming Soon **<br><br>
+** Coming Soon **
+<br><br>
+
 <button data-dojo-type="dojox/mobile/Button" style="width: 150px;color:gray;left:2px">
 Samsung SmartTV</button><br>
 <button data-dojo-type="dojox/mobile/Button" style="width: 150px;color:gray;left:45px;" >
@@ -803,7 +804,7 @@ Chromecast</button>
 	 <br><br><br>
 <button data-dojo-type="dojox/mobile/Button" style="width: 150px; text-align: center;left:45px" onclick="noregisterTV()" >
 Connect TV Later</button>	 
-
+</span>
 </div>
 
 </body>

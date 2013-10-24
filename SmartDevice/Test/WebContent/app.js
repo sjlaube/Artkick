@@ -69,8 +69,8 @@ require(["jquery",
 	
 		function () {
 
-            window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";
-            //window.base = "http://evening-garden-3648.herokuapp.com/";  // Production Server
+            //window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";
+            window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
 			//window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
             var selectListView = registry.byId("PlaylistView");
 			var selectArtistListView = registry.byId("ArtistlistView");
@@ -146,6 +146,7 @@ require(["jquery",
 			window.shuffle= false;
 			window.loadartistview = false;
 			window.loadmuseumview = false;
+			window.api_key = "6ab1450c247164d8448624c47e894a6874c43a46";
          
            window.switchView = false;
 		
@@ -350,7 +351,7 @@ require(["jquery",
                     load: function (viewlist) {
                         
                         if(viewlist["imageSet"].length==0){
-                        	alert("'My Top Rated Images' is empty, please star-rate some images and they will be added to it!");
+                        	alert("'My Starred Images' is empty, please star-rate some images and they will be added to it!");
                         	window.currList = window.defList;
                         	window.currCat = window.defCat;
                         	window.currImage = window.defImage;
@@ -507,6 +508,7 @@ require(["jquery",
                         url: base + "client/getUserStatus?email=" + window.email+"&token="+window.token,
                         callbackParamName: "callback",
                         load: function (result) {
+						console.log("status:"+result["Status"]);
                             if (result["Status"] == "success") {
                                 window.tarImage = result["curr_image"];
                                 //alert("tar"+window.tarImage);
@@ -515,7 +517,7 @@ require(["jquery",
 
                                 window.fill = (result["fill"] == "true");
                                 window.shuffle = (result["shuffle"]=="true");
-                                
+                                console.log("currList:"+window.currList+" currCat:"+window.currCat+" tarImage:"+window.tarImage);
                                 if(window.shuffle){
                                 	dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
                                 }
@@ -808,13 +810,13 @@ require(["jquery",
                     load: function (result) {
                         var lists = result["viewlists"]; 
 						//  put user's tops lists first in the list
-						if(catName == "Top Lists"){
+						if(catName == "My Viewlists"){
                        	    //alert("Top Lists");
                        	    
                             myTopList = new dojox.mobile.ListItem({
                                 id: "top_"+window.email,
 
-                                label:  "My Top Rated Images",
+                                label:  "My Starred Images",
 
                                 rightIcon: "mblDomButtonArrow",
                                 variableHeight: true,
@@ -1665,7 +1667,7 @@ require(["jquery",
 				var dim=77; //iphone standard
 				dim=Math.sqrt((window.innerHeight-60)*(window.innerWidth-40)/20*.8)
 			//	dim=Math.min(Math.floor((window.innerHeight-40)/5)-5,Math.floor(window.innerWidth/4)-4);
-			//	alert ("dim="+dim);
+			 //   console.log ("dim="+dim);
                 dojo.io.script.get({
                     url: url,
                     callbackParamName: "callback",
@@ -1948,6 +1950,23 @@ window.EditViewlists =function  (forceflag)
         });
     });
 
+function get_short_url(long_url, login, api_key, func)
+{
+    $.getJSON(
+        "https://api-ssl.bitly.com/v3/shorten?callback=?", 
+        { 
+            "access_token": window.api_key,
+            "longUrl": long_url
+        },
+        function(response)
+        {
+		window.response1=response;
+		console.log("resp:"+window.response1);
+            func(response.data.url);
+        }
+    );
+}
+
 
 
 
@@ -1965,14 +1984,21 @@ imageurl=imageMap[currImage]["thumbnail"];
 var url="http://prod.artkick.net/"
 url = url + "?currList="+encodeURIComponent(currList)+"&currImage="+encodeURIComponent(currImage)+"&currCat="+encodeURIComponent(currCat);
 //alert("url="+url);
-calliOSFunction("email", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
-try{
-	Android.email('Check out this great image and thousands more at Artkick',url, imageMap[currImage]["thumbnail"],'Artkick rocks');
-}
-catch(err){
+
+
+console.log("long:"+url);
+get_short_url(url, login, api_key, function(short_url) {
+    console.log("short"+short_url);
+	calliOSFunction("email", ['Artkick rocks',short_url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+	try{
+	Android.email('Check out this great image and thousands more at Artkick',short_url, imageMap[currImage]["thumbnail"],'Artkick rocks');
+	}
+	catch(err){
 	
-}
-setTimeout(function(){hidemenu()},1000);
+	}
+	setTimeout(function(){hidemenu()},1000);
+})
+
 }
 
 function twitter()
@@ -1982,17 +2008,21 @@ function twitter()
 imageurl=imageMap[currImage]["thumbnail"];
 
 //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-var url="http://prod.artkick.net/"
+var url="http://prod.artkick.net/";
 //url = encodeURIComponent(url + "?currList="+currList+"&currImage="+currImage+"&currCat="+currCat);
+
 url = url + "?currList="+encodeURIComponent(currList)+"&currImage="+encodeURIComponent(currImage)+"&currCat="+encodeURIComponent(currCat);
-calliOSFunction("twitter", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+
+get_short_url(url, login, api_key, function(short_url) {
+calliOSFunction("twitter", ['Artkick rocks',short_url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick @artkicktv #freeart'], "onSuccess", "onError");
 try{
-	Android.twitter('Check out this great image and thousands more at Artkick',url, imageMap[currImage]["thumbnail"],'Artkick rocks');
+	Android.twitter('Check out this great image and thousands more at Artkick @artkicktv #freeart',short_url, imageMap[currImage]["thumbnail"],'Artkick rocks');
 }
 catch(err){
 	
 }
 setTimeout(function(){hidemenu()},1000);
+})
 }
 
 
@@ -2012,28 +2042,18 @@ imageurl=imageMap[currImage]["thumbnail"];
 var url="http://prod.artkick.net/"
 url = url + "?currList="+encodeURIComponent(currList)+"&currImage="+encodeURIComponent(currImage)+"&currCat="+encodeURIComponent(currCat);
 //alert ("url="+url);
-calliOSFunction("facebook", ['Artkick rocks',url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+get_short_url(url, login, api_key, function(short_url) {
+calliOSFunction("facebook", ['Artkick rocks',short_url,encodeURIComponent(imageMap[currImage]["thumbnail"]),'Check out this great image and thousands more at Artkick @artkicktv #freeart'], "onSuccess", "onError");
 try{
 	//alert(imageMap[currImage]["thumbnail"]);
-	Android.facebook('Check out this great image and thousands more at Artkick',url, imageMap[currImage]["thumbnail"],'Artkick rocks');
+	Android.facebook('Check out this great image and thousands more at Artkick @artkicktv #freeart',short_url, imageMap[currImage]["thumbnail"],'Artkick rocks');
 } catch(err){
-	
+}
+setTimeout(function(){hidemenu()},1000);	
+})
 }
 
-setTimeout(function(){hidemenu()},1000);
 
-var obj={
-//method: 'feed',
-    name: 'Artkick rocks',
-    link: "http://prod.artkick.net/",
-    picture: imageurl,
-	//display:'popup',
-    caption: 'Artkick',
-//	redirect_uri: 'http://prod.artkick.net',
-    description: 'Check out this great image and thousands more at Artkick'
-}
-
-}
 
 function testlaunch()
 {

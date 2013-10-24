@@ -156,7 +156,7 @@
 	</div>
 	
 	<div id="removeDialog" title="Remove">	
-		<label>Are you sure you want to remove the following item?</label>
+		<label>Are you sure you want to remove the following item(s)?</label>
 		</br></br>
 		<label id="tbRemoveItems"></label>
 		<input type="text" id="tbRemoveId" class="hidden"></input>
@@ -626,7 +626,7 @@
 						var objectClass = $('li#' + id).attr('class');
 						if (objectClass.indexOf('viewList') != -1)
 						{
-							renameViewList(id, newName);
+							renameViewList(data.args[0][0], id, newName);
 						}
 						else if (objectClass.indexOf('category') != -1)
 						{
@@ -731,7 +731,7 @@
 						selector: 'li.viewListImage', 
 						callback: function(key, options) {
 							if (key == "Delete")
-								removeSelectedImagesFromViewlist();
+								removeSelectedImagesConfirm();
 							else if (key == "Open")
 								openSelectedImages();
 						},
@@ -1069,7 +1069,7 @@
 			//workaround as view list name has (#images) appended
 			var actualName = $('#divNavTree2').find('#' + objectId).attr('displayName');
 			tempRename = true;
-			$('#container').jstree('rename_node', '#' + objectId, actualName);
+			$('#container').jstree('rename_node', obj[0], actualName);
 			tempRename = false;
 
 			$('#container').jstree("rename");
@@ -1082,7 +1082,7 @@
 		}
 	}
 	
-	function renameViewList(id, newName)
+	function renameViewList(obj, id, newName)
 	{
 		var cmd = '';
 		var params = '';
@@ -1112,7 +1112,7 @@
 				
 				//workaround as view list name has (#images) appended
 				tempRename = true;
-				$('#container').jstree('rename_node', '#' + id, newName + ' (' + viewList.attr('imageCount') + ')');
+				$('#container').jstree('rename_node', obj, newName + ' (' + viewList.attr('imageCount') + ')');
 				tempRename = false;
 			}
 		});
@@ -1367,7 +1367,11 @@
 			else if (objClass == categoryType)
 			{
 				removeCategory(id);
-			}	
+			}
+			else if	 (objClass == imageType)
+			{
+				removeSelectedImagesFromViewlist();
+			}
 		}
 	}
 	
@@ -1423,6 +1427,26 @@
 			imageArray.push('images[]=' + $(this).attr('id'));
 		});
 		return imageArray.join('&');
+	}
+	
+	function removeSelectedImagesConfirm()
+	{
+		var imageArray = [];
+		$('#divMainImages').find('li.selected').each(function () {
+			imageArray.push($(this).attr('title'));
+		});
+		var images;
+		if (imageArray.length > 10)
+			images = parseInt(imageArray.length) + " Images";
+		else
+			images = imageArray.join(', ');
+		
+		$('#tbRemoveId').val('');
+		$('#tbRemoveItems').html(images);
+		$('#tbRemoveCat').val('');
+		$('#tbRemoveClass').val(imageType);
+		$('#tbRemoveConfirmed').val('');
+		$("#removeDialog").dialog("open");	
 	}
 	
 	function removeSelectedImagesFromViewlist()
@@ -1655,7 +1679,7 @@
 			viewList.attr('imageCount', newImageCount);
 			//workaround as view list name has (#images) appended
 			tempRename = true;
-			$('#container').jstree('rename_node', '#' + viewListId, viewList.attr('displayName') + ' (' + newImageCount + ')');
+			$('#container').jstree('rename_node', 'li#' + viewListId, viewList.attr('displayName') + ' (' + newImageCount + ')');
 			tempRename = false;
 		}
 	}
@@ -1671,16 +1695,19 @@
 	function toggleFeaturedViewList (obj)
 	{
 		var objectId = obj[0].id;
-		var objectClass = $('#' + objectId).attr('class');
-		var objectDisplayName = $('#' + objectId).attr('displayName');
+		var object = $('#divNavTree2').find('li#' + objectId);
+		var objectClass = object.attr('class');
 		
 		//if on a category, create a view list
 		if (objectClass.indexOf(viewListType) != -1)
 		{
-			var isFeatured = $('#' + objectId).attr('rel') == viewListFeaturedType;
+			var isFeatured = object.attr('rel') == viewListFeaturedType;
 			var objectType = isFeatured ?  viewListType : viewListFeaturedType;
 			
-			$('#' + objectId).attr('rel', objectType);
+			$('#divNavTree2').find('li#' + objectId).each(function () {
+				$(this).attr('rel', objectType);
+			});
+
 			setViewListFeatured(objectId, !isFeatured);	
 		}
 		
@@ -1708,6 +1735,11 @@
 			else
 			{
 				//TODO: Should we verify changes?
+				//would do here, but need immediate feedback, and seems jstree won't refresh icon if here
+				//var objectType = isFeatured ?  viewListType : viewListFeaturedType;
+				//$('#divNavTree2').find('li#' + viewListId).each(function () {
+				//	$(this).attr('rel', objectType);
+			    //});
 			}
 		});
 		
