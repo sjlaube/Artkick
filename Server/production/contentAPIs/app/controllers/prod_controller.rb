@@ -37,6 +37,7 @@ class ProdController < ApplicationController
     listSet = @db['viewlists'].find({'id'=>params[:listId].to_i}) 
     if listSet.count == 0
       result = {"Status"=>"failure","Message"=>"No viewlist found!"}
+       @client.close
       render :json=>result, :callback => params[:callback]    
       return  
     end  
@@ -51,6 +52,7 @@ class ProdController < ApplicationController
 
     if listObj['categories'] == nil
       result = {"Status"=>"success","Message"=>"the viewlist's flag is set!"}
+       @client.close
       render :json=>result, :callback => params[:callback] 
       return        
     end
@@ -106,6 +108,7 @@ class ProdController < ApplicationController
       
     end
     result = {"Status"=>"success","Message"=>"the viewlist's flag is set!"}
+     @client.close
     render :json=>result, :callback => params[:callback]  
    
      
@@ -155,6 +158,8 @@ class ProdController < ApplicationController
       @db["viewlists"].remove({"id"=>params[:id]})
       @db["viewlists"].insert(viewlist)
       viewlist.delete("_id")
+      
+       @client.close
       render :json=>viewlist, :callback => params[:callback]
       return
     end
@@ -166,6 +171,7 @@ class ProdController < ApplicationController
     viewlistSet = @db["viewlists"].find({"id"=>params[:id].to_i})
     if viewlistSet.count == 0
       result = {"result"=>"unkown viewlist"}
+       @client.close
       render :json=>result, :callback => params[:callback]
     end
     
@@ -194,6 +200,7 @@ class ProdController < ApplicationController
     end
     
     viewlist.delete("_id")
+     @client.close
     render :json=>viewlist, :callback => params[:callback]
   end  
   
@@ -217,6 +224,7 @@ class ProdController < ApplicationController
     @db['categories'].remove({"name"=>params[:name]})
     @db['viewlists'].update({},{"$pull"=>{"categories"=>params[:name]}},opts={:upsert=>false, :multi=>true})  
     result = {"Status"=>"success", "Message"=>"Category "+params[:name]+" is removed!"}
+     @client.close
     render :json=>result, :callback => params[:callback]  
  end
  
@@ -241,6 +249,7 @@ class ProdController < ApplicationController
       'viewlistNum'=>0, 'featuredListNum' =>0, 'featuredLists'=>[], 'featuredLists2'=>[]}
     @db["categories"].insert(catObj)
     result = {"Status"=>"success","Message"=>"Category "+params[:name]+" is created!"}
+     @client.close
     render :json=>result, :callback => params[:callback]      
  end
  
@@ -276,6 +285,7 @@ class ProdController < ApplicationController
     @db['viewlists'].update({'id'=>params[:listId].to_i},{'$push'=>{'images'=>currIndex}})
     
     result = {"Status"=>"success","Message"=>"A blank image is created!","imageId"=>currIndex}
+     @client.close
     render :json=>result, :callback => params[:callback]
  end
   
@@ -342,6 +352,7 @@ class ProdController < ApplicationController
     end
     
     result = {"Status"=>"success","Message"=>"The images have been cleared from the database!"}
+     @client.close
     render :json=>result, :callback => params[:callback]
  end 
   
@@ -365,6 +376,7 @@ class ProdController < ApplicationController
        
     if @db["categories"].find({"name"=>params[:catName]}).count == 0  
       result = {"Status"=>"failure","Message"=>"Cateogry doesn't exit!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end  
@@ -390,6 +402,7 @@ class ProdController < ApplicationController
     @db['index'].update({},{'$set'=>{'viewlist'=>currIndex}})
     
     result = {"Status"=>"success","Message"=>"Viewlist "+params[:listName]+" is created!", "listId"=>currIndex}
+     @client.close
     render :json=>result, :callback => params[:callback] 
  end
  
@@ -415,6 +428,7 @@ class ProdController < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0  
       result = {"Status"=>"failure","Message"=>"Cateogry doesn't exit!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end  
@@ -422,6 +436,7 @@ class ProdController < ApplicationController
     listSet = @db["viewlists"].find({"id"=>params[:listId].to_i})
     if listSet.count == 0  
       result = {"Status"=>"failure","Message"=>"Viewlist doesn't exit!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end  
@@ -464,6 +479,7 @@ class ProdController < ApplicationController
     result = {"Status"=>"success","Message"=>"Viewlist "+params[:listId]+" is removed from Category "+
       params[:catName]+"!"}
     
+    @client.close
    render :json=>result, :callback => params[:callback]
  end
  
@@ -489,6 +505,7 @@ class ProdController < ApplicationController
    listSet = @db['viewlists'].find({'id'=>params[:listId].to_i})
    if listSet.count == 0
      result = {"Status"=>"failure","Message"=>"Viewlist not found!"}
+      @client.close
      render :json=>result, :callback => params[:callback]
      return 
    end
@@ -542,6 +559,7 @@ class ProdController < ApplicationController
    end
    message = 'Images '+added.join(',')+' are added to Viewlist '+params[:listId].to_s+'!'
    result = {'Status'=>'success','Message'=>message}
+    @client.close
    render :json=>result, :callback => params[:callback]
  end
  
@@ -568,6 +586,7 @@ class ProdController < ApplicationController
    listSet = @db['viewlists'].find({'id'=>params[:listId].to_i})
    if listSet.count == 0
      result = {"Status"=>"failure","Message"=>"Viewlist not found!"}
+      @client.close
      render :json=>result, :callback => params[:callback]
      return 
    end
@@ -622,6 +641,7 @@ class ProdController < ApplicationController
    
     message = 'Images '+removed.join(',')+' are removed from Viewlist '+params[:listId].to_s+'!'   
     result = {"Status"=>"success","Message"=>message}
+     @client.close
     render :json=>result, :callback => params[:callback]
  end
  
@@ -640,6 +660,7 @@ class ProdController < ApplicationController
     imageSet = @db["images"].find({"id"=>params[:id].to_i})
     if imageSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No image found!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -655,6 +676,7 @@ class ProdController < ApplicationController
       end
     end
     @db["images"].update({"id"=>params[:id].to_i},{"$set"=>setHash})
+     @client.close
     render :json=>result, :callback => params[:callback]
  end
  
@@ -682,12 +704,14 @@ class ProdController < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:oldname]})
     if catSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No category found!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     
     if @db["categories"].find({"name"=>params[:newname]}).count > 0
       result = {"Status"=>"failure", "Message"=>params[:newname]+" has been taken, please try another name!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -701,6 +725,7 @@ class ProdController < ApplicationController
     @db["categories"].update({"name"=>params[:oldname]},{"$set"=>{"name"=>params[:newname]}})
 
     result = {"Status"=>"success", "Message"=>"Category has been renamed!"}
+     @client.close
     render :json=>result, :callback => params[:callback]
   end
  
@@ -720,11 +745,13 @@ class ProdController < ApplicationController
     listSet = @db["viewlists"].find({"id"=>params[:id].to_i})
     if listSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No viewlist found!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     
     result = {"Status"=>"success", "Viewlist"=>listSet.to_a[0]}
+     @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -749,6 +776,7 @@ class ProdController < ApplicationController
     listSet = @db["viewlists"].find({"id"=>params[:id].to_i})
     if listSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No viewlist found!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -800,11 +828,13 @@ class ProdController < ApplicationController
     imageSet = @db["images"].find({"id"=>params[:id].to_i})
     if imageSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No image found!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     
     result = {"Status"=>"success", "Image"=>imageSet.to_a[0]}
+     @client.close
     render :json=>result, :callback => params[:callback]
  end
   
@@ -813,6 +843,7 @@ class ProdController < ApplicationController
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     result = {"categories"=>@db["categories"].find().sort({"name"=>1}).to_a}
+     @client.close
     render :json=>result, :callback => params[:callback]  
     
   end
@@ -851,6 +882,7 @@ class ProdController < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -895,6 +927,7 @@ class ProdController < ApplicationController
       'featuredListNum' => category['featuredListNum']}})
       
     result = {"status"=>"success", "message"=> "Viewlists "+processedLists.join(', ') +' are added to Category '+params[:catName]}
+     @client.close
     render :json=>result, :callback => params[:callback]
     return
     
@@ -923,6 +956,7 @@ class ProdController < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -938,6 +972,7 @@ class ProdController < ApplicationController
     end
     quickSort(viewlists,0,viewlists.length-1)
     result = {"status"=>"success", "viewlists"=>viewlists}
+     @client.close
     render :json=>result, :callback => params[:callback]  
        
  end  
@@ -1050,6 +1085,7 @@ end
        quickSort(viewlists,0,viewlists.length-1)    
     end
     result = {"status"=>"success", "viewlists"=>viewlists, "featuredLists"=>category['featuredLists']}
+     @client.close
     render :json=>result, :callback => params[:callback]  
  end
  
@@ -1059,6 +1095,7 @@ end
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     result = {"categories"=>@db["categories"].find({},{:fields=>['name','viewlistNum']}).sort({"name"=>1}).to_a}
+     @client.close
     render :json=>result, :callback => params[:callback]  
   end 
   
@@ -1090,6 +1127,7 @@ end
     end
     
     result = trashList
+     @client.close
     render :json=>result, :callback => params[:callback]      
     
    

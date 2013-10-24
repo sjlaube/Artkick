@@ -48,6 +48,7 @@ class RegController < ApplicationController
         "RegCode"=>code,
         "RetryInterval"=>30,
         "RetryDuration"=>900}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -59,6 +60,7 @@ class RegController < ApplicationController
         "RegCode"=>code,
         "RetryInterval"=>30,
         "RetryDuration"=>900}
+    @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -87,6 +89,7 @@ class RegController < ApplicationController
     
     if @db["tclients"].find({"reg_code"=>params[:regCode]}).count == 0
       result = {"Status"=>"failure","Message"=>"No device matches!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -99,6 +102,7 @@ class RegController < ApplicationController
     
     if tplayer["gen_time"]+900*1000 < currTime
        result = {"Status"=>"failure","Message"=>"Your regcode is expired, please get another one!"}
+       @client.close
        render :json=>result, :callback => params[:callback]
        return
     end
@@ -107,6 +111,7 @@ class RegController < ApplicationController
       if currTime-tplayer["try_time"] < 30*1000
         result = {"Status"=>"failure","Message"=>"You try too frequently! Please wait for 30 secondes!"}
         @db["tclients"].update({"reg_code"=>params[:regCode]},{"$set"=>{"try_time"=>currTime}})
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
       end  
@@ -114,6 +119,7 @@ class RegController < ApplicationController
   
     if @db["users"].find({"email"=>params[:email].strip.downcase}).count == 0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -135,6 +141,7 @@ class RegController < ApplicationController
    
     
     result = {"Status"=>"success", "Message"=>player["nickname"]+" has been created!"}  
+    @client.close
     render :json=>result, :callback => params[:callback]
     return
   end
@@ -165,6 +172,7 @@ class RegController < ApplicationController
     if @db['clients'].find({"account"=>params[:deviceMaker]+params[:deviceId], "reg_code"=>params[:regCode]}).count == 0
       result = {"Status"=>"failure", "RegToken"=>nil, "CustomerId"=>nil, "Creation Time"=>nil,
         "Message"=>"Device not registerd or wrong reg code!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -172,6 +180,7 @@ class RegController < ApplicationController
     player = @db['clients'].find({"account"=>params[:deviceMaker]+params[:deviceId], "reg_code"=>params[:regCode]}).to_a[0]
     result = {"Status"=>"success", "RegToken"=>player["reg_token"],"CustomerId"=>player["owner"],
       "Creation Time"=>player["creation_time"]}
+    @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -195,6 +204,7 @@ class RegController < ApplicationController
     
     @db['clients'].remove({"account"=>params[:deviceMaker]+params[:deviceId]})
     result = {"Status"=>"success", "Message"=>"The device is removed!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
     
   end
@@ -232,6 +242,7 @@ class RegController < ApplicationController
     userSet = @db["users"].find({"email"=>params[:email].strip.downcase})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -251,6 +262,7 @@ class RegController < ApplicationController
     
     
     result = {"Status"=>"success", "Message"=>player["nickname"]+" has been created!"}  
+    @client.close
     render :json=>result, :callback => params[:callback]
     return
   end

@@ -35,6 +35,7 @@ class PlayerController < ApplicationController
     userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
     if userSet.count==0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -42,6 +43,7 @@ class PlayerController < ApplicationController
 
     players = @db["clients"].find({"owner"=>userSet.to_a[0]["id"]}).to_a
     result = {"Status"=>"success","players"=>players}
+    @client.close
     render :json=>result, :callback => params[:callback]   
   end
   
@@ -61,6 +63,7 @@ class PlayerController < ApplicationController
     userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
     if userSet.count==0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -83,6 +86,7 @@ class PlayerController < ApplicationController
     end
     
     result = {"Status"=>"success", "players"=>players}
+    @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -99,11 +103,13 @@ class PlayerController < ApplicationController
     userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
     if userSet.count==0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     user = userSet.to_a[0]
     result = {"Status"=>"success", "Message"=>"Found "+user["name"]+"!"}
+     @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -127,6 +133,7 @@ class PlayerController < ApplicationController
     userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
     if userSet.count==0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -134,6 +141,7 @@ class PlayerController < ApplicationController
     playerSet = @db['clients'].find({"account"=>params[:playerId]})
     if playerSet.count==0
       result = {"Status"=>"failure", "Message"=>"No player found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -146,6 +154,7 @@ class PlayerController < ApplicationController
       @db["users"].update({"id"=>user["id"]},{"$pull"=>{"owned_clients"=>player["account"]}})
       @db["users"].update({},{"$pull"=>{"playable_clients"=>player["account"]}},{"multi"=>true})
       result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is deleted by its owner "+user["email"].strip.downcase+"!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -157,6 +166,7 @@ class PlayerController < ApplicationController
     end
     
     result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is dismissed by user "+user["email"].strip.downcase+"!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -181,6 +191,7 @@ class PlayerController < ApplicationController
     userSet = @db['users'].find({"email"=>params[:email].strip.downcase})
     if userSet.count==0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -188,6 +199,7 @@ class PlayerController < ApplicationController
     playerSet = @db['clients'].find({"account"=>params[:playerId]})
     if playerSet.count==0
       result = {"Status"=>"failure", "Message"=>"No player found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -197,18 +209,21 @@ class PlayerController < ApplicationController
     
     if player["owner"] == user["id"]
       result = {"Status"=>"failure", "Message"=>"You can't add yourself to your owned player!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     
     if user["playable_clients"].include? player["account"]
       result = {"Status"=>"failure", "Message"=>user["email"].strip.downcase+" is already permitted to play on Player "+player["nickname"]+"!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     
     @db["users"].update({"email"=>params[:email].strip.downcase},{"$push"=>{"playable_clients"=>player["account"]}}) 
     result = {"Status"=>"success", "Message"=>user["email"].strip.downcase+" is now permitted to play on Player "+player["nickname"]+"!"}
+    @client.close
     render :json=>result, :callback => params[:callback]  
   end
   
@@ -222,6 +237,7 @@ class PlayerController < ApplicationController
     end
     
     result = {"Status"=>"success", "Message"=>"database is clean!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
     
   end
