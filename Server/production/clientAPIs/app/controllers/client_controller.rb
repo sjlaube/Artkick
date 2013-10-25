@@ -34,6 +34,7 @@ class ClientController < ApplicationController
     
     if @db['clients'].find({'account'=>params[:snumber]}).count == 0
       result = {"result"=>"error", "message"=>"no player found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -118,7 +119,7 @@ class ClientController < ApplicationController
                      
          result = {"result"=>"success", "message"=>"updated "+utctime.to_s+" "+@player["nickname"], "player"=>@player["nickname"],
                "currImage"=>currImage, "image_time_stamp"=>image_time_stamp,'nextPull'=>pullInterval, 'stretch'=>stretch}    
-        
+         @client.close
          render :json=>result, :callback => params[:callback]     
   
          
@@ -186,7 +187,7 @@ class ClientController < ApplicationController
          result = {"result"=>"success", "message"=>"updated "+utctime.to_s+" "+@player["nickname"], "player"=>@player["nickname"],
                "currImage"=>currImage, "image_time_stamp"=>image_time_stamp, 'nextPull'=>pullInterval, 'stretch'=>stretch}    
         
-                
+         @client.close       
          render :json=>result, :callback => params[:callback] 
          
          return
@@ -211,6 +212,7 @@ class ClientController < ApplicationController
     @db['clients'].update({'account'=>params[:snumber]},"$set"=>{'last_visit'=>utctime})
     result = {"result"=>"success", "message"=>"updated "+utctime.to_s+" "+@player["nickname"], "player"=>@player["nickname"],
                "currImage"=>currImage, "image_time_stamp"=>@player["image_time_stamp"], 'nextPull'=>pullInterval, 'stretch'=>stretch}
+    @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -237,6 +239,7 @@ class ClientController < ApplicationController
     
     if @db['clients'].find({'account'=>params[:snumber], "reg_token"=>params[:regToken]}).count == 0
       result = {"result"=>"error", "message"=>"Player cannot be identified"}
+      @client.close
       render json: result
       return
     end
@@ -260,6 +263,7 @@ class ClientController < ApplicationController
     @db['clients'].update({'account'=>params[:snumber]},"$set"=>{'last_visit'=>utctime})
     result = {"imageURL"=>currImage["url"],"title"=>currImage["Title"],"caption"=>currImage["Artist"],
       "timeStamp"=>image_time_stamp}
+    @client.close
     render json: JSON.pretty_generate(result)     
   end
   

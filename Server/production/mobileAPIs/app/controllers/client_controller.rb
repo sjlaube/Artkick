@@ -49,6 +49,7 @@ class ClientController < ApplicationController
     
     if userSet.count == 0
         result = {"status"=>"failure", "message"=>"no user mathes!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -56,6 +57,7 @@ class ClientController < ApplicationController
     user = userSet.to_a[0]
     if user["salt"]==nil or user["pass_digest"]==nil
       result = {"status"=>"failure", "message"=>"password is not set correctly, please reset your password via email!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -63,11 +65,13 @@ class ClientController < ApplicationController
     passDigest = Digest::SHA1.hexdigest(params[:password]+user["salt"])
     if passDigest != user["pass_digest"]
         result = {"status"=>"failure", "message"=>"wrong password!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return  
     end    
     
      result = {"status"=>"success", "message"=>"user found!", "userObj"=>user}
+    @client.close 
     render :json=>result, :callback => params[:callback]
   end
   
@@ -107,6 +111,7 @@ class ClientController < ApplicationController
     
     if userSet.count == 0
         result = {"status"=>"failure", "message"=>"no user mathes!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -115,6 +120,7 @@ class ClientController < ApplicationController
     
     if user["salt"]==nil or user["pass_digest"]==nil
       result = {"status"=>"failure", "message"=>"Password has never been set for this account, please get your temporal password via email!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -122,6 +128,7 @@ class ClientController < ApplicationController
     oldpassDigest = Digest::SHA1.hexdigest(params[:oldpassword]+user["salt"])
     if oldpassDigest != user["pass_digest"]
         result = {"status"=>"failure", "message"=>"wrong old password!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return  
     end    
@@ -132,6 +139,7 @@ class ClientController < ApplicationController
     
     @db["users"].update({"email"=>(params[:email].strip).downcase},{"$set"=>{"salt"=>newsalt, "pass_digest"=>newpassDigest}})
     result = {"status"=>"success", "message"=>"Password is reset!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -152,6 +160,7 @@ class ClientController < ApplicationController
     userSet = @db['users'].find({"email"=>(params[:email].strip).downcase})
     if userSet.count == 0
         result = {"status"=>"failure", "message"=>"no user mathes!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -168,6 +177,7 @@ class ClientController < ApplicationController
     @db["users"].update({"email"=>(params[:email].strip).downcase},{"$set"=>{"salt"=>newsalt, "pass_digest" => newpassDigest}})
     
     result = {"status"=>"success", "message"=>"Your temporary password has been sent to your email, please reset it!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
     
     
@@ -208,11 +218,13 @@ class ClientController < ApplicationController
     
     if userSet.count == 0
         result = {"status"=>"failure", "message"=>"no user mathes!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
     
     result = result = {"status"=>"success", "message"=>"user found!", "userObj"=>userSet.to_a[0]}
+     @client.close
     render :json=>result, :callback => params[:callback]
   end
   
@@ -245,6 +257,7 @@ class ClientController < ApplicationController
     
     if @db['users'].find({"email"=>(params[:email].strip).downcase}).count > 0
         result = {"status"=>"failure", "message"=>"This email has been registered!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -274,6 +287,7 @@ class ClientController < ApplicationController
     @db['index'].update({},{"$set"=>{"user"=>currIndex+1}})
     
     result = result = {"status"=>"success", "message"=>"user created!"}
+    @client.close
     render :json=>result, :callback => params[:callback]        
   end
   
@@ -287,6 +301,7 @@ class ClientController < ApplicationController
     @players.each do |player|
       result[player["account"]]=player["last_visit"]
     end
+    @client.close
     render :json =>result, :callback => params[:callback] 
   end
   
@@ -300,6 +315,7 @@ class ClientController < ApplicationController
     @players.each do |player|
       result[player["account"]]=player
     end
+    @client.close
     render :json =>result, :callback => params[:callback] 
   end
   
@@ -330,6 +346,7 @@ class ClientController < ApplicationController
         result[account]=player["last_visit"]
       end
     end
+    @client.close
     render :json=>result, :callback => params[:callback]    
   end  
   
@@ -339,6 +356,7 @@ class ClientController < ApplicationController
     @db.authenticate(@@username,@@password)
     @players = @db['clients'].find().to_a
     @images = @db['images'].find().to_a
+    @client.close
   end
   
   def update2    
@@ -398,7 +416,9 @@ class ClientController < ApplicationController
     
     @db['users'].update({"email"=>params[:email]},"$set"=>{"curr_image"=>params[:imageID],"curr_list"=>params[:list],"curr_cat"=>params[:cat], "fill"=>stretch,
       "curr_list_images"=>list["images"], "last_visit"=>utcMillis()})
+    
     result = {"result"=>"success", "message"=>"updated!"}   
+    @client.close
     render :json=>result, :callback => params[:callback]    
   end  
   
@@ -418,6 +438,7 @@ class ClientController < ApplicationController
     playerSet = @db['clients'].find({"account"=>params[:snumber]})
     if playerSet.count == 0
         result = {"result"=>"error", "message"=>"no player found!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -426,6 +447,7 @@ class ClientController < ApplicationController
     imageSet = @db['images'].find({"id"=>params[:imageID].to_i})
     if imageSet.count == 0
         result = {"result"=>"error", "message"=>"no image found!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -462,6 +484,7 @@ class ClientController < ApplicationController
       
     @db['users'].update({"email"=>params[:email]},"$set"=>{"curr_image"=>params[:imageID],"curr_list"=>params[:list],"curr_cat"=>params[:cat], "fill"=>stretch})
     result = {"result"=>"success", "message"=>"updated!"}   
+    @client.close
     render :json=>result, :callback => params[:callback]
  
   end
@@ -472,6 +495,7 @@ class ClientController < ApplicationController
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     @images = @db["images"].find({}).to_a
+    @client.close
     render :json=>@images, :callback => params[:callback]  
   end
   
@@ -480,6 +504,7 @@ class ClientController < ApplicationController
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     @viewlists = @db["viewlists"].find({}).to_a
+    @client.close
     render :json=>@viewlists, :callback => params[:callback]  
  end
  
@@ -542,7 +567,7 @@ class ClientController < ApplicationController
       
       @db["viewlists"].remove({"id"=>params[:id]})
       @db["viewlists"].insert(viewlist)
-      
+      @client.close
       render :json=>viewlist, :callback => params[:callback]
       return
     end
@@ -554,6 +579,7 @@ class ClientController < ApplicationController
     viewlistSet = @db["viewlists"].find({"id"=>params[:id].to_i})
     if viewlistSet.count == 0
       result = {"result"=>"unkown viewlist"}
+       @client.close
       render :json=>result, :callback => params[:callback]
     end
     
@@ -599,7 +625,7 @@ class ClientController < ApplicationController
       end
     end
     
-    
+    @client.close
     render :json=>viewlist, :callback => params[:callback]
   end
   
@@ -620,6 +646,7 @@ class ClientController < ApplicationController
     imageSet = @db["images"].find({"id"=>params[:id].to_i})
     if imageSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No image found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -635,6 +662,7 @@ class ClientController < ApplicationController
       end
     end
     @db["images"].update({"id"=>params[:id].to_i},{"$set"=>setHash})
+    @client.close
     render :json=>result, :callback => params[:callback]
  end
  
@@ -682,6 +710,7 @@ class ClientController < ApplicationController
       @db["viewlists"].remove({"id"=>params[:id]})
       @db["viewlists"].insert(viewlist)
       viewlist.delete("_id")
+      @client.close
       render :json=>viewlist, :callback => params[:callback]
       return
     end
@@ -693,6 +722,7 @@ class ClientController < ApplicationController
     viewlistSet = @db["viewlists"].find({"id"=>params[:id].to_i})
     if viewlistSet.count == 0
       result = {"result"=>"unkown viewlist"}
+       @client.close
       render :json=>result, :callback => params[:callback]
     end
     
@@ -721,6 +751,7 @@ class ClientController < ApplicationController
     end
     
     viewlist.delete("_id")
+    @client.close
     render :json=>viewlist, :callback => params[:callback]
   end
   
@@ -760,6 +791,7 @@ class ClientController < ApplicationController
       @db["imageRatings"].insert({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase, "rating"=>params[:rating].to_i})
     end
     result = {"result"=>"rating updated!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
     
     
@@ -783,8 +815,10 @@ class ClientController < ApplicationController
     playerSet = @db["clients"].find({"account"=>params[:snumber]})
     if playerSet.count == 0
       result = {"result"=>"unkown player"}
+      @client.close
       render :json=>result, :callback => params[:callback]
     end
+    @client.close
     render :json=>playerSet.to_a[0], :callback => params[:callback] 
   end
   
@@ -809,12 +843,14 @@ class ClientController < ApplicationController
     userSet = @db["users"].find({"email"=>params[:email]})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return 
     end
     
     @db["users"].update({"email"=>params[:email]},{"$set"=>{"selected_players"=>params[:players]}})
     result = {"Status"=>"success", "Message"=>"The players are selected!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
     
   end
@@ -833,12 +869,14 @@ class ClientController < ApplicationController
     userSet = @db["users"].find({"email"=>params[:email]})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return 
     end
     
     selectedPlayers = userSet.to_a[0]["selected_players"]
     result = {"Status"=>"success", "selectedPlayers"=>selectedPlayers}
+    @client.close
     render :json=>result, :callback => params[:callback] 
   end
   
@@ -858,6 +896,7 @@ class ClientController < ApplicationController
     userSet = @db["users"].find({"email"=>params[:email]})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return 
     end
@@ -865,12 +904,14 @@ class ClientController < ApplicationController
     user = userSet.to_a[0]
     if(user["curr_image"]==nil or user["curr_image"]=='') or (@db["images"].find({"id"=>user["curr_image"].to_i}).count==0)
       result = {"Status"=>"failure", "Message"=>"No image!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return  
     end
     
     if(user["curr_list"]==nil or user["curr_list"]=='') or ((@db["viewlists"].find({"id"=>user["curr_list"]}).count==0)and(@db["viewlists"].find({"id"=>user["curr_list"].to_i}).count==0))
       result = {"Status"=>"failure", "Message"=>"No list!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return  
     end
@@ -883,6 +924,7 @@ class ClientController < ApplicationController
     end
     result = {"Status"=>"success", "curr_image"=>user["curr_image"], "curr_list"=>user["curr_list"],"curr_cat"=>user["curr_cat"],
       "fill"=>user["fill"], "autoInterval"=>user["autoInterval"], "shuffle"=>shuffle}
+    @client.close
     render :json=>result, :callback => params[:callback]
     
   end
@@ -902,6 +944,7 @@ class ClientController < ApplicationController
     playerSet = @db['clients'].find({"account"=>params[:snumber].strip})
     if playerSet.count == 0
         result = {"Status"=>"failure", "message"=>"no player found!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -928,6 +971,7 @@ class ClientController < ApplicationController
     @db['users'].update({"email"=>params[:email]},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i}})
 
     result = {"Status"=>"success", "message"=>"updated!"}   
+    @client.close
     render :json=>result, :callback => params[:callback]
  
   end
@@ -939,12 +983,14 @@ class ClientController < ApplicationController
     defaultObjSet = @db['defaults'].find()
     if defaultObjSet.count == 0
         result = {"Status"=>"failure", "message"=>"no defaults found!"}
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end
     
     
     result = {"Status"=>"success", "defaults"=>defaultObjSet.to_a[0]}   
+    @client.close
     render :json=>result, :callback => params[:callback]
     
   end
@@ -1070,6 +1116,7 @@ class ClientController < ApplicationController
       @db["viewlists"].remove({"id"=>params[:id]})
       @db["viewlists"].insert(viewlist)
       viewlist["dynImages"]=images
+      @client.close
       render :json=>viewlist, :callback => params[:callback]
       return
     end
@@ -1166,7 +1213,7 @@ class ClientController < ApplicationController
       end
     end
     
-    
+    @client.close
     render :json=>viewlist, :callback => params[:callback]
  
  
@@ -1198,6 +1245,7 @@ def getViewlist4
     userSet = @db["users"].find({"email"=>params[:email].strip.downcase})
     if userSet.count == 0
       result = {"result"=>"error, no user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -1316,7 +1364,7 @@ def getViewlist4
       viewlist["dynImages"]=images
       @db["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"],
       "shuffle"=>params[:shuffle].to_i}})   
-      
+      @client.close
       render :json=>viewlist, :callback => params[:callback]
       return
     end
@@ -1328,6 +1376,7 @@ def getViewlist4
     viewlistSet = @db["viewlists"].find({"id"=>params[:id].to_i})
     if viewlistSet.count == 0
       result = {"result"=>"unkown viewlist"}
+      @client.close
       render :json=>result, :callback => params[:callback]
     end
     
@@ -1438,7 +1487,7 @@ def getViewlist4
       end
     end
     
-    
+    @client.close
     render :json=>viewlist, :callback => params[:callback]
  
     
@@ -1469,6 +1518,7 @@ def getViewlist4
     userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
     if userSet.count == 0
       result = {"status"=>"failure", "message"=>"No user found!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -1493,6 +1543,7 @@ def getViewlist4
     end
     
     result = {'result'=>'Your ticket is submitted!'}
+    @client.close
     render :json=>result, :callback => params[:callback]
   end
     

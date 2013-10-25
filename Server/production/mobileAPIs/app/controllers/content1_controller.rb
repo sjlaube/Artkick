@@ -21,6 +21,7 @@ class Content1Controller < ApplicationController
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     result = {"categories"=>@db["categories"].find().sort({"name"=>1}).to_a}
+    @client.close
     render :json=>result, :callback => params[:callback]  
   end
   
@@ -36,11 +37,13 @@ class Content1Controller < ApplicationController
         catObj.delete('featuredListNum')
       end
       result = {"categories"=>catObjs}
+      @client.close
       render :json=>result, :callback => params[:callback]  
       return
     end
     
     result = {"categories"=>@db["categories"].find({},{:fields=>['name','viewlistNum']}).sort({"name"=>1}).to_a}
+    @client.close
     render :json=>result, :callback => params[:callback]  
   end
     
@@ -70,6 +73,7 @@ class Content1Controller < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]},{:fields=>[field]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -77,12 +81,13 @@ class Content1Controller < ApplicationController
     
     category = catSet.to_a[0]
     viewlists = category[field]
-    if params[:catName] == 'Artist'
+    if params[:catName] == 'Artists'
        lastNameQuickSort(viewlists,0,viewlists.length-1)      
     else
        quickSort(viewlists,0,viewlists.length-1)    
     end
     result = {"status"=>"success", "viewlists"=>viewlists}
+    @client.close
     render :json=>result, :callback => params[:callback]  
  end
  
@@ -108,6 +113,7 @@ class Content1Controller < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -123,6 +129,7 @@ class Content1Controller < ApplicationController
     end
     quickSort(viewlists,0,viewlists.length-1)
     result = {"status"=>"success", "viewlists"=>viewlists}
+    @client.close
     render :json=>result, :callback => params[:callback]  
        
  end  

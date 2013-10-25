@@ -34,6 +34,7 @@ class Client1Controller < ApplicationController
     if @db['clients'].find({'account'=>params[:snumber]}).count == 0
       result = {"result"=>"error", "message"=>"no player found!"}
       render json: result
+      @client.close
       return
     end
     
@@ -53,6 +54,7 @@ class Client1Controller < ApplicationController
     @db['clients'].update({'account'=>params[:snumber]},"$set"=>{'last_visit'=>utctime})
     result = {"result"=>"success", "message"=>"updated "+utctime.to_s+" "+@player["nickname"], "player"=>@player["nickname"],
                "currImage"=>currImage, "image_time_stamp"=>@player["image_time_stamp"]}
+    @client.close           
     render json: result
   end
 
@@ -95,13 +97,15 @@ class Client1Controller < ApplicationController
     
     if @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId]}).count == 0
       result = {"Status"=>"Failure", "StatusCode"=>101, "message"=>"Player doesn't exist!"}
-      render json: result
+      @client.close
+      render json: result 
       return
     end
     
     
     if @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId], "reg_token"=>params[:regToken]}).count == 0
       result = {"Status"=>"Failure", "StatusCode"=>102,"message"=>"Wrong regtoken!"}
+      @client.close
       render json: result
       return
     end
@@ -179,7 +183,7 @@ class Client1Controller < ApplicationController
                     
     result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"],"title"=>currImage["Title"],
      "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>500}
-            
+    @client.close       
     if currImage["Artist Last N"]==nil
         result["caption"]=""
     else
@@ -226,6 +230,7 @@ class Client1Controller < ApplicationController
     
     if @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId]}).count == 0
       result = {"Status"=>"Failure", "StatusCode"=>101, "message"=>"Player doesn't exist!"}
+      @client.close
       render json: result
       return
     end
@@ -233,6 +238,7 @@ class Client1Controller < ApplicationController
     
     if @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId], "reg_token"=>params[:regToken]}).count == 0
       result = {"Status"=>"Failure", "StatusCode"=>102,"message"=>"Wrong regtoken!"}
+      @client.close
       render json: result
       return
     end
@@ -317,7 +323,7 @@ class Client1Controller < ApplicationController
          else
             result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
          end
-    
+         @client.close
          render json: JSON.pretty_generate(result)   
          
          return
@@ -389,7 +395,7 @@ class Client1Controller < ApplicationController
          else
             result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
          end
-    
+         @client.close
          render json: JSON.pretty_generate(result)   
          
          return
@@ -434,7 +440,7 @@ class Client1Controller < ApplicationController
     else
       result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
     end
-    
+    @client.close
     render json: JSON.pretty_generate(result)     
   end
   

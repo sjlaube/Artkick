@@ -54,6 +54,7 @@ class ContentController < ApplicationController
     #if category exists
     if @db["categories"].find({"name"=>params[:catName]}).count > 0
       result = {"status"=>"failure", "message"=>"error, category exists!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -63,6 +64,7 @@ class ContentController < ApplicationController
     userSet = @db["users"].find({"email"=>params[:userEmail].strip.downcase})
     if userSet.count == 0
       result = {"status"=>"failure", "message"=>"user doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -74,6 +76,7 @@ class ContentController < ApplicationController
     @db["categories"].insert(category)
     
     result = {"status"=>"success", "message"=>"Category "+params[:catName]+" is created by "+user["name"]+" at "+category["date"]+"!"}
+    @client.close
     render :json=>result, :callback => params[:callback]  
   end
   
@@ -98,6 +101,7 @@ class ContentController < ApplicationController
     
     if @db["categories"].find({"name"=>params[:catName]}).count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -105,6 +109,7 @@ class ContentController < ApplicationController
     
     @db["categories"].remove({"name"=>params[:catName]})
     result = {"status"=>"success", "message"=>"Category "+params[:catName]+" is removed!"}
+    @client.close
     render :json=>result, :callback => params[:callback]   
   end
   
@@ -112,9 +117,14 @@ class ContentController < ApplicationController
     @client = MongoClient.new(@@server,@@port)
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
-    result = {"categories"=>@db["categories"].find().sort({"name"=>1}).to_a}
+    catObjs = @db["categories"].find({},{:fields=>['name','featuredLists']}).sort({"name"=>1}).to_a
+    catObjs.each do |catObj|
+      catObj['viewlists'] = catObj['featuredLists']
+      catObj.delete('featuredLists')
+    end
+    result = {"categories"=>catObjs}
+    @client.close
     render :json=>result, :callback => params[:callback]  
-    
   end
   
   
@@ -151,6 +161,7 @@ class ContentController < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -166,6 +177,7 @@ class ContentController < ApplicationController
     end
     @db["categories"].update({"name"=>params[:catName]},{"$set"=>{"viewlists"=>category["viewlists"]}})
     result = {"status"=>"success", "message"=> "Viewlists "+processedLists.join(', ') +' are added to Category '+params[:catName]}
+    @client.close
     render :json=>result, :callback => params[:callback]
     return
     
@@ -192,6 +204,7 @@ class ContentController < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -200,6 +213,7 @@ class ContentController < ApplicationController
     
     @db["categories"].update({"name"=>params[:catName]},{"$set"=>{"viewlists"=>[]}})
     result = {"status"=>"success", "message"=>"Category "+params[:catName]+" is clear!"}
+    @client.close
     render :json=>result, :callback => params[:callback] 
 
       
@@ -238,6 +252,7 @@ class ContentController < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -254,6 +269,7 @@ class ContentController < ApplicationController
     
     @db["categories"].update({"name"=>params[:catName]},{"$set"=>{"viewlists"=>category["viewlists"]}})
     result = {"status"=>"success", "message"=>"Lists "+processedLists.join(", ")+" are removed from Category "+params[:catName]+"!"}
+    @client.close
     render :json=>result, :callback => params[:callback]      
   end  
   
@@ -280,6 +296,7 @@ class ContentController < ApplicationController
     catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -287,14 +304,18 @@ class ContentController < ApplicationController
     
     category = catSet.to_a[0]
     viewlists = []
-    category["viewlists"].each do |listId|
+    
+    category["featuredLists"].each do |listId|
       listSet = @db["viewlists"].find({"id"=>listId})
-      if listSet.count > 0
-        viewlists.push(listSet.to_a[0])
+      if listSet.count > 0 
+        listObj = listSet.to_a[0]
+        viewlists.push(listObj)
       end
     end
+    
     quickSort(viewlists,0,viewlists.length-1)
     result = {"status"=>"success", "viewlists"=>viewlists}
+    @client.close
     render :json=>result, :callback => params[:callback]  
        
  end  
@@ -305,6 +326,7 @@ class ContentController < ApplicationController
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     @viewlists = @db["viewlists"].find({}).to_a
+    @client.close
     render :json=>@viewlists, :callback => params[:callback]
  end
  
@@ -320,6 +342,7 @@ class ContentController < ApplicationController
     @db = @client[@@db_name]
     @db.authenticate(@@username,@@password)
     @images = @db["images"].find({}).to_a
+    @client.close
     render json:@images  
   end
   
@@ -342,8 +365,10 @@ class ContentController < ApplicationController
     imageSet = @db['images'].find({"id"=>params[:id].to_i})
     if imageSet.count==0
       result = {"result"=>"error, no image found!"}
+      @client.close
       render json: result
     end
+    @client.close
     render json: imageSet.to_a[0]
    
  end
@@ -369,6 +394,7 @@ class ContentController < ApplicationController
     viewlistSet = @db["viewlists"].find({"id"=>params[:id].to_i})
     if viewlistSet.count == 0
       result = {"result"=>"unkown viewlist"}
+      @client.close
       render json:result
     end
     
@@ -380,6 +406,7 @@ class ContentController < ApplicationController
         viewlist["imageSet"].append(imageSet.to_a[0])
       end
     end
+    @client.close
     render json:viewlist
   end
   
@@ -401,8 +428,10 @@ class ContentController < ApplicationController
     playerSet = @db["clients"].find({"account"=>params[:snumber]})
     if playerSet.count == 0
       result = {"result"=>"unkown player"}
+      @client.close
       render json:result
     end
+    @client.close
     render json:playerSet.to_a[0] 
   end
 

@@ -61,6 +61,7 @@ class UserController < ApplicationController
     userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -69,6 +70,7 @@ class UserController < ApplicationController
     
     if not userObj['private_lists'].include? params[:listId].to_i
       result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -76,6 +78,7 @@ class UserController < ApplicationController
     imageSet = @db['images'].find({'id'=>params[:imgId].to_i})
     if imageSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, image doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return      
 
@@ -86,6 +89,7 @@ class UserController < ApplicationController
     listSet = @db['viewlists'].find({'id'=>params[:listId].to_i})
     if listSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, viewlist doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return  
       
@@ -100,6 +104,7 @@ class UserController < ApplicationController
     @db['viewlists'].update({'id'=>listObj['id'].to_i},{'$push'=>{'images'=>imageObj['id'].to_i}})
     
     result = {"Status"=>"success", "Message"=>"The image has been added to the viewlist!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
     
  end
@@ -140,6 +145,7 @@ class UserController < ApplicationController
     userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -148,6 +154,7 @@ class UserController < ApplicationController
     
     if not userObj['private_lists'].include? params[:listId].to_i
       result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -155,6 +162,7 @@ class UserController < ApplicationController
     listSet = @db['viewlists'].find({'id'=>params[:listId].to_i})
     if listSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, viewlist doesn't exist!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return  
       
@@ -188,6 +196,7 @@ class UserController < ApplicationController
     
     @db['viewlists'].update({'id'=>listObj['id'].to_i},{'$pull'=>{'images'=>params[:imgId].to_i}})
     result = {"Status"=>"success", "Message"=>"The image has been removed from the viewlist!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
     
  end    
@@ -221,6 +230,7 @@ class UserController < ApplicationController
     userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -229,6 +239,7 @@ class UserController < ApplicationController
     
     if not userObj['private_lists'].include? params[:listId].to_i
       result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -237,6 +248,7 @@ class UserController < ApplicationController
     @db['viewlists'].remove({'id'=>params[:listId].to_i})
     
     result = {"Status"=>"success", "Message"=>"The viewlist has been removed!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
  end
  
@@ -272,6 +284,7 @@ class UserController < ApplicationController
     userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -291,6 +304,7 @@ class UserController < ApplicationController
     @db['index'].update({},{'$set'=>{'viewlist'=>currIndex}})
     
     result = {"Status"=>"success","Message"=>"Viewlist "+params[:listName]+" is created!", "listId"=>currIndex}
+     @client.close
     render :json=>result, :callback => params[:callback] 
  end
  
@@ -342,6 +356,7 @@ class UserController < ApplicationController
     
     @db['viewlists'].update({'id'=>params[:listId].to_i},{'$set'=>{'name'=>params[:newname]}})
     result = {"Status"=>"success", "Message"=>"The viewlist has been renamed!"}
+    @client.close
     render :json=>result, :callback => params[:callback]
   end
  
@@ -366,6 +381,7 @@ class UserController < ApplicationController
     userSet = @db['users'].find({'email'=>params[:email].strip.downcase})
     if userSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, user cannot be authenticated!"}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -373,6 +389,7 @@ class UserController < ApplicationController
     userObj = userSet.to_a[0]
     if userObj['private_lists'] == nil
       result = {"Status"=>"success", "viewlists"=>[]}
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end    
@@ -387,6 +404,7 @@ class UserController < ApplicationController
     
     quickSort(viewlists,0,viewlists.length-1)
     result = {"Status"=>"success", "viewlists"=>viewlists}
+    @client.close   
     render :json=>result, :callback => params[:callback]  
        
  end  
