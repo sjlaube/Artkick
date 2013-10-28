@@ -350,7 +350,9 @@ class Client1Controller < ApplicationController
     end
     
     @db['users'].update({"email"=>params[:email]},"$set"=>{"curr_image"=>params[:imageID],"curr_list"=>params[:list],"curr_cat"=>params[:cat], "fill"=>stretch,
-      "curr_list_images"=>list["images"]})
+      "curr_list_images"=>list["images"], "last_visit"=>utcMillis()})
+      
+      
     result = {"result"=>"success", "Message"=>"updated!"}   
     @client.close
     render :json=>result, :callback => params[:callback]    
