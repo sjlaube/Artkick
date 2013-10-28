@@ -75,8 +75,8 @@ require(["jquery",
 	
 		function () {
 
-            //window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";
-            window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+            window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";  //Staging Server
+            //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
 			//window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
             var selectListView = registry.byId("PlaylistView");
 			var selectArtistListView = registry.byId("ArtistlistView");
@@ -152,6 +152,7 @@ require(["jquery",
 			window.shuffle= false;
 			window.loadartistview = false;
 			window.loadmuseumview = false;
+			window.loadcatview = false;
 			window.api_key = "6ab1450c247164d8448624c47e894a6874c43a46";
          
            window.switchView = false;
@@ -717,7 +718,14 @@ require(["jquery",
            }
 
             function updateCats() {
-			//	 	dijit.registry.byId("ImageView").hide();
+				window.currentView="select_category";
+                 if (window.loadcatview)
+				 {
+					catList.startup();
+				//	gotoView("select_category","MuseumlistView");
+					return; // already did this
+				  }
+				window.loadcatview = true;
 				window.currentView="select_category";
                 catList.destroyRecursive(true);
                 $("#catList").html('');
@@ -1372,6 +1380,8 @@ require(["jquery",
             getDefaults();
             checkCookie();
 			BrowserDetect.init();
+			dojo.byId("baseurlname").innerHTML="DB:"+window.base.substring(7,23);
+			console.log("database:"+window.base);
 		//	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS+regPlayerView+selectPlayerView+imageView+selectCatView+selectListView+optionsView+addUserView+removePlayerView+gridView);
 
 	on(regRokuView, "beforeTransitionIn",
@@ -2217,7 +2227,7 @@ function refreshView() {
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
+  ga('create', 'UA-44460273-2', 'artkick.net'); <!-- change this to -1 for production -->
   ga('send', 'pageview');
 	window.justRefresh = true;
 	window.switchView = true;
@@ -2260,6 +2270,7 @@ function cleanUp() {
     window.justCreatePlayer = false;
 	window.loadartistview = false;
 	window.loadmuseumview = false;
+	window.loadcatview = false;
     $("#addPlayerEmail").attr('value', '');
     getDefaults();
 }
