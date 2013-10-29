@@ -39,7 +39,8 @@ require(["jquery",
         "dojo/dom-attr",
 		"dojox/mobile/Carousel",
 		"dojox/mobile/LongListMixin",
-		"dojox/mobile/ScrollableView"			
+		"dojox/mobile/ScrollableView",
+		"dojo/html"
     ],
     function ( 
         $,
@@ -66,7 +67,8 @@ require(["jquery",
         domAttr,
 		Carousel,
 		LongListMixin,
-		ScrollableView) {
+		ScrollableView,
+		html) {
 
 
 
@@ -112,6 +114,7 @@ require(["jquery",
 			window.btn1 = registry.byId("btn1");
 				button2 = registry.byId("btn1");
 		    window.listList = registry.byId("listList");
+			window.listList2 = registry.byId("listList2");
 			window.artistList = registry.byId("ArtistList");
 			window.museumList = registry.byId("MuseumList");
 			window.checkforparameters = true;
@@ -515,7 +518,7 @@ require(["jquery",
                         url: base + "client/getUserStatus?email=" + window.email+"&token="+window.token,
                         callbackParamName: "callback",
                         load: function (result) {
-						console.log("status:"+result["Status"]);
+						console.log("getUserStatus:"+result["Status"]);
                             if (result["Status"] == "success") {
                                 window.tarImage = result["curr_image"];
                                 //alert("tar"+window.tarImage);
@@ -795,7 +798,7 @@ require(["jquery",
 
             function updateLists(catName) {
 		
-		        if (catName == "Artists")
+		   /*     if (catName == "Artists")
 				{
 					updateArtistLists();
 					return;
@@ -804,7 +807,12 @@ require(["jquery",
 				{
 					updateMuseumLists();
 					return;
-				}
+				}*/
+				var i, w, x;
+			    x=dojo.window.getBox();
+			   imagewidth = (x.w-30)/2;  //width of the image box leaving a 5 px margin on each side and 2 px inbetween
+   
+			   console.log ("size="+imagewidth+" dojo="+x.w);
                 if (catName == "My Viewlists")
 				{
 				     url=base+"user/getMyViewlists?email="+ window.email+"&token="+window.token;
@@ -817,7 +825,10 @@ require(["jquery",
 			//	alert("catname="+catName);
 				listList.destroyRecursive(true);
                 $("#listList").html('');
+				listList2.destroyRecursive(true);
+                $("#listList2").html('');
 			    window.MyViewlist.destroyDescendants();
+				//dojo.empty(listList2);
                 dojo.io.script.get({
                     url: url,
                     callbackParamName: "callback",
@@ -849,6 +860,34 @@ require(["jquery",
 								transition: "fade"
                             });
                            listList.addChild(myTopList);    
+						   
+						   // add My Starred Images to My viewlists manually
+						   // create new version of viewlist with images
+
+
+							var newdiv2 = dojo.create("div",{class:"imagediv"},"listList2");
+						//	console.log("newdiv2 "+ newdiv2);
+							var newimg2 = dojo.create("img",{
+                                id: "top_"+window.email,
+
+                                src: listcoverimage ,
+
+                                onclick: function () {
+                                   // alert(this.id);
+                                    gotoView('PlaylistView','blankview');
+                                    window.currList = this.id;
+
+                                    window.switchView = true;
+                                    updateImages(-1);
+
+                                },
+
+								margin: "0px"
+                            },newdiv2);
+							var newtxt = dojo.create("div", {class:"imagetxt",innerHTML: "My Starred Images"},newdiv2);
+							domStyle.set(newimg2,"width",imagewidth+'px');
+							domStyle.set(newdiv2,"width",imagewidth+'px');
+							domStyle.set(newimg2,"height",imagewidth+'px');
                         
                        }  
 					 //  alert("load up the lists count:"+lists.length);
@@ -898,7 +937,41 @@ require(["jquery",
                             });
 					//		alert("newList="+newList);
                             listList.addChild(newList);
+							
+							
+							// create new version of viewlist with images
+							var title = lists[i]["name"] ;
+							if (lists[i]["imageNum"])
+								var title = lists[i]["name"] + "<br><i><small>" + lists[i]["imageNum"] + " pictures</small></i>";
+							
 
+							var newdiv2 = dojo.create("div",{class:"imagediv"},"listList2");
+						//	console.log("newdiv2 "+ newdiv2);
+							var newimg2 = dojo.create("img",{
+                                id: lists[i]["id"],
+
+                                src: listcoverimage ,
+
+                                onclick: function () {
+                                   // alert(this.id);
+									var currView = dijit.registry.byId("ImageView");
+	                                var currView2 = currView.getShowingView();
+								//	alert("currView2="+currView2);
+                                    //currView2.performTransition("blankview", 1, "", null);
+                                    gotoView('PlaylistView','blankview');
+                                    window.currList = this.id;
+
+                                    window.switchView = true;
+                                    updateImages(-1);
+
+                                },
+
+								margin: "0px"
+                            },newdiv2);
+							var newtxt = dojo.create("div", {class:"imagetxt",innerHTML: title},newdiv2);
+							domStyle.set(newimg2,"width",imagewidth+'px');
+							domStyle.set(newdiv2,"width",imagewidth+'px');
+							domStyle.set(newimg2,"height",imagewidth+'px');
                         }
                         
                         
@@ -907,6 +980,7 @@ require(["jquery",
                     
 
                 });
+				
 				gotoView("select_category","PlaylistView");
             }
 
@@ -966,12 +1040,12 @@ require(["jquery",
 							imagecount = lists[i]["imageNum"];
 						var nowview = 'ArtistlistView';
 						var linename=lists[i]["name"];
-						if (listname == museumList)
+					/*	if (listname == museumList)
 							nowview = 'MuseumlistView';
 						if (listname == artistList)
 						{
 						      linename = "<i><small>"+firstName+" </small></i><big>"+lastName+"</big>";
-						}
+						}*/
 							//	alert(nowview);
 					//	  alert(linelabel);
 						  linelabel=linelabel+linename + "<br><i><small>" + imagecount + " pictures</small></i></br>";
@@ -1391,6 +1465,7 @@ require(["jquery",
            });
     on(regnewplayer, "beforeTransitionIn",
            function(){
+		      window.autoIntro = true;
 		      window.currentView ="RegisterNew";
            	 
            });
@@ -1509,6 +1584,7 @@ require(["jquery",
                 function () {
 				window.currentView = "PlaylistView";
 				dijit.registry.byId("tabcategory2").set('selected', true);
+				dijit.registry.byId("tabcategory2").startup();
 				});
 			 on(selectArtistListView, "beforeTransitionIn",
 
@@ -2381,5 +2457,16 @@ function setAutoIntro(flag){
 
 
 }
+
+function gotoCategory(where)
+{
+ window.currCat = where;
+
+                                    
+ goToViewlists();
+
+}
+
+
 
 

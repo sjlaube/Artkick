@@ -183,6 +183,7 @@ function login() {
             if (result["Status"] == "success") {
                 userObj = result["userObj"];
                 usermessage("Welcome! " + userObj["name"]);
+		
 
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
                 window.token = result['token'];
@@ -190,14 +191,18 @@ function login() {
                 setCookie("email", window.email, 365);
                 setCookie("token",result['token'], 365);
                 //currView.performTransition("ImageView", 1, "slide", null);
-                
+                		dojo.byId("loginEmail").value="";
+				dojo.byId("loginPassword").value="";
                 //for security, we need to make sure other possible showing view gone!!
                 window.afterLogin();
                 
                 
                 
             } else {
+				dojo.byId("loginEmail").value="";
+				dojo.byId("loginPassword").value="";
                 alert("login failed, please check your email and password or register!");
+				
             }
         }
     });
@@ -217,4 +222,40 @@ function goToReg() {
 function goToresetpassword() {
     var currView = dijit.registry.byId("Login");
     currView.performTransition("reset_password", 1, "", null);
+}
+
+function deleteAccount()
+{
+		url=base + "client/removeUser?email=" + dojo.byId("deleteAcctEmail").value+"&password="+dojo.byId("deleteAcctPW").value+"&token="+window.token;
+		alert("delete:"+url);
+		dojo.io.script.get({
+        url: url,
+        callbackParamName: "callback",
+        load: function (result) {
+            //alert(result["message"]);
+            if (result["Status"] == "success") {
+                var currView = dijit.registry.byId("LogOff");
+				alert(window.email+" your account was successfully deleted");
+				window.email = null;
+				// code to delete cookie and log out user goes here
+				setCookie("email", null, 1);
+				setCookie("token", null, 1);
+				dojo.byId("deleteAcctEmail").value="";
+				dojo.byId("deleteAcctPW").value="";
+				//currView.performTransition("Login", 1, "slide", null);
+				gotoView("LogOff","blankview");
+
+				cleanUp();
+				setTimeout(function(){
+				gotoView("blankview","Login");
+				},1000);
+                
+                
+                
+            } else {
+                alert("Delete Account failed, please check your email and password");
+            }
+        }
+    });
+
 }
