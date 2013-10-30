@@ -5,7 +5,7 @@ Copyright 2013, Zwamy, Inc.  All Rights Reserved
 */
 
 function emailPwLogout(){
-	var currView = dijit.registry.byId("reset_password");
+	var currView = dijit.registry.byId("AccountSettings");
     window.email = null;
     // code to delete cookie and log out user goes here
     setCookie("email", null, 1);
@@ -15,6 +15,7 @@ function emailPwLogout(){
 }
 
 function emailPW(){
+	window.currentView = "registeruser";
 	if (is_email(dojo.byId("recoveryEmail").value))
 	{
 	dojo.io.script.get({
@@ -35,6 +36,7 @@ function emailPW(){
 }
 
 function changePwLogout(){
+		window.currentView = "AccountSettings";
 	var currView = dijit.registry.byId("AccountSettings");
     window.email = null;
     // code to delete cookie and log out user goes here
@@ -45,6 +47,7 @@ function changePwLogout(){
 }
 
 function changePW() {
+		window.currentView = "AccountSettings";
 	var oldpw="";
 	var newpw1="";
 	var newpw2="";
@@ -71,6 +74,7 @@ function changePW() {
 }
 function is_email(a){return /^([\w!.%+\-])+@([\w\-])+(?:\.[\w\-]+)+$/.test(a);}
 function createUser() {
+	window.currentView = "registeruser";
     var currView = dijit.registry.byId("registeruser");
     var pw="";
 	var verifypw="";
@@ -127,7 +131,7 @@ function createUser() {
 				window.currentView = "newuserintro";
 			    dijit.registry.byId("registeruser").performTransition("newuserintro", 1, "", null);
             } else {
-                alert(result["message"]);
+                alert(result["Message"]);
             }
 
         }
@@ -136,7 +140,7 @@ function createUser() {
 }
 
 function dologout() {
-
+	window.currentView = "LogOff";
     var currView = dijit.registry.byId("LogOff");
     window.email = null;
     // code to delete cookie and log out user goes here
@@ -152,12 +156,14 @@ function dologout() {
 }
 
 function goToReg1() {
+	window.currentView = "registeruser";
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView()
     mycurrView.performTransition("registeruser", 1, "", null);
 }
 
 function goToLogin1() {
+		window.currentView = "Login";
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView();
 //	alert("goto login"+mycurrView);
@@ -183,7 +189,8 @@ function login() {
             if (result["Status"] == "success") {
                 userObj = result["userObj"];
                 usermessage("Welcome! " + userObj["name"]);
-		
+				window.shuffle=false;
+				dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
 
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
                 window.token = result['token'];
@@ -214,20 +221,24 @@ function login() {
 }
 
 function goToReg() {
+	window.currentView = "registeruser";
     var currView = dijit.registry.byId("Login");
     currView.performTransition("registeruser", 1, "", null);
 }
 
 
 function goToresetpassword() {
+	window.currentView = "reset_password";
     var currView = dijit.registry.byId("Login");
     currView.performTransition("reset_password", 1, "", null);
 }
 
 function deleteAccount()
 {
+		var currView = dijit.registry.byId("registeruser");
+		window.currentView = "AccountSettings";
 		url=base + "client/removeUser?email=" + dojo.byId("deleteAcctEmail").value+"&password="+dojo.byId("deleteAcctPW").value+"&token="+window.token;
-		alert("delete:"+url);
+		//alert("delete:"+url);
 		dojo.io.script.get({
         url: url,
         callbackParamName: "callback",
@@ -243,7 +254,7 @@ function deleteAccount()
 				dojo.byId("deleteAcctEmail").value="";
 				dojo.byId("deleteAcctPW").value="";
 				//currView.performTransition("Login", 1, "slide", null);
-				gotoView("LogOff","blankview");
+				gotoView("AccountSettings","blankview");
 
 				cleanUp();
 				setTimeout(function(){

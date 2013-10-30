@@ -77,8 +77,8 @@ require(["jquery",
 	
 		function () {
 
-            window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";  //Staging Server
-            //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+            //window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";  //Staging Server
+            window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
 			//window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
             var selectListView = registry.byId("PlaylistView");
 			var selectArtistListView = registry.byId("ArtistlistView");
@@ -870,7 +870,7 @@ require(["jquery",
 							var newimg2 = dojo.create("img",{
                                 id: "top_"+window.email,
 
-                                src: listcoverimage ,
+                                src: "images/Star-shaped_designs_on_crostata.jpg" ,
 
                                 onclick: function () {
                                    // alert(this.id);
@@ -1584,7 +1584,9 @@ require(["jquery",
                 function () {
 				window.currentView = "PlaylistView";
 				dijit.registry.byId("tabcategory2").set('selected', true);
-				dijit.registry.byId("tabcategory2").startup();
+				setTimeout(function(){
+				dijit.registry.byId("myTabBarPlaylistView").startup();
+				},1000);
 				});
 			 on(selectArtistListView, "beforeTransitionIn",
 
@@ -2303,7 +2305,7 @@ function refreshView() {
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-44460273-2', 'artkick.net'); <!-- change this to -1 for production -->
+  ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
   ga('send', 'pageview');
 	window.justRefresh = true;
 	window.switchView = true;

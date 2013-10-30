@@ -166,7 +166,7 @@ float:left;margin-right:2px}
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-44460273-2', 'artkick.net'); <!-- change this to -1 for production -->
+  ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
   ga('send', 'pageview');
 
 </script>
@@ -180,7 +180,7 @@ float:left;margin-right:2px}
 
 
 <div   id="splash" style=" position: fixed!important;text-align:left; overflow:hidden; background-color:#ffffff;z-index:1500; width:100%; height:100%"> 
-  <img src="images/ArtkickStartupScreen320x480.jpg" alt="" style="height:100%">
+  <img src="images/ArtkickStartupScreen640x1136.jpg" alt="" style="height:100%;width:100%">
   
   <!--  <div style="top:100px ;text-align:center;font-family: Verdana,Geneva,sans-serif; font-size: 24px; width: 96%">
       	<br><br><br>
@@ -319,7 +319,7 @@ Add user to player(s)</button>
  </div>
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="PlaylistViewold"  >
-   <div id="PlaylistHeader"  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Viewlists',fixed:'top'">
+   <div id="oldPlaylistHeader"  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Viewlists',fixed:'top'">
 	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="arrow:'left',moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Categories</div>
    </div>       			  
    <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="listList"     >
@@ -702,7 +702,7 @@ Share your favorite images in personal viewlists and share them with your friend
    </div>
 </div>
 <div data-dojo-type="dojox/mobile/ScrollableView"  id="OptionsList" style="height: auto;">
-  <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Options"'>
+  <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Settings"'>
    
    <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="arrow:'left',moveTo:'ImageView',transition:'slide',transitionDir:'-1'">Back</div>
  <!--  <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: right;" data-dojo-props="moveTo:'MylistView'">new viewlist</div> -->
@@ -726,8 +726,8 @@ Share your favorite images in personal viewlists and share them with your friend
     data-dojo-props='moveTo:"AccountSettings"'>Account</li>
 	   <li data-dojo-type="dojox/mobile/ListItem" 
      data-dojo-props='moveTo:"About"'>About</li>
-	 	   <li data-dojo-type="dojox/mobile/ListItem" 
-     data-dojo-props='moveTo:"PlaylistView2"'>New Viewlist View</li>
+	 	<!--<li data-dojo-type="dojox/mobile/ListItem" 
+     data-dojo-props='moveTo:"PlaylistView2"'>New Viewlist View</li> -->
 </ul>
 
  <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBar4" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"' style="border-bottom:none">
@@ -833,14 +833,14 @@ Connect TV Later</button>
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="select_category" >
    <div  data-dojo-type="dojox/mobile/Heading"  data-dojo-props='label:"Browse",fixed:"top"'>
-       <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left'" onclick="gotoView('select_category','ImageView')" style="float: left;" >Back</div>
+       <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left',moveTo:'ImageView',transition:'slide',  transitionDir:'-1'"  style="float: left;" >Back</div>
 
    </div>
 <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="  SEARCH ALL ARTKICK" id="searchbox" style="width:100%;height:30px;font-size:15px"
   data-dojo-props='ignoreCase: true, incremental:false,onSearch:usersearch'></input>
    <div data-dojo-type="dojox/mobile/ContentPane"  style="z-index:900; position: relative; top:0px" >
     <img src="images/Categories/Top Lists_360x250.jpg" alt=" " onclick="gotoCategory(' Top Lists')" style=" width:50%;margin:-2px">
-	<img src="images/Categories/MyViewLists.png" alt=" " onclick="gotoCategory('My Viewlists')" style=" width:50%;margin:-2px">
+	<img src="images/Categories/MyViewLists_360x250_v3.jpg" alt=" " onclick="gotoCategory('My Viewlists')" style=" width:50%;margin:-2px">
     <img src="images/Categories/Architecture_360x250.jpg" alt=" " onclick="gotoCategory('Architecture')" style=" width:50%;margin:-2px">
 	<img src="images/Categories/Artists_360x250.jpg" alt=" " onclick="gotoCategory('Artists')" style=" width:50%;margin:-2px">
     <img src="images/Categories/Collections_360x250.jpg" alt=" " onclick="gotoCategory('Collections')" style=" width:50%;margin:-2px">
@@ -866,7 +866,7 @@ Connect TV Later</button>
 	</ul> 
  </div>
 <div data-dojo-type="dojox/mobile/ScrollableView" id="PlaylistView"  >
-   <div  id="NewPlaylistHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Viewlists',fixed:'top'">
+   <div  id="PlaylistHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Viewlists',fixed:'top'">
 	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="arrow:'left',moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Browse</div>
    </div>       			  
    <ul data-dojo-type="dojox/mobile/ContentPane" id="listList2" style="z-index:900; position: relative; width:100%;left:-30px;margin-right:0px;top:0px" >
