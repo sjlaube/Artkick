@@ -10,9 +10,17 @@ class Client1Controller < ApplicationController
   #@@username = 'leonzwamy'
   #@@password = 'zw12artistic'
   
-  @@server = 'ds047478.mongolab.com'
-  @@port = 47478
-  @@db_name = 'heroku_app16778260'
+  #@@server = 'ds047478.mongolab.com'
+  #@@port = 47478
+  #@@db_name = 'heroku_app16778260'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
+  
+  
+  
+  @@server = 'ds051518-a0.mongolab.com'
+  @@port = 51518
+  @@db_name = 'heroku_app16777800'
   @@username = 'luckyleon'
   @@password = 'artkick123rocks'
   
@@ -211,11 +219,11 @@ class Client1Controller < ApplicationController
     end
     
     
-    if(params[:regToken]==nil)
-      result = {"Status"=>"Failure", "message"=>"no reg token!"}
-      render json: result
-      return
-    end
+    #if(params[:regToken]==nil)
+    #  result = {"Status"=>"Failure", "message"=>"no reg token!"}
+    #  render json: result
+    #  return
+    #end
     
     
     
@@ -236,12 +244,12 @@ class Client1Controller < ApplicationController
     end
     
     
-    if @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId], "reg_token"=>params[:regToken]}).count == 0
-      result = {"Status"=>"Failure", "StatusCode"=>102,"message"=>"Wrong regtoken!"}
-      @client.close
-      render json: result
-      return
-    end
+    #if @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId], "reg_token"=>params[:regToken]}).count == 0
+    #  result = {"Status"=>"Failure", "StatusCode"=>102,"message"=>"Wrong regtoken!"}
+    #  @client.close
+    #  render json: result
+    #  return
+    #end
     
         
     @player = @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId]}).to_a[0]

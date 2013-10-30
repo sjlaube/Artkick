@@ -10,11 +10,20 @@ class ClientController < ApplicationController
   #@@username = 'leonzwamy'
   #@@password = 'zw12artistic'
   
-  @@server = 'ds047478.mongolab.com'
-  @@port = 47478
-  @@db_name = 'heroku_app16778260'
+  #@@server = 'ds047478.mongolab.com'
+  #@@port = 47478
+  #@@db_name = 'heroku_app16778260'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
+  
+  @@server = 'ds051518-a0.mongolab.com'
+  @@port = 51518
+  @@db_name = 'heroku_app16777800'
   @@username = 'luckyleon'
   @@password = 'artkick123rocks'
+  
+  
+  
   def utcMillis
     return (Time.new.to_f*1000).to_i
   end

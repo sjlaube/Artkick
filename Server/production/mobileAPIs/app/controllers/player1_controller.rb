@@ -10,9 +10,15 @@ class Player1Controller < ApplicationController
   #@@username = 'leonzwamy'
   #@@password = 'zw12artistic'
   
-  @@server = 'ds047478.mongolab.com'
-  @@port = 47478
-  @@db_name = 'heroku_app16778260'
+  #@@server = 'ds047478.mongolab.com'
+  #@@port = 47478
+  #@@db_name = 'heroku_app16778260'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
+
+  @@server = 'ds051518-a0.mongolab.com'
+  @@port = 51518
+  @@db_name = 'heroku_app16777800'
   @@username = 'luckyleon'
   @@password = 'artkick123rocks'
   
@@ -204,6 +210,13 @@ class Player1Controller < ApplicationController
       @db["clients"].remove({"account"=>player["account"]})
       @db["users"].update({"id"=>user["id"]},{"$pull"=>{"owned_clients"=>player["account"]}})
       @db["users"].update({},{"$pull"=>{"playable_clients"=>player["account"]}},{"multi"=>true})
+      
+      player["playable_users"].each do |userId|
+        @db['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
+        @db['users'].update({"id"=>userId.to_i},{"$pull"=>{"playable_clients"=>player["account"]}})
+      end
+      
+      
       result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is deleted by its owner "+user["email"].strip.downcase+"!"}
        @client.close
       render :json=>result, :callback => params[:callback]
@@ -212,10 +225,9 @@ class Player1Controller < ApplicationController
     
     
     @db["users"].update({"id"=>user["id"]},{"$pull"=>{"playable_clients"=>player["account"]}})
-    
-    player["playable_users"].each do |userId|
-      @db['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
-    end
+    @db["users"].update({"id"=>user["id"].to_i},{"$pull"=>{"playable_clients"=>player["account"]}})
+    @db['clients'].update({"account"=>player["account"]},{"$pull"=>{"playable_users"=>user["id"].to_i}})
+
     
     result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is dismissed by user "+user["email"].strip.downcase+"!"}
      @client.close
@@ -298,6 +310,7 @@ class Player1Controller < ApplicationController
     end
     
     @db["users"].update({"email"=>params[:queryEmail].strip.downcase},{"$push"=>{"playable_clients"=>player["account"]}}) 
+    @db["clients"].update({'account'=>player["account"]},{'$push'=>{"playable_users"=>user['id'].to_i}})
     result = {"Status"=>"success", "Message"=>user["email"].strip.downcase+" is now permitted to play on Player "+player["nickname"]+"!"}
      @client.close
     render :json=>result, :callback => params[:callback]  
