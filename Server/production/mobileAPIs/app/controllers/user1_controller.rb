@@ -300,19 +300,45 @@ class User1Controller < ApplicationController
     userObj = userSet.to_a[0]
     
     #search
-    imageSet = @db['images'].find({'topics'=>params[:keyword].strip.downcase},{:fields=>['id','thumbnail']}).limit(200)
+
     listObj = {'images'=>[]}
-    if imageSet.count > 0
-      #listObj['coverImage'] = imageSet.to_a[0]['thumbnail']
-      index = 0
-      imageSet.to_a.each do |imageObj|
-        listObj['images'].push(imageObj['id'].to_i)
-        if index == 0
-          listObj['coverImage'] = imageObj['thumbnail']
-        end
-        index += 1
+    keywords = []
+    exes = ['museum','art','of', 'not', 'a', 'for', 'copyright','does','by','was',
+            'and', 'from', 'at', 'am', 'over', 'away','the','des','di','galerie','collection','church']
+             
+    params[:keyword].strip.downcase.split.each do|keyword|
+      if not exes.include? keyword
+        keywords.push(keyword)
       end
-    end    
+    end
+    
+    keyMap = {}
+    
+
+    keywords.each do |keyword|
+      imageSet = @db['images'].find({'topics'=>keyword},{:fields=>['id']}).limit(200)
+      imageSet.to_a.each do |imageObj|
+        if keyMap[imageObj['id'].to_i] == nil
+           keyMap[imageObj['id'].to_i] = 1
+        else
+           keyMap[imageObj['id'].to_i] += 1
+        end
+      end
+    end
+    
+    keyMap.keys.each do |imageId|
+      if keyMap[imageId] == keywords.length
+        listObj['images'].push(imageId)
+      end
+    end
+    
+    if listObj['images'].length > 0
+      coverId = listObj['images'][0]
+      imageSet = @db['images'].find({'id'=>coverId},{:fields=>['thumbnail']})
+      if imageSet.count > 0
+         listObj['coverImage'] = imageSet.to_a[0]['thumbnail']
+      end
+    end
     
     if userObj['search_list']!=nil
       @db['users'].update({'email'=>userObj['email']},{'$pull'=>{'private_lists'=>userObj['search_list'].to_i}})
