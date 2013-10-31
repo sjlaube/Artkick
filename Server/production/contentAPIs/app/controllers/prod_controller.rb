@@ -12,19 +12,19 @@ class ProdController < ApplicationController
   #@@password = 'zw12artistic'
   
   
-  @@server = 'ds051518-a0.mongolab.com'
-  @@port = 51518
-  @@db_name = 'heroku_app16777800'
-  @@username = 'luckyleon'
-  @@password = 'artkick123rocks'
+  #@@server = 'ds051518-a0.mongolab.com'
+  #@@port = 51518
+  #@@db_name = 'heroku_app16777800'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
 
   
   
-  #@@server = 'ds053468-a0.mongolab.com'
-  #@@port = 53468
-  #@@db_name = 'heroku_app16778260'
-  #@@username = 'luckyleon'
-  #@@password = 'artkick123rocks'
+  @@server = 'ds053468-a0.mongolab.com'
+  @@port = 53468
+  @@db_name = 'heroku_app16778260'
+  @@username = 'luckyleon'
+  @@password = 'artkick123rocks'
   
  def setFeatured 
    if params[:listId] == nil or params[:listId].strip.length==0
