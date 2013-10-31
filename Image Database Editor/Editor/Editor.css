@@ -45,7 +45,7 @@ label
 
 #divMainImages
 {
-	min-height: 110px;
+	min-height: 220px;
 	overflow: scroll;
 }
 
@@ -88,7 +88,7 @@ label
 /* image viewer */
 ul#thumbs { list-style: none; margin: 0px; padding:0px; margin-top: 10px; }
 ul#thumbs li { float: left; margin-left: 5px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; cursor:pointer; }
-ul#thumbs li img { height: 75px; vertical-align: top; }
+ul#thumbs li img { vertical-align: top; }
 ul#thumbs li.selected { outline: 3px solid #FF4242; }
 
 div#img img { width: 600px; height: 400px; }

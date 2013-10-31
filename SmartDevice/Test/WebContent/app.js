@@ -77,8 +77,8 @@ require(["jquery",
 	
 		function () {
 
-            //window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";  //Staging Server
-            window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+            window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/";  //Staging Server
+            //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
 			//window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
             var selectListView = registry.byId("PlaylistView");
 			var selectArtistListView = registry.byId("ArtistlistView");
@@ -808,9 +808,14 @@ require(["jquery",
 					updateMuseumLists();
 					return;
 				}*/
-				var i, w, x;
+				var colnumber, w, x;
+				colnumber = 2; // default number of columns
 			    x=dojo.window.getBox();
-			   imagewidth = (x.w-30)/2;  //width of the image box leaving a 5 px margin on each side and 2 px inbetween
+				if (x.w > 500)
+					colnumber =3;
+				if (x.w > 700)
+					colnumber =4;
+			   imagewidth = (x.w-30)/colnumber;  //width of the image box leaving a 5 px margin on each side and 2 px inbetween
    
 			   console.log ("size="+imagewidth+" dojo="+x.w);
                 if (catName == "My Viewlists")
@@ -2305,7 +2310,7 @@ function refreshView() {
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
+  ga('create', 'UA-44460273-2', 'artkick.net'); <!-- change this to -1 for production -->
   ga('send', 'pageview');
 	window.justRefresh = true;
 	window.switchView = true;
