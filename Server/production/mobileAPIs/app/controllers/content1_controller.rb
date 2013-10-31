@@ -16,11 +16,18 @@ class Content1Controller < ApplicationController
   #@@username = 'luckyleon'
   #@@password = 'artkick123rocks'
 
-  @@server = 'ds051518-a0.mongolab.com'
-  @@port = 51518
-  @@db_name = 'heroku_app16777800'
+  #@@server = 'ds051518-a0.mongolab.com'
+  #@@port = 51518
+  #@@db_name = 'heroku_app16777800'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
+
+  #singleNode2
+  @@server = 'ds053468-a0.mongolab.com'
+  @@port = 53468
+  @@db_name = 'heroku_app16778260'
   @@username = 'luckyleon'
-  @@password = 'artkick123rocks'
+  @@password = 'artkick123rocks' 
 
   def allCategories
     @client = MongoClient.new(@@server,@@port)

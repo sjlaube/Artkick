@@ -73,6 +73,7 @@ Userpages::Application.routes.draw do
   match 'api/v1.1/client/emailPassword' => 'client1#emailPassword'
   match 'api/v1.1/client/setAuto' => 'client1#setAuto'
   match 'api/v1.1/client/verifyUser' => 'client1#verifyUser'
+  match 'api/v1.1/client/removeUser' => 'client1#removeUser'
   
   
   match 'api/v1.1/user/saveAsMyViewlist' => 'user1#saveAsMyViewlist'

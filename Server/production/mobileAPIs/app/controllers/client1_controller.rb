@@ -18,14 +18,23 @@ class Client1Controller < ApplicationController
   #@@username = 'luckyleon'
   #@@password = 'artkick123rocks'
 
-  @@server = 'ds051518-a0.mongolab.com'
-  @@port = 51518
-  @@db_name = 'heroku_app16777800'
+  #@@server = 'ds051518-a0.mongolab.com'
+  #@@port = 51518
+  #@@db_name = 'heroku_app16777800'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
+  
+  #singleNode2
+  @@server = 'ds053468-a0.mongolab.com'
+  @@port = 53468
+  @@db_name = 'heroku_app16778260'
   @@username = 'luckyleon'
-  @@password = 'artkick123rocks'
+  @@password = 'artkick123rocks'   
   
   @@gmailAccount = 'leonzfarm'  
   @@gmailPassword = 'aljzcsjusqohrujk' 
+  
+  @@api_key = '7c028a32e596566b2632e6f672df55af-us7' 
 
   def utcMillis
     return (Time.new.to_f*1000).to_i
@@ -200,12 +209,12 @@ class Client1Controller < ApplicationController
     
     
     
-    msgStr="From: ArtKick <info@artkick.com>\nTo: "+user["name"]+" <"+ (params[:email].strip).downcase+">\nSubject: Reset Your Password\n\nHi "+user["name"]+",\n\nThis is your temporary password:\n"+randomPassword+"\nplease reset it as soon as possible!\n\nBest regards,\nArtKick"
+    msgStr="From: ArtKick <support@artkick.com>\nTo: "+user["name"]+" <"+ (params[:email].strip).downcase+">\nSubject: Reset Your Password\n\nHi "+user["name"]+",\n\nThis is your temporary password:\n"+randomPassword+"\nplease reset it as soon as possible!\n\nBest regards,\nArtKick"
     
     smtp = Net::SMTP.new 'smtp.gmail.com', 587
     smtp.enable_starttls
     smtp.start("gmail.com", @@gmailAccount, @@gmailPassword, :login) do
-      smtp.send_message(msgStr,"info@artkick.com",(params[:email].strip).downcase)
+      smtp.send_message(msgStr,"support@artkick.com",(params[:email].strip).downcase)
     end
 
     
@@ -272,7 +281,52 @@ class Client1Controller < ApplicationController
     
     result = {"Status"=>"success", "Message"=>"user created!", "token"=>sessionToken}
     @client.close
-    render :json=>result, :callback => params[:callback]        
+    render :json=>result, :callback => params[:callback]  
+    
+    Gibbon::API.timeout = 15
+    gb = Gibbon::API.new(@@api_key)
+    names = userObj['name'].split
+    fname = names[0]
+    
+    if names.length > 1
+      lname = names[1]
+    else
+      lname = 'unknown'
+    end
+      
+    begin
+      gb.lists.subscribe({:id=>'1a8ac5d1a0', :email=>{:email=>userObj['email']}, :merge_vars=>{:FNAME=>fname, :LNAME=> lname},:double_optin => false})  
+    rescue
+      
+    end
+
+     userName = userObj['name']
+     userEmail = userObj['email']
+  
+     url = "https://mandrillapp.com/api/1.0/messages/send-template.json"
+     messageObj = {}
+     messageObj['subject'] = 'Welcome to Artkick'
+     messageObj['from_email'] = 'support@artkick.com'
+     messageObj['from_name'] = 'Artkick'
+     messageObj['to'] = [{'email'=>userEmail, 'name'=>userName, 'type'=>'to'}]
+     messageObj['merge'] = false
+
+
+     sendObj = {}
+     sendObj['key'] = '7JbDmRBTdBkZoFF4r-9jfA'
+     sendObj['template_name'] = 'Artkick Registration Confirmation'
+     sendObj['template_content'] = [{'name'=>'example name', 'content'=>'example content'}]
+     sendObj['message'] = messageObj
+     sendObj['async'] = false
+     sendObj['ip_pool'] = 'Main Pool'
+
+     json_string = sendObj.to_json()
+     c = Curl::Easy.http_post(url, json_string) do |curl|
+        curl.headers['Content-Type'] = 'application/json'
+        curl.headers['Accept'] = 'application/json'
+     end
+
+          
   end
   
   
@@ -1009,6 +1063,82 @@ def getViewlist4
     @client.close
     render :json=>result, :callback => params[:callback]
   end
+  
+  
+  
+  def removeUser
+    if(params[:email]==nil or params[:email].strip=='')
+        result = {"Status"=>"failure", "Message"=>"email is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    if(params[:password]==nil or params[:password].strip=='')
+        result = {"Status"=>"failure", "Message"=>"password is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
+
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase},{:fields=>['name','salt','pass_digest','tokens','private_lists','owned_clients','email']})
+    
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"no user mathes!"}
+        @client.close
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    user = userSet.to_a[0]
+    if user["salt"]==nil or user["pass_digest"]==nil
+      result = {"Status"=>"failure", "Message"=>"wrong password!"}
+      @client.close
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    passDigest = Digest::SHA1.hexdigest(params[:password]+user["salt"])
+    if passDigest != user["pass_digest"]
+        result = {"Status"=>"failure", "Message"=>"wrong password!"}
+        @client.close
+        render :json=>result, :callback => params[:callback]
+        return  
+    end        
+  
+    # remove private lists
+    if user['private_lists'] != nil
+       user['private_lists'].each do |listId|
+           @db['viewlists'].remove({'id'=>listId.to_i})
+       end 
+    
+    end
+    
+    # remove devices
+    user['owned_clients'].each do |account|
+      playerSet = @db['clients'].find({'account'=>account},{:fields=>["account","playable_users"]})
+      if playerSet.count > 0
+        player = playerSet.to_a[0]
+        player["playable_users"].each do |userId|
+          @db['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
+          @db['users'].update({"id"=>userId.to_i},{"$pull"=>{"playable_clients"=>player["account"]}})
+        end
+        @db['clients'].remove({'account'=>account})
+      end
+    end
+
+    @db['users'].remove({'email'=>user['email']}) 
+    
+    result = result = {"Status"=>"success", "Message"=>"user has been removed!"}
+    @client.close
+    render :json=>result, :callback => params[:callback]
+    
+    
+    end
     
   
     
