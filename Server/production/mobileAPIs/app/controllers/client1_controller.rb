@@ -202,7 +202,7 @@ class Client1Controller < ApplicationController
     
     @db["users"].update({"email"=>(params[:email].strip).downcase},{"$set"=>{"salt"=>newsalt, "pass_digest" => newpassDigest}})
     
-    result = {"status"=>"success", "message"=>"Your temporary password has been sent to your email, please reset it!"}
+    result = {"Status"=>"success", "Message"=>"Your temporary password has been sent to your email, please reset it!"}
     @client.close
     render :json=>result, :callback => params[:callback]
     
