@@ -93,6 +93,27 @@ window.backbutton=function ()
 		case "fullimageview":
 			gotoView("fullimageview","ImageView");
 			break;
+		case "quickhint":
+			if (window.firstimageview==true)
+			{
+				window.firstimageview = false;
+				gotoView("quickhint","newuserintro");
+			}
+			else
+			{
+
+				gotoView("quickhint","OptionsList");
+			};
+			break;
+		case "registernewTV":
+			gotoView("registernewTV","RegisterNew");
+			break;
+		case "registernewroku2":
+			gotoView("registernewroku2","registernewroku");
+			break;
+		case "newuserintro":
+			gotoView("newuserintro","quickhint");
+			break;
 		default:
 			break;
 		

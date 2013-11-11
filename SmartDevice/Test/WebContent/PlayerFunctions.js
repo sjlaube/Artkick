@@ -106,7 +106,7 @@ function createPlayer() {
 	}
 	if (dojo.byId("regPlayerName").value =="")
 	{
-		alert("You must name your player");
+		alert("You must name your Roku");
 		return;
 	}
 	
@@ -132,13 +132,13 @@ function createPlayer() {
                 }
 				updatePlayers();
                 //two possible cases, either from roku or chromecast, so we just make both registraion view gone
-				console.log("trying to hide register view");
+				//console.log("trying to hide register view");
 				dojo.byId("regPlayerCode").value = "";
 				dojo.byId("regPlayerName").value = "";
                 dojo.style(dojo.byId("registernewroku"),"display", "none");           
                 gotoView("registernewchromecast","blankview");
                 window.switchView = true;
-                updateImages(-1);
+           //     updateImages(-1);
                
 
             } else {
@@ -148,7 +148,60 @@ function createPlayer() {
         }
     });
 }
+function createPlayer2() {
+	
+	var currTime = new Date().getTime();
+    if(window.createPlayerClickTime!=undefined && currTime - window.createPlayerClickTime < window.boucingTime)
+        return;
+	window.createPlayerClickTime = currTime;
+	if (dojo.byId("regPlayerCode2").value =="")
+	{
+		alert("Registration Code cannot be blank");
+		return;
+	}
+	if (dojo.byId("regPlayerName2").value =="")
+	{
+		alert("You must name your TV");
+		return;
+	}
+	
+    var currView = dijit.registry.byId("registernewTV");
+    //alert(base + "reg/userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
+    dojo.io.script.get({
+        url: base + "reg/userReg?regCode=" + (dojo.byId("regPlayerCode2").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName2").value + "&email=" + window.email+"&token="+window.token,
+        callbackParamName: "callback",
+        load: function (result) {
+            if (result["Status"] == "success") {
+                alert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
+                window.tarImage = window.defImage;
+                window.currList = window.defList;
+                window.currCat = window.defCat;
+                window.justCreatePlayer = true;
+				window.autoIntro = true;
+                //currView.performTransition("ImageView", 1, "slide", null);
+                if(window.shuffle==true){
+                           // if random, then switch to normal!
+                    mediashuffle();
+                }
+			//	console.log("call update players from registernewTV");
+				updatePlayers();
+                //two possible cases, either from roku or chromecast, so we just make both registraion view gone
+				//console.log("trying to hide register view");
+				dojo.byId("regPlayerCode2").value = "";
+				dojo.byId("regPlayerName2").value = "";
+                dojo.style(dojo.byId("registernewTV"),"display", "none");           
+                gotoView("registernewTV","blankview");
+                window.switchView = true;
+             //   updateImages(-1);
+               
 
+            } else {
+                alert(result["Message"]);
+            }
+
+        }
+    });
+}
 function regnewroku() {
     var currView = dijit.registry.byId("registernewplayer");
 

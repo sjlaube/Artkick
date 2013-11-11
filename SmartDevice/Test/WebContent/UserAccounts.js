@@ -66,6 +66,9 @@ function changePW() {
        	 load: function (result) {
              alert(result["Message"]);
              if(result["Status"]=="success"){
+			 	dojo.byId("changeOldPW").value='';
+				dojo.byId("changeNewPW1").value='';
+				dojo.byId("changeNewPW2").value='';
              	changePwLogout();
              }
        	 }
@@ -128,8 +131,9 @@ function createUser() {
 				dojo.byId("regUserPW2").value="";
 				dojo.byId("regUserName").value="";
 				dojo.byId("regUserEmail").value="";
-				window.currentView = "newuserintro";
-			    dijit.registry.byId("registeruser").performTransition("newuserintro", 1, "", null);
+				window.currentView = "quickhint";
+				window.firstimageview = true;
+			    dijit.registry.byId("registeruser").performTransition("quickhint", 1, "", null);
             } else {
                 alert(result["Message"]);
             }
@@ -206,8 +210,8 @@ function login() {
                 
                 
             } else {
-				dojo.byId("loginEmail").value="";
-				dojo.byId("loginPassword").value="";
+				//dojo.byId("loginEmail").value="";
+				//dojo.byId("loginPassword").value="";
                 alert("login failed, please check your email and password or register!");
 				
             }
