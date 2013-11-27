@@ -1,2 +1,0 @@
-//>>built
-define("demos/shippingRoutes/src/PortRenderer",["dojo/_base/kernel","dojo/_base/declare","./EcrRenderer","dojox/geo/openlayers/GeometryFeature","dojox/geo/openlayers/Point"],function(_1,_2,_3,_4,_5){return _2(_3,{constructor:function(_6,_7){},_renderItem:function(o,_8){var gf=null;if(o.type=="circle"){var _9=this.getCoordinates(_8);var g=new _5({x:_9[0],y:_9[1]});gf=new _4(g);gf.setShapeProperties({r:o.radius});}return gf;}});});

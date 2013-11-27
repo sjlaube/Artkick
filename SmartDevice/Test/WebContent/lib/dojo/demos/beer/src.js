@@ -1,2 +1,0 @@
-//>>built
-define("demos/beer/src",["dojo","dijit","dojox","dojo/require!dojox/rpc/Service,demos/beer/src/Bottle,demos/beer/src/Lady,demos/beer/src/dnd"],function(_1,_2,_3){_1.provide("demos.beer.src");_1.require("dojox.rpc.Service");_1.require("demos.beer.src.Bottle");_1.require("demos.beer.src.Lady");_1.require("demos.beer.src.dnd");_1.addOnLoad(function(){var _4=_1.byId("shelf-offer").firstChild;for(var i=0;i<10;i++){var _5=new beer.Bottle({beerIndex:i,size:"large"});_4.appendChild(_5.domNode);}_1.query("div",_4).forEach(function(n){new beer.MadeDnd(n);});});});

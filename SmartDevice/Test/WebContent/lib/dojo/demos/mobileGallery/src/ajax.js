@@ -1,2 +1,0 @@
-//>>built
-define("demos/mobileGallery/src/ajax",["dojo/dom","dojo/on","dojo/_base/xhr","dijit/registry","dojox/mobile/ProgressIndicator"],function(_1,on,_2,_3,_4){function _5(){var _6=_1.byId("ajaxPane");var _7=_4.getInstance();_7.stop();_1.byId("rightPane").appendChild(_7.domNode);_7.start();_2.get({url:"views/ajaxLoad.html",handleAs:"text",timeout:30000,load:function(_8){_6.innerHTML=_8;_3.byId("ajaxContainer").resize();_7.stop();},error:function(_9){_6.innerHTML=_9;_7.stop();}});};return {init:function(){on(_1.byId("ajaxBtn"),"click",_5);}};});

@@ -1,2 +1,0 @@
-//>>built
-define("demos/mobileGallery/src/forms",["dojo/dom","dojo/on","dijit/registry","dojox/mobile/TextBox","dojox/mobile/TextArea","dojox/mobile/CheckBox","dojox/mobile/RadioButton","dojox/mobile/Slider","dojox/mobile/FormLayout"],function(_1,on,_2){return {init:function(){_2.byId("alertSlider").focus=function(){};on(_2.byId("resetBtn"),"click",function(){_1.byId("testForm").reset();_2.byId("alertSwitch").set("value","off");_2.byId("alertSlider").set("value",0);_2.byId("alert-all").set("checked",false);_2.byId("alert-urgent").set("checked",true);});}};});

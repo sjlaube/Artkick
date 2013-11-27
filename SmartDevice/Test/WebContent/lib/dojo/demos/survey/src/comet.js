@@ -1,2 +1,0 @@
-//>>built
-define("demos/survey/src/comet",["dojo","dijit","dojox","dojo/require!dojox/cometd"],function(_1,_2,_3){_1.provide("demos.survey.src.comet");_1.require("dojox.cometd");var _4=function(){_3.cometd.init("http://cometd.sitepen.com/cometd");_3.cometd.subscribe("/demo/survey/redraw",function(d){getResults();});};_1.addOnLoad(_4);});

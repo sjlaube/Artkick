@@ -1,2 +1,0 @@
-//>>built
-define("demos/mobileGallery/src/scrollablePane",["dijit/registry","dojox/mobile/parser","dojox/mobile","dojox/mobile/compat","dojox/mobile/FixedSplitter","dojox/mobile/ScrollableView","dojox/mobile/SwapView","dojox/mobile/PageIndicator","dojox/mobile/ScrollablePane"],function(_1){return {init:function(){setTimeout(function(){_1.byId("scrollablePane").resize();},100);}};});

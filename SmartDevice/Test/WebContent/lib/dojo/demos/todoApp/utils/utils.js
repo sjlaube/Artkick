@@ -1,2 +1,0 @@
-//>>built
-define("demos/todoApp/utils/utils",["dijit/registry"],function(_1){return {getListItemByIndex:function(_2,_3){var _4=_2.domNode.children;var _5=[];for(var i=0;i<_4.length;i++){var _6=_4[i];if(_6.nodeName=="LI"||_4.nodeName=="li"){_5.push(_6);}}if(_3>=0&&_3<_5.length){return _1.byNode(_5[_3]);}return null;},getIndexByListItem:function(_7,_8){var _9=_7.domNode.children;var _a=[];var i;for(i=0;i<_9.length;i++){var _b=_9[i];if(_b.nodeName=="LI"||_9.nodeName=="li"){_a.push(_b);}}for(i=0;i<_a.length;i++){if(_a[i]==_8.domNode){return i;}}return 0;}};});
