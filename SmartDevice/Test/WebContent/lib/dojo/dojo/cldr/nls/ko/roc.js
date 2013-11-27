@@ -1,8 +1,4 @@
-/*
-	Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
-	Available via Academic Free License >= 2.1 OR the modified BSD license.
-	see: http://dojotoolkit.org/license for details
-*/
-
 //>>built
-define("dojo/cldr/nls/ko/roc",{"field-second":"초","field-year-relative+-1":"지난해","field-week":"주","field-month-relative+-1":"지난달","field-day-relative+-1":"어제","field-day-relative+-2":"그저께","field-year":"년","field-week-relative+0":"이번 주","field-week-relative+1":"다음 주","field-minute":"분","field-week-relative+-1":"지난주","field-day-relative+0":"오늘","field-hour":"시","field-day-relative+1":"내일","field-day-relative+2":"모레","field-day":"일","field-month-relative+0":"이번 달","field-month-relative+1":"다음 달","field-dayperiod":"오전/오후","field-month":"월","field-era":"연호","field-year-relative+0":"올해","field-year-relative+1":"내년","eraAbbr":["중화민국전","중화민국"],"field-weekday":"요일","field-zone":"시간대"});
+define("dojo/cldr/nls/ko/roc",{"field-second":"\ucd08","field-year-relative+-1":"\uc9c0\ub09c\ud574","field-week":"\uc8fc","field-month-relative+-1":"\uc9c0\ub09c\ub2ec","field-day-relative+-1":"\uc5b4\uc81c","field-day-relative+-2":"\uadf8\uc800\uaed8","field-year":"\ub144","field-week-relative+0":"\uc774\ubc88 \uc8fc","field-week-relative+1":"\ub2e4\uc74c \uc8fc","field-minute":"\ubd84","field-week-relative+-1":"\uc9c0\ub09c\uc8fc","field-day-relative+0":"\uc624\ub298","field-hour":"\uc2dc","field-day-relative+1":"\ub0b4\uc77c",
+"field-day-relative+2":"\ubaa8\ub808","field-day":"\uc77c","field-month-relative+0":"\uc774\ubc88 \ub2ec","field-month-relative+1":"\ub2e4\uc74c \ub2ec","field-dayperiod":"\uc624\uc804/\uc624\ud6c4","field-month":"\uc6d4","field-era":"\uc5f0\ud638","field-year-relative+0":"\uc62c\ud574","field-year-relative+1":"\ub0b4\ub144",eraAbbr:["\uc911\ud654\ubbfc\uad6d\uc804","\uc911\ud654\ubbfc\uad6d"],"field-weekday":"\uc694\uc77c","field-zone":"\uc2dc\uac04\ub300"});
+//@ sourceMappingURL=roc.js.map

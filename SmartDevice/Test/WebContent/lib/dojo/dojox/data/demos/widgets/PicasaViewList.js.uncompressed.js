@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/data/demos/widgets/PicasaViewList", ["dojo","dijit","dojox","dojo/require!dijit/_Templated,dijit/_Widget,dojox/data/demos/widgets/PicasaView"], function(dojo,dijit,dojox){
+define("dojox/data/demos/widgets/PicasaViewList", ["dijit","dojo","dojox","dojo/require!dijit/_Templated,dijit/_Widget,dojox/data/demos/widgets/PicasaView"], function(dijit,dojo,dojox){
 dojo.provide("dojox.data.demos.widgets.PicasaViewList");
 dojo.require("dijit._Templated");
 dojo.require("dijit._Widget");

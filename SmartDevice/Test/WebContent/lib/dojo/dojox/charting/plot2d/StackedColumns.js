@@ -1,2 +1,3 @@
 //>>built
-define("dojox/charting/plot2d/StackedColumns",["dojo/_base/declare","./Columns","./commonStacked"],function(_1,_2,_3){return _1("dojox.charting.plot2d.StackedColumns",_2,{getSeriesStats:function(){var _4=_3.collectStats(this.series);_4.hmin-=0.5;_4.hmax+=0.5;return _4;},getValue:function(_5,_6,_7,_8){var x,y;if(_8){x=_6;y=_3.getIndexValue(this.series,_7,x);}else{x=_5.x-1;y=_3.getValue(this.series,_7,_5.x);y=[y[0]?y[0].y:null,y[1]?y[1]:null];}return {x:x,y:y[0],py:y[1]};}});});
+define("dojox/charting/plot2d/StackedColumns",["dojo/_base/declare","./Columns","./commonStacked"],function(b,f,c){return b("dojox.charting.plot2d.StackedColumns",f,{getSeriesStats:function(){var a=c.collectStats(this.series);a.hmin-=0.5;a.hmax+=0.5;return a},getValue:function(a,d,e,b){b?a=c.getIndexValue(this.series,e,d):(d=a.x-1,a=c.getValue(this.series,e,a.x),a=[a[0]?a[0].y:null,a[1]?a[1]:null]);return{x:d,y:a[0],py:a[1]}}})});
+//@ sourceMappingURL=StackedColumns.js.map

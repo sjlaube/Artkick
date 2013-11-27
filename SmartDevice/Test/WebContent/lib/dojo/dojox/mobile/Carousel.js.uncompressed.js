@@ -22,7 +22,7 @@ define("dojox/mobile/Carousel", [
 
 	// module:
 	//		dojox/mobile/Carousel
-
+    //alert("called!");
 	var Carousel = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiCarousel" : "dojox.mobile.Carousel", [WidgetBase, Container, Contained], {
 		// summary:
 		//		A carousel widget that manages a list of images.
@@ -84,7 +84,7 @@ define("dojox/mobile/Carousel", [
 
 		// selectable: Boolean
 		//		If true, an item can be selected by clicking it.
-		selectable: true,
+		selectable: false,
 
 		/* internal properties */	
 		
@@ -95,7 +95,7 @@ define("dojox/mobile/Carousel", [
 		buildRendering: function(){
 			this.containerNode = domConstruct.create("div", {className: "mblCarouselPages"});
 			this.inherited(arguments);
-			var i;
+			var i,len;
 			if(this.srcNodeRef){
 				// reparent
 				for(i = 0, len = this.srcNodeRef.childNodes.length; i < len; i++){
@@ -103,7 +103,10 @@ define("dojox/mobile/Carousel", [
 				}
 			}
 
-			this.headerNode = domConstruct.create("div", {className: "mblCarouselHeaderBar"}, this.domNode);
+						//this.headerNode = domConstruct.create("div", this.domNode);// Artkick since we don't user headerBar we make it 0 width...
+				
+					
+				this.headerNode = domConstruct.create("div", {className: "mmmmblCarouselHeaderBar"}, this.domNode);
 
 			if(this.navButton){
 				this.btnContainerNode = domConstruct.create("div", {
@@ -164,17 +167,24 @@ define("dojox/mobile/Carousel", [
 				if(!this.setStore){
 					throw new Error("Use StoreCarousel or DataCarousel instead of Carousel.");
 				}
+				
+				//alert("set store!");
 				var store = this.store;
 				this.store = null;
 				this.setStore(store, this.query, this.queryOptions);
 			}else{
 				this.resizeItems();
 			}
+			
+			
+
 			this.inherited(arguments);
 
 			this.currentView = array.filter(this.getChildren(), function(view){
 				return view.isVisible();
 			})[0];
+			//alert(this.currentView);
+			//alert("curr view under control");
 		},
 
 		resizeItems: function(){
@@ -182,7 +192,7 @@ define("dojox/mobile/Carousel", [
 			//		Resizes the child items of the carousel.
 			var idx = 0, i;
 			var h = this.domNode.offsetHeight - (this.headerNode ? this.headerNode.offsetHeight : 0);
-			var m = (has("ie") < 10) ? 5 / this.numVisible - 1 : 5 / this.numVisible;
+			var m = has("ie") ? 5 / this.numVisible-1 : 5 / this.numVisible;
 			var node, item;
 			array.forEach(this.getChildren(), function(view){
 				if(!(view instanceof SwapView)){ return; }
@@ -266,6 +276,7 @@ define("dojox/mobile/Carousel", [
 		},
 
 		onComplete: function(/*Array*/items){
+			//alert("onComplete");
 			// summary:
 			//		A handler that is called after the fetch completes.
 			array.forEach(this.getChildren(), function(child){
@@ -282,7 +293,8 @@ define("dojox/mobile/Carousel", [
 			for(i = 0; i < nPages; i++){
 				var w = new SwapView({height: h + "px", lazy:true});
 				this.addChild(w);
-				if(i === pg){
+				if(i === window.sliderIndex){
+					//alert("showing "+i);
 					w.show();
 					this.currentView = w;
 				}else{
@@ -293,7 +305,8 @@ define("dojox/mobile/Carousel", [
 			this.resizeItems();
 			var children = this.getChildren();
 			var from = pg - 1 < 0 ? 0 : pg - 1;
-			var to = pg + 1 > nPages - 1 ? nPages - 1 : pg + 1;
+			//var to = pg + 1 > nPages - 1 ? nPages - 1 : pg + 1;
+			var to = pg +50;
 			for(i = from; i <= to; i++){
 				this.instantiateView(children[i]);
 			}
@@ -440,10 +453,15 @@ define("dojox/mobile/Carousel", [
 		handleViewChanged: function(view){
 			// summary:
 			//		Listens to "/dojox/mobile/viewChanged" events.
-			if(view.getParent() !== this){ return; }
+			if(view.getParent() !== this){
+				 return; }
 			if(this.currentView.nextView(this.currentView.domNode) === view){
+				//alert(view.getChildren()[0]['alt']);
+				window.doNext(view.getChildren()[0]['alt']);
 				this.instantiateView(view.nextView(view.domNode));
 			}else{
+				//alert(view.getChildren()[0]['alt']);
+				window.doPrev(view.getChildren()[0]['alt']);
 				this.instantiateView(view.previousView(view.domNode));
 			}
 			this.currentView = view;

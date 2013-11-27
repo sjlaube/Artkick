@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/lang/aspect", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/lang/aspect", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.lang.aspect");
 
 (function(){

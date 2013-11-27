@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/lang/async/event", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/lang/async/event", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.lang.async.event");
 
 // Source of Deferred for events

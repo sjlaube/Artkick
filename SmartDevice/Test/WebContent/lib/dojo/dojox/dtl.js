@@ -1,2 +1,3 @@
 //>>built
-define("dojox/dtl",["./dtl/_base"],function(_1){return _1;});
+define("dojox/dtl",["./dtl/_base"],function(a){return a});
+//@ sourceMappingURL=dtl.js.map

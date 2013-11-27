@@ -143,13 +143,14 @@ define("dojox/mobile/TabBar", [
 							!array.some(this.getChildren(), function(w){ return w.label; }));
 
 			var margin = 0;
+
 			if(this._barType == "tabBar"){
 				this.containerNode.style.paddingLeft = "";
 				margin = Math.floor((w - (bw + bm * 2) * arr.length) / 2);
 				if(this.fill == "always" || (this.fill == "auto" && (w < this._largeScreenWidth || margin < 0))){
 					domClass.add(this.domNode, "mblTabBarFill");
 					for(i = 0; i < arr.length; i++){
-						arr[i].style.width = (100/arr.length) + "%";
+						arr[i].style.width = (98/arr.length) + "%";
 						arr[i].style.margin = "0";
 					}
 				}else{
@@ -176,7 +177,8 @@ define("dojox/mobile/TabBar", [
 				if(this.fill == "always"){
 					domClass.add(this.domNode, "mblTabBarFill");
 					for(i = 0; i < arr.length; i++){
-						arr[i].style.width = (100/arr.length) + "%";
+					    //alert("reszie");
+						arr[i].style.width = (98/arr.length) + "%";
 						if(this._barType != "segmentedControl" && this._barType != "standardTab") {
 							arr[i].style.margin = "0";
 						}

@@ -1,2 +1,3 @@
 //>>built
-define("dojox/mobile/app",["./app/_base"],function(_1){return _1;});
+define("dojox/mobile/app",["./app/_base"],function(a){return a});
+//@ sourceMappingURL=app.js.map

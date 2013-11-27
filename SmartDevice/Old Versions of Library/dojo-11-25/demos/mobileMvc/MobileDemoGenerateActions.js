@@ -1,0 +1,2 @@
+//>>built
+define("demos/mobileMvc/MobileDemoGenerateActions",["dojo/dom","dojo/json","dijit/registry"],function(_1,_2,_3){return {switchToData:function(){_1.byId("outerModelArea").style.display="";try{_1.byId("modelArea").focus();_1.byId("viewArea").style.display="none";_3.byId("modelArea").set("value",_2.stringify(_3.byId("view").get("children")));}catch(e){}},switchToGenerated:function(){_1.byId("outerModelArea").style.display="none";_1.byId("viewArea").style.display="";}};});

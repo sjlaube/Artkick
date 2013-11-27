@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/wire/demos/WidgetRepeater", ["dojo","dijit","dojox","dojo/require!dojo/parser,dijit/_Widget,dijit/_Templated,dijit/_Container"], function(dojo,dijit,dojox){
+define("dojox/wire/demos/WidgetRepeater", ["dijit","dojo","dojox","dojo/require!dojo/parser,dijit/_Widget,dijit/_Templated,dijit/_Container"], function(dijit,dojo,dojox){
 dojo.provide("dojox.wire.demos.WidgetRepeater")
 		
 dojo.require("dojo.parser");

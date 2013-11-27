@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/xmpp/PresenceService", ["dojo","dijit","dojox"], function(dojo,dijit,dojox){
+define("dojox/xmpp/PresenceService", ["dijit","dojo","dojox"], function(dijit,dojo,dojox){
 dojo.provide("dojox.xmpp.PresenceService");
 
 dojox.xmpp.presence = {

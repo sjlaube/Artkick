@@ -1,0 +1,2 @@
+//>>built
+define("demos/beer/src/api",["dojo","dijit","dojox","dojo/require!dojox/rpc/Service"],function(_1,_2,_3){_1.provide("demos.beer.src.api");_1.require("dojox.rpc.Service");_1.addOnLoad(function(){var _4={"SMDVersion":"2.0","id":"dojoBeer","description":"Dojo Beer Demo API","transport":"JSON","envelope":"URL","additionalParameters":true,"services":{"login":{"target":"api.php","parameters":[{"name":"user"},{"name":"pass"}]}}};beer.api=new _3.rpc.Service(_1.moduleUrl("demos.beer.resources","api.smd"));});});

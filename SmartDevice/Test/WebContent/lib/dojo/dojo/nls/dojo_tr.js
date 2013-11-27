@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_tr",{"dijit/form/nls/validate":{rangeMessage:"Bu de\u011fer aral\u0131k d\u0131\u015f\u0131nda.",invalidMessage:"Girilen de\u011fer ge\u00e7ersiz.",missingMessage:"Bu de\u011fer gerekli."},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"Ge\u00e7ersiz Parola.",nomatchMessage:"Parolalar e\u015fle\u015fmiyor."},"dijit/form/nls/ComboBox":{previousMessage:"\u00d6nceki se\u00e7enekler",nextMessage:"Di\u011fer se\u00e7enekler"}});
+//@ sourceMappingURL=dojo_tr.js.map

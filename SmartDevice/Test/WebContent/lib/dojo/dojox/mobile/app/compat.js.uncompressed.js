@@ -1,5 +1,5 @@
 // wrapped by build app
-define("dojox/mobile/app/compat", ["dojo","dijit","dojox","dojo/require!dojox/mobile/compat"], function(dojo,dijit,dojox){
+define("dojox/mobile/app/compat", ["dijit","dojo","dojox","dojo/require!dojox/mobile/compat"], function(dijit,dojo,dojox){
 dojo.provide("dojox.mobile.app.compat");
 dojo.require("dojox.mobile.compat");
 

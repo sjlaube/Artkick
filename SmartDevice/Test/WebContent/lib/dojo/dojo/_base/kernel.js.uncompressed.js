@@ -174,12 +174,12 @@ define("dojo/_base/kernel", ["../has", "./config", "require", "module"], functio
 		}
 	}
 
-	has.add("dojo-debug-messages",
+	 0 && has.add("dojo-debug-messages",
 		// include dojo.deprecated/dojo.experimental implementations
 		!!config.isDebug
 	);
 	dojo.deprecated = dojo.experimental =  function(){};
-	if(has("dojo-debug-messages")){
+	if( 0 ){
 		dojo.deprecated = function(/*String*/ behaviour, /*String?*/ extra, /*String?*/ removal){
 			// summary:
 			//		Log a debug message to indicate that a behavior has been
@@ -228,11 +228,11 @@ define("dojo/_base/kernel", ["../has", "./config", "require", "module"], functio
 		};
 	}
 
-	 1 || has.add("dojo-modulePaths",
+	 0 && has.add("dojo-modulePaths",
 		// consume dojo.modulePaths processing
 		1
 	);
-	if( 1 ){
+	if( 0 ){
 		// notice that modulePaths won't be applied to any require's before the dojo/_base/kernel factory is run;
 		// this is the v1.6- behavior.
 		if(config.modulePaths){
@@ -245,11 +245,11 @@ define("dojo/_base/kernel", ["../has", "./config", "require", "module"], functio
 		}
 	}
 
-	 1 || has.add("dojo-moduleUrl",
+	 0 && has.add("dojo-moduleUrl",
 		// include dojo.moduleUrl
 		1
 	);
-	if( 1 ){
+	if( 0 ){
 		dojo.moduleUrl = function(/*String*/module, /*String?*/url){
 			// summary:
 			//		Returns a URL relative to a module.

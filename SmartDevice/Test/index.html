@@ -21,7 +21,7 @@ Copyright 2013, Zwamy, Inc.  All Rights Reserved
 <title>Artkick</title>
 <link rel="apple-touch-icon-precomposed"   href="images/ARTKICKlogoFULLCOLOR-APP_120.png" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
-<script type="text/javascript" src="WebContent/lib/dojo/dojo/dojo.js" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
+<script type="text/javascript" src="WebContent/lib/dojo/dojo/dojo.js?V1.26" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
 [{'name': 'jquery', 'location': 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1', 'main': 'jquery'},
 {'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},
 {'name':'maqettaSamples','location':'../../../samples'},{'name':'maqetta','location':'../../maqetta'},
@@ -87,9 +87,9 @@ require([
 @import "WebContent/lib/dojo/dojox/form/resources/Rating.css";
 @import "WebContent/lib/dojo/dojox/mobile/themes/common/domButtons/DomButtonRedBadge.css";@import "WebContent/app.css";
 </style>
-<script type="text/javascript" src="WebContent/app.js"></script>
-<script type="text/javascript" src="WebContent/Rating-ArtKick.js"></script> 
-<script type="text/javascript" src="WebContent/TabBar-ArtKick.js"></script>
+<script type="text/javascript" src="WebContent/app.js?v1.25"></script>
+<!--<script type="text/javascript" src="WebContent/Rating-ArtKick.js"></script>-->
+<!--<script type="text/javascript" src="WebContent/TabBar-ArtKick.js"></script>-->
 <!--<script type="text/javascript" src="WebContent/Carousel-ArtKick.js"></script>
 <script type="text/javascript" src="WebContent/CarouselItem-ArtKick.js"></script> -->
 <script type="text/javascript" src="WebContent/Browser-Detect.js"></script> 
@@ -138,10 +138,16 @@ float:left;margin-right:2px}
 		text-align: center;
 	}
 	.mblCarouselItemImage {
-
-		height:200px;
 		max-width:99%;
 		box-shadow:none;
+	}
+	
+	
+	.thumbDiv {
+		height:200px;
+        background-position: center;
+        background-repeat: no-repeat;
+    	background-size: contain;
 	}
 	
 	.imagediv {
@@ -159,6 +165,28 @@ float:left;margin-right:2px}
 		background-color:white;
 		}
 
+     .CarouselMeta {
+     	text-align:left;
+     }
+     
+    .mblCarouselItemImage.big{
+    	height:320px;
+        background-position: center;
+        background-repeat: no-repeat;
+    	background-size: contain;
+    	
+    }
+    
+
+    
+    .hidden{
+    	display:none;
+    }
+   
+    .CarouselMeta{
+    	padding:5px;
+    }
+
 
   
 	</style>
@@ -168,7 +196,7 @@ float:left;margin-right:2px}
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
+  ga('create', 'UA-44460273-2', 'artkick.net'); <!-- change this to -1 for production -->
   ga('send', 'pageview');
 
 </script>
@@ -367,8 +395,8 @@ Add user to player(s)</button>
 
 
 	<div   data-dojo-type="dojox/mobile/ToolBarButton" onclick="DonePersonalViewlists()"  style="float: left" data-dojo-props="arrow:'left'">Back</div>
-	<div   data-dojo-type="dojox/mobile/ToolBarButton"   onclick="CreateUserList()" style="float: right" >+</div>
-	<div   data-dojo-type="dojox/mobile/ToolBarButton"  id="btn1" onclick="EditViewlists()" style="float: right" >Edit</div>
+	<div   data-dojo-type="dojox/mobile/ToolBarButton"   onclick="CreateUserList()" style="float: right;width:30px" >+</div>
+	<div   data-dojo-type="dojox/mobile/ToolBarButton"  id="btn1" onclick="EditViewlists()" style="float: right;width:30px" >Edit</div>
  </div>
     <ul data-dojo-type="dojox/mobile/RoundRectList" id="MyViewLists"	data-dojo-props='editable:true'	     >
 	</ul>	     		   
@@ -577,14 +605,14 @@ Content
      <div  data-dojo-type="dojox/mobile/ToolBarButton" id="shufflebutton" data-dojo-props='toggle:"true", icon:"images/media-shuffle2.png"' onclick="mediashuffle()" style="float: right;"></div>
 	 <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/share_30x30.png"' onclick="showsharemenu()" style="float: left;"></div>
    </div>
-<div data-dojo-type="dojox/mobile/DataCarousel" onclick="bigimage()" id="ImageList" 
- data-dojo-props="numVisible:1,pageIndicator:false,selectable:false,navButton:false" ></div>
+<div data-dojo-type="dojox/mobile/DataCarousel" id="ImageList" 
+ data-dojo-props='height:"1500px",numVisible:1,pageIndicator:false,selectable:false,navButton:false' onclick="hidemenu()"></div>
 <!--<div id="LoadImages"   style=" text-align:center;background-color:#c5ccd3;z-index: 1500; width: 100%;height: 100%; position: absolute; top: 2px;visibility:hidden">
 <br><br>Loading Images, Please wait<br><br>
 <img  src="images/waitcircle.gif" alt="wait" >
 </div>  -->
 
-   <table  onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; border:0;height: auto; position: relative; left: 1em; top:-5em;width: 90%;">
+   <table class = "hidden" onclick="hidemenu()" style="border-collapse: collapse; table-layout: fixed; border:0;height: auto; position: relative; left: 1em; top:-5em;width: 90%;">
      <colgroup>
        <col></col>
      </colgroup>
@@ -813,7 +841,7 @@ Share your favorite images in personal viewlists and share them with your friend
     <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">  
 	<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: #56575A;">
-Artkick Version 1.25 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
+Artkick Version 1.26 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
   </span>
   <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: #56575A;">
 Server is
@@ -894,23 +922,22 @@ Connect TV Later</button>
 <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="  SEARCH ALL ARTKICK" id="searchbox" style="width:100%;height:30px;font-size:15px;position:relative;top:10px"
   data-dojo-props='ignoreCase: true, incremental:false,onSearch:usersearch'></input>
    <div data-dojo-type="dojox/mobile/ContentPane"  style="z-index:900; position: relative; top:20px" >
-    <img src="images/Categories/Top Lists_360x250.jpg" alt=" " onclick="gotoCategory(' Top Lists')" style=" width:50%;margin:-2px">
-	<img src="images/Categories/MyViewLists_360x250_v3.jpg" alt=" " onclick="gotoCategory('My Viewlists')" style=" width:50%;margin:-2px">
-    <img src="images/Categories/Architecture_360x250.jpg" alt=" " onclick="gotoCategory('Architecture')" style=" width:50%;margin:-2px">
-	<img src="images/Categories/Artists_360x250.jpg" alt=" " onclick="gotoCategory('Artists')" style=" width:50%;margin:-2px">
-    <img src="images/Categories/Collections_360x250.jpg" alt=" " onclick="gotoCategory('Collections')" style=" width:50%;margin:-2px">
-    <img src="images/Categories/Genre_360x250.jpg" alt=" " onclick="gotoCategory('Genre')" style=" width:50%;margin:-2px">
-    <img src="images/Categories/Historical_360x250.jpg" alt=" " onclick="gotoCategory('Historical')" style=" width:50%;margin:-2px">
-<!--    <img src="images/Categories/Illustrations.jpg" alt=" " onclick="gotoCategory('Illustrations')" style=" width:50%;margin:-2px">	-->
-    <img src="images/Categories/Landscapes_360x250.jpg" alt=" " onclick="gotoCategory('Landscapes')" style=" width:50%;margin:-2px">
-	<img src="images/Categories/Lifestyle_360x250.jpg" alt=" " onclick="gotoCategory('Lifestyle')" style=" width:50%;margin:-2px">
-	<img src="images/Categories/Museums_360x250.jpg" alt=" " onclick="gotoCategory('Museums')" style=" width:50%;margin:-2px">
-	<img src="images/Categories/Nature_360x250.jpg" alt=" " onclick="gotoCategory('Nature')" style=" width:50%;margin:-2px">
-    <img src="images/Categories/Paintings_360x250.jpg" alt=" " onclick="gotoCategory('Paintings')" style=" width:50%;margin:-2px">	
-    <img src="images/Categories/Photography_360x250.jpg" alt=" " onclick="gotoCategory('Photography')" style=" width:50%;margin:-2px">
-    <img src="images/Categories/Sculpture_360x250.jpg" alt=" " onclick="gotoCategory('Sculptures')" style=" width:50%;margin:-2px">
-     <img src="images/Categories/Space_360x250.jpg" alt=" " onclick="gotoCategory('Space Exploration')" style=" width:50%;margin:-2px">	
-     <img src="images/Categories/Sports_360x250.jpg" alt=" " onclick="gotoCategory('Sports')" style=" width:50%;margin:-2px">		
+    <img src="images/Categories/Top Lists_360x250.jpg" alt=" " onclick="gotoCategory(' Top Lists')" class="categoryclass" >
+	<img src="images/Categories/MyViewLists_360x250_v3.jpg" alt=" " onclick="gotoCategory('My Viewlists')" class="categoryclass">
+    <img src="images/Categories/Architecture_360x250.jpg" alt=" " onclick="gotoCategory('Architecture')" class="categoryclass">
+	<img src="images/Categories/Artists_360x250.jpg" alt=" " onclick="gotoCategory('Artists')" class="categoryclass">
+    <img src="images/Categories/Collections_360x250.jpg" alt=" " onclick="gotoCategory('Collections')" class="categoryclass">
+    <img src="images/Categories/Genre_360x250.jpg" alt=" " onclick="gotoCategory('Genre')" class="categoryclass">
+    <img src="images/Categories/Historical_360x250.jpg" alt=" " onclick="gotoCategory('Historical')" class="categoryclass">
+    <img src="images/Categories/Landscapes_360x250.jpg" alt=" " onclick="gotoCategory('Landscapes')" class="categoryclass">
+	<img src="images/Categories/Lifestyle_360x250.jpg" alt=" " onclick="gotoCategory('Lifestyle')" class="categoryclass">
+	<img src="images/Categories/Museums_360x250.jpg" alt=" " onclick="gotoCategory('Museums')" class="categoryclass">
+	<img src="images/Categories/Nature_360x250.jpg" alt=" " onclick="gotoCategory('Nature')" class="categoryclass">
+    <img src="images/Categories/Paintings_360x250.jpg" alt=" " onclick="gotoCategory('Paintings')" class="categoryclass">	
+    <img src="images/Categories/Photography_360x250.jpg" alt=" " onclick="gotoCategory('Photography')" class="categoryclass">
+    <img src="images/Categories/Sculpture_360x250.jpg" alt=" " onclick="gotoCategory('Sculptures')" class="categoryclass">
+     <img src="images/Categories/Space_360x250.jpg" alt=" " onclick="gotoCategory('Space Exploration')" class="categoryclass">	
+     <img src="images/Categories/Sports_360x250.jpg" alt=" " onclick="gotoCategory('Sports')" class="categoryclass">		
 
    </div>  
    <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarCategoryView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"'  style="border-bottom:none">

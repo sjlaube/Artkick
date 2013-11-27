@@ -685,7 +685,7 @@ define("dojo/parser", [
 			// If there are modules to load then require them in
 			if(mids.length){
 				// Warn that there are modules being auto-required
-				if(has("dojo-debug-messages")){
+				if( 0 ){
 					console.warn("WARNING: Modules being Auto-Required: " + mids.join(", "));
 				}
 				var r = options.contextRequire || require;

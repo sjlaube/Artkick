@@ -1,2 +1,3 @@
 //>>built
-define("dojox/mobile/bidi/Accordion",["dojo/_base/declare","./common"],function(_1,_2){return _1(null,{_setupChild:function(_3){if(this.textDir){_3.label=_2.enforceTextDirWithUcc(_3.label,this.textDir);}this.inherited(arguments);}});});
+define("dojox/mobile/bidi/Accordion",["dojo/_base/declare","./common"],function(b,c){return b(null,{_setupChild:function(a){this.textDir&&(a.label=c.enforceTextDirWithUcc(a.label,this.textDir));this.inherited(arguments)}})});
+//@ sourceMappingURL=Accordion.js.map
