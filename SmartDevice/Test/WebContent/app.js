@@ -40,7 +40,9 @@ require(["jquery",
         "dojox/mobile/Carousel",
         "dojox/mobile/LongListMixin",
         "dojox/mobile/ScrollableView",
-        "dojo/html"
+        "dojo/html",
+		"dojox/gesture/swipe",
+		"dojo/fx"
     ],
     function (
         $,
@@ -69,7 +71,9 @@ require(["jquery",
         Carousel,
         LongListMixin,
         ScrollableView,
-        html) {
+        html,
+		swipe,
+		fx) {
 
 
 
@@ -81,6 +85,7 @@ require(["jquery",
                 window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
                 //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
+
                 var selectListView = registry.byId("PlaylistView");
                 var selectArtistListView = registry.byId("ArtistlistView");
                 var selectMuseumListView = registry.byId("MuseumlistView");
@@ -120,6 +125,9 @@ require(["jquery",
                 window.listList2 = registry.byId("listList2");
                 window.artistList = registry.byId("ArtistList");
                 window.museumList = registry.byId("MuseumList");
+				window.viewlistbutton = registry.byId("viewlistbutton");
+				window.sharemenu2 = registry.byId("Sharemenu2");
+				
                 window.checkforparameters = true;
                 window.currentView = "Intro0";
                 window.currentView = "Intro0";
@@ -170,6 +178,7 @@ require(["jquery",
                 window.transitiontype = "slide";
                 window.firstimageview = "false"; // pop up hint screen only the first time
                 window.bigImg = false;
+				window.wipemenu = false;
 
 
 
@@ -190,6 +199,13 @@ require(["jquery",
                         }
                         c_value = unescape(c_value.substring(c_start, c_end));
                     }
+					if(c_value==null){
+                    	try{
+                    		c_value = Android.getCookie(c_name);
+                    	}catch(err){
+                    		
+                    	}
+                    }
                     return c_value;
                 }
 
@@ -201,6 +217,12 @@ require(["jquery",
                     exdate.setDate(exdate.getDate() + exdays);
                     var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
                     document.cookie = c_name + "=" + c_value;
+					try{
+                    	Android.setCookie(c_name,value);
+                    } catch(err){
+                    	
+                    }
+                    
                 }
 
 
@@ -287,6 +309,7 @@ require(["jquery",
 
                 window.gotoView = function (fromView, toView) {
                     //alert(fromView+' to '+toView);
+					hidemenu();
                     window.currentView = toView;
                     dojo.style(dojo.byId(fromView), "display", "none");
                     dojo.style(dojo.byId(toView), "display", "block");
@@ -359,7 +382,12 @@ require(["jquery",
                     //  alert(base + "getViewlist3?id=" + window.currList+"&email="+window.email+"&tarImage="+targImage+"&forward="+forward+"&numOfImg="+numOfImg+"&include=1");
                     //   alert("updating"+currList);
                     //   alert("switchview="+window.switchView);
-                    var url = base + "client/getViewlist4?id=" + window.currList + "&email=" + window.email + "&tarImage=" + targImage + "&forward=" + forward + "&numOfImg=" + numOfImg + "&include=1" + "&token=" + window.token;
+					//$("#viewlistbutton").html( "&#60; "+window.currCat);
+					var str='<img src="images/Arrows-Back-icon-white.png" alt=""><span style="position:relative;top:-6px;color:white;">'+window.currCat+"</span>"
+					$("#viewlistbutton").html( str);
+					//'<img src="images/Arrows-Back-icon-white.png" alt=""><span style="position:relative;top:-6px;"'+window.currCat+"</span>");
+										//console.log("window.currCat "+str);
+                    var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + targImage + "&forward=" + forward + "&numOfImg=" + numOfImg + "&include=1" + "&token=" + window.token;
                     if (window.shuffle) {
                         url += "&shuffle=1";
                     } else {
@@ -421,11 +449,11 @@ require(["jquery",
 
                                 if (i == viewlist["imageSet"].length - 1) {
                                     window.currStartImg = viewlist["imageSet"][0]["id"];
-                                    window.absStartImg = viewlist["images"][0];
+                                    window.absStartImg = viewlist["startImage"];
                                     window.currEndImg = viewlist["imageSet"][i]["id"];
-                                    window.absEndImg = viewlist["images"][viewlist["images"].length - 1];
+                                    window.absEndImg = viewlist["endImage"];
 
-                                    window.listSize = viewlist["images"].length;
+                                    window.listSize = viewlist["imageNum"];
 
                                     if (forward == 0) { // go backward
 
@@ -526,7 +554,7 @@ require(["jquery",
 
                 }
 
-
+				
 
                 window.updateImages = function (targImage) {
 
@@ -537,6 +565,7 @@ require(["jquery",
                     window.imageCurrStore = new ItemFileWriteStore({
                         data: imageData
                     });
+
                     //alert("update images");
                     if (window.justLogin || window.justRefresh) {
                         //  alert("justlogin");
@@ -556,9 +585,12 @@ require(["jquery",
                                     window.shuffle = (result["shuffle"] == "true");
                                     console.log("currList:" + window.currList + " currCat:" + window.currCat + " tarImage:" + window.tarImage);
                                     if (window.shuffle) {
-                                        dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
+									           $("#myshuffle").toggleClass("mblTabBarButtonLabel2");
+										       dojo.byId('shuffletile').innerHTML = "Turn off shuffle";
+                                 //       dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
                                     } else {
-                                        dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
+										       dojo.byId('shuffletile').innerHTML = "Turn on shuffle";
+                                   //     dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
                                     }
                                     //alert(window.fill);
                                     var switchValue = "off";
@@ -904,7 +936,7 @@ require(["jquery",
                                         // alert(this.id);
                                         gotoView('PlaylistView', 'blankview');
                                         window.currList = this.id;
-
+									
                                         window.switchView = true;
                                         updateImages(-1);
 
@@ -1478,13 +1510,24 @@ require(["jquery",
                 getDefaults();
                 checkCookie();
                 BrowserDetect.init();
+				$(".mblTabBarButtonLabel").each (function(i, obj){
+		
+				if(obj.innerHTML == "Shuffle")
+				{
+					console.log("found:"+obj.className);
+				obj.id="myshuffle";
+
+				}
+		
+		
+		})
                 dojo.byId("baseurlname").innerHTML = "DB:" + window.base.substring(7, 23);
                 console.log("database:" + window.base);
                 //	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS+regPlayerView+selectPlayerView+imageView+selectCatView+selectListView+optionsView+addUserView+removePlayerView+gridView);
 
                 on(regRokuView, "beforeTransitionIn",
                     function () {
-                        // window.currentView ="registernewroku";
+                        window.currentView ="registernewroku";
                         // window.updatePlayerLoop = setInterval(updatePlayers,1500); 
                     });
                 on(regnewplayer, "beforeTransitionIn",
@@ -1628,7 +1671,7 @@ require(["jquery",
                     function () {
                         window.currentView = "select_category";
                         //alert("Transition in!");
-                        dijit.registry.byId("tabcategory3").set('selected', true);
+                   //     dijit.registry.byId("tabcategory3").set('selected', true);
                         window.foundIndex = true;
                         window.justLogin = false;
                         hidemenu();
@@ -1641,7 +1684,7 @@ require(["jquery",
 
                     function () {
                         window.currentView = "PlaylistView";
-                        dijit.registry.byId("tabcategory2").set('selected', true);
+                       // dijit.registry.byId("tabcategory2").set('selected', true);
                         setTimeout(function () {
                             dijit.registry.byId("myTabBarPlaylistView").startup();
                         }, 1000);
@@ -1675,7 +1718,7 @@ require(["jquery",
 
                     function () {
                         window.currentView = "OptionsList";
-                        dijit.registry.byId("taboptions4").set('selected', true);
+                      //  dijit.registry.byId("taboptions4").set('selected', true);
                     });
                 /*              	window.foundIndex = true;
                 	window.justLogin = false;
@@ -1723,7 +1766,7 @@ require(["jquery",
                 on(gridView, "beforeTransitionIn",
                     function () {
                         window.currentView = "GridView";
-						dijit.registry.byId("gridshowing").set('selected', true);
+					    dijit.registry.byId("gridshowing").set('selected', true);
                         window.gridPages = Math.ceil(window.listSize / 20);
                         //   alert ("picturegrid, currlist="+window.currList+" number images="+window.listSize+" pages="+gridPages);
                         hidebutton("GridView", false);
@@ -1735,7 +1778,25 @@ require(["jquery",
                         window.targImageGrid = -1;
                         loadGrid(0); //first call load up the first page of grid
                     })
-
+				dojo.connect(Picturegrid, swipe.end,
+					function(e) {
+					
+					//Check and which which difference is bigger since
+                                //we only support up, down, left, right
+				if (Math.abs(e.dx) > Math.abs(e.dy)){
+					if (e.dx > 0){
+						console.log("left");
+						if(window.currGridPage>1)//check if there is previous page
+							loadGrid(-1);
+					}else{ 
+						console.log("right");
+						if(window.currGridPage<window.gridPages)
+							loadGrid(1);
+					}
+				}
+					//alert("swipe dx="+e.dx+" dy="+e.dy);
+					
+				}	)
 
                 window.hidebutton = function (node, hideMe) {
                     domStyle.set(dijit.registry.byId(node).domNode, {
@@ -1751,7 +1812,7 @@ require(["jquery",
                     var gridnext = dijit.registry.byId("GridNext");
                     forward = 1;
                     include = 1;
-                    //	alert("page="+page+" current grid page="+window.currGridPage);
+                    	//alert("page="+page+" current grid page="+window.currGridPage);
                     if (page == 0) {
                         window.targImageGrid = -1;
                         include = 1;
@@ -1807,9 +1868,25 @@ require(["jquery",
 
                     dojo.empty(Picturegrid);
                     var dim = 77; //iphone standard
-                    dim = Math.sqrt((window.innerHeight - 60) * (window.innerWidth - 40) / 20 * .8)
+					var ht;
+					var wd;
+					if (window.innerHeight > window.innerWidth)  // Portrait mode do 4x5
+					{
+						wd=window.innerWidth/4;
+						ht=(window.innerHeight-80)/5;
+					}
+					else //landscape mode do 5x4
+					{
+						wd=window.innerWidth/5;
+						ht=(window.innerHeight-80)/4;
+					}
+                    dim = Math.sqrt((window.innerHeight - 115) * (window.innerWidth - 0) / 20 * .8);
+					// always do 20, if width is greater than height then do 5x4 else 4x5  
                     //	dim=Math.min(Math.floor((window.innerHeight-40)/5)-5,Math.floor(window.innerWidth/4)-4);
                     //   console.log ("dim="+dim);
+					var remainder= window.innerWidth%dim;
+					   console.log ("ht:"+window.innerHeight+"Wd:"+window.innerWidth+"dim="+dim+"remainder:"+remainder);
+				//	dojo.style("Picturegrid", "left", remainder/2+"px");
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
@@ -1817,6 +1894,7 @@ require(["jquery",
                             for (var i in viewlist["imageSet"]) {
                                 //  alert("id="+viewlist["imageSet"][i]["id"]);
                                 var pic = dojo.create("img", {
+									className: "imageclass",
                                     id: viewlist["imageSet"][i]["id"],
                                     src: viewlist["imageSet"][i]["thumbnail"],
                                     onclick: function () {
@@ -1834,9 +1912,10 @@ require(["jquery",
 
 
                                     },
-                                    width: dim + "px",
-                                    height: dim + "px",
-                                    hspace: "1px"
+                                    width: wd + "px",
+                                    height: ht + "px",
+                                    hspace: "0px",
+									vspace: "0px"
 
                                 }, "Picturegrid");
 
@@ -2016,8 +2095,11 @@ require(["jquery",
                         window.btn1.set("label", "Done");
                         //	keyHandler = connect.connect(window.MyViewlist.domNode, "onkeydown", onKeydown);
                     } else {
+				
                         hideDeleteButton();
+							console.log("hidedelete");
                         window.MyViewlist.endEdit();
+						console.log("endedit");
                         window.btn1.set("label", "Edit");
                         //	connect.disconnect(keyHandler);
                     }
@@ -2213,6 +2295,7 @@ function showfullimage() {
 
 function bigimage() {
     //$('.mblCarouselItemImage.big').css('height',$(window).height()+"px");
+	gotoView('GridView','ImageView');
     adjustSize();
     window.bigImg = true;
     $("#myTabBar").hide();
@@ -2232,6 +2315,7 @@ function smallimage() {
     $(".thumbDiv").show();
     $(".mblCarouselItemImage.big").hide();
     $("#ImageList").css("margin-top", "0px");
+	 dijit.registry.byId("tabnowshowing").set('selected', true);
 }
 
 function destroyiframe() {
@@ -2260,14 +2344,46 @@ function showviewlistmenu() {
 }
 
 function showsharemenu() {
+	if(window.wipemenu)
+	{
+		showmenu();
+	}
     if (window.sharemenushow)
         hidemenu();
-    else {
+    else { // calculate the right spot for this
+
         dijit.registry.byId("Sharemenu2").show();
         //dojo.style("Sharemenu2","display", "block");
 
         window.sharemenushow = true;
     }
+}
+
+function showmenu() {
+	
+	//console.log("showmenu width:"+$(window).width()+"px");
+	dojo.style("wipemenu", "left", $(window).width()-200+"px");
+	if(window.wipemenu)
+	{
+		window.wipemenu=false;
+		dojo.style("wipemenu", "height", "");
+		dojo.style("wipemenu", "display", "block");
+
+		var wipeArgs = {
+		node: "wipemenu"
+		};
+		dojo.fx.wipeOut(wipeArgs).play();
+	}
+	else
+	{	
+		hidemenu();
+		window.wipemenu=true;
+		dojo.style("wipemenu","display","none");
+		var wipeArgs = {
+		node: "wipemenu"
+		};
+		dojo.fx.wipeIn(wipeArgs).play();
+	}
 }
 
 function showviewlistmenu2() {
@@ -2300,6 +2416,10 @@ function hidemenu() {
     window.viewmenushow = false;
     window.systemmenushow2 = false;
     window.viewmenushow2 = false;
+	if(window.wipemenu)
+	{
+		showmenu();
+	}
 
 
 }
@@ -2324,7 +2444,14 @@ function swapview(newview) {
 
 
 }
-
+function callmyListView(){
+if(window.wipemenu)
+	{
+		showmenu();
+	}
+var curview=dijit.registry.byId(window.currentView);
+curview.performTransition('MylistView',1,'slide',null);
+}
 function goToShare() {
     var currView = dijit.registry.byId("ImageView");
     var mycurrView = currView.getShowingView();
@@ -2378,6 +2505,11 @@ function setCookie(c_name, value, exdays) {
     exdate.setDate(exdate.getDate() + exdays);
     var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
     document.cookie = c_name + "=" + c_value;
+	try{
+       Android.setCookie(c_name,value);
+    } catch(err){
+                    	
+    }
 }
 
 
@@ -2405,6 +2537,7 @@ function cleanUp() {
     window.loadartistview = false;
     window.loadmuseumview = false;
     window.loadcatview = false;
+	window.wipemenu = false;
     $("#addPlayerEmail").attr('value', '');
     getDefaults();
 }
@@ -2512,7 +2645,12 @@ function setAutoIntro(flag) {
 }
 
 function gotoCategory(where) {
+	if(where != 0)
     window.currCat = where;
+	else
+	{
+	   dojo.style(dojo.byId("ImageView"), "display", "none");
+	}
 
 
     goToViewlists();
@@ -2535,8 +2673,31 @@ function adjustSize() {
     $('.mblCarouselItemImage.big').css('width', $(window).width() + "px");
     $('.mblCarouselSlot.mblCarouselItem').css('width', $(window).width() + 4 + "px");
     $('.mblCarouselSlot.mblCarouselItem').css('margin-left', "0%");
-	$('.thumbDiv').css('height',0.40*$(window).height()+"px");
+	$('.thumbDiv').css('height',0.5*$(window).height()+"px");
 	$(".categoryclass").css("margin","-2px");
+	$('.mblToolBarButton').css('background-color','transparent');
+	$('.mblToolBarButton').css('background-image','none');
+	$('.mblToolBarButton').css('border-width','0px');
+	$('.mblToolBarButton').css('border-style','none');
+	$('.mblToolBarButton').css('box-shadow','none');
+	$('.mblToolBarButton').css('margin-left','-5px');
+	$('.mblToolBarButton').css('margin-top','10px');
+	$('.mblToolBarButton').css('font-family',"Roboto");
+	$('.mblToolBarButton').css('font-weight',"700");
+	$('.mblToolBarButton').css('font-size',"15px");
+
+ /*   $('.mblTabBarButton').css('background-color','transparent');
+	//$('.mblTabBarButton').css('background-image','none');
+	$('.mblToolBarButton').css('background-color','transparent');
+	$('.mblTabBar').css('background-color','transparent');
+	$('.mblTabBar').css('background-image','none');
+	$('.mblTabBar').css('border-style','none');
+	$('.mblTabBar').css('padding','0px');*/
+	$('.mblTabBar').css('height','34px');
+		$('.mblTabBarButton').css('font-family',"Roboto");
+	$('.mblTabBarButton').css('font-weight',"700");
+	$('.mblTabBarButton').css('font-size',"15px");
+	$("#ImageViewHeader").addClass("mblHeadingCenterTitle");
    if($(window).width()>700)
    {
    	 $(".categoryclass").css("width","25%");
@@ -2545,10 +2706,12 @@ function adjustSize() {
 	else if ($(window).width()>500)
 	{
 	   	 $(".categoryclass").css("width","33.3%");
+
 	}
 	else
 	{
 	   	 $(".categoryclass").css("width","50%");
+
 	}
 }
 

@@ -164,8 +164,11 @@ function CreateUserList()
  
  function DonePersonalViewlists()
  {
+ console.log("donePersonalViewlists");
  EditViewlists(false);
+
  hidemenu();
+
   gotoView("MylistView","ImageView");
  
  }

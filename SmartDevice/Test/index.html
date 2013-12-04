@@ -20,8 +20,9 @@ Copyright 2013, Zwamy, Inc.  All Rights Reserved
 
 <title>Artkick</title>
 <link rel="apple-touch-icon-precomposed"   href="images/ARTKICKlogoFULLCOLOR-APP_120.png" />
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
-<script type="text/javascript" src="WebContent/lib/dojo/dojo/dojo.js?V1.26" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
+<script type="text/javascript" src="WebContent/lib/dojo/dojo/dojo.js?V1.27" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
 [{'name': 'jquery', 'location': 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1', 'main': 'jquery'},
 {'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},
 {'name':'maqettaSamples','location':'../../../samples'},{'name':'maqetta','location':'../../maqetta'},
@@ -80,7 +81,9 @@ require([
  "dojox/mobile/Carousel",
   "dojox/mobile/TabBarButton",
   "dojox/mobile/SearchBox",
-  "clipart/Facebook"
+  "clipart/Facebook",
+  	"dojo/dom",
+  	"dojo/dom-class"
 ]);
 </script>
 <style>@import "WebContent/themes/claro/claro.css";@import "WebContent/lib/shapes/shapes.css";
@@ -141,7 +144,25 @@ float:left;margin-right:2px}
 		max-width:99%;
 		box-shadow:none;
 	}
+	.mblButton{
+		background-image: none !important;
+		<!--background-color: #7b90ab !important; -->
+		
 	
+	}
+	
+
+	.claro .dijitButton .dijitButtonNode {
+		background-image: none !important;
+		background-color: transparent !important;
+		border:none; !important;
+		box-shadow:none;
+		color: #568BFF;
+	}
+	.mblHeading {
+		background-image: none;
+		background-color:#7b90ab;
+	}
 	
 	.thumbDiv {
 		height:200px;
@@ -149,7 +170,58 @@ float:left;margin-right:2px}
         background-repeat: no-repeat;
     	background-size: contain;
 	}
+	.mblTabBarSegmentedControl .mblTabBarButton {
+		background-image: none;
+		background-color: #7b90ab !important;
+		color: black;
+		box-shadow: none;
+
+	}
 	
+	.mblTabBarSegmentedControl .mblTabBarButtonSelected {
+		background-image: none;
+ 		background-color: #486A9A !important;
+ 
+}
+	.mblTabBar{
+		text-shadow: none;
+		height: 30px !important;
+		border-top: none;
+		border-bottom: none;
+	}
+	.mblTabBarTabBar {
+		background-image: none;
+		background-color: #7b90ab !important;
+	}
+	
+	.mblTabBarTabBar .mblTabBarButtonLabel {
+		font-family: "Roboto";
+		font-weight: 700;
+		font-size: 15px;
+		color: #4F4AFF;
+	}
+
+	.mblTabBarTabBar .mblTabBarButtonSelected {
+		border-radius: 3px;
+		background-color: #7b90ab !important;
+		background-image: none;
+		color: none;
+	}
+  
+	.mblTabBarTabBar .mblTabBarButtonSelected .mblTabBarButtonLabel {
+		color: white;
+	}
+	  .mblTabBarButtonLabel2 {
+		color: red !important;
+	}
+	.mblTabBarButton  .shuffleclass{
+		color: red;
+	}
+	
+		.mblTabBarTabBar .shuffleclass{
+		color: red;
+	}
+
 	.imagediv {
 		float:left;
 		background-color:white;
@@ -186,9 +258,31 @@ float:left;margin-right:2px}
     .CarouselMeta{
     	padding:5px;
     }
+	.mblToggleButton {
+	background-image:none;
+	}
+	
+	.imageclass{
+	margin-top:-5px;
+	}
+	
+	.wipestyle {
+	border-bottom:1px solid black;
+	height:45px;
+	line-height:45px;
+	vertical-align:middle;
+	color:white;
+	position:relative;
+	text-indent:15px
+	}
+	.backstyle {
+	position:relative;
+	top: -6px;
+	color: white
+	}
+	
 
 
-  
 	</style>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -263,7 +357,7 @@ float:left;margin-right:2px}
    </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="old" >
    <div  data-dojo-type="dojox/mobile/Heading"  data-dojo-props='label:"Browse",fixed:"top"'>
-       <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left'" onclick="gotoView('select_category','ImageView')" style="float: left;" >Back</div>
+       <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left'" onclick="gotoView('select_category','ImageView')" style="float: left;" >&#60; Back</div>
 
    </div>
 <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="SEARCH ALL ARTKICK" id="searchboxxx" style="position:relative;width:100%;height:40px;font-size:20px"
@@ -272,8 +366,10 @@ float:left;margin-right:2px}
    
  </div>
  <div data-dojo-type="dojox/mobile/View" id="Options" style="height: 100%;;background-color: #62adc9;">
-   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Settings"'>
-    <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="arrow:'left', transition:'slide', transitionDir:'-1',moveTo:'OptionsList'">Back</div>
+   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"TV Settings"'>
+    <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="transition:'slide', transitionDir:'-1',moveTo:'OptionsList'">
+	<img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Settings</span></div>
+
   </div>
    <div data-dojo-type="dojox/mobile/RoundRect" style="border: none; margin-top: 0px; margin-bottom: 0px; position: relative; width: auto; top: 15px;">
    
@@ -316,7 +412,8 @@ float:left;margin-right:2px}
  </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="add_user_player" style="background-color: #62adc9;">
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Add User to TV",moveTo:"ImageView",fixed:"top"'>
-    <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="arrow:'left',moveTo:'OptionsList',transition:'slide', transitionDir:'-1'">Back</div>
+    <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="moveTo:'OptionsList',transition:'slide', transitionDir:'-1'">
+	<img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Settings</span></div>
   </div>
    <div data-dojo-type="dojox/mobile/RoundRect" style="width: auto; height: auto;">
      <input type="text" data-dojo-type="dojox/mobile/TextBox" id="addPlayerEmail" style="position: relative; height: 26px; top: 3px; width: 179px;" placeHolder=" user email"></input>
@@ -339,7 +436,8 @@ Add user to player(s)</button>
 </div>
  <div data-dojo-type="dojox/mobile/View" id="reset_password" style="height:100%">
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Reset Password'" >
-    <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="arrow:'left',moveTo:'Login',transition:'slide', transitionDir:'-1'">Back</div>
+    <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="moveTo:'Login',transition:'slide', transitionDir:'-1'">
+	<img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
   </div>
    <div data-dojo-type="dojox/mobile/RoundRect" style="width: auto;">
      <input type="text" data-dojo-type="dojox/mobile/TextBox" title="UserID" id="recoveryEmail" style="float: left; height: 21px; width: 250px; position: relative; left: 1em;" placeHolder=" email address"></input>
@@ -351,7 +449,7 @@ Add user to player(s)</button>
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="PlaylistViewold"  >
    <div id="oldPlaylistHeader"  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Viewlists',fixed:'top'">
-	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="arrow:'left',moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Categories</div>
+	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Categories</div>
    </div>       			  
    <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="listList"     >
    </ul>
@@ -364,7 +462,7 @@ Add user to player(s)</button>
   </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="ArtistlistView"  >
    <div id="PlaylistHeader2"  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Artists',fixed:'top'">
-	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="arrow:'left',moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Categories</div>
+	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Categories</div>
    </div>       			  
    <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="ArtistList"  data-dojo-mixins="dojox/mobile/LongListMixin"   >
    </ul>
@@ -378,7 +476,7 @@ Add user to player(s)</button>
   </div>
    <div data-dojo-type="dojox/mobile/ScrollableView" id="MuseumlistView"  >
    <div id="PlaylistHeader3"  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Museums',fixed:'top'">
-	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="arrow:'left',moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Categrories</div>
+	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Categrories</div>
    </div>       			  
    <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="MuseumList"  data-dojo-mixins="dojox/mobile/LongListMixin"   >
    </ul>
@@ -394,7 +492,8 @@ Add user to player(s)</button>
    <div   data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Add to...',fixed:'top'">
 
 
-	<div   data-dojo-type="dojox/mobile/ToolBarButton" onclick="DonePersonalViewlists()"  style="float: left" data-dojo-props="arrow:'left'">Back</div>
+	<div   data-dojo-type="dojox/mobile/ToolBarButton" onclick="DonePersonalViewlists()"  style="float: left" >
+	<img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
 	<div   data-dojo-type="dojox/mobile/ToolBarButton"   onclick="CreateUserList()" style="float: right;width:30px" >+</div>
 	<div   data-dojo-type="dojox/mobile/ToolBarButton"  id="btn1" onclick="EditViewlists()" style="float: right;width:30px" >Edit</div>
  </div>
@@ -412,7 +511,8 @@ Create new Viewlist
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="select_player" >
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Select Player',moveTo:'OptionsList', fixed:'top'">
-    <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left" data-dojo-props="arrow:'left',moveTo:'ImageView',transition:'slide',transitionDir:'-1'">Back</div>
+    <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left" data-dojo-props="moveTo:'OptionsList',transition:'slide',transitionDir:'-1'">
+	<img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Settings</span></div>
   </div>
   
   <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="playerList" data-dojo-props='select:"multiple"' style="position:relative;top:20px" ></ul>
@@ -421,7 +521,8 @@ Create new Viewlist
  <div data-dojo-type="dojox/mobile/View" id="registeruser" style="height: 100%;z-index:950;background-color: #62adc9;">
 
 <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Register With Artkick"'>
- <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='moveTo:"Intro0",transition:"none", transitionDir:"-1",arrow:"left"' style="float: left;" >Back</div>
+ <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='moveTo:"Intro0",transition:"none", transitionDir:"-1"' style="float: left;" >
+ <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
 </div>
 <div data-dojo-type="dojox/mobile/RoundRect" style="border: none; margin-top: 0px; margin-bottom: 0px; position: relative; width: auto; top: 15px;">
     <img src="images/ARTKICKlogo_sig150.png" alt=" " style="position: relative;left:4em; z-index: 900;">   
@@ -442,7 +543,8 @@ Create new Viewlist
 
  <div data-dojo-type="dojox/mobile/View" id="LogOff" style="height: 100%;z-index:950;background-color: #62adc9;">
   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Logoff'">
-   <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left"  data-dojo-props='arrow:"left",moveTo:"OptionsList",transition:"slide", transitionDir:"-1"'>Back</div>
+   <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left"  data-dojo-props='moveTo:"OptionsList",transition:"slide", transitionDir:"-1"'>
+   <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Settings</span></div>
  </div>
   <div data-dojo-type="dojox/mobile/RoundRect" style="width: 271px;height:180px">
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: relative; top: 3em; left: 5px;">This will log you out of ArtKick.  You will have to login again when you want to use ArtKick.</span>
@@ -454,7 +556,8 @@ Logoff</button>
   </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="registernewroku"  style="height: 100%;background-color: #62adc9">
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New Roku',fixed:'top'">
-     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="arrow:'left', moveTo:'RegisterNew',transition:'slide',transitionDir:'-1'" >Back</div>
+     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="moveTo:'RegisterNew',transition:'slide',transitionDir:'-1'" >
+	 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
    </div>
    <div data-dojo-type="dojox/mobile/RoundRect" style="width: 280px; position: relative;  top: 0em;">
    <span data-dojo-type="shapes/Text" style="font-size: 14px; left: 19px; top: 0.5px;">Click this button to install the Artkick application on your Roku.  After the install completes return to this page.</span>
@@ -469,7 +572,8 @@ Click to Continue</button>
 </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="registernewroku2"  style="height: 100%;background-color: #62adc9">
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New Roku 2',fixed:'top'">
-     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="arrow:'left', moveTo:'registernewroku',transition:'slide',transitionDir:'-1'" >Back</div>
+     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="moveTo:'registernewroku',transition:'slide',transitionDir:'-1'" >
+	 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
    </div>
 
   
@@ -488,7 +592,8 @@ Click to Continue</button>
  
   <div data-dojo-type="dojox/mobile/View" id="registernewTV"  style="height: 100%;">
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New SmartTV',fixed:'top'">
-     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="arrow:'left', moveTo:'RegisterNew',transition:'slide',transitionDir:'-1'" >Back</div>
+     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="moveTo:'RegisterNew',transition:'slide',transitionDir:'-1'" >
+	 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
    </div>
 
    <div data-dojo-type="dojox/mobile/ContentPane" style="height: 100%;z-index:950;background-color: #62adc9;">
@@ -516,7 +621,8 @@ and a name for your TV
  </div>
  <div data-dojo-type="dojox/mobile/View" id="registrationHelp" style="height: 100%;">
  <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Registration Help',fixed:'top'">
-     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="arrow:'left', moveTo:'registernewTV',transition:'slide',transitionDir:'-1'" >Back</div>
+     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="moveTo:'registernewTV',transition:'slide',transitionDir:'-1'" >
+	 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
    </div>
   <div data-dojo-type="dojox/mobile/ContentPane" style="height: 100%;z-index:950;background-color: #62adc9;">
 
@@ -538,7 +644,8 @@ What type of SmartTV do you have?
  </div>
 <div data-dojo-type="dojox/mobile/View" id="registernewchromecast" style="height: 100%;">
    <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New ChromeCast'" >
-     <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float:left;" data-dojo-props="arrow:'left', transition:'slide',transitionDir:'-1',moveTo:'RegisterNew'">Back</div>
+     <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float:left;" data-dojo-props="transition:'slide',transitionDir:'-1',moveTo:'RegisterNew'">
+	 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
    </div>
    <div data-dojo-type="dojox/mobile/ContentPane" style="width: 100%; position: relative;top:2em;">
    <div data-dojo-type="shapes/Text"  style="text-align:center;font-size: 18px">
@@ -549,7 +656,8 @@ What type of SmartTV do you have?
 </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="removeplayer" style="height: 100%;z-index:950;background-color: #62adc9;" >
  <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='moveTo:"select_player", label:"Remove TV"'>
-  <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="arrow:'left',moveTo:'OptionsList',transition:'slide',transitionDir:'-1'">Back</div>
+  <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="moveTo:'OptionsList',transition:'slide',transitionDir:'-1'">
+  <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Settings</span></div>
 </div>
  <div data-dojo-type="dojox/mobile/RoundRect" style="width: auto; height: auto;">
      <label>
@@ -568,20 +676,16 @@ What type of SmartTV do you have?
 
 
 
-<div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:false,left:"0px",top:"21px"' 
-     style="border:0px!important;outline:none!important;height:140px;width:250px;background-image:none!important">
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:false,top:"21px"' 
+     style="border:0px!important;outline:none!important;height:140px;width:200px;background-image:none!important;position:absolute">
 
-<ul  data-dojo-type="dojox/mobile/IconMenu" data-dojo-props='cols:3' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
+<ul  data-dojo-type="dojox/mobile/IconMenu" id="shareiconmenu" data-dojo-props='cols:2' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
 	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="facebook()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true,label:"Facebook",icon:"images/FB-f-Logo__blue_50.png"'  ></li>
 	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="twitter()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true, label:"Twitter", icon:"images/twitter-share.png"' ></li>
 	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="emailShare()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true, label:"Mail", icon:"images/email-share.png"' ></li>
-	<li data-dojo-type="dojox/mobile/IconMenuItem" style="border:none!important"
-	  data-dojo-props='closeOnAction:true, label:"Feedback", moveTo:"TalkToArt", icon:"images/ARTKICKlogoFULLCOLOR-APP_50x50.png"' ></li>
-	<li data-dojo-type="dojox/mobile/IconMenuItem" style="border:none!important" 
-	  data-dojo-props='closeOnAction:true, label:"Add to Viewlist", moveTo:"MylistView",icon:"images/folder_50x50.png"' ></li>
 	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="hidemenu()" style="border:none!important" 
 	  data-dojo-props='closeOnAction:true, label:"Close",icon:"images/closebutton.png"' ></li>
 
@@ -601,10 +705,11 @@ Content
 </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index=901"  >
    <div id="ImageViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="font-size: 14px; line-height:150%">
+	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="viewlistbutton" class="clearbutton" data-dojo-props='toggle:"true", ' onclick="gotoCategory('0')" style="float: left;">GoToCategory</div>
+   
 
-     <div  data-dojo-type="dojox/mobile/ToolBarButton" id="shufflebutton" data-dojo-props='toggle:"true", icon:"images/media-shuffle2.png"' onclick="mediashuffle()" style="float: right;"></div>
-	 <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/share_30x30.png"' onclick="showsharemenu()" style="float: left;"></div>
-   </div>
+	      <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/3lineicon_menu.png"' style="float: right;top:-4px;" onclick="showmenu()"></div> 
+ </div>
 <div data-dojo-type="dojox/mobile/DataCarousel" id="ImageList" 
  data-dojo-props='height:"1500px",numVisible:1,pageIndicator:false,selectable:false,navButton:false' onclick="hidemenu()"></div>
 <!--<div id="LoadImages"   style=" text-align:center;background-color:#c5ccd3;z-index: 1500; width: 100%;height: 100%; position: absolute; top: 2px;visibility:hidden">
@@ -673,11 +778,12 @@ Content
        </tr>
      </tbody>
    </table>
- <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBar" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always",center:true'  style="border-bottom:none">
-		<li data-dojo-type="dojox.mobile.TabBarButton" onclick="refreshView()"  id="tabnowshowing" style="color:white;font-size:11px" >Now Showing</li>
+ <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBar" data-dojo-props='fixed:"bottom",center:true'  style="border-bottom:none">
+		<li data-dojo-type="dojox.mobile.TabBarButton" onclick="refreshView()"  id="tabnowshowing" style="color:white;font-size:11px" >Details</li>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"GridView"' style="color:white;font-size:11px" >Grid</li>
-		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabcategory" data-dojo-props='moveTo:"select_category"' style="color:white;font-size:11px" >Browse</li>
-		<li data-dojo-type="dojox.mobile.TabBarButton"  id="taboptions" data-dojo-props='moveTo:"OptionsList"'   style="color:white;font-size:11px" >Settings</li>
+		<li data-dojo-type="dojox.mobile.TabBarButton"  onclick="bigimage()" style="color:yellow;font-size:11px" >FullScreen</li>
+		<li data-dojo-type="dojox.mobile.TabBarButton"  id="shuffletab" onclick="mediashuffle()"  >Shuffle</li>
+
 	</ul> 
  </div>
  
@@ -753,7 +859,8 @@ Share your favorite images in personal viewlists and share them with your friend
 </div>
 <div data-dojo-type="dojox/mobile/ScrollableView" id="AccountSettings" style="height: 100%;z-index:950;background-color: #62adc9;">
   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Account Settings",fixed:"top"'>
-   <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left',moveTo:'OptionsList', transition:'slide',transitionDir:'-1'" style="float: left;">Back</div>
+   <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="moveTo:'OptionsList', transition:'slide',transitionDir:'-1'" style="float: left;">
+   <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Settings</span></div>
  </div>
   <div data-dojo-type="dojox/mobile/RoundRect" style="width: 285px; height: auto;">
    <label style="position: relative; left: 4em;">
@@ -783,7 +890,8 @@ Share your favorite images in personal viewlists and share them with your friend
 <div data-dojo-type="dojox/mobile/ScrollableView"  id="OptionsList" style="height: auto;">
   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Settings"'>
    
-   <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="arrow:'left',moveTo:'ImageView',transition:'slide',transitionDir:'-1'">Back</div>
+   <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="moveTo:'ImageView',transition:'slide',transitionDir:'-1'">
+   <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle" >Details</span></div>
  <!--  <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: right;" data-dojo-props="moveTo:'MylistView'">new viewlist</div> -->
     
 
@@ -809,16 +917,17 @@ Share your favorite images in personal viewlists and share them with your friend
      data-dojo-props='moveTo:"quickhint"'>Hint</li>
 </ul>
 
- <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBar4" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"' style="border-bottom:none">
+ <!-- <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBar4" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"' style="border-bottom:none">
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabnowshowing4" data-dojo-props='moveTo:"ImageView"' style="color:white;font-size:11px" >Now Showing</li>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"GridView"' style="color:white;font-size:11px" >Grid</li>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabcategory4" data-dojo-props='moveTo:"select_category"' style="color:white;font-size:11px" >Browse</li>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="taboptions4" data-dojo-props='moveTo:"OptionsList"'  style="color:white;font-size:11px"  >Settings</li>
-	</ul> 
+	</ul> -->
  </div>
 <div data-dojo-type="dojox/mobile/ScrollableView"  id="RegisterNew" style="height: auto;">
   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Connect New TV"'>
-   <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="arrow:'left',moveTo:'OptionsList',transition:'slide',transitionDir:'-1'">Back</div>
+   <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="moveTo:'OptionsList',transition:'slide',transitionDir:'-1'">
+   <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Settings</span></div>
 
 
  </div>
@@ -836,12 +945,13 @@ Share your favorite images in personal viewlists and share them with your friend
 </div>
 <div id="About" data-dojo-type="dojox/mobile/View" style="height: 100%;z-index:950;background-color: #62adc9;">
 <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"About"'>
-   <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="arrow:'left',moveTo:'OptionsList',transition:'slide',transitionDir:'-1'">Back</div>
+   <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="moveTo:'OptionsList',transition:'slide',transitionDir:'-1'">
+   <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Settings</span></div>
  </div>
     <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">  
 	<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: #56575A;">
-Artkick Version 1.26 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
+Artkick Version 1.27 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
   </span>
   <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: #56575A;">
 Server is
@@ -849,23 +959,24 @@ Server is
   </div>
 <div id="GridView" data-dojo-type="dojox/mobile/ScrollableView" >
 <div  id="GridViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Grid View"' style="font-size: 14px; line-height:150%">
-   <div  data-dojo-type="dojox/mobile/ToolBarButton" id="GridPrevious" onclick="loadGrid(-1)" style="float: left;" data-dojo-props="arrow:'left'">Previous</div>
-   <div  data-dojo-type="dojox/mobile/ToolBarButton"  id="GridNext" onclick="loadGrid(1)" style="float: right;" data-dojo-props="arrow:'right'">Next</div>
+   <div  data-dojo-type="dojox/mobile/ToolBarButton" id="GridPrevious" onclick="loadGrid(-1)" style="float: left;" >Previous</div>
+   <div  data-dojo-type="dojox/mobile/ToolBarButton"  id="GridNext" onclick="loadGrid(1)" style="float: right;" >Next</div>
  </div>
 
   <div data-dojo-type="dojox/mobile/ContentPane" id="Picturegrid" style="z-index:900; position: relative; top:10px" ></div>
-   <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarGridView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"'  style="border-bottom:none">
-		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"ImageView"' style="color:white;font-size:11px" >Now Showing</li>
+   <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarGridView" data-dojo-props='fixed:"bottom",center:"true"'  style="border-bottom:none">
+		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"ImageView"' style="color:white;font-size:11px" >Details</li>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="gridshowing" data-dojo-props='moveTo:"GridView"' style="color:white;font-size:11px" >Grid</li>
-		<li data-dojo-type="dojox.mobile.TabBarButton" data-dojo-props='moveTo:"select_category", selected:"true"' style="color:white;font-size:11px" >Browse</li>
-		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"OptionsList"' style="color:white;font-size:11px"  >Settings</li>
+		<li data-dojo-type="dojox.mobile.TabBarButton"  onclick="bigimage()" style="color:white;font-size:11px" >FullScreen</li>
+		
 	</ul>  
 
 </div>
 <div data-dojo-type="dojox/mobile/View" id="TalkToArt" >
 
 <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Talk to Artkick"'>
- <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='moveTo:"ImageView",transition:"slide", transitionDir:"-1",arrow:"left"' style="float: left;" >Back</div>
+ <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='moveTo:"ImageView",transition:"slide", transitionDir:"-1"' style="float: left;" >
+ <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Details</span></div>
 </div>
 
 
@@ -913,12 +1024,26 @@ Connect TV Later</button>
 
 </div>
 </div>
+   <div id="wipemenu" style="width:200px;position:absolute;top:44px;left:300px;z-index:1000;display:none;background-color:#7b90ab">
+<div class="wipestyle" onclick="showsharemenu()" > Share
+</div>
+<div class="wipestyle" id="shuffletile" onclick="mediashuffle()"> Shuffle
+</div>
+<div class="wipestyle" onclick="callmyListView()"> Add to viewlist
+</div>
+<div class="wipestyle" onclick="gotoView(window.currentView,'OptionsList')"> Settings
+</div>
+<div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')"> Send Feedback
+</div>
+   </div>
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="select_category" >
    <div  data-dojo-type="dojox/mobile/Heading"  data-dojo-props='label:"Browse",fixed:"top"'>
-       <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="arrow:'left',moveTo:'ImageView',transition:'slide',  transitionDir:'-1'"  style="float: left;" >Back</div>
+  <!--     <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="moveTo:'ImageView',transition:'slide',  transitionDir:'-1'"  style="float: left;" >&#60; Back</div>
+	      <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/3lineicon_menu.png"' style="float: right;" onclick="showmenu()"></div> -->
 
    </div>
+
 <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="  SEARCH ALL ARTKICK" id="searchbox" style="width:100%;height:30px;font-size:15px;position:relative;top:10px"
   data-dojo-props='ignoreCase: true, incremental:false,onSearch:usersearch'></input>
    <div data-dojo-type="dojox/mobile/ContentPane"  style="z-index:900; position: relative; top:20px" >
@@ -940,25 +1065,26 @@ Connect TV Later</button>
      <img src="images/Categories/Sports_360x250.jpg" alt=" " onclick="gotoCategory('Sports')" class="categoryclass">		
 
    </div>  
-   <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarCategoryView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"'  style="border-bottom:none">
+   <!--<ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarCategoryView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"'  style="border-bottom:none">
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabnowshowing3" data-dojo-props='moveTo:"ImageView"' ><a style="color:white;font-size:11px" >Now Showing</a></li>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"GridView"'><a style="color:white;font-size:11px" >Grid</a></li>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabcategory3" data-dojo-props='moveTo:"select_category", selected:"true"'><a style="color:white;font-size:11px" >Browse</a></li>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabshare3" data-dojo-props='moveTo:"OptionsList"' ><a style="color:white;font-size:11px"  >Settings</a></li>
-	</ul> 
+	</ul> -->
  </div>
 <div data-dojo-type="dojox/mobile/ScrollableView" id="PlaylistView"  >
    <div  id="PlaylistHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Viewlists',fixed:'top'">
-	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="arrow:'left',moveTo:'select_category',transition:'slide',  transitionDir:'-1'">Browse</div>
+	 <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: left" data-dojo-props="moveTo:'select_category',transition:'slide',  transitionDir:'-1'">
+<img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Browse</span></div>
    </div>       			  
    <ul data-dojo-type="dojox/mobile/ContentPane" id="listList2" style="z-index:900; position: relative; width:100%;left:-30px;margin-right:0px;top:0px" >
    </ul>
-   <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarPlaylistView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"'  style="border-bottom:none;z-index:910">
+   <!--<ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarPlaylistView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"'  style="border-bottom:none;z-index:910">
 		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"ImageView"' ><a style="color:white;font-size:11px" >Now Showing</a></li>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"GridView"'><a style="color:white;font-size:11px" >Grid</a></li>
 		<li data-dojo-type="dojox.mobile.TabBarButton" id="tabcategory2" data-dojo-props='moveTo:"select_category", selected:"true"'><a style="color:white;font-size:11px" >Browse</a></li>
 		<li data-dojo-type="dojox.mobile.TabBarButton"  data-dojo-props='moveTo:"OptionsList"'  ><a style="color:white;font-size:11px"  >Settings</a></li>
-	</ul> 
+	</ul>  -->
   </div>
    <div data-dojo-type="dojox/mobile/View" style="height:100%;background-color:black" id="quickhint" >
      <img id="hinturl" src="images/blue.png" alt=""  style="height:100%" onclick='doquickhint()'>

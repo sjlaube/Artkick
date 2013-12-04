@@ -281,16 +281,24 @@ function burninsaver() {
 }
 
 function mediashuffle() {
+
+
 if (window.shuffle)
 {
+		
        window.shuffle=false;
-	   dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
+	 //  dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
+		$("#myshuffle").toggleClass("mblTabBarButtonLabel2");
+	       dojo.byId('shuffletile').innerHTML = "Turn on shuffle";
 	   usermessage("Shuffle OFF");
 }
 else
 {
 		window.shuffle=true;
-		dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
+				$("#myshuffle").toggleClass("mblTabBarButtonLabel2");
+	//	dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
+	//	   dijit.registry.byId("shuffletab").set('color', '#4F4AFF');
+		   dojo.byId('shuffletile').innerHTML = "Turn off shuffle";
 		usermessage("Shuffle ON");
 }
     gotoView('ImageView','blankview');

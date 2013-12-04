@@ -194,7 +194,7 @@ function login() {
                 userObj = result["userObj"];
                 usermessage("Welcome! " + userObj["name"]);
 				window.shuffle=false;
-				dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
+				//dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
 
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
                 window.token = result['token'];
