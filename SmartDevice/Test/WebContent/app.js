@@ -82,8 +82,8 @@ require(["jquery",
 
             function () {
 
-                window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-                //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+               // window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
+               window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -121,12 +121,13 @@ require(["jquery",
                 window.MyViewlist = registry.byId("MyViewLists");
                 window.btn1 = registry.byId("btn1");
                 button2 = registry.byId("btn1");
-                window.listList = registry.byId("listList");
+            //    window.listList = registry.byId("listList");
                 window.listList2 = registry.byId("listList2");
                 window.artistList = registry.byId("ArtistList");
                 window.museumList = registry.byId("MuseumList");
 				window.viewlistbutton = registry.byId("viewlistbutton");
 				window.sharemenu2 = registry.byId("Sharemenu2");
+				window.linemenu=registry.byId("linemenu");
 				
                 window.checkforparameters = true;
                 window.currentView = "Intro0";
@@ -179,6 +180,7 @@ require(["jquery",
                 window.firstimageview = "false"; // pop up hint screen only the first time
                 window.bigImg = false;
 				window.wipemenu = false;
+				window.numberplayers=0;
 
 
 
@@ -785,29 +787,20 @@ require(["jquery",
                         top: 10,
                         left: 0
                     });
-                    //mycurrView.performTransition("PlaylistView", 1, "", null);
-
-
-                    //alert("going to listview");
-                    /*		if (currCat=="Artist")
-					gotoView("blankview","ArtistlistView");
-				else if (currCat == "Museums")
-					gotoView("blankview","MuseumlistView");
-				else
-					gotoView("select_category","PlaylistView");*/
+                   
 
                 }
 
                 function updateCats() {
                     window.currentView = "select_category";
                     if (window.loadcatview) {
-                        catList.startup();
+                       // catList.startup();
                         //	gotoView("select_category","MuseumlistView");
                         return; // already did this
                     }
                     window.loadcatview = true;
                     window.currentView = "select_category";
-                    catList.destroyRecursive(true);
+             //       catList.destroyRecursive(true);
                     $("#catList").html('');
                     // create a My Viewlists category manually
                     /*			 newCat = new dojox.mobile.ListItem({
@@ -902,8 +895,8 @@ require(["jquery",
                     }
 
                     //	alert("catname="+catName);
-                    listList.destroyRecursive(true);
-                    $("#listList").html('');
+               //     listList.destroyRecursive(true);
+                 //   $("#listList").html('');
                     listList2.destroyRecursive(true);
                     $("#listList2").html('');
                     window.MyViewlist.destroyDescendants();
@@ -1156,7 +1149,7 @@ require(["jquery",
                     }
 
                     //alert(url);
-                    console.log(url);
+                //    console.log(url);
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
@@ -1336,7 +1329,8 @@ require(["jquery",
                                 //$("#ownedPlayerList").html('');
                                 playerList.destroyDescendants();
 
-
+		
+								window.numberplayers=result["players"].length;
                                 for (var i in result["players"]) {
                                     var player = result["players"][i];
 
@@ -1461,9 +1455,12 @@ require(["jquery",
                                 }
                                 //  alert("justPlayer");
                                 rememberSelectPlayers();
+								if (window.numberplayers==1)
+								{
                                 window.currList = window.defList;
                                 window.currImage = window.defImage;
                                 window.currCat = window.defCat;
+								}
                                 if (window.shuffle) {
                                     // if random, then switch to normal!
                                     mediashuffle();
@@ -1509,7 +1506,7 @@ require(["jquery",
 
                 getDefaults();
                 checkCookie();
-                BrowserDetect.init();
+          //      BrowserDetect.init();
 				$(".mblTabBarButtonLabel").each (function(i, obj){
 		
 				if(obj.innerHTML == "Shuffle")
@@ -1518,6 +1515,17 @@ require(["jquery",
 				obj.id="myshuffle";
 
 				}
+				$(".categoryclass").css("margin","-2px");
+				$('.mblToolBarButton').css('background-color','transparent');
+				$('.mblToolBarButton').css('background-image','none');
+				$('.mblToolBarButton').css('border-width','0px');
+				$('.mblToolBarButton').css('border-style','none');
+				$('.mblToolBarButton').css('box-shadow','none');
+				$('.mblToolBarButton').css('margin-left','-5px');
+				$('.mblToolBarButton').css('margin-top','10px');
+				$('.mblToolBarButton').css('font-family',"Roboto");
+				$('.mblToolBarButton').css('font-weight',"700");
+				$('.mblToolBarButton').css('font-size',"15px");
 		
 		
 		})
@@ -1765,6 +1773,11 @@ require(["jquery",
                 );
                 on(gridView, "beforeTransitionIn",
                     function () {
+						if(window.wipemenu)
+						{
+							showmenu();
+							return;
+						}
                         window.currentView = "GridView";
 					    dijit.registry.byId("gridshowing").set('selected', true);
                         window.gridPages = Math.ceil(window.listSize / 20);
@@ -1880,6 +1893,8 @@ require(["jquery",
 						wd=window.innerWidth/5;
 						ht=(window.innerHeight-80)/4;
 					}
+						$('.imageclass').css('height',ht+"px");
+					$('.imageclass').css('width',wd+"px");
                     dim = Math.sqrt((window.innerHeight - 115) * (window.innerWidth - 0) / 20 * .8);
 					// always do 20, if width is greater than height then do 5x4 else 4x5  
                     //	dim=Math.min(Math.floor((window.innerHeight-40)/5)-5,Math.floor(window.innerWidth/4)-4);
@@ -2363,6 +2378,10 @@ function showmenu() {
 	
 	//console.log("showmenu width:"+$(window).width()+"px");
 	dojo.style("wipemenu", "left", $(window).width()-200+"px");
+
+	//$("#linemenu").removeClass("mblToolBarButton mblToolBarButtonBody mblToolBarButtonLightIcon  mblColorDefaultSel mblToolBarButtonSelected mblToolBarButtonBodySelected");
+		console.log($("#linemenu"));
+	             
 	if(window.wipemenu)
 	{
 		window.wipemenu=false;
@@ -2487,7 +2506,7 @@ function refreshView() {
         m.parentNode.insertBefore(a, m)
     })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-    ga('create', 'UA-44460273-2', 'artkick.net'); <!-- change this to -1 for production -->
+    ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
     ga('send', 'pageview');
     window.justRefresh = true;
     window.switchView = true;
@@ -2669,6 +2688,7 @@ function doquickhint() {
 
 
 function adjustSize() {
+	var ht,wd;
     $('.mblCarouselItemImage.big').css('height', $(window).height() + "px");
     $('.mblCarouselItemImage.big').css('width', $(window).width() + "px");
     $('.mblCarouselSlot.mblCarouselItem').css('width', $(window).width() + 4 + "px");
@@ -2713,6 +2733,19 @@ function adjustSize() {
 	   	 $(".categoryclass").css("width","50%");
 
 	}
+	//calculate size for grid view
+	if (window.innerHeight > window.innerWidth)  // Portrait mode do 4x5
+					{
+						wd=window.innerWidth/4;
+						ht=(window.innerHeight-80)/5;
+					}
+					else //landscape mode do 5x4
+					{
+						wd=window.innerWidth/5;
+						ht=(window.innerHeight-80)/4;
+					}
+	$('.imageclass').css('height',ht+"px");
+	$('.imageclass').css('width',wd+"px");
 }
 
 

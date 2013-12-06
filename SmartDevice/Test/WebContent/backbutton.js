@@ -12,6 +12,16 @@ window.backbutton=function ()
 		hidemenu();
 		if (window.currentView=="ImageView")return;
 	}
+	if(window.wipemenu)
+	{
+		showmenu();
+		return;
+	}
+	if(window.bigImg)
+	{
+		smallimage();
+		return;
+	}
 	switch (window.currentView)
 	{
 		case "Intro0":
@@ -59,6 +69,12 @@ window.backbutton=function ()
 			gotoView("registernewroku","RegisterNew");
 			break;
 		case "registernewchromecast":
+			try {
+                            Android.setEmail(window.email);
+                            Android.setButtonInvisible();
+                        } catch (err) {
+
+                        };
 			gotoView("registernewchromecast","RegisterNew");
 			break;
 		case "removeplayer":

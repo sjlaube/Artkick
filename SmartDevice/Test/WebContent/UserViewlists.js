@@ -31,7 +31,7 @@ function showmyviewlists()
 	
 				var listcount=0;
 				 window.MyViewlist.destroyDescendants();
-				 window.listList.destroyRecursive(true);
+			//	 window.listList.destroyRecursive(true);
                 $("#listList").html('');
 			 //   window.MyViewlist.destroyRecursive(true);
              //     $("#MyViewList").html('');

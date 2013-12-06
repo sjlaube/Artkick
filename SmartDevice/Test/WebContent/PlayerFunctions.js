@@ -33,7 +33,7 @@ function removePlayersAction() {
                         usermessage(result["Message"]);
                     i--;
                     if (i == 0) {
-                        currView.performTransition("select_player", 1, "slide", null);
+                        currView.performTransition("OptionsList", 1, "slide", null);
                     }
                 }
             });
@@ -118,9 +118,14 @@ function createPlayer() {
         load: function (result) {
             if (result["Status"] == "success") {
                 alert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
-                window.tarImage = window.defImage;
-                window.currList = window.defList;
-                window.currCat = window.defCat;
+				console.log("number players:"+window.numberplayers);
+                if (window.numberplayers==0) // only switch to default view if this is first player
+				{
+					console.log("new player");
+					window.tarImage = window.defImage;
+					window.currList = window.defList;
+					window.currCat = window.defCat;
+				}
                 window.justCreatePlayer = true;
 				window.autoIntro = true;
                 //currView.performTransition("ImageView", 1, "slide", null);
@@ -173,9 +178,12 @@ function createPlayer2() {
         load: function (result) {
             if (result["Status"] == "success") {
                 alert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
+				 if (window.numberplayers==0) // only switch to default view if this is first player
+				{
                 window.tarImage = window.defImage;
                 window.currList = window.defList;
                 window.currCat = window.defCat;
+				}
                 window.justCreatePlayer = true;
 				window.autoIntro = true;
                 //currView.performTransition("ImageView", 1, "slide", null);
