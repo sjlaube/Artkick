@@ -2,6 +2,10 @@
 <html>
  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
   <style>
+    body{
+    	overflow:hidden;
+    }
+  
 	.imageTitle{
 		font-family:"Times New Roman",Times,serif;
 		font-style:oblique;
@@ -656,7 +660,7 @@
        
        
        
-      window.play = function() {
+      window.play = function(reged) {
        uid = $('#emailInput').val();	
       	
       	
@@ -684,7 +688,18 @@
        }
       
        console.log(imageRequest);
-       updateImage(imageRequest);
+       
+       if(reged){
+          updateImage(imageRequest);
+       } else{
+       	  $('div#screen').css('background-image','none');
+          $('div#screen').hide();
+          $('#logo').hide();
+          getRegCode();
+          checkRegStatus();
+       }
+       
+       
        BrowserDetect.init();
      /*  if(BrowserDetect.OS!="iPhone/iPod")
          setInterval(function(){
@@ -764,8 +779,8 @@ return c_value;
      if(userEmail && userEmail != "null"){
      	$('#emailInput').val(userEmail);
      	$('#emailInput').hide();
-		play();
-     }
+		play(true);
+     } 
      
   });
     
@@ -976,7 +991,7 @@ return browserName;
   	    
   	    <div id= "startDiv">
   	       <input type="text" name="email" id="emailInput" placeholder="Your Email">
-  	       <div id= "playButton" onclick="play()">
+  	       <div id= "playButton" onclick="play(false)">
         	  Start Artkick
            </div>
         </div>
@@ -985,9 +1000,7 @@ return browserName;
         
         <div id="message">  </div>
        
-       
-        <div id = "screen"  style="position:absolute;top:0;left:0;height:100%;width:100%"> </div>
-        
+               
         
         <div id = "caption"> </div>
 	

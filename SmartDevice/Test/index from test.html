@@ -21,7 +21,7 @@ Copyright 2013, Zwamy, Inc.  All Rights Reserved
 <title>Artkick</title>
 <link rel="apple-touch-icon-precomposed"   href="images/ARTKICKlogoFULLCOLOR-APP_120.png" />
 <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
 <script type="text/javascript" src="WebContent/lib/dojo/dojo/dojo.js?V1.3" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
 [{'name': 'jquery', 'location': 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1', 'main': 'jquery'},
 {'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},
@@ -107,7 +107,6 @@ float:left;margin-right:2px}
 <style>
 
 *:focus { outline-color:transparent;}
-
 	/* inline custom DOM Button */
 	.mblDomButtonMyRedButton_0 {
 		position: relative;
@@ -311,11 +310,7 @@ float:left;margin-right:2px}
 	{
 	}
 	
-.mblToggleButtonChecked {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#bfbfbf), color-stop(0.5, #ebebeb), color-stop(0.5, #dedede));
-  background-image: linear-gradient(to bottom, #f0f0f0 0%, #ebebeb 50%, #dedede 50%, #bfbfbf 100%);
-  color: black;
-}
+
 
 	</style>
 <script>
@@ -380,7 +375,7 @@ float:left;margin-right:2px}
      <input type="text" data-dojo-type="dojox/mobile/TextBox" id="loginEmail" placeHolder=" Email address" style="position: relative; left: 1em; width: 250px;">
 	 </input>
      <br><br>
-     <input type="password" data-dojo-type="dojox/mobile/TextBox" id="loginPassword" placeHolder=" Password"  style="position: relative; left: 1em; width: 250px;">
+     <input type="password" data-dojo-type="dojox/mobile/TextBox" id="loginPassword" placeHolder=" Password" style="position: relative; left: 1em; width: 250px;">
 	 </input>
      <br><br>
      <button data-dojo-type="dojox/mobile/Button" style="position: relative; width: 250px; left: 1em;" onclick="login()">
@@ -404,11 +399,11 @@ float:left;margin-right:2px}
 	 <br>
      <label style="vertical-align: top; text-align: left; float: left;">
        Fill Screen</label>
-     <button  data-dojo-type="dojox/mobile/ToggleButton" id="fillswitch"  style="left: 3em;" data-dojo-props='label:"Not Active"' onclick="fillswitch()"></button>
+     <button  data-dojo-type="dojox/mobile/ToggleButton" id="fillswitch"  style="left: 87px;" data-dojo-props='label:"Not Active"' onclick="fillswitch()"></button>
      <br><br>
 	   <label style="vertical-align: top; text-align: left; float: left; top: 60px;">  
       Burn In Saver</label>
-     <button   data-dojo-type="dojox/mobile/ToggleButton" id="burninsaver" onclick="burninsaver()" data-dojo-props='label:"Not Active"'  style="left: 17px;"></button>
+     <button   data-dojo-type="dojox/mobile/ToggleButton" id="burninsaver" onclick="burninsaver()" data-dojo-props='label:"Not Active"'  style="left: 5em;"></button>
      <br>
 	 	 <div id="AutoPlayFixed"  style="position: relative;visibility:hidden">
 	 Autoplay set to 1 hour
@@ -416,7 +411,7 @@ float:left;margin-right:2px}
     <div id="AutoPlaySelect">
 	  <label>
        Autoplay</label>
-     <select style="position: relative; left: 48px;text-size:8px" onchange="setAuto(this.value)">
+     <select style="position: relative; left: 7em;" onchange="setAuto(this.value)">
        <option value=0 id="0">
          Never</option>
        <option value=-1 id="-1">
@@ -916,7 +911,7 @@ Share your favorite images in personal viewlists and share them with your friend
   <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Settings"'>
    
    <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" data-dojo-props="moveTo:'ImageView',transition:'slide',transitionDir:'-1'">
-   <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle" >Done</span></div>
+   <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle" >Details</span></div>
    <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: right" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  </div>
  <!--  <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: right;" data-dojo-props="moveTo:'MylistView'">new viewlist</div> -->
