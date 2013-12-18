@@ -89,7 +89,7 @@ window.backbutton=function ()
 			gotoView("AccountSettings","OptionsList");
 			break;
 		case "OptionsList":
-			gotoView("OptionsList","ImageView");
+			gotoView("OptionsList",window.lastView);
 			break;
 		case "RegisterNew":
 			gotoView("RegisterNew","OptionsList");
@@ -129,6 +129,9 @@ window.backbutton=function ()
 			break;
 		case "newuserintro":
 			gotoView("newuserintro","quickhint");
+			break;
+		case "registrationHelp":
+			gotoView("registrationHelp","registernewTV");
 			break;
 		default:
 			break;

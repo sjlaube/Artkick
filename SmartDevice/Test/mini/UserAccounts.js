@@ -15,14 +15,14 @@ function emailPwLogout(){
 }
 
 function emailPW(){
-	window.currentView = "registeruser";
+	window.currentView = "reset_password";
 	if (is_email(dojo.byId("recoveryEmail").value))
 	{
 	dojo.io.script.get({
 		url:base+"client/emailPassword?email="+dojo.byId("recoveryEmail").value,
 		callbackParamName: "callback",
 		load: function(result){
-			 alert(result["Message"]);
+			 myalert(result["Message"]);
 			 if(result["Status"]=="success"){
 			 	emailPwLogout();
 			 }
@@ -31,7 +31,7 @@ function emailPW(){
 	}
 	else
 	{
-		alert("Please enter a valid email address");
+		myalert("Please enter a valid email address");
 	}
 }
 
@@ -56,7 +56,7 @@ function changePW() {
 	newpw2=dojo.byId("changeNewPW2").value;
 
 	if (newpw1 != newpw2)
-		alert("Passwords don't match!");
+		myalert("Passwords don't match!");
 	else
 	{  
 	   //alert(base+"resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1);
@@ -64,7 +64,7 @@ function changePW() {
        	 url:base+"client/resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1,
        	 callbackParamName: "callback",
        	 load: function (result) {
-             alert(result["Message"]);
+             myalert(result["Message"]);
              if(result["Status"]=="success"){
 			 	dojo.byId("changeOldPW").value='';
 				dojo.byId("changeNewPW1").value='';
@@ -85,28 +85,28 @@ function createUser() {
 	verifypw=dojo.byId("regUserPW2").value;
 	if (pw=="")
 	{
-		alert("Password cannot be blank");
+		myalert("Password cannot be blank");
 		return;
 	}
 	if (pw != verifypw)
 	{
-		alert("Passwords don't match");
+		myalert("Passwords don't match");
 		return;
 	}
 	var emailaddress=dojo.byId("regUserEmail").value;
 	if (emailaddress =="")
 	{
-		alert("User email cannot be blank");
+		myalert("User email cannot be blank");
 		return;
 	}
 	if (!is_email(emailaddress))
 	{
-		alert("User email must be a valid email address");
+		myalert("User email must be a valid email address");
 		return;
 	}
 	if (dojo.byId("regUserName").value =="")
 	{
-		alert("User name cannot be blank");
+		myalert("User name cannot be blank");
 		return;
 	}
 		
@@ -135,7 +135,7 @@ function createUser() {
 				window.firstimageview = true;
 			    dijit.registry.byId("registeruser").performTransition("quickhint", 1, "", null);
             } else {
-                alert(result["Message"]);
+                myalert(result["Message"]);
             }
 
         }
@@ -170,12 +170,12 @@ function goToLogin1() {
 		window.currentView = "Login";
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView();
-//	alert("goto login"+mycurrView);
+//	myalert("goto login"+mycurrView);
     mycurrView.performTransition("Login", 1, "", null);
 }
 
 function login() {
-    //alert("login!");
+    //myalert("login!");
 	var currTime = new Date().getTime();
     if(window.loginClickTime!=undefined && currTime - window.loginClickTime < window.boucingTime)
         return;
@@ -212,7 +212,7 @@ function login() {
             } else {
 				//dojo.byId("loginEmail").value="";
 				//dojo.byId("loginPassword").value="";
-                alert("login failed, please check your email and password or register!");
+                myalert("login failed, please check your email and password or register!");
 				
             }
         }
@@ -220,7 +220,7 @@ function login() {
 	}
 	else
 	{
-		alert("Please enter a valid email address");
+		myalert("Please enter a valid email address");
 	}
 }
 
@@ -242,7 +242,7 @@ function deleteAccount()
 		var currView = dijit.registry.byId("registeruser");
 		window.currentView = "AccountSettings";
 		url=base + "client/removeUser?email=" + dojo.byId("deleteAcctEmail").value+"&password="+dojo.byId("deleteAcctPW").value+"&token="+window.token;
-		//alert("delete:"+url);
+		//myalert("delete:"+url);
 		dojo.io.script.get({
         url: url,
         callbackParamName: "callback",
@@ -250,7 +250,7 @@ function deleteAccount()
             //alert(result["message"]);
             if (result["Status"] == "success") {
                 var currView = dijit.registry.byId("LogOff");
-				alert(window.email+" your account was successfully deleted");
+				myalert(window.email+" your account was successfully deleted");
 				window.email = null;
 				// code to delete cookie and log out user goes here
 				setCookie("email", null, 1);
@@ -268,7 +268,7 @@ function deleteAccount()
                 
                 
             } else {
-                alert("Delete Account failed, please check your email and password");
+                myalert("Delete Account failed, please check your email and password");
             }
         }
     });

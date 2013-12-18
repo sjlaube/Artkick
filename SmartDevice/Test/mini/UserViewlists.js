@@ -48,6 +48,7 @@ function showmyviewlists()
 						 if ( lists[i]["name"] != "Last Search") // user can't manually add to Last Search viewlist
 						 {
 							listcount += 1;
+							window.shownoviewlist=true;
 						   newList2 = new dojox.mobile.ListItem({
                                 id: lists[i]["id"],
                                 label: lists[i]["name"] ,
@@ -69,8 +70,9 @@ function showmyviewlists()
 
                         }
 					//	alert("done loading number:"+listcount);
-						if(listcount == 0)
+						if(listcount == 0 && window.shownoviewlist==false)
 						{
+							window.shownoviewlist=true
 							alert("Use the '+' button to create personal viewlists");
 						}
                         

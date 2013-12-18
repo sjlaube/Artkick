@@ -3,6 +3,7 @@
 Copyright 2013, Zwamy, Inc.  All Rights Reserved
 
 */
+ 
 
 function removePlayersAction() {
 	var currTime = new Date().getTime();
@@ -11,7 +12,7 @@ function removePlayersAction() {
     if(window.rmplayerClickTime!=undefined && currTime - window.rmplayerClickTime < 7000)
         return;
 	window.rmplayerClickTime = currTime;
-	
+
     var r = confirm("Are you sure you want to delete the selected players?");
     if (r == false) {
         return;
@@ -52,7 +53,7 @@ function addUserToPlayers() {
     var email = dojo.byId("addPlayerEmail").value;
 	if (email =="")
 	{
-		alert("You must first search for an Artkick user to add them to a player");
+		myalert("You must first search for an Artkick user to add them to a player");
 	}
 	else
 	{
@@ -106,7 +107,7 @@ function createPlayer() {
 	}
 	if (dojo.byId("regPlayerName").value =="")
 	{
-		alert("You must name your Roku");
+		myalert("You must name your Roku");
 		return;
 	}
 	
@@ -117,7 +118,7 @@ function createPlayer() {
         callbackParamName: "callback",
         load: function (result) {
             if (result["Status"] == "success") {
-                alert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
+                myalert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
 				console.log("number players:"+window.numberplayers);
                 if (window.numberplayers==0) // only switch to default view if this is first player
 				{
@@ -161,12 +162,12 @@ function createPlayer2() {
 	window.createPlayerClickTime = currTime;
 	if (dojo.byId("regPlayerCode2").value =="")
 	{
-		alert("Registration Code cannot be blank");
+		myalert("Registration Code cannot be blank");
 		return;
 	}
 	if (dojo.byId("regPlayerName2").value =="")
 	{
-		alert("You must name your TV");
+		myalert("You must name your TV");
 		return;
 	}
 	
@@ -177,7 +178,7 @@ function createPlayer2() {
         callbackParamName: "callback",
         load: function (result) {
             if (result["Status"] == "success") {
-                alert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
+                myalert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
 				 if (window.numberplayers==0) // only switch to default view if this is first player
 				{
                 window.tarImage = window.defImage;
@@ -204,7 +205,7 @@ function createPlayer2() {
                
 
             } else {
-                alert(result["Message"]);
+                myalert(result["Message"]);
             }
 
         }
@@ -220,12 +221,12 @@ function regnewroku() {
 
 function installartkick() {
     //alert ("install artkick");
-    //var win = window.open("https://owner.roku.com/add/ArtkickV0", '_blank');
+    //var win = window.open("https://owner.roku.com/add/T2ZAW", '_blank');
     //win.focus();
-    calliOSFunction("loadLink", ["https://owner.roku.com/add/ArtkickV0"], "onSuccess", "onError");
+    calliOSFunction("loadLink", ["https://owner.roku.com/add/T2ZAW"], "onSuccess", "onError");
     try{
 	//alert("loading android artkick roku");
-    	Android.loadLink("https://owner.roku.com/add/ArtkickV0");
+    	Android.loadLink("https://owner.roku.com/add/T2ZAW");
     }
     catch(err){
     	
@@ -343,3 +344,5 @@ function noregisterTV()
 
 }
 
+
+ 

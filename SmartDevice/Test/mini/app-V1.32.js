@@ -129,11 +129,13 @@ require(["jquery",
                 window.museumList = registry.byId("MuseumList");
 				window.viewlistbutton = registry.byId("viewlistbutton");
 				window.sharemenu2 = registry.byId("Sharemenu2");
-				window.linemenu=registry.byId("linemenu");
+
+
 				
                 window.checkforparameters = true;
                 window.currentView = "Intro0";
                 window.currentView = "Intro0";
+				window.lastView = "";
 
                 window.autoIntro = true;
                 window.delItem = "";
@@ -182,7 +184,9 @@ require(["jquery",
                 window.firstimageview = "false"; // pop up hint screen only the first time
                 window.bigImg = false;
 				window.wipemenu = false;
+				window.showingmenu = "";
 				window.numberplayers=0;
+				window.shownoviewlist = false;
 
 
 
@@ -314,6 +318,9 @@ require(["jquery",
                 window.gotoView = function (fromView, toView) {
                     //alert(fromView+' to '+toView);
 					hidemenu();
+					
+					if (fromView == "ImageView" || fromView == "PlaylistView" || fromView == "select_category")
+						window.lastView = fromView;
                     window.currentView = toView;
                     dojo.style(dojo.byId(fromView), "display", "none");
                     dojo.style(dojo.byId(toView), "display", "block");
@@ -415,7 +422,7 @@ require(["jquery",
                         load: function (viewlist) {
 
                             if (viewlist["imageSet"].length == 0) {
-                                alert("'My Starred Images' is empty, please star-rate some images and they will be added to it!");
+                                myalert("'My Starred Images' is empty, please star-rate some images and they will be added to it!");
                                 window.currList = window.defList;
                                 window.currCat = window.defCat;
                                 window.currImage = window.defImage;
@@ -976,7 +983,25 @@ require(["jquery",
                                 var linename = lists[i]["name"];
 
                                 if (catName == "Artists") {
-                                    linename = "<i><small>" + firstName + " </small></i><big>" + lastName + "</big>";
+                                    
+									//check the special names
+							/*		if (lastName=="Gogh")
+									{
+										firstName="Vincent";
+										lastName="van Gogh";
+									}*/
+									if (lastName == "Elder")
+									{
+										firstName="Pieter";
+										lastName="Brueghel the Elder";
+									}
+									if (lastName == "Younger")
+									{
+										firstName="Pieter";
+										lastName="Brueghel the Younger";
+									}
+									
+									linename = "<i><small>" + firstName + " </small></i><big>" + lastName + "</big>";
                                 }
 
                                 if (lists[i]["imageNum"])
@@ -1718,6 +1743,7 @@ require(["jquery",
                 on(accountsettings, "beforeTransitionIn",
                     function () {
                         window.currentView = "AccountSettings";
+						dojo.byId("useraccount").innerHTML = "User: "+window.email;
                     });
                 on(aboutView, "beforeTransitionIn",
                     function () {
@@ -1731,6 +1757,7 @@ require(["jquery",
                 on(optionsView, "beforeTransitionIn",
 
                     function () {
+
                         window.currentView = "OptionsList";
                       //  dijit.registry.byId("taboptions4").set('selected', true);
                     });
@@ -2384,29 +2411,38 @@ function showsharemenu() {
 }
 
 function showmenu() {
-	
+	var menuname = "wipemenu"
 	//console.log("showmenu width:"+$(window).width()+"px");
-	dojo.style("wipemenu", "left", $(window).width()-200+"px");
 
+	
+	if (window.currentView=="select_category")
+		menuname = "wipemenu3";
+	else if (window.currentView=="PlaylistView")
+		menuname= "wipemenu2";
+		else
+		menuname = "wipemenu";
+		
+	dojo.style(menuname, "left", $(window).width()-200+"px");
 	             
 	if(window.wipemenu)
 	{
 		window.wipemenu=false;
-		dojo.style("wipemenu", "height", "");
-		dojo.style("wipemenu", "display", "block");
+		dojo.style(window.showingmenu, "height", "");
+		dojo.style(window.showingmenu, "display", "block");
 
 		var wipeArgs = {
-		node: "wipemenu"
+		node: showingmenu
 		};
 		dojo.fx.wipeOut(wipeArgs).play();
 	}
 	else
 	{	
+		window.showingmenu = menuname;
 		hidemenu();
 		window.wipemenu=true;
-		dojo.style("wipemenu","display","none");
+		dojo.style(menuname,"display","none");
 		var wipeArgs = {
-		node: "wipemenu"
+		node: menuname
 		};
 		dojo.fx.wipeIn(wipeArgs).play();
 	}
@@ -2564,6 +2600,7 @@ function cleanUp() {
     window.loadmuseumview = false;
     window.loadcatview = false;
 	window.wipemenu = false;
+	window.shownoviewlist = false;
     $("#addPlayerEmail").attr('value', '');
     getDefaults();
 }
@@ -2660,6 +2697,16 @@ function usermessage(message) {
     setTimeout(function () {
         messagebox.hide()
     }, 2000);
+}
+
+window.myalert=function (message)
+{
+
+	var mbox = dijit.registry.byId('Myalert');
+	dojo.byId('myContent').innerHTML = message;
+	dijit.registry.byId(window.currentView).show();
+	mbox.show();
+
 }
 
 function setAutoIntro(flag) {
