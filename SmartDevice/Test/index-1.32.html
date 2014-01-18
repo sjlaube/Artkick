@@ -34,16 +34,15 @@ Copyright 2013, Zwamy, Inc.  All Rights Reserved
 ['.*','',['WebContent/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script> 
  <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
-<script type="text/javascript" src="mini.V1.4/app.js?V1.3"></script>
-<script type="text/javascript" src="mini.V1.4/Browser-Detect.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/UserViewlists.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/PlayerFunctions.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/UserAccounts.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/Feedback.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/Search.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/backbutton.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/registrationhelp.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/Photoimport.js?V1.3"></script> 
+<script type="text/javascript" src="mini/app-V1.32.js?V1.3"></script>
+<script type="text/javascript" src="mini/Browser-Detect.js?V1.3"></script> 
+<script type="text/javascript" src="mini/UserViewlists.js?V1.3"></script> 
+<script type="text/javascript" src="mini/PlayerFunctions.js?V1.3"></script> 
+<script type="text/javascript" src="mini/UserAccounts.js?V1.3"></script> 
+<script type="text/javascript" src="mini/Feedback.js?V1.3"></script> 
+<script type="text/javascript" src="mini/Search.js?V1.3"></script> 
+<script type="text/javascript" src="mini/backbutton.js?V1.3"></script> 
+<script type="text/javascript" src="mini/registrationhelp.js?V1.3"></script> 
 
 <script type="text/javascript">
 
@@ -313,33 +312,6 @@ float:left;margin-right:2px}
 	}
 	.categoryclass
 	{
-	}
-	.showingclass1
-	{
-		position:absolute;
-		left:4px;
-		top:2px;
-		height:39px;
-		width:39px
-	}
-	.showingclass
-	{
-		position:absolute;
-		left:5px;
-		top:3px;
-		height:29px;
-		width:36px
-	}
-	.showtitle
-	{
-		position:absolute;
-		width:300px;
-		top:3px;
-		left:55px;
-		font-size:12px;
-		line-height:150%;
-		color:white;
-		text-align:left
 	}
 	
 .mblToggleButtonChecked {
@@ -642,8 +614,8 @@ Click to Continue</button>
  </div>
  
   <div data-dojo-type="dojox/mobile/View" id="registernewTV"  style="height: 100%;">
-   <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New TV',fixed:'top'">
-     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="moveTo:'OptionsList',transition:'slide',transitionDir:'-1'" >
+   <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New SmartTV',fixed:'top'">
+     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="moveTo:'RegisterNew',transition:'slide',transitionDir:'-1'" >
 	 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
    </div>
 
@@ -655,14 +627,14 @@ Click to Continue</button>
 Enter the registration code displayed on your TV
 and a name for your TV
  <br><br>
- <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerCode2" placeHolder=" Registration Code" style="position: relative; left: 1em; width: 260px;"></input>
-     <br><br>
  <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerName2" style="width: 260px; position: relative; left: 1em;" placeHolder=" Name this TV"></input>
-	 <br><br>
+     <br><br>
+	 <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerCode2" placeHolder=" Registration Code" style="position: relative; left: 1em; width: 260px;"></input>
+     <br><br>
 	 <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;" onclick="createPlayer2()">
        Connect TV</button>
-	 <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 2em;" onclick="gotoView('registernewTV','registrationHelp')">
-       Registration code help</button>
+	 <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 2em; width: 140px;" onclick="gotoView('registernewTV','registrationHelp')">
+       Registration code??</button>
 	   <br>
 	   <br>
 	   
@@ -671,7 +643,7 @@ and a name for your TV
 
  </div>
  <div data-dojo-type="dojox/mobile/View" id="registrationHelp" style="height: 100%;">
- <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Registration Code Help',fixed:'top'">
+ <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Registration Help',fixed:'top'">
      <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" onclick="backbutton()" >
 	 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
    </div>
@@ -684,15 +656,8 @@ What type of SmartTV do you have?
 <br>
    <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;" onclick="reghelp('Samsung')">
        Samsung</button>
-
-	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;" onclick="reghelp('Roku')">
-       Roku</button>
-	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;" onclick="reghelp('Browser')">
-       Browser</button>
-    <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;color:gray" onclick="reghelp('Sony')">
+   <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;" onclick="reghelp('Sony')">
        Sony</button>
-	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;color:gray" onclick="reghelp('Chromecast')">
-       Chromecast</button>
 	   <br>
 	   <br>
 	   
@@ -702,7 +667,7 @@ What type of SmartTV do you have?
  </div>
 <div data-dojo-type="dojox/mobile/View" id="registernewchromecast" style="height: 100%;">
    <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New ChromeCast'" >
-     <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float:left;" data-dojo-props="transition:'slide',transitionDir:'-1',moveTo:'registernewTV'">
+     <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float:left;" data-dojo-props="transition:'slide',transitionDir:'-1',moveTo:'RegisterNew'">
 	 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Back</span></div>
    </div>
    <div data-dojo-type="dojox/mobile/ContentPane" style="width: 100%; position: relative;top:2em;">
@@ -955,19 +920,6 @@ Share your favorite images in personal viewlists and share them with your friend
    <button data-dojo-type="dojox/mobile/Button" onclick="deleteAccount()" style="position: relative; left: 4em;">
    Delete Artkick Account</button>
    </div>
-   
-   <div data-dojo-type="dojox/mobile/RoundRect" style="width: 285px; height: auto;">
-    <label style="position: relative; left: 3em;">
-   High Resolution Images</label>
-   <br><br>
-    <label style="vertical-align: middle; text-align: left; float: left;">
-       Turn on Hi-Res Images</label>
-     <button  data-dojo-type="dojox/mobile/ToggleButton" id="hires-switch"  style="left: 1em;" data-dojo-props='label:"Not Active"' onclick="hiresswitch()"></button>
-     <br><br>
-	 Enabling this option will use higher resolution images on your phone/tablet increasing data use and slowing image loading.
-   <br><br>
- 
-   </div>
    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
 </div>
 <div data-dojo-type="dojox/mobile/ScrollableView"  id="OptionsList" style="height: auto;">
@@ -982,24 +934,24 @@ Share your favorite images in personal viewlists and share them with your friend
 
  </div>
 <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" style="position:relative;top:20px"> 
-    <li data-dojo-type="dojox/mobile/ListItem"
-		data-dojo-props='moveTo:"Options"'>TV Settings</li>
-	<li data-dojo-type="dojox/mobile/ListItem"
-		data-dojo-props='moveTo:"select_player"' onclick="setAutoIntro(true)">Select TV</li>
-	<li data-dojo-type="dojox/mobile/ListItem"
-		data-dojo-props='moveTo:"registernewTV"'>Connect New TV</li>
-	<li data-dojo-type="dojox/mobile/ListItem"
-		data-dojo-props='moveTo:"add_user_player"'>Add User to TV</li>
-	<li data-dojo-type="dojox/mobile/ListItem"
-		data-dojo-props='moveTo:"removeplayer"' onclick="setAutoIntro(false)">Remove TV</li>
-	<li data-dojo-type="dojox/mobile/ListItem"
-		data-dojo-props='moveTo:"LogOff"'>Logoff</li>
-	<li data-dojo-type="dojox/mobile/ListItem"
-		data-dojo-props='moveTo:"AccountSettings"'>Account</li>
-	<li data-dojo-type="dojox/mobile/ListItem" 
-		data-dojo-props='moveTo:"About"'>About</li>
+   <li data-dojo-type="dojox/mobile/ListItem"
+    data-dojo-props='moveTo:"Options"'>TV Settings</li>
+	   <li data-dojo-type="dojox/mobile/ListItem"
+    data-dojo-props='moveTo:"select_player"' onclick="setAutoIntro(true)">Select TV</li>
+	   <li data-dojo-type="dojox/mobile/ListItem"
+    data-dojo-props='moveTo:"RegisterNew"'>Connect New TV</li>
+	   <li data-dojo-type="dojox/mobile/ListItem"
+    data-dojo-props='moveTo:"add_user_player"'>Add User to TV</li>
+	   <li data-dojo-type="dojox/mobile/ListItem"
+    data-dojo-props='moveTo:"removeplayer"' onclick="setAutoIntro(false)">Remove TV</li>
+	   <li data-dojo-type="dojox/mobile/ListItem"
+    data-dojo-props='moveTo:"LogOff"'>Logoff</li>
+	   <li data-dojo-type="dojox/mobile/ListItem"
+    data-dojo-props='moveTo:"AccountSettings"'>Account</li>
+	   <li data-dojo-type="dojox/mobile/ListItem" 
+     data-dojo-props='moveTo:"About"'>About</li>
  	<li data-dojo-type="dojox/mobile/ListItem" 
-		data-dojo-props='moveTo:"quickhint"'>Hint</li>
+     data-dojo-props='moveTo:"quickhint"'>Hint</li>
 </ul>
 
 
@@ -1033,7 +985,7 @@ Share your favorite images in personal viewlists and share them with your friend
     <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">  
 	<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: #56575A;">
-Artkick Version 1.4 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
+Artkick Version 1.32 <br> Copyright &copy; 2013, Artkick, Inc. All rights reserved.
   </span>
   <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: #56575A;">
 Server is
@@ -1075,8 +1027,9 @@ Server is
  </div>
 </div>
  <div data-dojo-type="dojox/mobile/View" id="newuserintro" style="height:100%;background-color: #62adc9">
- <div data-dojo-type="dojox/mobile/RoundRect" style=" position: relative;height:450px">
+ <div data-dojo-type="dojox/mobile/RoundRect" style=" position: relative;height:500px">
 <label data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; text-align:center;left:1em;top:1em;font-family: Verdana,Geneva,sans-serif; font-size: 15px;">
+Congratulations <br>
 Welcome to Artkick
 <br>
 <br>
@@ -1084,24 +1037,25 @@ Connect your TV to Artkick
 <br>
 </label>
 
-<button data-dojo-type="dojox/mobile/Button" style="position:relative;top:100px;left:5px " onclick='gotoView("newuserintro","registernewTV")'>
-     Connect Roku</button>
-	  <button data-dojo-type="dojox/mobile/Button" style="top:100px;position:relative" onclick="buyroku()">
-     Buy a Roku</button><br><br>
-<button data-dojo-type="dojox/mobile/Button" style="top:100px;position:relative;left:10px" onclick='gotoView("newuserintro","registernewTV")'>
-Connect Samsung SmartTV</button><br><br>
+<button data-dojo-type="dojox/mobile/Button" style="position:relative;top:110px;width: 150px;left:45px " onclick="registerroku()">
+     Connect My Roku</button>
+
  <br><br>
- <label data-dojo-type="shapes/Text" style=" position:relative;top:85px;z-index: 900; font-family: Verdana,Geneva,sans-serif; font-size: 15px;left:25px">
+ <button data-dojo-type="dojox/mobile/Button" style="width: 150px;top:110px;position:relative;left:45px" onclick="buyroku()">
+     Buy a Roku</button>
+ <br><br>
+ <label data-dojo-type="shapes/Text" style=" position:relative;top:125px;z-index: 900; font-family: Verdana,Geneva,sans-serif; font-size: 15px;left:45px">
 ** Coming Soon **
 <br><br>
 </label>
-
-<button data-dojo-type="dojox/mobile/Button" style="width: 130px;top:100px;position:relative;left:25px;color:gray" onclick='gotoView("newuserintro","registernewTV")'>
+<button data-dojo-type="dojox/mobile/Button" style="width: 150px;top:110px;position:relative;left:45px;color:gray" onclick='gotoView("newuserintro","registernewTV")'>
+Samsung SmartTV</button><br><br>
+<button data-dojo-type="dojox/mobile/Button" style="width: 150px;top:110px;position:relative;left:45px;color:gray" onclick='gotoView("newuserintro","registernewTV")'>
 Sony SmartTV</button><br><br>
-<button data-dojo-type="dojox/mobile/Button" style="position:relative;top:100px;width: 130px;color:gray;left:25px;" >
+<button data-dojo-type="dojox/mobile/Button" style="position:relative;top:110px;width: 150px;color:gray;left:45px;" >
 Chromecast</button>
 	 <br><br><br>
-<button data-dojo-type="dojox/mobile/Button" style="position:relative;top:100px;width: 130px; text-align: center;left:25px" onclick="noregisterTV()" >
+<button data-dojo-type="dojox/mobile/Button" style="position:relative;top:110px;width: 150px; text-align: center;left:45px" onclick="noregisterTV()" >
 Connect TV Later</button>	 
 
 </div>
@@ -1113,39 +1067,27 @@ Connect TV Later</button>
 </div>
 <div class="wipestyle" onclick="showsharemenu()" > Share
 </div>
-<div class="wipestyle" onclick="gotoView('ImageView','Import')"> Import from photosite...
-</div>
 <div class="wipestyle" id="shuffletile" onclick="mediashuffle()"> Shuffle
 </div>
 <div class="wipestyle" onclick="callmyListView()"> Add to viewlist...
 </div>
-<div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')"> Send feedback
-</div>
-<div class="wipestyle" onclick="callHelp()"> Help
+<div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')"> Send Feedback
 </div>
    </div>
    
    <div id="wipemenu2" style="width:200px;position:absolute;top:44px;left:300px;z-index:1000;display:none;background-color:#7b90ab">
 <div class="wipestyle" onclick="gotoView(window.currentView,'OptionsList')"> Settings
 </div>
-<div class="wipestyle" onclick="gotoView(window.currentView,'select_category')" > Browse/Search
-</div>
-<div class="wipestyle" onclick="gotoView(window.currentView,'Import')"> Import From Photosite...
+<div class="wipestyle" onclick="gotoView('ImageView','select_category')" > Browse/Search
 </div>
 <div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')"> Send Feedback
-</div>
-<div class="wipestyle" onclick="callHelp()"> Help
 </div>
    </div>
    
 <div id="wipemenu3" style="width:200px;position:absolute;top:44px;left:300px;z-index:1000;display:none;background-color:#7b90ab">
 <div class="wipestyle" onclick="gotoView(window.currentView,'OptionsList')"> Settings
 </div>
-<div class="wipestyle" onclick="gotoView(window.currentView,'Import')"> Import From Photosite...
-</div>
 <div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')"> Send Feedback
-</div>
-<div class="wipestyle" onclick="callHelp()"> Help
 </div>
 </div>
 
@@ -1167,7 +1109,6 @@ Connect TV Later</button>
     <img src="images/Categories/Collections_360x250.jpg" alt=" " onclick="gotoCategory('Collections')" class="categoryclass">
     <img src="images/Categories/Genre_360x250.jpg" alt=" " onclick="gotoCategory('Genre')" class="categoryclass">
     <img src="images/Categories/Historical_360x250.jpg" alt=" " onclick="gotoCategory('Historical')" class="categoryclass">
-	<img src="images/Categories/Kid_Zone_360x250.jpg" alt=" " onclick="gotoCategory('Kid Zone')" class="categoryclass">
     <img src="images/Categories/Landscapes_360x250.jpg" alt=" " onclick="gotoCategory('Landscapes')" class="categoryclass">
 	<img src="images/Categories/Lifestyle_360x250.jpg" alt=" " onclick="gotoCategory('Lifestyle')" class="categoryclass">
 	<img src="images/Categories/Museums_360x250.jpg" alt=" " onclick="gotoCategory('Museums')" class="categoryclass">
@@ -1179,14 +1120,7 @@ Connect TV Later</button>
      <img src="images/Categories/Sports_360x250.jpg" alt=" " onclick="gotoCategory('Sports')" class="categoryclass">		
 
    </div>  
- <div  data-dojo-type="dojox/mobile/Heading"  onclick="gotoView('select_category','ImageView')" data-dojo-props='fixed:"bottom"'>
-  
-    <img class="showingclass1" src="images/tv-icon2.png" alt="" >
-	<img id="showingsrc" src="" alt=" " onclick="gotoView('select_category','ImageView')" class="showingclass">
-  <div id="showingtitle" class="showtitle"> Testtitle 
-  </div>
 
- </div>
  </div>
 <div data-dojo-type="dojox/mobile/ScrollableView" id="PlaylistView"  >
    <div  id="PlaylistHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Viewlists',fixed:'top'">
@@ -1194,15 +1128,9 @@ Connect TV Later</button>
 <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle">Browse</span></div>
     <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/3lineicon_menu.png"' style="float: right;top:-4px;width:45px;" onclick="showmenu()"></div> 
    </div>       			  
-   <ul data-dojo-type="dojox/mobile/ContentPane" id="listList2" style="position: relative; width:100%;left:-30px;margin-right:0px;top:0px" >
+   <ul data-dojo-type="dojox/mobile/ContentPane" id="listList2" style="z-index:900; position: relative; width:100%;left:-30px;margin-right:0px;top:0px" >
    </ul>
-   <div  data-dojo-type="dojox/mobile/Heading"  onclick="gotoView('PlaylistView','ImageView')" data-dojo-props='fixed:"bottom"'>
- 
-     <img class="showingclass1" src="images/tv-icon2.png" alt="" >
-	 <img id="showingsrc2" src="" alt=" " onclick="gotoView('PlaylistView','ImageView')" class="showingclass">
-  <div id="showingtitle2" class="showtitle"> Testtitle 
-  </div>
-  </div>
+  
   </div>
    <div data-dojo-type="dojox/mobile/View" style="height:100%;background-color:black" id="quickhint" >
      <img id="hinturl" src="images/blue.png" alt=""  style="height:100%" onclick='doquickhint()'>
@@ -1212,28 +1140,6 @@ Connect TV Later</button>
 <button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton"
           style="width:100px;" onclick="dijit.registry.byId('Myalert').hide()">OK</button>
 </div>
-
-<div data-dojo-type="dojox/mobile/ScrollableView"  id="Import" style="height: auto;">
-  <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Import From Online Photosite..."'>
-   
-   <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left;" onclick="backbutton()">
-   <img src="images/Arrows-Back-icon-white.png" alt=''><span class="backstyle" >Done</span></div>
-   <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: right" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   </div>
- 
-    
-
- </div>
-<ul data-dojo-type="dojox/mobile/EdgeToEdgeList" style="position:relative;top:20px"> 
-	<li class="mblListItem"
-	 onclick="photoimport('flickr')">Import from Flickr</li>
-	<li class="mblListItem"
-		  onclick="photoimport('smugmug')">Import from Smugmug</li>
-	
-</ul>
-
-
- </div>
 
 </body>
 </html>
