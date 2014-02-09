@@ -58,6 +58,18 @@ if (service == "instagram")
     }
 
 }
+if (service == "picasa")
+{
+ calliOSFunction("loadLink", ["http://ancient-caverns-7624.herokuapp.com/picasa?email="+window.email], "onSuccess", "onError");
+    try{
+	//alert("loading android artkick roku");
+    	Android.loadLink("http://ancient-caverns-7624.herokuapp.com/picasa?email="+window.email);
+    }
+    catch(err){
+    	
+    }
+
+}
 
 
 }

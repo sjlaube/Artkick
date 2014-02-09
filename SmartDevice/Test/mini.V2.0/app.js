@@ -82,8 +82,8 @@ require(["jquery",
 
             function () {
 
-              //  window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-              window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+                window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
+              //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -1648,6 +1648,11 @@ require(["jquery",
                     function () {
                         // clearInterval(updatePlayerLoop);
                         rememberSelectPlayers();
+                    });
+				on(regTVView, "beforeTransitionIn",
+                    function () {
+                        
+                        window.currentView="registernewTV";
                     });
 
 

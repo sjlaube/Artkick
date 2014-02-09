@@ -34,16 +34,16 @@ Copyright 2013, Zwamy, Inc.  All Rights Reserved
 ['.*','',['WebContent/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script> 
  <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
-<script type="text/javascript" src="mini.V1.4/app.js?V1.3"></script>
-<script type="text/javascript" src="mini.V1.4/Browser-Detect.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/UserViewlists.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/PlayerFunctions.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/UserAccounts.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/Feedback.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/Search.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/backbutton.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/registrationhelp.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V1.4/Photoimport.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/app.js?V1.3"></script>
+<script type="text/javascript" src="mini.V2.0/Browser-Detect.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/UserViewlists.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/PlayerFunctions.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/UserAccounts.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/Feedback.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/Search.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/backbutton.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/registrationhelp.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.0/Photoimport.js?V1.3"></script> 
 
 <script type="text/javascript">
 
@@ -157,6 +157,10 @@ float:left;margin-right:2px}
 	.mblTextBox {
 		border-style:solid;
 		border-color:#c1c1c1;
+	}
+	.mblSimpleDialogDecoration {
+		background-image: none!important;
+		background-color:gray!important;
 	}
 	
 
@@ -469,7 +473,7 @@ font-family: 'Open Sans', sans-serif;
   <img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Back</span></div>
 </div>
 <div data-dojo-type="dojox/mobile/RoundRect" style="border: none; margin-top: 0px; margin-bottom: 0px; position: relative; width: auto; top: 15px; height: 261px;">
-      <img src="images/ARTKICKlogo_sig150.png" alt=" " style="position: relative;left:4em; z-index: 900;">   
+      <img src="images/ARTKICKlogo_sig150.png" alt=" " style="position: relative;left:4em;">   
    <br><br>
      <input type="text" data-dojo-type="dojox/mobile/TextBox" id="loginEmail" placeHolder=" Email address" style="position: relative; left: 1em; width: 250px;">
 	 </input>
@@ -1351,6 +1355,8 @@ Connect TV Later</button>
 	 onclick="photoimport('flickr')">Import from Flickr</li>
     <li class="mblListItem"
 	 onclick="photoimport('instagram')">Import from Instagram</li>
+	 <li class="mblListItem"
+	 onclick="photoimport('picasa')">Import from Picasa</li>
 	<li class="mblListItem"
 	 onclick="photoimport('smugmug')">Import from SmugMug</li>
 	
