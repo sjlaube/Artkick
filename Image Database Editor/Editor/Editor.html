@@ -116,6 +116,9 @@
 								<tr>														
 									<td> <a class="linkLabel" href="javascript: void(0)">Url:</a> </td> <td colSpan="5"> <input type="text" id="imgUrl" style="width:100%"/> </td>
 								</tr>
+								<tr>														
+									<td> <a class="linkLabel" href="javascript: void(0)">Icon:</a> </td> <td colSpan="5"> <input type="text" id="imgIcon" style="width:100%"/> </td>
+								</tr>
 								<tr>
 									<td> <label>Image #:</label> </td> <td> <input type="text" id="imgId" style="border:0" readonly="true"/></td>
 								</tr>
@@ -785,6 +788,7 @@
 			'video="' + getImageAttr(value, "Video", false) + '" ' +
 			'thumbnail="' + getImageAttr(value, "thumbnail", false) + '" ' +
 			'url="' + getImageAttr(value, "url", false) + '" ' +
+			'icon="' + getImageAttr(value, "icon", false) + '" ' +
 			'viewLists="' + getImageViewListAttribute(value["viewlists2"]) + '" ';
 		return strAttrs;
 	}
@@ -850,6 +854,7 @@
 		$('#imgVideo').val(image.attr('video'));
 		$('#imgThumbnail').val(image.attr('thumbnail'));
 		$('#imgUrl').val(image.attr('url'));
+		$('#imgIcon').val(image.attr('icon'));
 		$('#imgViewLists').val(image.attr('viewLists'));
 		$('#imgId').val(image.attr('id'));
 	}
@@ -902,6 +907,7 @@
 						targetImage.attr('video', value["Video"]);
 						targetImage.attr('thumbnail', value["thumbnail"]);
 						targetImage.attr('url', value["url"]);
+						targetImage.attr('icon', value["icon"]);
 						
 						fillImageAttrUI(targetImage);
 					}
@@ -979,6 +985,7 @@
 			'&Video=' + encodeURI($('#imgVideo').val()) +
 			'&thumbnail=' + encodeURI($('#imgThumbnail').val()) +
 			'&url=' + encodeURI($('#imgUrl').val()) +
+			'&icon=' + encodeURI($('#imgIcon').val()) +
 			'';
 		
 		// setup some local variables

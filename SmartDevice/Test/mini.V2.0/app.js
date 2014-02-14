@@ -82,8 +82,8 @@ require(["jquery",
 
             function () {
 
-                window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-              //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+             //  window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
+              window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -273,6 +273,18 @@ require(["jquery",
                         dojo.io.script.get({
                             url: base + "client/verifyUser?email=" + email + "&token=" + token,
                             callbackParamName: "callback",
+							timeout: 2000,
+							trytimes: 20,
+							error: function(error){
+								console.log("timeout!verifyUser"+url);
+								this.trytimes --;
+								if(this.trytimes>0){
+									dojo.io.script.get(this);
+								} else{
+									alert("Network problem 1. Please check your connection and restart the app.");
+								}
+								
+							},
                             load: function (result) {
                                 //		alert("Status="+result["Status"]);
                                 if (result["Status"] == "success") {
@@ -334,6 +346,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: base + "client/getDefault",
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+								console.log("timeout!getDefault"+url);
+								this.trytimes --;
+								if(this.trytimes>0){
+									dojo.io.script.get(this);
+								} else{
+									alert("Network problem2. Please check your connection and restart the app.");
+								}
+								
+						},
                         load: function (result) {
                             if (result["Status"] == "success") {
                                 window.defImage = result["defaults"]["image"];
@@ -359,6 +383,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!update2"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem3. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {
 
                         }
@@ -414,12 +450,12 @@ require(["jquery",
                         trytimes: 20,
                         callbackParamName: "callback",
                         error: function(error){
-                        	console.log("timeout!");
+                        	console.log("timeout!"+url);
                         	this.trytimes --;
                         	if(this.trytimes>0){
                         		dojo.io.script.get(this);
                         	} else{
-                        		alert("Bad network. Please check your connection and restart the app!");
+                        		alert("Network problem4. Please check your connection and restart the app.");
                         	}
                         	
                         },
@@ -599,6 +635,18 @@ require(["jquery",
                         dojo.io.script.get({
                             url: base + "client/getUserStatus?email=" + window.email + "&token=" + window.token,
                             callbackParamName: "callback",
+							timeout: 2000,
+							trytimes: 20,
+							error: function(error){
+								console.log("timeout!getUserStatus"+url);
+								this.trytimes --;
+								if(this.trytimes>0){
+									dojo.io.script.get(this);
+								} else{
+									alert("Network problem5. Please check your connection and restart the app.");
+								}
+								
+							},
                             load: function (result) {
                                 console.log("getUserStatus:" + result["Status"]);
                                 if (result["Status"] == "success") {
@@ -663,6 +711,18 @@ require(["jquery",
                                         dojo.io.script.get({
                                             url: base + "user/saveAsMyViewlist?email=" + window.email + "&token=" + window.token + "&listId=" + curl,
                                             callbackParamName: "callback",
+											timeout: 2000,
+											trytimes: 20,
+											error: function(error){
+												console.log("timeout!vsaveasmyviewlist"+url);
+												this.trytimes --;
+												if(this.trytimes>0){
+													dojo.io.script.get(this);
+												} else{
+													alert("Network problem6. Please check your connection and restart the app.");
+												}
+												
+											},
                                             load: function (result) {
                                                 console.log(result['Message']);
                                             }
@@ -707,6 +767,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: base + "player/getPlayers?email=" + window.email + "&token=" + window.token,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!getplayers"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem7. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {
                             var players = result["players"];
                             //alert("players:"+players.length);
@@ -768,6 +840,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: base + "player/getOwnedPlayers?email=" + window.email + "&token=" + window.token,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!getOwnedPlayers"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem8. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {
                             //alert( result["players"].length);
                             var players = result["players"];
@@ -942,6 +1026,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!getviewlists"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem9. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {
                             var lists = result["viewlists"];
                             //  put user's tops lists first in the list
@@ -1118,6 +1214,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!loadlists"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem10. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {
                             var lists = result["viewlists"];
 
@@ -1209,6 +1317,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!SelectPlayers"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem11. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {}
                     });
                 }
@@ -1400,6 +1520,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: base + "player/getPlayers?email=" + window.email + "&token=" + window.token,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!Getplayers"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem12. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {
 
                             var curr = new Date().getTime();
@@ -1697,6 +1829,18 @@ require(["jquery",
                         dojo.io.script.get({
                             url: base + "client/getSelectedPlayers?email=" + window.email + "&token=" + window.token,
                             callbackParamName: "callback",
+							timeout: 2000,
+							trytimes: 20,
+							error: function(error){
+								console.log("timeout!getselectedPlayers"+url);
+								this.trytimes --;
+								if(this.trytimes>0){
+									dojo.io.script.get(this);
+								} else{
+									alert("Network problem13. Please check your connection and restart the app.");
+								}
+								
+							},
                             load: function (result) {
                                 if (result["Status"] == "success") {
                                     for (var i in result["selectedPlayers"]) {
@@ -1745,6 +1889,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: base + "client/getSelectedPlayers?email=" + window.email + "&token=" + window.token,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!getSelectedPlayers - window after login"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem14. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {
                             if (result["Status"] == "success") {
                                 window.selectedPlayers = {};
@@ -1928,7 +2084,7 @@ require(["jquery",
                     var gridnext = dijit.registry.byId("GridNext");
                     forward = 1;
                     include = 1;
-                    	//alert("page="+page+" current grid page="+window.currGridPage);
+                    	console.log("page="+page+" current grid page="+window.currGridPage);
                     if (page == 0) {
                         window.targImageGrid = -1;
                         include = 1;
@@ -2009,9 +2165,21 @@ require(["jquery",
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!loadgrid"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem15. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (viewlist) {
                             for (var i in viewlist["imageSet"]) {
-                               //   alert("id="+viewlist["imageSet"][i]["id"]);
+                               console.log("id="+viewlist["imageSet"][i]["id"]);
 								icon=viewlist["imageSet"][i]["thumbnail"];
 								if (viewlist["imageSet"][i]["icon"])
 									icon=viewlist["imageSet"][i]["icon"];
@@ -2044,9 +2212,9 @@ require(["jquery",
 
                             }
                             window.firstGridImage = viewlist["imageSet"][0]["id"];
-                            window.lastGridImage = viewlist["imageSet"][19]["id"];
+                            window.lastGridImage = viewlist["imageSet"][viewlist["imageSet"].length-1]["id"];
 							    dojo.style(dojo.byId("Picturegrid"), "display", "block");
-                          //  alert("first="+window.firstGridImage+" last="+window.lastGridImage);
+                          console.log("first="+window.firstGridImage+" last="+window.lastGridImage);
                         }
 
 
@@ -2062,6 +2230,18 @@ require(["jquery",
                         dojo.io.script.get({
                             url: base + "client/rateImage?imageId=" + window.currImage + "&email=" + window.email + "&rating=" + userrating.value + "&token=" + window.token,
                             callbackParamName: "callback",
+							timeout: 2000,
+							trytimes: 20,
+							error: function(error){
+								console.log("timeout!rateImage"+url);
+								this.trytimes --;
+								if(this.trytimes>0){
+									dojo.io.script.get(this);
+								} else{
+									alert("Network problem16. Please check your connection and restart the app.");
+								}
+								
+							},
                             load: function (result) {}
                         });
 
@@ -2175,6 +2355,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!removeMyViewlist"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem17. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {
                             if (result["Status"] == "success") {
                                 usermessage("Viewlist " + item.label + " deleted!");
@@ -2216,7 +2408,9 @@ require(["jquery",
 
                     if (flag) {
                         window.MyViewlist.startEdit();
+
                         window.btn1.set("label", "Done");
+						$("#btn1").addClass("editstyle");
                         //	keyHandler = connect.connect(window.MyViewlist.domNode, "onkeydown", onKeydown);
                     } else {
 				
@@ -2225,6 +2419,7 @@ require(["jquery",
                         window.MyViewlist.endEdit();
 						console.log("endedit");
                         window.btn1.set("label", "Edit");
+						$("#btn1").addClass("editstyle");
                         //	connect.disconnect(keyHandler);
                     }
                 }
@@ -2273,6 +2468,18 @@ require(["jquery",
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
+						timeout: 2000,
+						trytimes: 20,
+						error: function(error){
+							console.log("timeout!update2"+url);
+							this.trytimes --;
+							if(this.trytimes>0){
+								dojo.io.script.get(this);
+							} else{
+								alert("Network problem18. Please check your connection and restart the app.");
+							}
+							
+						},
                         load: function (result) {}
                     });
 
@@ -2495,7 +2702,7 @@ function showmenu() {
 		else
 		menuname = "wipemenu";
 		
-	dojo.style(menuname, "left", $(window).width()-200+"px");
+	dojo.style(menuname, "left", $(window).width()-185+"px");
 	             
 	if(window.wipemenu)
 	{

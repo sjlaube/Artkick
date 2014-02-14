@@ -1,6 +1,6 @@
 /*
 
-Copyright 2013, Zwamy, Inc.  All Rights Reserved
+Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 
 */
 /*
@@ -39,6 +39,18 @@ function showmyviewlists()
                 dojo.io.script.get({
                     url: base + "user/getMyViewlists?email="+ window.email+"&token="+window.token,
                     callbackParamName: "callback",
+					timeout: 2000,
+					trytimes: 20,
+					error: function(error){
+						console.log("timeout!getMyViewlists"+url);
+						this.trytimes --;
+						if(this.trytimes>0){
+							dojo.io.script.get(this);
+						} else{
+							alert("Network problem28. Please check your connection and restart the app.");
+						}
+						
+					},
                     load: function (result) {
                         var lists = result["viewlists"]; 
 						//  put user's tops lists first in the list
@@ -120,6 +132,18 @@ function CreateUserList()
     dojo.io.script.get({
         url: url,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!createMyViewlist"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem29. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
             if (result["Status"] == "success") {
              //   alert("Viewlist " + newlistname + " ID:"+result["listId"]+" created!");
@@ -149,6 +173,18 @@ function CreateUserList()
     dojo.io.script.get({
         url: url,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!addImagetomyViewlist"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem30. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
             if (result["Status"] == "success") {
                // alert("added image:"+imageMap[currImage]["Title"]+" to viewlist:"+toviewlistname);  

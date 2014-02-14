@@ -29,6 +29,18 @@ function removePlayersAction() {
             dojo.io.script.get({
                 url: base + "player/removePlayer?email=" + window.email + "&playerId=" + key+"&token="+window.token,
                 callbackParamName: "callback",
+				timeout: 2000,
+				trytimes: 20,
+				error: function(error){
+					console.log("timeout!removePlayer"+url);
+					this.trytimes --;
+					if(this.trytimes>0){
+						dojo.io.script.get(this);
+					} else{
+						alert("Network problem19. Please check your connection and restart the app.");
+					}
+					
+				},
                 load: function (result) {
                 	if(result["Status"]=="success")
                         usermessage(result["Message"]);
@@ -63,6 +75,18 @@ function addUserToPlayers() {
             dojo.io.script.get({
                 url: base + "player/addUserToPlayer?queryEmail=" + email + "&playerId=" + key+"&token="+window.token+"&myEmail="+window.email,
                 callbackParamName: "callback",
+				timeout: 2000,
+				trytimes: 20,
+				error: function(error){
+					console.log("timeout!addUserToPlayer"+url);
+					this.trytimes --;
+					if(this.trytimes>0){
+						dojo.io.script.get(this);
+					} else{
+						alert("Network problem19. Please check your connection and restart the app.");
+					}
+					
+				},
                 load: function (result) {
                     usermessage(result["Message"]);
                 }
@@ -87,6 +111,18 @@ function searchUser() {
     dojo.io.script.get({
         url: base + "player/getUser?queryEmail=" + email+"&token="+window.token+"&myEmail="+window.email,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!getUser"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem20. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
             usermessage(result["Message"]);
         }
@@ -116,6 +152,18 @@ function createPlayer() {
     dojo.io.script.get({
         url: base + "reg/userReg?regCode=" + (dojo.byId("regPlayerCode").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email+"&token="+window.token,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!regCode"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem21. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
             if (result["Status"] == "success") {
                 myalert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
@@ -176,6 +224,18 @@ function createPlayer2() {
     dojo.io.script.get({
         url: base + "reg/userReg?regCode=" + (dojo.byId("regPlayerCode2").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName2").value + "&email=" + window.email+"&token="+window.token,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!regCode"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem22. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
             if (result["Status"] == "success") {
                 myalert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
@@ -241,6 +301,18 @@ function setAuto(interval) {
             dojo.io.script.get({
                 url: base + "client/setAuto?email=" + window.email + "&snumber=" + player.substring(1) + "&autoInterval=" + interval+"&token="+window.token,
                 callbackParamName: "callback",
+				timeout: 2000,
+				trytimes: 20,
+				error: function(error){
+					console.log("timeout!setAuto"+url);
+					this.trytimes --;
+					if(this.trytimes>0){
+						dojo.io.script.get(this);
+					} else{
+						alert("Network problem22. Please check your connection and restart the app.");
+					}
+					
+				},
                 load: function (result) {}
             });
 

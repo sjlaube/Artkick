@@ -1,0 +1,113 @@
+
+header, section, footer, aside, nav, article, hgroup
+{
+	display: block;
+}
+td
+{
+	vertical-align:top;
+}
+
+label
+{
+	margin: 2px;
+}
+
+#header
+{
+    background: #FFA500;
+	height=10px;
+}
+
+#top_menu
+{
+	background: blue;
+	color: white
+}
+
+#top_menu li
+{
+	display: inline-block;
+	list-style: none;
+	padding: 5px;
+	font: bold 14px Tahoma;
+}
+
+#divNavTree
+{
+	float: left;
+	width: 300px;
+	min-height: 500px;
+	margin: 3px 0px;
+	padding: 3px;
+	background: #66CCCC;
+}
+
+#divMainImages
+{
+	min-height: 220px;
+	overflow: scroll;
+}
+
+#divMainImageDetail
+{
+}
+
+#sectionMain
+{
+	float: left;
+	min-height: 300px;
+	/*width: 500px;*/
+	margin: 30px; /*comments*/
+}
+
+#footer
+{
+	background: #FFA500;
+	color: white;
+	height=32px;
+	text-align: center;
+}
+
+#renameDialog
+{
+	background: white;
+	border: 2px;
+}
+
+.hidden
+{
+	display: none;
+}
+
+.borderless
+{
+	border: 0;
+}
+
+/* image viewer */
+ul#thumbs { list-style: none; margin: 0px; padding:0px; margin-top: 10px; }
+ul#thumbs li { float: left; margin-left: 5px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; cursor:pointer; }
+ul#thumbs li img { vertical-align: top; }
+ul#thumbs li.selected { outline: 3px solid #FF4242; }
+
+div#img img { width: 600px; height: 400px; }
+
+.arrowPrev,.arrowNext {
+	width: 29px;
+	height: 29px;
+	cursor: pointer;
+}
+.arrowPrev {
+	background-image: url('jPages-master/img/back.gif');
+}
+.arrowNext {
+	background-image: url('jPages-master/img/next.gif');
+}
+
+.arrowPrev.jp-disabled,.arrowNext.jp-disabled{ display:none; }
+.arrowPrev.jp-enabled,.arrowNext.jp-enabled{ display:block; }
+
+.holder {
+	display: none;
+}

@@ -21,6 +21,18 @@ function emailPW(){
 	dojo.io.script.get({
 		url:base+"client/emailPassword?email="+dojo.byId("recoveryEmail").value,
 		callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!emailPassword"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem23. Please check your connection and restart the app.");
+			}
+			
+		},
 		load: function(result){
 			 myalert(result["Message"]);
 			 if(result["Status"]=="success"){
@@ -63,6 +75,18 @@ function changePW() {
        dojo.io.script.get({
        	 url:base+"client/resetPassword?email="+window.email+"&oldpassword="+oldpw+"&newpassword="+newpw1,
        	 callbackParamName: "callback",
+		 timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!resetPassword"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem24. Please check your connection and restart the app.");
+			}
+			
+		},
        	 load: function (result) {
              myalert(result["Message"]);
              if(result["Status"]=="success"){
@@ -113,6 +137,18 @@ function createUser() {
     dojo.io.script.get({
         url: base + "client/regUser?email=" + dojo.byId("regUserEmail").value + "&name=" + dojo.byId("regUserName").value+"&password=" + pw,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!regUser"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem24. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
             if (result["Status"] == "success") {
                 usermessage("Welcome " + dojo.byId("regUserName").value + "!");
@@ -190,6 +226,18 @@ function login() {
     dojo.io.script.get({
         url: base + "client/login?email=" + dojo.byId("loginEmail").value+"&password="+dojo.byId("loginPassword").value,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!email"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem25. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
             //alert(result["message"]);
             if (result["Status"] == "success") {
@@ -248,6 +296,18 @@ function deleteAccount()
 		dojo.io.script.get({
         url: url,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!removeUser"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem26. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
             //alert(result["message"]);
             if (result["Status"] == "success") {
@@ -291,6 +351,18 @@ function hiresswitch() {
 	dojo.io.script.get({
         url: base + "client/setresolution?email=" + window.email + "&token=" + window.token + "&highres=" + window.highresolution,
         callbackParamName: "callback",
+		timeout: 2000,
+		trytimes: 20,
+		error: function(error){
+			console.log("timeout!setresolution"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem27. Please check your connection and restart the app.");
+			}
+			
+		},
         load: function (result) {
 			console.log(result['Message']);
         }

@@ -25,7 +25,9 @@ myalert('Use Artkick with any PC/Mac or tablet browser.  Goto browser.artkick.ne
 
 if (devicetype == "Chromecast")
 {
-//myalert('Awaiting Google Approval -- Install the Artkick channel on your Chromecast');
-dijit.registry.byId("registernewTV").performTransition("registernewchromecast", 1, "", null);
+	if (window.BrowserDetect.OS=="Linux")
+		myalert('Awaiting Google Approval');
+	else
+		dijit.registry.byId("registernewTV").performTransition("registernewchromecast", 1, "", null);
 }
 }
