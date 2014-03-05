@@ -111,13 +111,13 @@
 									<td> <a class="linkLabel" href="javascript: void(0)">Video:</a> </td> <td colSpan="5"> <input type="text" id="imgVideo" style="width:100%"/> </td>
 								</tr>
 								<tr>														
+									<td> <a class="linkLabel" href="javascript: void(0)">Icon:</a> </td> <td colSpan="5"> <input type="text" id="imgIcon" style="width:100%"/> </td>
+								</tr>
+								<tr>														
 									<td> <a class="linkLabel" href="javascript: void(0)">Thumbnail:</a> </td> <td colSpan="5"> <input type="text" id="imgThumbnail" style="width:100%"/> </td>
 								</tr>
 								<tr>														
 									<td> <a class="linkLabel" href="javascript: void(0)">Url:</a> </td> <td colSpan="5"> <input type="text" id="imgUrl" style="width:100%"/> </td>
-								</tr>
-								<tr>														
-									<td> <a class="linkLabel" href="javascript: void(0)">Icon:</a> </td> <td colSpan="5"> <input type="text" id="imgIcon" style="width:100%"/> </td>
 								</tr>
 								<tr>
 									<td> <label>Image #:</label> </td> <td> <input type="text" id="imgId" style="border:0" readonly="true"/></td>
@@ -212,7 +212,6 @@
 			close: function ( event, ui ) {onPendingTransactionClosed(event, ui);} });
 		$( "#transactionCompletedDialog" ).dialog({ 
 			autoOpen: false, modal: true, 
-			buttons: [ { text: "Ok", click: function() { $( this ).dialog( "close" ); } }],
 			close: function ( event, ui ) { } });
 		$( "#createDialog" ).dialog({ 
 			autoOpen: false, modal: true, 
@@ -1038,6 +1037,7 @@
 			{
 				//alert("Changes have been saved.");
 				$("#transactionCompletedDialog").dialog("open");
+				setTimeout(function () { $("#transactionCompletedDialog").dialog("close"); }, 1000);
 				refreshImageAttrUI(imageId);
 			}
 		});

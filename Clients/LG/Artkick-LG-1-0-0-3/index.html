@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Artkick Viewer</title>
+
+<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="js/keycode.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<link rel="stylesheet" href="css/main.css" type="text/css">
+
+</head>
+<body onload="Main.onLoad();">
+<object type="application/x-netcast-info" 
+	    id="device"
+	    width="0"
+	    height="0">
+</object>
+	<!-- Dummy anchor as focus for key events -->
+	<a href="javascript:void(0);" id="anchor" onkeydown="Main.keyDown();"></a>
+		
+	<!--  This is where the images will display (as background of div)-->
+	<div id = "screen" style="position:absolute;top:0;left:0;height:100%;width:100%;">
+	</div>
+	
+	<!--  registration -- displays only if device not registered -->
+	<div id="registration">
+		<table style="width: 100%;">
+			<tr align="center">
+				<td>
+					<img src="images/ArtkickLogo.png"></img>
+				</td>
+			</tr>
+			<tr align="center" height="50">
+				<td>
+					<label id="registrationReason">Please connect your LG SmartTV to your account</label>
+				</td>
+			</tr>
+			<tr align="center" >
+				<td>
+					<label>Artkick connects this TV to an IOS or Android phone or tablet.</label>
+				</td>
+			</tr>
+			<tr align="center" >
+				<td>
+					<label>Install Artkick from the the IOS App Store or Google Play.</label>
+				</td>
+			</tr>
+			<tr align="center" >
+				<td>				
+					<label>Goto Settings/Connect TV</label>		
+				</td>
+			</tr>
+			<tr align="center" >
+				<td>
+					<label>and enter this code to activate:</label>
+				</td>
+			</tr>
+			<tr align="center" height="50">
+				<td>
+					<label id="regCode"></label>
+				</td>
+			</tr>
+			<tr align="center" >
+				<td>
+					<label id="autoUpdateText">This screen will automatically update as soon as your activation completes</label>
+					<label id="timedOutText" style="display: none;color: red;">Request timed out. Unable to link to Artkick within time limit.</label>
+				</td>
+			</tr>
+			<tr align="center" >
+				<td>
+					<button id="btnRetry" onclick="register();" type="button" style="display:none;" class="ui-button ui-button-text-only ui-widget ui-corner-all">Retry</button>
+				</td>
+			</tr>
+			<!-- <tr align="center" height="100">
+				<td>
+					<button id="btnBack" onclick="alert('TODO: Handle back button!!!');" type="button" class="ui-button ui-button-text-only ui-widget ui-corner-all">Back</button>
+				</td>
+			</tr>
+			-->
+		</table>
+	</div>
+	
+	<div id="information">
+		<table width="100%">
+			<tr>
+				<td colSpan="2">
+					<label id="imageTitle"></label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label id="imageCaption"></label>
+				</td>
+				<!--  <td> align="right" style="vertical-align:bottom;">
+					<img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" width="100" height="31"></img>
+				
+				</td> -->
+			</tr>
+		</table>
+	</div>
+	
+	<div id="advancingImageNotice">
+		<label style="font-size: 10px">Requesting image...</label>
+	</div>
+	
+	<div id="logo">
+		<img src="images/logo.png" width="100" height="31"></img>
+	</div>
+	
+	<div id="noInternetConnection">
+		<label>Error: No internet connection detected.</label>
+		<label>Please close this application, connect your TV to the internet,</label>
+		<label>and re-start Artkick.</label>
+	</div>
+	
+	<div id="lostInternetConnection">
+		<label style="font-size: 10px">Lost internet connection...</label>
+	</div>
+</body>
+</html>

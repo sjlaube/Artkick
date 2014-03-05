@@ -1,0 +1,8 @@
+Notes from Nancy
+
+Still move save confirm closer to save button
+Scroll down when using arrow key to make selection visible
+aspect ratio - calculate? show under picture (overlay)? search (select), or?
+password - 
+add image refreshed whole thing
+delete the very last image issue -- chat with Leon
