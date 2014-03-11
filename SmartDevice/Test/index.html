@@ -150,9 +150,11 @@ float:left;margin-right:2px}
 	.mblButton{
 		background-image: none !important;
 		<!--background-color: #7b90ab !important; -->
-		border-style:solid;
-		border-color:#c1c1c1;
+		border-style:none;
+		border-color:none;
 	  -webkit-tap-highlight-color: none;
+	  background-color:gray!important;
+	  color:white;
 	}
 	.mblToolBarButton {
 
@@ -360,6 +362,13 @@ float:left;margin-right:2px}
 		width:65px;
 		height:45px;
 	}
+	.msgstyle {
+		color: #00ABDE;
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 400;
+		position:relative;
+		left:20px;
+	}
 	.categoryclass
 	{
 	}
@@ -484,8 +493,10 @@ font-family: 'Open Sans', sans-serif;
      </div> -->
 </div> 
  <div data-dojo-type="dojox/mobile/SwapView" data-dojo-props="selected:true" id="Intro0" style="height:100%;background-color: black;">
-   <div style="color:white;size:18px;position: absolute; z-index: 900; left: 140px; top:63px;" onclick="goToLogin1()">
-     Sign in</div>
+   <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:63px;" onclick="goToLogin1()">
+     Sign in</div>  
+	 <div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:63px;" onclick="GuestLogin()">
+     Look around</div>
 
 
    <img src="images/ARTKICKlogoFULLCOLOR_200x62.png" alt=" " style="position: absolute; z-index: 900; left: 65px; top: 170px;">   
@@ -534,15 +545,20 @@ font-family: 'Open Sans', sans-serif;
 
 
   <div>
-	<img src="images/SignIn_0000_Facebook.png" alt="" onclick="FBlogin()" style="position: relative;left:17px;top:50px;"> 
+	<img src="images/SignIn_0000_Facebook.png" alt="" onclick="FBlogin()" style="position: relative;left:17px;top:60px;"> 
 	</div>
 
   <div>
-	<img src="images/SignIn_0001_Google.png" alt="" onclick="Googlelogin()" style="position: relative;left:17px;top:50px;"> 
+	<img src="images/SignIn_0001_Google.png" alt="" onclick="Googlelogin()" style="position: relative;left:17px;top:60px;"> 
 </div>
 <br>  
  <div>
-	<img src="images/SignIn_0003_Email.png" alt="" onclick="gotoView('newLogin','Login')" style="position: relative;left:17px;top:60px"> 
+	<img src="images/SignIn_0003_Email.png" alt="" onclick="gotoView('newLogin','Login')" style="position: absolute;left:17px;bottom:60px"> 
+</div> 
+
+
+ <div>
+	<img src="images/LookAround.png" alt="" onclick="GuestLogin()" style="position: absolute;left:17px;bottom:10px"> 
 </div> 
 
      </div>
@@ -802,9 +818,9 @@ Click to Continue</button>
        Roku</button>
 	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em;top:8px; width: 80px;" onclick="reghelp('Samsung')">
        Samsung</button>
-	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;color:gray" onclick="reghelp('Sharp')">
+	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;" onclick="reghelp('Sharp')">
        Sharp</button>
-	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;color:gray" onclick="reghelp('Sony')">
+	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;" onclick="reghelp('Sony')">
        Sony</button>
 	<button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;" onclick="reghelp('Browser')">
        PC/Mac</button>
@@ -929,7 +945,7 @@ Content
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index=901"  >
    <div id="ImageViewHeader" data-dojo-type="dojox/mobile/Heading"  data-dojo-props='fixed:"top"' style="font-size:14px; color:white; line-height:150%">hello
-	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="viewlistbutton" class="clearbutton" data-dojo-props='toggle:"true", ' onclick="gotoCategory('0')" style="float: left;">GoToCategory</div>
+	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="viewlistbutton" class="clearbutton" data-dojo-props='toggle:"true", ' onclick="gotoCategory('0')" style="float: left;height:65px">GoToCategory</div>
    
 
 	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="linemenu" data-dojo-props='icon:"images/3lineicon_menu-blue.png"' style="float: right;top:0px;width:65px;height:45px" onclick="showmenu()"></div> 
@@ -980,6 +996,12 @@ Content
             </label>
          </td>
        </tr>
+	          <tr>
+         <td id="viewtableline5a">
+           <label>
+            </label>
+         </td>
+       </tr>
 	   <tr>
          <td id="viewtableline6">
            <label>
@@ -1013,8 +1035,10 @@ Content
  
 
  <div data-dojo-type="dojox/mobile/SwapView" id="Intro1" style="background-color: black height: 100%;">
-   <div style="color:white;size:18px;position: absolute; z-index: 900; left: 140px; top:1em;" onclick="goToLogin1()">
+   <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:1em;" onclick="goToLogin1()">
      Sign in</div>
+	<div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:1em;" onclick="Guest1()">
+     Look around</div>
  
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; color: #c0c0c0; font-family: Verdana,Geneva,sans-serif; float: none; font-size: 17px; left: 95px; top: 75px;">Discover it here</span>
 <img src="images/Nighthawks1.png" alt=">" style="position: absolute; z-index: 900; left: 135PX; top: 110PX;"></img>  
@@ -1030,8 +1054,10 @@ Content
 </div>
 </div>
  <div data-dojo-type="dojox/mobile/SwapView" id="Intro2" style="background-color: black">
-   <div style="color:white;size:18px;position: absolute; z-index: 900; left: 140px; top:1em;" onclick="goToLogin1()">
+   <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:1em;" onclick="goToLogin1()">
      Sign in</div>
+	 	<div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:1em;" onclick="Guest2()">
+     Look around</div>
    <img src="images/spacewalk1.png" alt=">" style="position: absolute; z-index: 900; width: 194px; height: 98px; left: 62px; top: 77px;"></img>
  
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; color: #c0c0c0; text-align: center; width: 254px; left: 34.5px; font-size: 14px; top: 200px;">
@@ -1041,8 +1067,10 @@ Content
 </div>
 
 <div data-dojo-type="dojox/mobile/SwapView" id="Intro3" style="background-color: black">
-   <div style="color:white;size:18px;position: absolute; z-index: 900; left: 140px; top:1em;" onclick="goToLogin1()">
+   <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:1em;" onclick="goToLogin1()">
      Sign in</div>
+	 	<div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:1em;" onclick="Guest3()">
+     Look around</div>
    <img src="images/FB-f-Logo__blue_50.png" alt=">" style="position: absolute; z-index: 900; left: 135px; top: 6em;"></img>
    <img src="images/twitter-share.png" alt=">" style="position: absolute; z-index: 900; left: 135px; top: 10em;"></img>
    <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; color: #c0c0c0; text-align: center; width: 254px; left: 35px; font-size: 15px; top: 240px;">
@@ -1315,6 +1343,26 @@ Connect TV Later</button>
 </div>
 </div>
 
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="GuestMessage" data-dojo-props='modal:true,top:"61px"' 
+style="border:0px!important;outline:none!important;background-image:none!important;text-align:left;background-color:#404040!important">
+<div><p>Actions in this menu require you to sign in to 
+<img style="position:relative;top:6px" src="images/Logo_75px.png" alt=""></p>
+<span style="position:relative;top:-10px;">Then you can:</span><br>
+<span class="msgstyle" style="top:-5px">Connect TVs</span><br>
+<span class="msgstyle" style="top:-5px">Import personal photos</span><br>
+<span class="msgstyle" style="top:-10px;font-size:80%">(from Facebook, Flickr,Instagram,</span><br>
+<span class="msgstyle" style="top:-15px;font-size:80%">Picasa&SmugMug)</span><br>
+<span class="msgstyle" style="top:-15px;">Create personal viewlists</span><br>
+<span class="msgstyle" style="top:-15px;">Share Viewlists via:</span><br>
+<span class="msgstyle" style="top:-20px;font-size:80%">Facebook, Twitter & Email</span><br>
+
+</div>
+<button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;"
+        onclick="gotoSignin()">Sign in Now</button>
+<button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;"
+        onclick="dijit.registry.byId('GuestMessage').hide()">Maybe Later</button>
+</div>
+
  <div data-dojo-type="dojox/mobile/ScrollableView" id="select_category" >
    <div  data-dojo-type="dojox/mobile/Heading"  data-dojo-props='label:"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Browse/Search",fixed:"top"'>
    
@@ -1328,7 +1376,7 @@ Connect TV Later</button>
   data-dojo-props='ignoreCase: true, incremental:false,onSearch:usersearch'></input>
    <div data-dojo-type="dojox/mobile/ContentPane"  style="z-index:900; position: relative; top:10px" >
     <img src="images/Categories/Cat320x200_Top Lists.jpg" alt=" " onclick="gotoCategory(' Top Lists')" class="categoryclass" >
-	<img src="images/Categories/Cat320x200_My View Lists.jpg" alt=" " onclick="gotoCategory('My Viewlists')" class="categoryclass">
+	<img id="MyViewlists" src="images/Categories/Cat320x200_My View Lists.jpg" alt=" " onclick="gotoCategory('My Viewlists')" class="categoryclass">
     <img src="images/Categories/Cat320x200_Architecture.jpg" alt=" " onclick="gotoCategory('Architecture')" class="categoryclass">
 	<img src="images/Categories/Cat320x200_Artists.jpg" alt=" " onclick="gotoCategory('Artists')" class="categoryclass">
     <img src="images/Categories/Cat320x200_Collections.jpg" alt=" " onclick="gotoCategory('Collections')" class="categoryclass">

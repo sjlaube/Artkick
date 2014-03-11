@@ -83,7 +83,7 @@ require(["jquery",
             function () {
 
                window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-              // window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+             //  window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -138,6 +138,7 @@ require(["jquery",
                 window.currentView = "Intro0";
 				window.lastView = "";
 				window.highresolution=false;
+				window.guest=false;
 
                 window.autoIntro = true;
                 window.delItem = "";
@@ -363,6 +364,9 @@ require(["jquery",
                                 window.defImage = result["defaults"]["image"];
                                 window.defList = result["defaults"]["viewlist"];
                                 window.defCat = result["defaults"]["category"];
+								window.currImage = window.defImage;
+								window.currCat = window.defCat;
+								window.currList = window.defList;
                             }
 
                         }
@@ -373,6 +377,7 @@ require(["jquery",
 
 
                 window.syncImage = function () {
+				
                     var url = base + "client/update2?imageID=" + window.currImage + "&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat + "&token=" + window.token;
                     for (var player in window.playerSet) {
                         if (window.playerSet[player]) {
@@ -380,6 +385,8 @@ require(["jquery",
                         }
                     }
                     //alert(url);
+					if (!window.guest)
+					{
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
@@ -387,6 +394,7 @@ require(["jquery",
 
                         }
                     });
+					}
 
 
 
@@ -579,9 +587,9 @@ require(["jquery",
 									// if this is either login or restart then we go to category view as default
 									if (window.restart)
 									{
-										window.restart=false;
+										window.restart=false;									
 										gotoView('blankview','select_category');
-									}
+									}										
 									else
 										gotoView('blankview', 'ImageView');
                                     //window.sliderIndex = 0;
@@ -608,6 +616,7 @@ require(["jquery",
                 window.updateImages = function (targImage) {
 
                     //window.imageMap = {};
+				
                     var imageData = {
                         "items": []
                     };
@@ -618,6 +627,15 @@ require(["jquery",
 						window.restart=true;
 
                     //alert("update images");
+					if (window.guest)
+					{
+						
+						window.switchView = true;
+						gotoView("newLogin","blankview");
+				
+									loadImages(targImage, 1, 15, 1);
+										return;
+					}
                     if (window.justLogin || window.justRefresh) {
                       //    alert("justlogin");
                         window.justRefresh = false;
@@ -655,7 +673,7 @@ require(["jquery",
                                     console.log("currList:" + window.currList + " currCat:" + window.currCat + " tarImage:" + window.tarImage);
                                     if (window.shuffle) {
 											dijit.registry.byId('shuffletab').set('label', "Shuffle On");
-									        $("#myshuffle").addClass("mblTabBarButtonLabel2");
+							window.		        $("#myshuffle").addClass("mblTabBarButtonLabel2");
 
 										   //    dojo.byId('shuffletile').innerHTML = "Turn off shuffle";
                                  //       dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
@@ -678,7 +696,7 @@ require(["jquery",
                                     } else {
                                         fillsw.set('label', "Not Active");
                                     }
-									dijit.byId("hires-switch").set("checked", window.fill);
+									dijit.byId("hires-switch").set("checked", window.highresolution);
 									var hrsw = dijit.registry.byId("hires-switch");
 									if (window.highresolution) {
 										hrsw.set('label', "Active");
@@ -729,6 +747,8 @@ require(["jquery",
 													myalert("Shared Viewlist no longer exists");
 													loadImages(window.tarImage, 1, 15, 1);
 												}
+												else
+													loadImages(window.tarImage,1,15,1);
                                             }
                                         });
 
@@ -1556,8 +1576,9 @@ require(["jquery",
                                     var player = result["players"][i];
 
                                     //alert(curr-player["last_visit"]);
+									
 
-                                    if (curr - player["last_visit"] < 7000) {
+                                    if (curr - player["last_visit"] < 7000|| player["online"]) {
                                         var status = "images/greenbutton.png";
 
                                     } else {
@@ -1606,7 +1627,7 @@ require(["jquery",
 
                                 // alert(curr-player["last_visit"]);
 
-                                if (curr - player["last_visit"] < 5000) {
+                                if (curr - player["last_visit"] < 7000|| player["online"]) {
                                     var status = "images/greenbutton.png";
                                 } else {
                                     var status = "images/graybutton.png";
@@ -1888,7 +1909,7 @@ require(["jquery",
 
                 window.afterLogin = function () {
                     dojo.style(dojo.byId("OptionsList"), "display", "none");
-                    gotoView("Login", "blankview");
+                    gotoView(window.currentView, "blankview");
                     window.switchView = true;
                     updateImages(window.tarImage);
                     imageView.hide();
@@ -2704,7 +2725,12 @@ function showmenu() {
 	var menuname = "wipemenu"
 	//console.log("showmenu width:"+$(window).width()+"px");
 
-	
+	if (window.guest)
+	{
+	guestmessage();
+	window.guestmenu=true;
+	return;
+	}
 	if (window.currentView=="select_category")
 		menuname = "wipemenu3";
 	else if (window.currentView=="PlaylistView")
@@ -2827,6 +2853,8 @@ function refreshView() {
     if (!window.email) {
         return;
     }
+	dijit.registry.byId('GuestMessage').hide();
+	
     (function (i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
         i[r] = i[r] || function () {
@@ -2843,7 +2871,14 @@ function refreshView() {
     ga('send', 'pageview');
     window.justRefresh = true;
     window.switchView = true;
-
+	if (window.guest)
+	{
+		
+ 
+        cleanUp();
+		gotoView(window.currentView,"newLogin");
+		return;
+	}
     var currView = dijit.registry.byId("Intro0");
     var mycurrView = currView.getShowingView();
     //alert(mycurrView);
@@ -2893,6 +2928,7 @@ function cleanUp() {
 	window.shownoviewlist = false;
 	window.restart=false;
 	window.highresolution=false;
+	window.guest=false;
     $("#addPlayerEmail").attr('value', '');
     getDefaults();
 }
@@ -2999,6 +3035,22 @@ window.myalert=function (message)
 	dijit.registry.byId(window.currentView).show();
 	mbox.show();
 
+}
+
+window.guestmessage=function (message)
+{
+
+	var mbox = dijit.registry.byId('GuestMessage');
+	//dojo.byId('myContent').innerHTML = message;
+	dijit.registry.byId(window.currentView).show();
+	mbox.show();
+
+}
+
+window.gotoSignin=function()
+{
+	dijit.registry.byId('GuestMessage').hide();
+	refreshView();
 }
 
 function setAutoIntro(flag) {

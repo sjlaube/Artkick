@@ -169,6 +169,8 @@ function createUser() {
 				dojo.byId("regUserPW2").value="";
 				dojo.byId("regUserName").value="";
 				dojo.byId("regUserEmail").value="";
+				$("#MyViewlists").show();
+				$("#searchbox").show();
 				window.currentView = "quickhint";
 				window.firstimageview = true;
 			    dijit.registry.byId("registeruser").performTransition("quickhint", 1, "", null);
@@ -256,6 +258,8 @@ function login() {
                 		dojo.byId("loginEmail").value="";
 				dojo.byId("loginPassword").value="";
                 //for security, we need to make sure other possible showing view gone!!
+				$("#MyViewlists").show();
+				$("#searchbox").show();
                 window.afterLogin();
                 
                 
@@ -326,7 +330,7 @@ function deleteAccount()
 
 				cleanUp();
 				setTimeout(function(){
-				gotoView("blankview","Login");
+				gotoView("blankview","newLogin");
 				},1000);
                 
                 
@@ -353,27 +357,80 @@ function hiresswitch() {
 	dojo.io.script.get({
         url: base + "client/setresolution?email=" + window.email + "&token=" + window.token + "&highres=" + window.highresolution,
         callbackParamName: "callback",
-		timeout: 8000,
-		trytimes: 5,
-		error: function(error){
-			console.log("timeout!setresolution"+url);
-			this.trytimes --;
-			if(this.trytimes>0){
-				dojo.io.script.get(this);
-			} else{
-				alert("Network problem27. Please check your connection and restart the app.");
-			}
-			
-		},
+		
         load: function (result) {
 			console.log(result['Message']);
         }
     });
 
 }
+function Guest1()
+{
+	window.currentView = "Intro1";
+	GuestLogin();
+}
+function Guest2()
+{
+	window.currentView = "Intro2";
+	GuestLogin();
+}
+function Guest3()
+{
+	window.currentView = "Intro3";
+	GuestLogin();
+}
+function GuestLogin() {
+window.guest=true;
+window.email="guest@guest.guest";
+window.token="guest";
+$("#MyViewlists").hide();
+$("#searchbox").hide();
+var currView = dijit.registry.byId("Login");
+    dojo.io.script.get({
+        url: base + "client/login?email=" + "guest@guest.guest"+"&password="+"guest",
+        callbackParamName: "callback",
+		timeout: 8000,
+		trytimes: 5,
+		error: function(error){
+			console.log("timeout!email"+url);
+			this.trytimes --;
+			if(this.trytimes>0){
+				dojo.io.script.get(this);
+			} else{
+				alert("Network problem25. Please check your connection and restart the app.");
+			}
+			
+		},
+        load: function (result) {
+            //alert(result["message"]);
+            if (result["Status"] == "success") {
+                userObj = result["userObj"];
+              //  usermessage("Welcome! " + userObj["name"]);
+				window.shuffle=false;
+				//dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
 
-function Yahoologin() {
-myalert("Yahoo login not implemented yet");
+             //   window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
+            //    window.token = result['token'];
+                //alert(window.email);
+               // setCookie("email", window.email, 365);
+               // setCookie("token",result['token'], 365);
+                //currView.performTransition("ImageView", 1, "slide", null);
+                		dojo.byId("loginEmail").value="";
+				dojo.byId("loginPassword").value="";
+				window.tarImage = -1;
+                //for security, we need to make sure other possible showing view gone!!
+                window.afterLogin();
+                
+                
+                
+            } else {
+				//dojo.byId("loginEmail").value="";
+				//dojo.byId("loginPassword").value="";
+                myalert("login failed, please check your email and password or register!");
+				
+            }
+        }
+    });
 }
 
 function FBlogin() {

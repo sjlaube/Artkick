@@ -17,6 +17,12 @@ window.backbutton=function ()
 		showmenu();
 		return;
 	}
+	if (window.guestmenu)
+	{	
+		dijit.registry.byId('GuestMessage').hide();
+		window.guestmenu=false;
+		return;
+	}
 	if(window.bigImg)
 	{
 		smallimage();
