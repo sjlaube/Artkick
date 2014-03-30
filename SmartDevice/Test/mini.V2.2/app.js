@@ -477,7 +477,7 @@ require(["jquery",
                         },
                         load: function (viewlist) {
 							console.log("viewlist5 return:"+viewlist["Status"]);
-
+							//myalert("viewlist5 return:"+viewlist["Status"]);
                             if (viewlist["imageSet"].length == 0) {
                                 myalert("'My Favorites' is empty, please star-rate some images and they will be added to it!");
                                 window.currList = window.defList;

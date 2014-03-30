@@ -1,13 +1,16 @@
 //Main js for Editor
 //TODO: split
-//var baseCmdUrlProd = 'http://fierce-basin-2977.herokuapp.com/prod/'
-var baseCmdUrlProd = 'https://nameless-sea-3359.herokuapp.com/prod/'
-//var baseCmdUrlStag = 'http://fierce-basin-2977.herokuapp.com/stag/'
-var baseCmdUrlStag = 'https://nameless-sea-3359.herokuapp.com/stag/'
+//var baseCmdUrlProd = 'http://fierce-basin-2977.herokuapp.com/prod/';
+var baseCmdUrlProd = 'https://nameless-sea-3359.herokuapp.com/prod/';
+//var baseCmdUrlStag = 'http://fierce-basin-2977.herokuapp.com/stag/';
+var baseCmdUrlStag = 'https://nameless-sea-3359.herokuapp.com/stag/';
+var baseCmdUrlPersonal = 'https://nameless-sea-3359.herokuapp.com/priv/';
+
 var baseCmdUrl = baseCmdUrlStag;
 var authUrl = 'https://nameless-sea-3359.herokuapp.com/login?app_id=artkick_editor&redirect_url=http://editor.artkick.net/Editor.html';
 var serverProd = 'Production';
 var serverStag = 'Staging';
+var serverPersonal = 'Personal';
 var server = serverStag;
 var viewListType = "viewList";
 var viewListFeaturedType = "viewListFeatured";
@@ -22,11 +25,21 @@ var tempRename = false;  //hack for rename not including image count
 
 var authEmail;
 var authToken;
+var isAdmin;
 
 $(document).ready(function () {
 	jQuery(function($) {
 		
 	});
+	
+	if (isAdmin) {
+		loadArtkickCategories();
+	}
+	else {
+		server = serverPersonal;
+		baseCmdUrl = baseCmdUrlPersonal;
+		loadPersonalCategories();
+	}
 	
 	$('#btnSave').click(function () {
 		saveImageAttr();
@@ -121,11 +134,30 @@ function login() {
 	window.location.href = authUrl;
 }
 
-function initAuth() {	
-	authToken = $.url().param('token');
-	authEmail = $.url().param('email');
+function getVal(string, name) {
+	if (string.indexOf(name) == -1) {
+		return null;
+	}
+  
+	var startIndex = string.indexOf(name)+name.length+1;
+	var endIndex = startIndex;
+	while (endIndex < string.length) {
+		endIndex++;
+		if(string[endIndex]=='&') {
+		break;
+		}
+	}
 	
-	var test = encodeURI('kwalter@comcast.net');
+	return string.substring(startIndex, endIndex);
+}
+
+function initAuth() {	
+	//authToken = $.url().param('token');
+	//authEmail = $.url().param('email');
+	var requestURL = window.document.URL.toString(); 
+    authToken = getVal(requestURL,'token');
+	authEmail = getVal(requestURL,'email');
+	isAdmin = getVal(requestURL,'isAdmin') === "0" ? false : true;
 	
 	//Check for cookies if not passed in as param
 	//If passed in as param, save as cookie
@@ -153,6 +185,8 @@ function getAuthAPIParams()
 	return 'token=' + authToken +
 		   '&email=' + authEmail;	
 }
+
+//TODO: This inline main code is buried -- need to refactor
 
 var myArr = [];
 var myCategories = [];
@@ -184,54 +218,103 @@ console.log('Editor Host: ' + baseEditorUrl + " Database Param: " + databasePara
 console.log('Database Server: ' + server + " Base Url: " + baseCmdUrl);
 
 initAuth();
+/*
+if (isAdmin) {
+	loadArtkickCategories();
+}
+else {
+	server = serverPersonal;
+	baseCmdUrl = baseCmdUrlPersonal;
+	loadPersonalCategories();
+}
+*/
 
-//<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
-$.ajax({
-  url: baseCmdUrl + 'allCategories' + '?' + getAuthAPIParams(),
-  dataType: 'jsonp',
-  async: false,
-  
-  success: function(data) {
-	if (verifyApiResponseSuccess(data)) {
-		myArr.push('<div id="container"> <ul> <li id="treetop" class="root" rel="root" displayName="ArtKick"><a>ArtKick - ' + server + '</a><ul>');
-		$.each(data, function(key, value) {
-			if (key == 'categories') {
-				$(this).each(function(key, value) {
-					//var catViewList = getCatViewLists(value["name"]);
-					myArr.push("<li " + 'class="category" rel="category" id=' + convertNameToId(value["name"]) + ' displayName="' + value["name"] + '"' + "><a>" + value["name"] + "</a><ul><a>...</a></ul></li>" );
-					myCategories.push(value["name"]);
-				});
+function addTrashCategory() {
+	//manually add trash
+	var trashCount = '-'; //TODO: Need API call
+	//TODO: Duplicate code from getViewListImages -- need to combine
+	var strTrashViewList = '<li class="trashViewList" rel="trashViewList" id="' + trashId + '"' +
+							' displayName="' + trashName + '"' +
+							' imageCount="' + trashCount + '"' +
+							'><a>' + trashName + ' (' + trashCount + ')' + '</a>' +
+					   '</li>';
+	myArr.push("<li " + 'class="trashCategory" rel="trashCategory" id=' + convertNameToId(trashName) + ' displayName="' + trashName + '"' +
+				"><a>" + trashName + "</a><ul>" + strTrashViewList + "</ul></li>" );
+}
+
+function loadPersonalCategories() {
+	//TODO: Some duplicate code here and in loadArtkickCategories
+	myArr.push('<div id="container"> <ul> <li id="treetop" class="root" rel="root" displayName="ArtKick"><a>ArtKick - ' + server + '</a><ul>');
+
+	//for personal lists, there will just be a single category (email for now)
+	var catName = authEmail;
+	myArr.push("<li " + 'class="category" rel="category" id=' + '-10' + ' displayName="' + catName + '"' + "><a>" + catName + "</a><ul><a>...</a></ul></li>" );	
+	myCategories.push('-10');
+	
+	//manually add a trash category
+	addTrashCategory();
+	
+	//finish up the outer div
+	myArr.push('</ul></li></ul></div>');
+	$('#divNavTree2').html(myArr.join(''));
+	
+	//manually add trash click handler
+	AddCatViewListClickHandlers(trashName);
+	
+	//add view lists for each category
+	for (var i = 0; i < myCategories.length; i++) {
+	   getCatViewLists(myCategories[i]);
+	}
+}
+
+function loadArtkickCategories() {
+	$.ajax({
+	  url: baseCmdUrl + 'allCategories' + '?' + getAuthAPIParams(),
+	  dataType: 'jsonp',
+	  async: false,
+	  
+	  success: function(data) {
+		if (verifyApiResponseSuccess(data)) {
+			myArr.push('<div id="container"> <ul> <li id="treetop" class="root" rel="root" displayName="ArtKick"><a>ArtKick - ' + server + '</a><ul>');
+			$.each(data, function(key, value) {
+				if (key == 'categories') {
+					$(this).each(function(key, value) {
+						//var catViewList = getCatViewLists(value["name"]);
+						myArr.push("<li " + 'class="category" rel="category" id=' + convertNameToId(value["name"]) + ' displayName="' + value["name"] + '"' + "><a>" + value["name"] + "</a><ul><a>...</a></ul></li>" );
+						myCategories.push(value["name"]);
+					});
+				}
+			});
+			
+			//manually add trash
+			var trashCount = '-'; //TODO: Need API call
+			//TODO: Duplicate code from getViewListImages -- need to combine
+			var strTrashViewList = '<li class="trashViewList" rel="trashViewList" id="' + trashId + '"' +
+									' displayName="' + trashName + '"' +
+									' imageCount="' + trashCount + '"' +
+									'><a>' + trashName + ' (' + trashCount + ')' + '</a>' +
+							   '</li>';
+			myArr.push("<li " + 'class="trashCategory" rel="trashCategory" id=' + convertNameToId(trashName) + ' displayName="' + trashName + '"' +
+						"><a>" + trashName + "</a><ul>" + strTrashViewList + "</ul></li>" );
+			
+			//finish up the outer div
+			myArr.push('</ul></li></ul></div>');
+			$('#divNavTree2').html(myArr.join(''));
+			
+			//manually add trash click handler
+			AddCatViewListClickHandlers(trashName);
+			
+			//add view lists for each category
+			for (var i = 0; i < myCategories.length; i++) {
+			   getCatViewLists(myCategories[i]);
 			}
-		});
-		
-		//manually add trash
-		var trashCount = '-'; //TODO: Need API call
-		//TODO: Duplicate code from getViewListImages -- need to combine
-		var strTrashViewList = '<li class="trashViewList" rel="trashViewList" id="' + trashId + '"' +
-								' displayName="' + trashName + '"' +
-								' imageCount="' + trashCount + '"' +
-								'><a>' + trashName + ' (' + trashCount + ')' + '</a>' +
-						   '</li>';
-		myArr.push("<li " + 'class="trashCategory" rel="trashCategory" id=' + convertNameToId(trashName) + ' displayName="' + trashName + '"' +
-					"><a>" + trashName + "</a><ul>" + strTrashViewList + "</ul></li>" );
-		
-		//myCategories.push("Trash");
-		myArr.push('</ul></li></ul></div>');
-		$('#divNavTree2').html(myArr.join(''));
-		//$('#container').jstree();
-		
-		//manually add trash click handler
-		AddCatViewListClickHandlers(trashName);
-		
-		for (var i = 0; i < myCategories.length; i++) {
-		   getCatViewLists(myCategories[i]);
 		}
-	}
-	},
-	error: function(data) {
-		alert('Error: could not retreive json data for categories');
-	}
-});
+		},
+		error: function(data) {
+			alert('Error: could not retreive json data for categories');
+		}
+	});
+}
 		
 function convertNameToId(name) {
 	//must not have spaces in Id
@@ -336,8 +419,7 @@ function buildNavTree()
 
 		"contextmenu": { 
 			items: function(node) {
-				if (node.attr('rel') == 'root' ) 
-					{
+				if (node.attr('rel') == 'root' && isAdmin) {
 					var otherServer;
 					if (server == serverStag)
 						otherServer = serverProd;
@@ -358,66 +440,103 @@ function buildNavTree()
 								{ toggleDatabase() }, 
 							seperator_after : false, 
 							seperator_before : false 
-							},
+							}
 					} // end items 
+				}
+				else if (node.attr('rel') == 'category') {
+					if (isAdmin) {
+						return { 
+							ccp: false, 
+							rename: { 
+								label: "Rename", 
+								action: function (obj) 
+									{ renameViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}, 
+							create: { 
+								label: "Create new view list", 
+								action: function (obj) 
+									{ createViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+							remove: { 
+								label: "Remove", 
+								action: function (obj) 
+									{ removeViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}
+						} // end items
 					}
-				else if (node.attr('rel') == 'category' ) 
-					return { 
-						ccp: false, 
-						rename: { 
-							label: "Rename", 
-							action: function (obj) 
-								{ renameViewListOrCategory (obj) }, 
-							seperator_after : false, 
-							seperator_before : false 
-							}, 
-						create: { 
-							label: "Create new view list", 
-							action: function (obj) 
-								{ createViewListOrCategory (obj) }, 
-							seperator_after : false, 
-							seperator_before : false 
-							},
-						remove: { 
-							label: "Remove", 
-							action: function (obj) 
-								{ removeViewListOrCategory (obj) }, 
-							seperator_after : false, 
-							seperator_before : false 
-							},
-					} // end items 
-				else if (node.attr('rel') == 'viewList' || node.attr('rel') == 'viewListFeatured')
-					return { 
-						ccp: false, 
-						rename: { 
-							label: "Rename", 
-							action: function (obj) 
-								{ renameViewListOrCategory (obj) }, 
-							seperator_after : false, 
-							seperator_before : false 
-							},
-						toggleFeatured: { 
-							label: "Toggle Featured", 
-							action: function (obj) 
-								{ toggleFeaturedViewList (obj) }, 
-							seperator_after : false, 
-							seperator_before : false 
-							},
-						create: { 
-							label: "Create new image", 
-							action: function (obj) 
-								{ addNewImageToViewList(obj) }, 
-							seperator_after : false, 
-							seperator_before : false 
-							}, 
-						remove: { 
-							label: "Remove", 
-							action: function (obj) 
-								{ removeViewListOrCategory (obj) }, 
-							seperator_after : false, 
-							seperator_before : false 
-							},
-					} // end items 
+					else {
+						return { 
+							ccp: false, 
+							create: { 
+								label: "Create new view list", 
+								action: function (obj) 
+									{ createViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}
+						} // end items
+					}
+				}
+				else if (node.attr('rel') == 'viewList' || node.attr('rel') == 'viewListFeatured') {
+					if (isAdmin) {
+						return { 
+							ccp: false, 
+							rename: { 
+								label: "Rename", 
+								action: function (obj) 
+									{ renameViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+							toggleFeatured: { 
+								label: "Toggle Featured", 
+								action: function (obj) 
+									{ toggleFeaturedViewList (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+							create: { 
+								label: "Create new image", 
+								action: function (obj) 
+									{ addNewImageToViewList(obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}, 
+							remove: { 
+								label: "Remove", 
+								action: function (obj) 
+									{ removeViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}
+						} // end items 
+					}
+					else {
+						return { 
+							ccp: false, 
+							rename: { 
+								label: "Rename", 
+								action: function (obj) 
+									{ renameViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								},
+							remove: { 
+								label: "Remove", 
+								action: function (obj) 
+									{ removeViewListOrCategory (obj) }, 
+								seperator_after : false, 
+								seperator_before : false 
+								}
+						} // end items 
+					}
+				}
 				else return { }
 			}
 		},
@@ -561,7 +680,7 @@ function getViewListImages(viewListId) {
 	request.done(function (data, textStatus, jqXHR) {
 		if (verifyApiResponseSuccess(data)) {
 			$.each(data, function(key, value) {
-				if (key == 'imageSet') {
+				if (key == 'viewlist') {
 					$(this).each(function(key, value) {
 						imageCount++;
 						vlImages.push('<li class="viewListImage" id="' + value["id"] + '" ' +
@@ -661,6 +780,8 @@ function getImageAttributes(value) {
 		'genreLink="' + getImageAttr(value, "Genre Link", false) + '" ' +
 		'source="' + getImageAttr(value, "Source", false) + '" ' +
 		'sourcePageLink="' + getImageAttr(value, "Source Page Link", false) + '" ' +
+		'buyNow="' + getImageAttr(value, "extra", false) + '" ' +
+		'buyNowLink="' + getImageAttr(value, "extra link", false) + '" ' +
 		'medium="' + getImageAttr(value, "Type", false) + '" ' +
 		'mediumDetail="' + getImageAttr(value, "Type  Detail", false) + '" ' +
 		'aspectRatio="' + getImageAttr(value, "Aspect Ratio", false) + '" ' +
@@ -675,6 +796,7 @@ function getImageAttributes(value) {
 		'video="' + getImageAttr(value, "Video", false) + '" ' +
 		'thumbnail="' + getImageAttr(value, "thumbnail", false) + '" ' +
 		'url="' + getImageAttr(value, "url", false) + '" ' +
+		'url4K="' + getImageAttr(value, "url4K", false) + '" ' +
 		'icon="' + getImageAttr(value, "icon", false) + '" ' +
 		'viewLists="' + getImageViewListAttribute(value["viewlists2"]) + '" ';
 	return strAttrs;
@@ -727,6 +849,8 @@ function fillImageAttrUI(image)
 	$('#imgGenreLink').val(image.attr('genreLink'));
 	$('#imgSource').val(image.attr('source'));
 	$('#imgSourcePageLink').val(image.attr('sourcePageLink'));
+	$('#imgBuyNow').val(image.attr('buyNow'));
+	$('#imgBuyNowLink').val(image.attr('buyNowLink'));
 	$('#imgMedium').val(image.attr('medium'));
 	$('#imgMediumDetail').val(image.attr('mediumDetail'));
 	$('#imgHeightCm').val(image.attr('heightCm'));
@@ -741,6 +865,7 @@ function fillImageAttrUI(image)
 	$('#imgVideo').val(image.attr('video'));
 	$('#imgThumbnail').val(image.attr('thumbnail'));
 	$('#imgUrl').val(image.attr('url'));
+	$('#imgUrl4K').val(image.attr('url4K'));
 	$('#imgIcon').val(image.attr('icon'));
 	$('#imgViewLists').val(image.attr('viewLists'));
 	$('#imgId').val(image.attr('id'));
@@ -777,6 +902,8 @@ function refreshImageAttrUI(imageId)
 					targetImage.attr('genreLink', value["Genre Link"]);
 					targetImage.attr('source', value["Source"]);
 					targetImage.attr('sourcePageLink', value["Source Page Link"]);
+					targetImage.attr('buyNow', value["extra"]);
+					targetImage.attr('buyNowLink', value["extra link"]);
 					targetImage.attr('medium', value["Type"]);
 					targetImage.attr('mediumDetail', value["Type  Detail"]);
 					targetImage.attr('aspectRatio', value["Aspect Ratio"]);
@@ -791,6 +918,7 @@ function refreshImageAttrUI(imageId)
 					targetImage.attr('video', value["Video"]);
 					targetImage.attr('thumbnail', value["thumbnail"]);
 					targetImage.attr('url', value["url"]);
+					targetImage.attr('url4K', value["url4K"]);
 					targetImage.attr('icon', value["icon"]);
 					
 					fillImageAttrUI(targetImage);
@@ -836,42 +964,49 @@ function clearViewListImages() {
 	enableSaveImageAttr(false);
 }
 
+function buildSaveImageJson() {
+	return { 
+		'id':  $('#imgId').val(),
+		'Title': $('#imgTitle').val(),
+		'token': authToken,
+		'email': authEmail,
+		'Artist First N': $('#imgArtist').val(),
+		'Artist Last N': $('#imgArtistLastName').val(),
+		'Year': $('#imgWorkDate').val(),
+		'Birthdate': $('#imgBirth').val(),
+		'Died': $('#imgDeath').val(),
+		'Artist Info': $('#imgArtistInfo').val(),
+		'Genre': $('#imgGenre').val(),
+		'Genre Link': $('#imgGenreLink').val(),
+		'Source': $('#imgSource').val(),
+		'Source Page Link': $('#imgSourcePageLink').val(),
+		'extra': $('#imgBuyNow').val(),
+		'extra link': $('#imgBuyNowLink').val(),
+		'Type': $('#imgMedium').val(),
+		'Type  Detail': $('#imgMediumDetail').val(),
+		'Aspect Ratio': $('#imgAspectRatio').val(),
+		'Height cm': $('#imgHeightCm').val(),
+		'Width cm': $('#imgWidthCm').val(),
+		'Subject': $('#imgSubject').val(),
+		'Credit': $('#imgCredit').val(),
+		'Copyright': $('#imgCopyright').val(),
+		'Copyright Detail': $('#imgCopyrightDetail').val(),
+		'Location': $('#imgLocation').val(),
+		'More Info Link': $('#imgMoreInfoLink').val(),
+		'Video': $('#imgVideo').val(),
+		'thumbnail': $('#imgThumbnail').val(),
+		'url': $('#imgUrl').val(),
+		'url4K': $('#imgUrl4K').val(),
+		'icon': $('#imgIcon').val()
+	}
+}
+
 function saveImageAttr()
 {
-//note: imgId is a hidden field in the image attribute section
+	//note: imgId is a hidden field in the image attribute section
 	var cmd="SaveImgAttr"
 	var imageId = $('#imgId').val();
-	var params = 
-		'id=' + imageId + 
-		//'&Title=' + encodeURI($('#imgTitle').val()) +
-		addSaveImageAttrParamIfChanged(imageId, 'Title', 'title', 'imgTitle') +
-		'&Artist%20First%20N=' + encodeURI($('#imgArtist').val()) +
-		'&Artist%20Last%20N=' + encodeURI($('#imgArtistLastName').val()) +
-		'&Year=' + encodeURI($('#imgWorkDate').val()) +
-		'&Birthdate=' + encodeURI($('#imgBirth').val()) +
-		'&Died=' + encodeURI($('#imgDeath').val()) +
-		'&Artist%20Info=' + encodeURI($('#imgArtistInfo').val()) +
-		'&Genre=' + encodeURI($('#imgGenre').val()) +
-		'&Genre%20Link=' + encodeURI($('#imgGenreLink').val()) +
-		'&Source=' + encodeURI($('#imgSource').val()) +
-		'&Source%20Page%20Link=' + encodeURI($('#imgSourcePageLink').val()) +
-		'&Type=' + encodeURI($('#imgMedium').val()) +
-		'&Type%20%20Detail=' + encodeURI($('#imgMediumDetail').val()) +
-		'&Aspect%20Ratio=' + encodeURI($('#imgAspectRatio').val()) +
-		'&Height%20cm=' + encodeURI($('#imgHeightCm').val()) +
-		'&Width%20cm=' + encodeURI($('#imgWidthCm').val()) +
-		'&Subject=' + encodeURI($('#imgSubject').val()) +
-		'&Credit=' + encodeURI($('#imgCredit').val()) +
-		'&Copyright=' + encodeURI($('#imgCopyright').val()) +
-		'&Copyright%20Detail=' + encodeURI($('#imgCopyrightDetail').val()) +
-		'&Location=' + encodeURI($('#imgLocation').val()) +
-		'&More%20Info%20Link=' + encodeURI($('#imgMoreInfoLink').val()) +
-		'&Video=' + encodeURI($('#imgVideo').val()) +
-		'&thumbnail=' + encodeURI($('#imgThumbnail').val()) +
-		'&url=' + encodeURI($('#imgUrl').val()) +
-		'&icon=' + encodeURI($('#imgIcon').val()) +
-		'&' + getAuthAPIParams() +
-		'';
+	var imageData = buildSaveImageJson();
 	
 	// setup some local variables
 	var $form = $('#divMainImageDetail');
@@ -880,14 +1015,15 @@ function saveImageAttr()
 	$inputs.prop("disabled", true);
 
 	//temp to track saves
-	console.log(baseCmdUrl + cmd + "?" + params);
+	//console.log(baseCmdUrl + cmd + "?" + params);
 	
 	var success = false;
 	$("#pendingTransactionDialog").dialog("open");
 	
-	// fire off the request to /form.php
 	var request = $.ajax({
-		url: baseCmdUrl + cmd + "?" + params,
+		url: baseCmdUrl + cmd,
+		type: 'POST',
+		data: imageData,
 		dataType: 'jsonp',	
 	});
 

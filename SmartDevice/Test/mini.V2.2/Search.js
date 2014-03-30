@@ -7,6 +7,11 @@ Copyright 2013,2014 Zwamy, Inc.  All Rights Reserved
 function usersearch()
 {  
 	var searchstring;
+	
+	var currTime = new Date().getTime();
+	if(window.searchClickTime!=undefined && currTime - window.searchClickTime < 7000)
+        return;
+	window.searchClickTime = currTime;
 	searchstring = dojo.byId("searchbox").value;
 	if (searchstring == "") return;
 	var url=base + "user/search?"  + "email=" + window.email+"&keyword="+searchstring+"&token="+window.token;
