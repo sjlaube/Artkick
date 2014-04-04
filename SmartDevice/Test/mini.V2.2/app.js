@@ -107,7 +107,7 @@ require(["jquery",
                 var aboutView = registry.byId("About");
                 var pictureGrid = registry.byId("Picturegrid");
                 var gridView = registry.byId("GridView");
-                var MylistView = registry.byId("MylistView");
+
 				var loginpassword = registry.byId("loginPassword");
 				var loginx=registry.byId("Login");
 
@@ -126,6 +126,10 @@ require(["jquery",
                 var fillsw = dijit.registry.byId("fillswitch");
                 //	var LoadImages = document.getElementById("LoadImages");
                 window.MyViewlist = registry.byId("MyViewLists");
+			    window.MyViewlistEdit = registry.byId("MyViewListsEdit");
+				 var MylistView = registry.byId("MylistView");
+				 var MylistViewEdit = registry.byId("MylistViewEdit");
+
                 window.btn1 = registry.byId("btn1");
                 button2 = registry.byId("btn1");
             //    window.listList = registry.byId("listList");
@@ -452,10 +456,13 @@ require(["jquery",
 					//$("#viewlistbutton").html( "&#60; "+window.currCat);
 					var str='<img src="images/Arrows-Back-icon-blue.png" alt="" style="margin-top:5px"><span style="font-family:\'Open Sans\', sans-serif;font-weight: 400;position:relative;top:-7px;color:#00ABDE;">'+window.currCat+"</span>"
 					$("#viewlistbutton").html( str);
-					//'<img src="images/Arrows-Back-icon-white.png" alt=""><span style="position:relative;top:-6px;"'+window.currCat+"</span>");
-										//console.log("window.currCat "+str);
-                    var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + targImage + "&forward=" + forward + "&numOfImg=" + numOfImg + "&include=1" + "&token=" + window.token;
-                    if (window.shuffle) {
+					var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + targImage + "&forward=" + forward + "&numOfImg=" + numOfImg + "&include=1" + "&token=" + window.token;
+					if (window.currCat != " Top Lists")
+						url += "&catName="+window.currCat;
+					
+					console.log("getViewlist5:"+url);
+
+					if (window.shuffle) {
                         url += "&shuffle=1";
                     } else {
                         url += "&shuffle=0";
@@ -479,7 +486,7 @@ require(["jquery",
 							console.log("viewlist5 return:"+viewlist["Status"]);
 							//myalert("viewlist5 return:"+viewlist["Status"]);
                             if (viewlist["imageSet"].length == 0) {
-                                myalert("'My Favorites' is empty, please star-rate some images and they will be added to it!");
+                               // myalert("'My Favorites' is empty, please star-rate some images and they will be added to it!");
                                 window.currList = window.defList;
                                 window.currCat = window.defCat;
                                 window.currImage = window.defImage;
@@ -1035,7 +1042,7 @@ require(["jquery",
                 }
 
 
-                function updateLists(catName) {
+                window.updateLists = function(catName) {
 
                     /*     if (catName == "Artists")
 				{
@@ -1059,9 +1066,11 @@ require(["jquery",
                     console.log("size=" + imagewidth + " dojo=" + x.w);
 					imageheight = imagewidth;
                     if (catName == "My Viewlists") {
+						//dojo.byId('showeditmyviewlists').show();
                         url = base + "user/getMyViewlists?email=" + window.email + "&token=" + window.token;
                     } else {
                         url = base + "content/getViewlistsByCategory2?catName=" + catName + "&featured=true";
+						//dojo.byId('showeditmyviewlists').hide();
                     }
 
                     //	alert("catname="+catName);
@@ -1128,12 +1137,14 @@ require(["jquery",
                                 domStyle.set(newimg2, "height", imageheight + 'px');
 
                             }
-							if (catName == " Top Lists") {
+							else /* for all other categories we manually add a Most Popular list */
+							{
+							
                                 //alert("Top Lists");
 
 
 
-                                // add Top Liked to My viewlists manually
+                                // add Top Liked to every Category manually
                                 // create new version of viewlist with images
 
 
@@ -1141,10 +1152,14 @@ require(["jquery",
                                 var newdiv2 = dojo.create("div", {}, "listList2");
                                 domAttr.set(newdiv2, "class", "imagediv");
                                 //	console.log("newdiv2 "+ newdiv2);
+								var newlabel="Most Popular";
+								if(catName==" Top Lists")
+									newlabel="Most Popular Across Artkick";
+									
                                 var newimg2 = dojo.create("img", {
-                                    id: "topLiked_" + window.email,
-
-                                    src: "images/MostPopular.jpg",
+                                    id: "topLiked_"+catName+ window.email,
+									
+                                    src: "images/Topliked/"+catName.trim()+".jpg",
 
                                     onclick: function () {
                                         // alert(this.id);
@@ -1159,14 +1174,14 @@ require(["jquery",
                                     margin: "0px"
                                 }, newdiv2);
                                 var newtxt = dojo.create("div", {
-                                    innerHTML: "Most Liked"
+                                    innerHTML: newlabel
                                 }, newdiv2);
                                 domAttr.set(newtxt, "class", "imagetxt");
                                 domStyle.set(newimg2, "width", imagewidth + 'px');
                                 domStyle.set(newdiv2, "width", imagewidth + 'px');
                                 domStyle.set(newimg2, "height", imageheight + 'px');
-
-                            }
+							}
+                           
                             //  alert("load up the lists count:"+lists.length);
                             for (var i in lists) {
                                 //alert(lists[i]["coverImage"]);
@@ -1478,11 +1493,19 @@ require(["jquery",
 						disp="<b>"+title.substring(0,(window.innerWidth/7)-5)+ "..."+"</b><br>"+artist;	
 					dojo.byId("showingtitle").innerHTML=disp;
 					dojo.byId("showingtitle2").innerHTML=disp;
-					
+					var listname=window.currViewList;
+					if (listname == "Most liked")
+					{
+						listname="Most Popular";
+						if (window.currCat == " Top Lists")
+							listname="Most Popular Across Artkick";
+						
+					}
+						
 					if (window.currViewList.length < 33)
-                        dijit.registry.byId("ImageViewHeader").set("label", window.currViewList + "<br> " + window.currAbsIndex + "/" + window.listSize);
+                        dijit.registry.byId("ImageViewHeader").set("label", listname + "<br> " + window.currAbsIndex + "/" + window.listSize);
                     else
-                        dijit.registry.byId("ImageViewHeader").set("label", window.currViewList.substring(0, 30) + "...<br>" + window.currAbsIndex + "/" + window.listSize);
+                        dijit.registry.byId("ImageViewHeader").set("label", listname.substring(0, 30) + "...<br>" + window.currAbsIndex + "/" + window.listSize);
 
 
 
@@ -1672,8 +1695,8 @@ require(["jquery",
                                         checked: checked
 
                                     });
-						/*		leave out details till next release 
-									var sw = new dojox.mobile.Button({
+							//	leave out details till next release 
+								/*	var sw = new dojox.mobile.Button({
 										id:"sd"+i,
 										label:"Details",
 										classname:'detailclass',
@@ -2053,7 +2076,7 @@ require(["jquery",
 
                     function () {
                         window.currentView = "PlaylistView";
-                       // dijit.registry.byId("tabcategory2").set('selected', true);
+					    // dijit.registry.byId("tabcategory2").set('selected', true);
                      /*   setTimeout(function () {
                             dijit.registry.byId("myTabBarPlaylistView").startup();
                         }, 1000);*/
@@ -2134,6 +2157,13 @@ require(["jquery",
                         showmyviewlists();
                     }
                 );
+				on(MylistViewEdit, "beforeTransitionIn",
+                    function () {
+                        window.currentView = "MylistViewEdit";
+                        //	alert("showmyviewlists called");
+                        editmyviewlists();
+                    }
+                );
                 on(gridView, "beforeTransitionIn",
                     function () {
 						if(window.wipemenu)
@@ -2146,7 +2176,7 @@ require(["jquery",
                         window.gridPages = Math.ceil(window.listSize / 20);
                         //   alert ("picturegrid, currlist="+window.currList+" number images="+window.listSize+" pages="+gridPages);
                         hidebutton("GridView", false);
-                        if (window.currList == window.currGridList) { // already generated grid, so just return
+                        if (window.currList == window.currGridList && window.currList.substr(0,4)!="topL") { // already generated grid, so just return
                             //alert("same list returning...");
                             return;
                         } else
@@ -2222,8 +2252,12 @@ require(["jquery",
                         if (window.currGridPage == 1)
                             hidebutton("GridPrevious", true);
                     }
-                    var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg=20" + "&include=" + include + "&token=" + window.token;
-                    if (window.shuffle) {
+             //       var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg=20" + "&include=" + include + "&token=" + window.token;
+ 					  var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg=20" + "&include=" + include + "&token=" + window.token;
+
+					if (window.currCat != " Top Lists")
+						url += "&catName="+window.currCat;
+					if (window.shuffle) {
                         url += "&shuffle=1";
                     } else {
                         url += "&shuffle=0";
@@ -2299,7 +2333,7 @@ require(["jquery",
                                         window.currImage = null;
                                         window.gridset = true;
                                         window.switchView = true;
-                                        updateImages(this.id);
+										updateImages(this.id);
                                         // 	setTimeout(function(){updateImages(this.id)},10);
 
 
@@ -2315,6 +2349,8 @@ require(["jquery",
 									vspace: "0px"
 
                                 }, "Picturegrid");
+								
+								
 
                             }
                             window.firstGridImage = viewlist["imageSet"][0]["id"];
@@ -2814,9 +2850,11 @@ function showmenu() {
 	}
 	if (window.currentView=="select_category")
 		menuname = "wipemenu3";
+	else if (window.currentView=="PlaylistView"&&window.currCat=="My Viewlists")
+		menuname= "wipemenu2a";
 	else if (window.currentView=="PlaylistView")
 		menuname= "wipemenu2";
-		else
+	else
 		menuname = "wipemenu";
 		
 	dojo.style(menuname, "left", $(window).width()-185+"px");
@@ -2828,7 +2866,8 @@ function showmenu() {
 		dojo.style(window.showingmenu, "display", "block");
 
 		var wipeArgs = {
-		node: showingmenu
+		node: showingmenu,
+		duration:100
 		};
 		dojo.fx.wipeOut(wipeArgs).play();
 	}
@@ -2839,7 +2878,8 @@ function showmenu() {
 		window.wipemenu=true;
 		dojo.style(menuname,"display","none");
 		var wipeArgs = {
-		node: menuname
+		node: menuname,
+		duration:100
 		};
 		dojo.fx.wipeIn(wipeArgs).play();
 	}
@@ -2913,6 +2953,14 @@ if(window.wipemenu)
 var curview=dijit.registry.byId(window.currentView);
 curview.performTransition('MylistView',1,'slide',null);
 }
+function callEditmyListView(){
+if(window.wipemenu)
+	{
+		showmenu();
+	}
+var curview=dijit.registry.byId(window.currentView);
+curview.performTransition('MylistViewEdit',1,'slide',null);
+}
 function goToShare() {
     var currView = dijit.registry.byId("ImageView");
     var mycurrView = currView.getShowingView();
@@ -2939,7 +2987,7 @@ function refreshView() {
 	dijit.registry.byId('GuestMessage').hide();
 	
     (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
+        i['localAnalyticsObject'] = r;
         i[r] = i[r] || function () {
             (i[r].q = i[r].q || []).push(arguments)
         }, i[r].l = 1 * new Date();

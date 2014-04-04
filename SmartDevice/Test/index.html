@@ -359,6 +359,19 @@ Add User to TV(s)</button>
 	</ul>	     		   
 </div>
 
+ <div data-dojo-type="dojox/mobile/ScrollableView" id="MylistViewEdit"  >
+   <div   data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Edit',fixed:'top'">
+
+
+	<div   data-dojo-type="dojox/mobile/ToolBarButton" onclick="backbutton()"  style="float: left" >
+	<img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
+<div  data-dojo-type="dojox/mobile/ToolBarButton"   style="float: right;" >
+       <span class="editstyle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+ </div>
+    <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="MyViewListsEdit"	 data-dojo-props='select:"multiple"' style="position:relative;top:0px"   >
+	</ul>	     		   
+</div>
+
 <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddUserList" data-dojo-props='modal:true,top:"61px"' 
 style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
 Create new Viewlist
@@ -980,8 +993,7 @@ Connect TV Later</button>
 <div class="wipestyle" onclick="callHelp()"> Help
 </div>
    </div>
-   
-   <div id="wipemenu2" style="position:absolute;top:44px;left:330px;z-index:1000;display:none;background-color:#7b90ab">
+<div id="wipemenu2" style="position:absolute;top:44px;left:330px;z-index:1000;display:none;background-color:#7b90ab">
 <div class="wipestyle" onclick="gotoView(window.currentView,'OptionsList')"> Settings
 </div>
 <div class="wipestyle" onclick="gotoView(window.currentView,'select_category')" > Browse/Search
@@ -989,6 +1001,24 @@ Connect TV Later</button>
 <div class="wipestyle" onclick="gotoView(window.currentView,'Import')"> Import personal photos&nbsp;
 </div>
 <div class="wipestyle" onclick="gotoView(window.currentView,'Slideshow')"> TV Slideshow
+</div>
+<div class="wipestyle" onclick="gotoView(window.currentView,'registernewTV')"> Connect TV
+</div>
+<div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')"> Send Feedback
+</div>
+<div class="wipestyle" onclick="callHelp()"> Help
+</div>
+   </div> 
+   <div id="wipemenu2a" style="position:absolute;top:44px;left:330px;z-index:1000;display:none;background-color:#7b90ab">
+<div class="wipestyle" onclick="gotoView(window.currentView,'OptionsList')"> Settings
+</div>
+<div class="wipestyle" onclick="gotoView(window.currentView,'select_category')" > Browse/Search
+</div>
+<div class="wipestyle" onclick="gotoView(window.currentView,'Import')"> Import personal photos&nbsp;
+</div>
+<div class="wipestyle" onclick="gotoView(window.currentView,'Slideshow')"> TV Slideshow
+</div>
+<div class="wipestyle" id="showeditmyviewlists" onclick="callEditmyListView()"> Edit My Viewlists
 </div>
 <div class="wipestyle" onclick="gotoView(window.currentView,'registernewTV')"> Connect TV
 </div>
@@ -1064,9 +1094,6 @@ style="border:0px!important;outline:none!important;background-image:none!importa
    <div  data-dojo-type="dojox/mobile/Heading"  id="browse-search" data-dojo-props='label:"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Browse/Search",fixed:"top"'>
    
    <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/3lineicon_menu-blue.png"' style="float: right;top:-4px;width:65px;height:45px" onclick="showmenu()"></div> 
-  <!--     <div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props="moveTo:'ImageView',transition:'slide',  transitionDir:'-1'"  style="float: left;" >&#60; Back</div>
-	      <div  data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/3lineicon_menu.png"' style="float: right;" onclick="showmenu()"></div> -->
-
    </div>
 
 <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="&nbsp;&nbsp;SEARCH ALL ARTKICK" id="searchbox" style="width:100%;height:30px;font-size:15px;position:relative;top:2px"
@@ -1185,6 +1212,30 @@ Delete Comment
 <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:gray" onclick="deletecomment('OK')">OK</button>
 <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:gray" onclick="dijit.registry.byId('DeleteComment').hide()">Cancel</button>
 </div>
+
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteViewlist" data-dojo-props='modal:true,top:"61px"' 
+style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+Delete Viewlist
+<a id='deleteVLname'>name of viewlist</a>
+<br>
+<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:gray" onclick="deleteMyViewlist('OK')">OK</button>
+<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:gray" onclick="dijit.registry.byId('DeleteViewlist').hide()">Cancel</button>
+</div>
+
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="RenameViewlist" data-dojo-props='modal:true,top:"61px"' 
+style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+Rename Viewlist
+<br>
+<a id='RenameVLname'>name of viewlist</a>
+<br>
+<input type="text" data-dojo-type="dojox/mobile/TextBox" id="newVLname" placeHolder="&nbsp;&nbsp;New name" style="left: 1em;width: 300px;">
+	 </input>
+	 <br>
+	 <br>
+<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:gray" onclick="RenameMyViewlist('OK')">Rename</button>
+<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:gray" onclick="dijit.registry.byId('RenameViewlist').hide()">Cancel</button>
+</div>
+
 
 </body>
 </html>

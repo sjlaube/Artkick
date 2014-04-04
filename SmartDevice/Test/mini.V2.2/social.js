@@ -38,6 +38,7 @@ function like(id){
 		
 	}else{
 		console.log("like");
+		usermessage("Added to 'My Viewlists'");
 		imageMap[id]["like"] = true;
 		imageMap[id]["likeNum"]++;
 		document.getElementById("img"+id).src = "images/like white.png";

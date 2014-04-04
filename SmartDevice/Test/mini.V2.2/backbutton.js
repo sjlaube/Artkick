@@ -177,6 +177,10 @@ window.backbutton=function ()
 		case "show_comments":
 			gotoView("show_comments",lastView);
 			break;	
+		case "MylistViewEdit":
+			updateLists("My Viewlists");
+			gotoView("MylistViewEdit","PlaylistView");
+			break;	
 		default:
 			break;
 		
