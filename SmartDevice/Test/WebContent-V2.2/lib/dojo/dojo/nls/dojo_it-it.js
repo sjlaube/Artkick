@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_it-it",{"dijit/form/nls/validate":{rangeMessage:"Questo valore \u00e8 fuori dall'intervallo consentito.",invalidMessage:"Il valore immesso non \u00e8 valido.",missingMessage:"Questo valore \u00e8 obbligatorio."},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"Password non valida.",nomatchMessage:"Le password non corrispondono."},"dijit/form/nls/ComboBox":{previousMessage:"Scelte precedenti",nextMessage:"Scelte successive"}});
+//@ sourceMappingURL=dojo_it-it.js.map

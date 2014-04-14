@@ -32,6 +32,17 @@ $(document).ready(function () {
 		
 	});
 	
+	$('#productionServerLink').attr('href', baseEditorUrl + '&database=production');
+	$('#stagingServerLink').attr('href', baseEditorUrl + '&database=staging');
+	$('#stagingServerLink').click(function (e) {
+		window.location = $("#stagingServerLink").attr('href');
+		e.preventDefault();
+	});
+	$('#productionServerLink').click(function (e) {
+		window.location = $("#productionServerLink").attr('href');
+		e.preventDefault();
+	});
+	
 	if (isAdmin) {
 		loadArtkickCategories();
 	}
@@ -194,18 +205,15 @@ var categoriesLoaded = 0;
 var imageAttrDirty = false;
 
 //point to request database (default is staging)
-var databaseParam = $.url().param('database');
-var baseEditorUrl = $.url().attr('protocol') + ':' + $.url().attr('path');
-$('#productionServerLink').attr('href', baseEditorUrl + '?database=production');
-$('#stagingServerLink').attr('href', baseEditorUrl + '?database=staging');
-$('#stagingServerLink').click(function (e) {
-	window.location = $("#stagingServerLink").attr('href');
-	e.preventDefault();
-});
-$('#productionServerLink').click(function (e) {
-	window.location = $("#productionServerLink").attr('href');
-	e.preventDefault();
-});
+//var databaseParam = $.url().param('database');
+//var baseEditorUrl = $.url().attr('protocol') + ':' + $.url().attr('path');
+var baseEditorUrl = window.document.URL.toString(); 
+var databaseParam = getVal(baseEditorUrl, 'database');
+
+if (databaseParam) {
+	baseEditorUrl = baseEditorUrl.replace(/&database=staging/, '');
+	baseEditorUrl = baseEditorUrl.replace(/&database=production/, '');
+}
 
 if (databaseParam == "production")
 {
@@ -544,7 +552,7 @@ function buildNavTree()
 		"dnd" : { 
 			"drag_target" : ".viewListImage", 
 			"drop_finish" : function () {  
-				alert("DROP");  
+				console.log("DROP");  
 			}, 
 			"drag_check" : function (data) { 
 				 if(data.r.attr("class").indexOf('viewList') == -1) { 
@@ -759,7 +767,7 @@ function getViewListImages(viewListId) {
 	request.fail(function (jqXHR, textStatus, errorThrown){
 		// log the error to the console
 		alert(
-			"The following error occured: " +
+			"The following error occurred: " +
 			textStatus + " " + errorThrown
 		);
 	});
@@ -931,7 +939,7 @@ function refreshImageAttrUI(imageId)
 	request.fail(function (jqXHR, textStatus, errorThrown){
 		// log the error to the console
 		alert(
-			"The following error occured: "+
+			"The following error occurred: "+
 			textStatus, errorThrown
 		);
 	});
@@ -1110,12 +1118,13 @@ function renameViewListOrCategory (obj)
 function renameViewList(obj, id, newName)
 {
 	var cmd = '';
-	var params = '?' + getAuthAPIParams();
+	var params = '';
 	
 	cmd = 'RenameViewlist';
 	params = 
 		'id=' + id +
-		'&name=' + newName;
+		'&name=' + newName +
+		'&' + getAuthAPIParams();
 	
 	var request = $.ajax({
 		url: baseCmdUrl + cmd + "?" + params,
@@ -1414,7 +1423,7 @@ function handleImagesDropped(data)
 	request.always(function () {
 		$("#pendingTransactionDialog").dialog("close");
 		if (success == true)
-			alert("The selected images have been copied to the view list.");
+			console.log("The selected images have been copied to the view list.");
 	});
 }
 
@@ -1429,6 +1438,19 @@ function buildSelectedImageList()
 		imageArray.push('images[]=' + $(this).attr('id'));
 	});
 	return imageArray.join('&');
+}
+
+function buildSelectedImageListPost()
+{
+	//jPages does not seem to handle multiple drag...
+	//so for now we will actually get selected items from the image list 
+	//rather than the drag object
+	//$(document).find('#divMainImages').html(strImages);
+	var imageArray = [];
+	$('#divMainImages').find('li.selected').each(function () {
+		imageArray.push(parseInt($(this).attr('id'), 10));
+	});
+	return imageArray;
 }
 
 function removeSelectedImagesConfirm()
@@ -1455,15 +1477,23 @@ function removeSelectedImagesFromViewlist()
 {
 	var viewListId = $('#thumbs').attr('viewListId');
 	var cmd = (viewListId == trashId) ? "clearImages" : "RemoveImagesFromViewlist";
-	var params = 'listId=' + viewListId +
-				 '&' + buildSelectedImageList() +
-				 '&' + getAuthAPIParams();
-				 
-	//alert(baseCmdUrl + cmd + '?' + params);
+	//var params = 'listId=' + viewListId +
+	//			 '&' + buildSelectedImageList() +
+	//			 '&' + getAuthAPIParams();
+	var imageListData = {
+		listId: viewListId,
+		images: buildSelectedImageListPost(),
+		token: authToken,
+		email: authEmail
+	}
 	
+	//var imageListDataJSON = JSON.stringify(imageListData);
+				 
 	var request = $.ajax({
-		url: baseCmdUrl + cmd + "?" + params,
-		dataType: 'jsonp',	
+		url: baseCmdUrl + cmd,
+		type: 'POST',
+		data: imageListData,
+		dataType: 'jsonp',
 	});
 
 	// callback handler that will be called on success
@@ -1660,7 +1690,7 @@ function addNewImageToViewList(obj)
 		$("#pendingTransactionDialog").dialog("close");
 		if (success == true)
 		{
-			alert("A new image has been created...image list will be refreshed.");
+			//alert("A new image has been created...image list will be refreshed.");
 			getViewListImages(viewListId);
 		}
 	});
@@ -1682,7 +1712,7 @@ function updateImageCount(viewListId, newImageCount)
 
 function toggleDatabase()
 {
-	if (databaseParam == "staging")
+	if (server === serverStag)
 		$('#productionServerLink').trigger('click');
 	else
 		$('#stagingServerLink').trigger('click');

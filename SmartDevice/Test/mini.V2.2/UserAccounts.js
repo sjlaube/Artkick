@@ -254,6 +254,8 @@ function login() {
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
                 window.token = result['token'];
 				window.userName = userObj["name"];
+				window.userID = result.userObj.id;
+				window.isAdmin = result.userObj.isAdmin;
                 //alert(window.email);
                 setCookie("email", window.email, 365);
                 setCookie("token",result['token'], 365);

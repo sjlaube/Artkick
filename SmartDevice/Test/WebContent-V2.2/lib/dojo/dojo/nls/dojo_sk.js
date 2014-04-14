@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_sk",{"dijit/form/nls/validate":{rangeMessage:"T\u00e1to hodnota je mimo rozsah.",invalidMessage:"Zadan\u00e1 hodnota nie je platn\u00e1.",missingMessage:"T\u00e1to hodnota je povinn\u00e1."},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"Neplatn\u00e9 heslo.",nomatchMessage:"Hesl\u00e1 sa nezhoduj\u00fa."},"dijit/form/nls/ComboBox":{previousMessage:"Predch\u00e1dzaj\u00face mo\u017enosti",nextMessage:"Viac mo\u017enost\u00ed"}});
+//@ sourceMappingURL=dojo_sk.js.map

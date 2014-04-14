@@ -22,7 +22,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 <link rel="apple-touch-icon-precomposed"   href="images/ARTKICKlogoFULLCOLOR-APP_120.png" />
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
 
-<script type="text/javascript" src="WebContent/lib/dojo/dojo/dojo.js?V1.3" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
+<script type="text/javascript" src="WebContent-V2.2/lib/dojo/dojo/dojo.js?V1.3" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
 [{'name': 'jquery', 'location': 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1', 'main': 'jquery'},
 {'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},
 {'name':'maqettaSamples','location':'../../../samples'},{'name':'maqetta','location':'../../maqetta'},
@@ -307,7 +307,7 @@ Add User to TV(s)</button>
     <div  data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="moveTo:'Login',transition:'slide', transitionDir:'-1'">
 	<img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
   </div>
-   <div data-dojo-type="dojox/mobile/RoundRect" style="width: auto;">
+   <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
      <input type="text" data-dojo-type="dojox/mobile/TextBox" title="UserID" id="recoveryEmail" style="float: left; height: 21px; width: 250px; position: relative; left: 1em;" placeHolder="&nbsp;&nbsp;email address"></input>
      <br><br>
      <button data-dojo-type="dojox/mobile/Button" style="font-size: 10px; text-align: center; vertical-align: middle; height: 25px; line-height: normal; width: 250px; position: relative; left: 1em;" onclick="emailPW()">
@@ -350,10 +350,9 @@ Add User to TV(s)</button>
 
 	<div   data-dojo-type="dojox/mobile/ToolBarButton" onclick="DonePersonalViewlists()"  style="float: left" >
 	<img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
-	<div   data-dojo-type="dojox/mobile/ToolBarButton"   onclick="CreateUserList()" style="float: right;width:25px" >
-	<span class="editstyle" style="font-size:24px">+</span></div>
-	   <div  data-dojo-type="dojox/mobile/ToolBarButton"  id="btn1" onclick="EditViewlists()" style="float: right;" >
-       <span class="editstyle">Edit&nbsp;</span></div>
+	<div   data-dojo-type="dojox/mobile/ToolBarButton"   onclick="CreateUserList()" style="float: right;" >
+	<span class="editstyle" style="font-size:15px">New Viewlist</span></div>
+
  </div>
     <ul data-dojo-type="dojox/mobile/RoundRectList" id="MyViewLists"	data-dojo-props='editable:true'	     >
 	</ul>	     		   
@@ -602,14 +601,14 @@ What type of SmartTV do you have?
 
 
 <div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:false,top:"21px"' 
-     style="border:0px!important;outline:none!important;height:70px;width:250px;background-image:none!important;position:absolute">
+     style="border:0px!important;outline:none!important;height:70px;width:200px;background-image:none!important;position:absolute">
 
 <ul  data-dojo-type="dojox/mobile/IconMenu" id="shareiconmenu" data-dojo-props='cols:3' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
-	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="facebook()" style="border:none!important"
+	<li data-dojo-type="dojox/mobile/IconMenuItem" id="facebookshare" onclick="facebook()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true,label:"Facebook",icon:"images/FB-f-Logo__blue_50.png"'  ></li>
-	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="twitter()" style="border:none!important"
+	<li data-dojo-type="dojox/mobile/IconMenuItem" id="twittershare" onclick="twitter()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true, label:"Twitter", icon:"images/twitter-share.png"' ></li>
-	<li data-dojo-type="dojox/mobile/IconMenuItem" onclick="emailShare()" style="border:none!important"
+	<li data-dojo-type="dojox/mobile/IconMenuItem" id="emailShare" onclick="emailShare()" style="border:none!important"
 	  data-dojo-props='closeOnAction:true, label:"Mail", icon:"images/email-share.png"' ></li>
 
 
@@ -910,10 +909,9 @@ Server is
   </div>
 <div id="GridView" data-dojo-type="dojox/mobile/ScrollableView" >
 <div  id="GridViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Grid View"' style="color:white;font-size: 14px; line-height:150%">
-   <div  data-dojo-type="dojox/mobile/ToolBarButton" id="GridPrevious" onclick="loadGrid(-1)" style="float: left;" >
-    <img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Previous</span></div>
-   <div  data-dojo-type="dojox/mobile/ToolBarButton"  id="GridNext" onclick="loadGrid(1)" style="float: right;" >
-       <span class="backstyle">Next</span><img src="images/Arrows-Forward-icon-blue.png" alt=''></div>
+   <div  data-dojo-type="dojox/mobile/ToolBarButton" id="GridPrevious" onclick="backbutton()" style="float: left;" >
+    <img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
+
  </div>
 
   <div data-dojo-type="dojox/mobile/ContentPane" id="Picturegrid" style="z-index:900; position: relative; top:10px" ></div>
@@ -1182,19 +1180,22 @@ style="border:0px!important;outline:none!important;background-image:none!importa
  </div>
  
    <div data-dojo-type="dojox/mobile/ScrollableView" id="show_comments" >
-   <div  data-dojo-type="dojox/mobile/Heading" style="height:50px" data-dojo-props="label:'Comments', fixed:'top'">
+   <div  data-dojo-type="dojox/mobile/Heading" style="height:55px" data-dojo-props="fixed:'top'">
     <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left" data-dojo-props="moveTo:'ImageView',transition:'slide',transitionDir:'-1'">
 	<img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
 
 
   <div   data-dojo-type="dojox/mobile/ToolBarButton"   style="float: right" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ 
+ 
+ </div>
+ <div>
+ <textarea data-dojo-type="dojox/mobile/TextArea"  id="CommentText" style='left:0px;width:60%;height:30px;position:relative;top:9px' placeHolder="&nbsp;&nbsp;Add a comment..." ></textarea>
+ <button data-dojo-type="dojox/mobile/Button" style="position:relative;top:-5px;height:30px;background-color: white !important;color:gray" onclick="CreateComment('OK')">OK</button>
  </div>
    </div> 
   <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="comment_list" data-dojo-props='select:"multiple"' style="position:relative;top:0px" ></ul>
-  <div data-dojo-type="dojox/mobile/Heading"  data-dojo-props=" fixed:'bottom'">
- <textarea data-dojo-type="dojox/mobile/TextArea"  id="CommentText" style='float:left;left:5px;width:80%;height:20px;position:relative;top:7px' placeHolder="&nbsp;&nbsp;Add a comment..." ></textarea>
- <button data-dojo-type="dojox/mobile/Button" style="float:left;position:relative;top:8px;left:7px;background-color: white !important;color:gray" onclick="CreateComment('OK')">OK</button>
- </div>
+
  </div>
  
  <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddComment" data-dojo-props='modal:true,top:"61px"' 

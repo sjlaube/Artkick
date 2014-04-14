@@ -113,7 +113,7 @@ function CreateUserList()
  function CreateNewViewlist (stat)
  {
    var newlistname = "";
- EditViewlists(false);
+ //EditViewlists(false);
      if (stat == "Cancel"){
 	      dijit.registry.byId('AddUserList').hide(); 
 		return;
@@ -181,7 +181,7 @@ function CreateUserList()
  function DonePersonalViewlists()
  {
  console.log("donePersonalViewlists");
- EditViewlists(false);
+ //EditViewlists(false);
 
  hidemenu();
 
@@ -289,11 +289,14 @@ function CreateUserList()
  
  function ShowdeleteMyViewlist(id)
  {
+ console.log("showdeletemyviewlist:"+id);
  newid='my'+id.substr(3);
+ dojo.byId('deleteVLname').innerHTML = "unknown";
  window.viewlistfordelete=newid;
  var playersDom = $('#MyViewListsEdit')[0];
-	for (var i=0; i<playersDom.childElementCount; i++){
+	for (var i=0; i<=playersDom.childElementCount; i++){
 		playerId = playersDom.childNodes[i]['id'];
+		console.log("playerID="+playerId+":"+playersDom.childNodes[i]['name']);
 		if (playerId==newid) {
 			var label1=playersDom.childNodes[i].childNodes[1].innerHTML;
 			console.log('label '+label1);
@@ -307,32 +310,13 @@ function CreateUserList()
  }
  }
  
-  function ShowRenameMyViewlist(id)
- {
- newid='my'+id.substr(3);
- window.viewlistforrename=newid;
- var playersDom = $('#MyViewListsEdit')[0];
-	for (var i=0; i<playersDom.childElementCount; i++){
-		playerId = playersDom.childNodes[i]['id'];
-		if (playerId==newid) {
-			var label1=playersDom.childNodes[i].childNodes[1].innerHTML;
-			console.log('label '+label1);
-			dojo.byId('RenameVLname').innerHTML = "'"+label1+"'?";
-		}
-  
- 
- 
-  dijit.registry.byId('RenameViewlist').show();
- 
- }
- }
- 
+
  function deleteMyViewlist(){
  	dijit.registry.byId('DeleteViewlist').hide(); 
  console.log("deleting personal viewlist: "+'my'+window.viewlistfordelete.substr(2));
  var id=window.viewlistfordelete;
 	var playersDom = $('#MyViewListsEdit')[0];
-	for (var i=0; i<playersDom.childElementCount; i++){
+	for (var i=0; i<=playersDom.childElementCount; i++){
 		playerId = playersDom.childNodes[i]['id'];
 		if (playerId==id) {
 			var label1=playersDom.childNodes[i].childNodes[1].innerHTML;
@@ -364,14 +348,33 @@ function CreateUserList()
                     });
  }
  
+ function ShowRenameMyViewlist(id)
+ {
+ newid='my'+id.substr(3);
+ window.viewlistforrename=newid;
+ var playersDom = $('#MyViewListsEdit')[0];
+	for (var i=0; i<=playersDom.childElementCount; i++){
+		playerId = playersDom.childNodes[i]['id'];
+		if (playerId==newid) {
+			var label1=playersDom.childNodes[i].childNodes[1].innerHTML;
+			console.log('label '+label1+" i="+i);
+			dojo.byId('RenameVLname').innerHTML = "'"+label1+"'?";
+		}
+    dijit.registry.byId('RenameViewlist').show();
+ 
+ }
+ }
+ 
+ 
  function RenameMyViewlist(id){
  dijit.registry.byId('RenameViewlist').hide(); 
  newname=dojo.byId("newVLname").value;
 // myalert("rename personal viewlist: "+window.viewlistforrename+" to "+newname);
  var newid=window.viewlistforrename;
  var playersDom = $('#MyViewListsEdit')[0];
-	for (var i=0; i<playersDom.childElementCount; i++){
+	for (var i=0; i<=playersDom.childElementCount; i++){
 		playerId = playersDom.childNodes[i]['id'];
+		console.log("playerId:"+playerId);
 		if (playerId==newid) {
 			console.log("found for rename "+newid);
 			playersDom.childNodes[i].childNodes[1].innerHTML=newname;
@@ -395,6 +398,6 @@ function CreateUserList()
 
                         }
                     });
- dojo.byId('RenameVLname').innerHTML = "";
+ dojo.byId('newVLname').value = "";
 }
  

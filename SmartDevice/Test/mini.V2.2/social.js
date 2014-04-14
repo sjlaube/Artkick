@@ -120,17 +120,19 @@ gotoView("ImageView","show_comments");
 		var timesince= new Date().getTime()-imageMap[currImage]["comments"][i]["time_stamp"];
 		
 		var howlongsince=msToTime(timesince);
+		var commentid = imageMap[currImage]["comments"][i]["comment_id"];
+		console.log("showing comments i="+i+" id="+commentid);
 		//console.log("time: "+howlongsince);
 		//alert(curr-player["last_visit"]);
 		if (!imageMap[currImage]["comments"][i]["delete"])
 		{
 		// only show delete button for my own comments.....
-
-		if (imageMap[currImage]["comments"][i]["user_id"]==window.userID||window.isAdmin)
+		//myalert("userid="+window.userID+" admin="+window.isAdmin);
+		if ((imageMap[currImage]["comments"][i]["user_id"]==window.userID)||window.isAdmin)
 		{
 			console.log("mycomment:"+comm);
 			li = new dojox.mobile.ListItem({
-				id: 'comment'+i,
+				id: 'comment'+commentid,
 				label: username+"<br>"+comm+"<br><span class='timestamp'>"+howlongsince+"</span>",
 				onClick: function () {
 					ShowDeleteComment(this.id);
@@ -146,7 +148,7 @@ gotoView("ImageView","show_comments");
 		{
 			console.log("comment:"+comm);
 			li = new dojox.mobile.ListItem({
-				id: 'comment'+i,
+				id: 'comment'+commentid,
 				label: username+"<br>"+comm,
 								variableHeight:true,
 				checked:false,
@@ -161,7 +163,7 @@ gotoView("ImageView","show_comments");
 }
 function deletecomment()
 {
-	var url=base + "client/deleteComment?"  + "email=" + window.email+"&token="+window.token+"&imageId="+window.currImage+"&index="+window.commentfordeleteid;
+	var url=base + "client/deleteComment?"  + "email=" + window.email+"&token="+window.token+"&imageId="+window.currImage+"&comment_id="+window.commentfordeleteid;
 	console.log ("deleting comment:"+url);
 	dijit.registry.byId('DeleteComment').hide(); 
     dojo.io.script.get({
@@ -172,7 +174,7 @@ function deletecomment()
             if (result["Status"] == "success") {
               
             } else {
-                alert(result["Message"]);
+                myalert(result["Message"]);
             }
 
         }
@@ -180,16 +182,17 @@ function deletecomment()
 	/* this is incorrect index sometimes check it */
 
 	var playersDom = $('#comment_list')[0];
+						console.log("element count="+playersDom.childElementCount);
                             for (var i=0; i<playersDom.childElementCount; i++){
                             	playerId = playersDom.childNodes[i]['id'];
                             	console.log('id='+playerId);
-                            	if (playerId=='comment'+window.commentfordeleteid) {
+                            	if (playerId.substr(7)==window.commentfordeleteid) {
                                     
                                     dijit.registry.remove(playerId);
                                     playersDom.removeChild(playersDom.childNodes[i]);
 									console.log(" delete i= " +i);
 									
-										imageMap[window.currImage]["comments"][i]["delete"] = true;
+									imageMap[window.currImage]["comments"][i]["delete"] = true;
                                   
 
                                 }
@@ -220,6 +223,7 @@ function CreateComment (stat)
 
    var url=base + "client/commentImage?"  + "email=" + window.email+"&token="+window.token+"&imageId="+window.currImage+"&text="+newlistname;
    var newlistid;
+   var commentid;
  //  alert ("creating new viewlist:"+newlistname+" user:"+window.email+" url:"+url);
     dojo.io.script.get({
         url: url,
@@ -228,36 +232,29 @@ function CreateComment (stat)
         load: function (result) {
             if (result["Status"] == "success") {
              //   alert("Viewlist " + newlistname + " ID:"+result["listId"]+" created!");
-              
-            } else {
-                alert(result["Message"]);
-            }
+              commentid=result["comment_id"];
+			  dijit.registry.byId('AddComment').hide(); 
+				window.showAddComment = false;
+			console.log("new comment with id="+commentid);
 
-        }
-    });
-  
-     dijit.registry.byId('AddComment').hide(); 
-	 window.showAddComment = false;
-
-
-	 var cm=imageMap[window.currImage]["commentNum"];
-	 	 imageMap[window.currImage]["commentNum"]++;
-		document.getElementById("commentNum"+window.currImage).innerHTML = imageMap[window.currImage]["commentNum"]+" comments";
-	li = new dojox.mobile.ListItem({
-			id: cm,
-			label: "<b>"+window.userName+"</b><br>"+newlistname+"<br><span class='timestamp'>Just now</span>",
-			onClick: function () {
-				ShowDeleteComment(this.id);
-			},
-			variableHeight:true,
-			checked:false,
-			checkClass: "images/blank.png",
-			rightIcon2:"images/Trash_25x25.png"
+			var cm=imageMap[window.currImage]["commentNum"];
+			imageMap[window.currImage]["commentNum"]++;
+			document.getElementById("commentNum"+window.currImage).innerHTML = imageMap[window.currImage]["commentNum"]+" comments";
+			li = new dojox.mobile.ListItem({
+				id: 'Comment'+commentid,
+				label: "<b>"+window.userName+"</b><br>"+newlistname+"<br><span class='timestamp'>Just now</span>",
+				onClick: function () {
+					ShowDeleteComment(this.id);
+				},
+				variableHeight:true,
+				checked:false,
+				checkClass: "images/blank.png",
+				rightIcon2:"images/Trash_25x25.png"
 			
 
-		});
-		commentList.addChild(li);
-		imageMap[window.currImage]["comments"].push( {text:newlistname, user_name:window.userName, user_id:window.userID, time_stamp:new Date().getTime(),delete:false});
+			});
+			commentList.addChild(li);
+			imageMap[window.currImage]["comments"].push( {text:newlistname, user_name:window.userName, user_id:window.userID, comment_id:commentid, time_stamp:new Date().getTime(),delete:false});
 
 
 			 dojo.byId("CommentText").value="";
@@ -270,6 +267,14 @@ function CreateComment (stat)
                         top: 200,
                         left: 0
                     });
+            } else {
+                alert(result["Message"]);
+            }
+
+        }
+    });
+  
+     
 
  }
  
@@ -282,6 +287,8 @@ function CreateComment (stat)
  
   function ShowDeleteComment(id)
  {
+ //console.log("showdeletecomment id="+id);
+ 
 	window.commentfordeleteid=id.substr(7);
  dijit.registry.byId('DeleteComment').show();
  }

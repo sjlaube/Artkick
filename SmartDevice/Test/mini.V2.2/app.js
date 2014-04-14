@@ -21,6 +21,7 @@ require(["jquery",
         "dojo/dom-class",
         "dojo/dom-attr",
         "dojo/dom-construct",
+		"dojo/dom-prop",
         "dojo/domReady",
         "dijit/registry",
         "dijit/form/Button",
@@ -43,7 +44,9 @@ require(["jquery",
         "dojo/html",
 		"dojox/gesture/swipe",
 		"dojo/fx",
-		"dojox/mobile/Accordion"
+		"dojox/mobile/Accordion",
+		"dojo/_base/lang",
+		"dojo/dom-geometry"
     ],
     function (
         $,
@@ -53,6 +56,7 @@ require(["jquery",
         domClass,
         domAttr,
         domConstruct,
+		domProp,
         domReady,
         registry,
         Button,
@@ -75,7 +79,9 @@ require(["jquery",
         html,
 		swipe,
 		fx,
-		Accordion) {
+		Accordion,
+		lang,
+		domgeometry) {
 
 
 
@@ -85,7 +91,7 @@ require(["jquery",
             function () {
 
                window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-             //  window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+               //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -203,6 +209,8 @@ require(["jquery",
 				window.shownoviewlist = false;
 				window.userName = "";
 				window.isAdmin = false;
+				window.gridsize = 100; /* how many images to load into gridview at a time */
+				window.moregridpages=false;
 
 
 
@@ -1118,10 +1126,12 @@ require(["jquery",
 
                                     onclick: function () {
                                         // alert(this.id);
+										window.moregridpages = false;
                                         gotoView('PlaylistView', 'blankview');
                                         window.currList = this.id;
 									
                                         window.switchView = true;
+									
                                         updateImages(-1);
 
                                     },
@@ -1163,9 +1173,9 @@ require(["jquery",
 
                                     onclick: function () {
                                         // alert(this.id);
+										window.moregridpages = false;
                                         gotoView('PlaylistView', 'blankview');
                                         window.currList = this.id;
-									
                                         window.switchView = true;
                                         updateImages(-1);
 
@@ -1245,6 +1255,7 @@ require(["jquery",
 
                                     onclick: function () {
                                         // alert(this.id);
+										window.moregridpages = false;
                                         var currView = dijit.registry.byId("ImageView");
                                         var currView2 = currView.getShowingView();
                                         //	alert("currView2="+currView2);
@@ -1395,7 +1406,7 @@ require(["jquery",
                     });
                 }
 
-                function rememberSelectPlayers() {
+                 window.rememberSelectPlayers = function() {
                     //alert("remembering");
                     var url = base + "client/selectPlayers?email=" + window.email + "&token=" + window.token;
                     var count = 0;
@@ -1437,6 +1448,7 @@ require(["jquery",
 
 
                 function playerClick(id) {
+					//console.log("playerclick: "+id);
                     if (window.playerSet[id]) {
                         window.playerSet[id] = false;
                     } else {
@@ -1499,8 +1511,13 @@ require(["jquery",
 						listname="Most Popular";
 						if (window.currCat == " Top Lists")
 							listname="Most Popular Across Artkick";
+						else
+							listname="Most Popular in "+window.currCat;
 						
 					}
+					else
+					if (listname == "My Top Rated")
+						listname="My Likes"
 						
 					if (window.currViewList.length < 33)
                         dijit.registry.byId("ImageViewHeader").set("label", listname + "<br> " + window.currAbsIndex + "/" + window.listSize);
@@ -1624,7 +1641,7 @@ require(["jquery",
 
 
                 window.updatePlayers = function () {
-                    // console.log("players");
+                     //console.log("players");
 
 						thisurl= base + "player/getPlayers?email=" + window.email + "&token=" + window.token;
                     dojo.io.script.get({
@@ -1674,11 +1691,11 @@ require(["jquery",
 
 
                                     if (player["account"] in selectedPlayers) {
-                                        //alert(player["account"]+"in");
+                                       // console.log(player["account"]+"in");
                                         var checked = true;
                                         window.playerSet["s" + player["account"]] = true;
                                     } else {
-                                        //alert(player["account"]+"out");
+                                       // console.log(player["account"]+"out");
                                         var checked = false;
                                         window.playerSet["s" + player["account"]] = false;
                                     }
@@ -1709,6 +1726,17 @@ require(["jquery",
 
                                 }
                                 window.justLogin = false;
+								// always check if there is only 1 player, force it to be selected
+								if (window.numberplayers==1)
+								{
+									for (var i in result["players"]) {
+									var player = result["players"][i];
+									playerClick("s" + player["account"]);
+									rememberSelectPlayers();
+									}
+									
+								}
+
                                 //syncImage();
                                 return;
 
@@ -1739,8 +1767,8 @@ require(["jquery",
                                     li = new dojox.mobile.ListItem({
                                         id: "s" + player["account"],
                                         rightIcon2: status,
-										icon:  player["curr_image"]["icon"],
-                                        label: player["nickname"]+"<br>&nbsp;&nbsp;&nbsp;"+player["curr_image"]["Title"]+"<br>&nbsp;&nbsp;&nbsp;Slideshow: "+player["autoPlay"],
+										//icon:  player["curr_image"]["icon"],
+                                        label: "<b>"+player["nickname"]+"</b>",  //+"<br>&nbsp;&nbsp;&nbsp;"+player["curr_image"]["Title"]+"<br>&nbsp;&nbsp;&nbsp;Slideshow: "+player["autoPlay"],
                                         onClick: function () {
                                             playerClick(this.id);
                                         },
@@ -1788,8 +1816,16 @@ require(["jquery",
 
                             }
 
-
-
+							// always check if there is only 1 player, force it to be selected
+							if (window.numberplayers==1)
+							{
+								for (var i in result["players"]) {
+                                var player = result["players"][i];
+							    playerClick("s" + player["account"]);
+								rememberSelectPlayers();
+								}
+								
+							}
 
                             if (window.justCreatePlayer) {
                                 if (!window.autoIntro) {
@@ -1824,13 +1860,21 @@ require(["jquery",
 
                 }
                 window.BrowserDetect.init();
-                //	alert("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser+" version="+window.BrowserDetect.version);
-                //		if ((window.BrowserDetect.OS=="Linux" && window.BrowserDetect.browser!= "Chrome") ||
-                //		(window.BrowserDetect.OS=="Windows" && window.BrowserDetect.browser!= "Chrome"))
-                //		{
-                //		alert("You must run Artkick under Chrome, please restart using the Chrome browser");
-                //		window.close();
-                //		}
+                	//alert("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser+" version="+window.BrowserDetect.version);
+                	if (window.BrowserDetect.OS.substr(0,6)!="iPhone" )
+					{
+					// we are on android only show facebook and "other" share buttons
+					   	dojo.style("twittershare", "display", "none");
+						dojo.style("facebookshare","margin-right","30px");
+						dojo.style("facebookshare","margin-left","20px");
+						
+					//	dojo.byId("emailShare").setAttribute("label","Other
+					//	domProp.set("emailShare","label","");
+						dojo.byId("emailShare").innerHTML=
+						'<a class="mblIconMenuItemAnchor" role="presentation"><table class="mblIconMenuItemTable" role="presentation"><tbody><tr><td><img alt="" src="images/share_android.png" class="mblImageIcon"><div class="mblIconMenuItemLabel">More</div></td></tr></tbody></table></a>';
+					}
+						
+               		
                 //window.tellbrowser.init();
                 var curl = get('currList');
                 var curi = get('currImage');
@@ -1990,7 +2034,7 @@ require(["jquery",
 
 
 
-                on(selectPlayerView, "beforeTransitionOut",
+                on(selectPlayerView2, "beforeTransitionOut",
                     function () {
                         rememberSelectPlayers()
                     });
@@ -2173,38 +2217,65 @@ require(["jquery",
 						}
                         window.currentView = "GridView";
 					    dijit.registry.byId("gridshowing").set('selected', true);
-                        window.gridPages = Math.ceil(window.listSize / 20);
+                        window.gridPages = Math.ceil(window.listSize / window.gridsize);
                         //   alert ("picturegrid, currlist="+window.currList+" number images="+window.listSize+" pages="+gridPages);
                         hidebutton("GridView", false);
-                        if (window.currList == window.currGridList && window.currList.substr(0,4)!="topL") { // already generated grid, so just return
+                        if (window.currList == window.currGridList ) { // already generated grid, so just return
                             //alert("same list returning...");
                             return;
                         } else
                             window.currGridList = window.currList;
                         window.targImageGrid = -1;
                         loadGrid(0); //first call load up the first page of grid
-                    })
+                    });
+					
+		
+					
+			
+    
+
 					
 				
+			//	no longer swiping of the grid view just scroll down
 				dojo.connect(Picturegrid, swipe.end,
 					function(e) {
 					
+					window.paneHeight=dojo.coords(Picturegrid).h;
+					window.scrollHeight=-dojo.coords(Picturegrid).y;
+					window.buttonHeight=window.morebuttoncoords.t;
+				//	window.bottomPos=Picturegrid['scrollTop']+paneHeight;
+					
 					//Check and which which difference is bigger since
                                 //we only support up, down, left, right
-				if (Math.abs(e.dx) > Math.abs(e.dy)){
-					if (e.dx > 0){
-						console.log("left");
-						if(window.currGridPage>1)//check if there is previous page
-							loadGrid(-1);
-					}else{ 
-						console.log("right");
-						if(window.currGridPage<window.gridPages)
-							loadGrid(1);
+				if (Math.abs(e.dx) < Math.abs(e.dy)){
+					if (e.dy < 0)
+					{ 
+					//alert("paneheight: "+paneHeight+" scrollHeight:"+scrollHeight+" more at:"+window.buttonHeight);
+						
+						if (scrollHeight< window.buttonHeight)
+						{// see if we are close to bottom and then load grid
+							var closepx=window.buttonHeight-scrollHeight;
+							//alert("closepx:"+closepx);
+							
+						
+						//alert(" close: "+closepx);
+							if (closepx < 1200)
+							{
+						
+								loadGrid(1);
+							}
+						
+						/*if(window.currGridPage<window.gridPages)
+							loadGrid(1);*/
+						}
 					}
 				}
+				
 					//alert("swipe dx="+e.dx+" dy="+e.dy);
 					
 				}	)
+				
+			
 
                 window.hidebutton = function (node, hideMe) {
                     domStyle.set(dijit.registry.byId(node).domNode, {
@@ -2216,8 +2287,18 @@ require(["jquery",
 
 
                 window.loadGrid = function (page) {
-                    var gridprevious = dijit.registry.byId("GridPrevious");
-                    var gridnext = dijit.registry.byId("GridNext");
+				    var currTime = new Date().getTime();
+					if(window.GridClickTime!=undefined && currTime - window.GridClickTime < window.boucingTime)
+					return;
+					window.GridClickTime = currTime;
+
+
+					window.coords=Picturegrid;
+
+				//	console.log ("entering loadgrid, coordinates height:"+window.coords['scrollHeight']+" Top:"+window.coords['scrollTop']);
+					
+
+				
                     forward = 1;
                     include = 1;
                     	console.log("page="+page+" current grid page="+window.currGridPage);
@@ -2226,34 +2307,26 @@ require(["jquery",
                         include = 1;
                         forward = 1;
                         window.currGridPage = 1;
-                        hidebutton("GridPrevious", true);
-                        if (window.gridPages > 1) {
-                            hidebutton("GridNext", false);
-                        } else {
-                            hidebutton("GridNext", true);
-                        }
+                        
                     } else if (page == 1) {
                         // get next set of 24 thumbnails
                         include = 0;
                         forward = 1;
                         window.targImageGrid = window.lastGridImage;
                         window.currGridPage = window.currGridPage + 1;
-                        hidebutton("GridPrevious", false);
-                        if (window.currGridPage == window.gridPages) // last page
-                            hidebutton("GridNext", true);
+                       
                     } else if (page == -1) {
                         // get previous set
                         include = 0;
                         forward = 0;
                         window.targImageGrid = window.firstGridImage;
                         window.currGridPage = window.currGridPage - 1;
-                        hidebutton("GridNext", false);
-                        //	alert("now="+window.currGridPage);
-                        if (window.currGridPage == 1)
-                            hidebutton("GridPrevious", true);
+                       
                     }
+					 
+					
              //       var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg=20" + "&include=" + include + "&token=" + window.token;
- 					  var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg=20" + "&include=" + include + "&token=" + window.token;
+ 					  var url = base + "client/getViewlist6?id=" + window.currList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg="+window.gridsize + "&include=" + include + "&token=" + window.token;
 
 					if (window.currCat != " Top Lists")
 						url += "&catName="+window.currCat;
@@ -2269,16 +2342,26 @@ require(["jquery",
                     window.imageCurrStore = new ItemFileWriteStore({
                         data: imageData
                     });
-                    if (window.currViewList.length < 33)
-                        dijit.registry.byId("GridViewHeader").set("label", window.currViewList + "<br>Page " + window.currGridPage + "/" + window.gridPages);
+					var pagesequence = "";
+					/*if (window.gridPages>1)
+						pagesequence = "<br>Page " + window.currGridPage + "/" + window.gridPages;*/
+					
+                    if (window.currViewList.length < 43)
+                        dijit.registry.byId("GridViewHeader").set("label", window.currViewList +pagesequence);
                     else
-                        dijit.registry.byId("GridViewHeader").set("label", window.currViewList.substring(0, 30) + "<br>Page " + window.currGridPage + "/" + window.gridPages);
+                        dijit.registry.byId("GridViewHeader").set("label", window.currViewList.substring(0, 40) + pagesequence);
                     //check number of pages if only 1 turn off the forward back buttons, otherwise check for first/last and show as appropriate
 
                     dijit.registry.byId("gridshowing").set('selected', true);
                     //	alert("avail heigth="+window.innerHeight+"width="+window.innerWidth);
 
-                    dojo.empty(Picturegrid);
+                    if(window.moregridpages!=true)
+					{//only empty the grid on first call otherwise just add them
+						dojo.empty(Picturegrid);
+						gridView.scrollTo({y:0});
+					}
+					if (window.morebutton)  /* there is morebutton in the grid get rid of it */
+						dojo.destroy(window.morebutton);
                     var dim = 77; //iphone standard
 					var ht;
 					var wd;
@@ -2301,6 +2384,7 @@ require(["jquery",
                     //   console.log ("dim="+dim);
 					var remainder= window.innerWidth%dim;
 					   console.log ("ht:"+window.innerHeight+"Wd:"+window.innerWidth+"dim="+dim+"remainder:"+remainder);
+					var firstnode="";
 				//	dojo.style("Picturegrid", "left", remainder/2+"px");
                     dojo.io.script.get({
                         url: url,
@@ -2319,7 +2403,7 @@ require(["jquery",
 						},
                         load: function (viewlist) {
                             for (var i in viewlist["imageSet"]) {
-                               console.log("id="+viewlist["imageSet"][i]["id"]);
+                              // console.log("id="+viewlist["imageSet"][i]["id"]);
 								icon=viewlist["imageSet"][i]["thumbnail"];
 								if (viewlist["imageSet"][i]["icon"])
 									icon=viewlist["imageSet"][i]["icon"];
@@ -2350,18 +2434,63 @@ require(["jquery",
 
                                 }, "Picturegrid");
 								
+								if(firstnode="")
+									firstnode=pic;
+									
 								
 
                             }
+							/* check to see if there are more images to show in the grid, but only show up to 1000 images */
+							if (window.currGridPage < window.gridPages && window.currGridPage<10 )
+							{
+								window.moregridpages=true;
+								var morebutton =  dojo.create("img",{
+										id: 'morebutton'+pic,
+										classname:'moregrid',
+										src: "images/morebutton.png",
+										onclick: function() {
+											loadGrid(1);
+										},
+										width: wd + "px",
+										height: ht + "px",
+										hspace: "0px",
+										vspace: "0px"
+									}, "Picturegrid");
+								window.morebutton = "morebutton"+pic;
+								window.morebuttoncoords= dojo.coords(morebutton);
+							}
+							else
+								window.morebutton = "";
+							
                             window.firstGridImage = viewlist["imageSet"][0]["id"];
                             window.lastGridImage = viewlist["imageSet"][viewlist["imageSet"].length-1]["id"];
 							    dojo.style(dojo.byId("Picturegrid"), "display", "block");
-                          console.log("first="+window.firstGridImage+" last="+window.lastGridImage);
+                        //  console.log("first="+window.firstGridImage+" last="+window.lastGridImage);
+	/*				window.paneHeight=dojo._getMarginSize(Picturegrid).h;
+					window.scrollHeight=Picturegrid['scrollHeight'];
+					window.bottomPos=Picturegrid['scrollTop']+paneHeight;
+					alert("paneheight: "+paneHeight+" scrollHeight:"+scrollHeight+" bottomPos:"+bottomPos);*/
                         }
 
 
                     })
+					   //  reset the scrollable view to the top
+                  //  var c = dijit.byId("GridView").containerNode;
+
+					//dijit.byId("GridView").scrollIntoView();
+                  /*  dojo.setStyle(c, {
+                        webkitTransform: '',
+                        top: 10,
+                        left: 0
+                    });*/
+					//gridView.scrollTo({y:0});
+					
+
                 };
+				
+
+				
+
 
                 on(userrating, "click",
                     function () {
@@ -2465,106 +2594,8 @@ require(["jquery",
                     showDeleteButton(item);
                 });
 
-                function showDeleteButton(item) {
-
-                    hideDeleteButton();
-                    window.delItem = item;
-                    item.rightIconNode.style.display = "none";
-                    if (!item.rightIcon2Node) {
-                        item.set("rightIcon2", "mblDomButtonMyRedButton_0");
-                        item.rightIcon2Node.tabIndex = "0";
-                        item.rightIcon2Node.firstChild.innerHTML = "Delete";
-                        connect.connect(item.rightIcon2Node, "onkeydown", onDelete);
-                    }
-                    item.rightIcon2Node.style.display = "";
-                    handler = connect.connect(window.MyViewlist.domNode, "onclick", onClick);
-                }
-
-                function hideDeleteButton() {
-                    if (window.delItem) {
-                        window.delItem.rightIconNode.style.display = "";
-                        window.delItem.rightIcon2Node.style.display = "none";
-                        window.delItem = null;
-                    }
-                    connect.disconnect(handler);
-                }
-
-                function onClick(e) {
-                    var item = registry.getEnclosingWidget(e.target);
-                    //	alert("deleting item2:"+item+"id:"+item.id+"name:"+item.label);
-                    var url = base + "user/removeMyViewlist?" + "email=" + window.email + "&token=9999&listId=" + item.id + "&token=" + window.token;
-
-                    dojo.io.script.get({
-                        url: url,
-                        callbackParamName: "callback",
-						timeout: 8000,
-						trytimes: 5,
-						error: function(error){
-							console.log("timeout!removeMyViewlist"+url);
-							this.trytimes --;
-							if(this.trytimes>0){
-								dojo.io.script.get(this);
-							} else{
-								alert("Network problem17. Please check your connection and restart the app.");
-							}
-							
-						},
-                        load: function (result) {
-                            if (result["Status"] == "success") {
-                                usermessage("Viewlist " + item.label + " deleted!");
-
-
-                            } else {
-                                alert(result["Message"]);
-                                return;
-                            }
-
-                        }
-                    });
-                    /* do call here to delete item*/
-                    if (domClass.contains(e.target, "mblDomButtonMyRedButton_0")) {
-                        setTimeout(function () {
-                            item.destroy();
-                        }, 0);
-                    }
-                    hideDeleteButton();
-                }
-
-                function onDelete(e) {
-                    if (e && e.type === "keydown" && e.keyCode !== 13) {
-                        return;
-                    }
-                    var item = registry.getEnclosingWidget(e.target);
-                    //alert("deleting item:"+item);
-                    setTimeout(function () {
-                        item.destroy();
-                    }, 0);
-                }
-                window.EditViewlists = function (forceflag) {
-                    // alert("edit personal viewlists");
-                    var flag = window.btn1._flag = !window.btn1._flag; // true: editable
-                    if (forceflag == false) {
-                        flag = false;
-                        window.btn1._flag = false;
-                    }
-
-                    if (flag) {
-                        window.MyViewlist.startEdit();
-
-                        window.btn1.set("label", "Done");
-						$("#btn1").addClass("editstyle");
-                        //	keyHandler = connect.connect(window.MyViewlist.domNode, "onkeydown", onKeydown);
-                    } else {
-				
-                        hideDeleteButton();
-							console.log("hidedelete");
-                        window.MyViewlist.endEdit();
-						console.log("endedit");
-                        window.btn1.set("label", "Edit");
-						$("#btn1").addClass("editstyle");
-                        //	connect.disconnect(keyHandler);
-                    }
-                }
+ 
+               
 
                 connect.subscribe("/dojox/mobile/viewChanged", function (view) {
 
@@ -2667,7 +2698,40 @@ function emailShare()
         console.log("short" + short_url);
         calliOSFunction("email", ['Artkick rocks', short_url, encodeURIComponent(imageMap[currImage]["thumbnail"]), 'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
         try {
-            Android.email('Check out this great image and thousands more at Artkick', short_url, imageMap[currImage]["thumbnail"], 'Artkick rocks');
+            Android.share('Check out this great image and thousands more at Artkick', short_url, imageMap[currImage]["thumbnail"], 'Artkick rocks');
+        } catch (err) {
+
+        }
+        setTimeout(function () {
+            hidemenu()
+        }, 1000);
+    })
+
+}
+
+function otherShare()
+
+{
+
+    imageurl = imageMap[currImage]["thumbnail"];
+	if( window.currViewList == "Last Search")
+	{ /* can't share last search */	
+		myalert("You can't share the Last Search Viewlist");
+		return;
+	}
+
+    //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
+    var url = "http://prod.artkick.net/"
+    url = url + "?currList=" + encodeURIComponent(currList) + "&currImage=" + encodeURIComponent(currImage) + "&currCat=" + encodeURIComponent(currCat);
+    //alert("url="+url);
+
+
+    console.log("long:" + url);
+    get_short_url(url, login, api_key, function (short_url) {
+        console.log("short" + short_url);
+        calliOSFunction("gmail", ['Artkick rocks', short_url, encodeURIComponent(imageMap[currImage]["thumbnail"]), 'Check out this great image and thousands more at Artkick'], "onSuccess", "onError");
+        try {
+            Android.share('Check out this great image and thousands more at Artkick', short_url, imageMap[currImage]["thumbnail"], 'Artkick rocks');
         } catch (err) {
 
         }
@@ -3062,6 +3126,7 @@ function cleanUp() {
 	window.highresolution=false;
 	window.guest=false;
 	window.isAdmin=false;
+	window.userID="";
     $("#addPlayerEmail").attr('value', '');
     getDefaults();
 }
@@ -3315,3 +3380,5 @@ function copyright()
 	mbox.show();
 
 }
+
+	

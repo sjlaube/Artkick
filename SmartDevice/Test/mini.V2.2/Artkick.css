@@ -309,6 +309,10 @@ float:left;margin-right:2px}
 	margin-top:-5px;
 	}
 	
+	.moregrid {
+
+	}
+	
 	.wipestyle {
 	font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
@@ -472,6 +476,14 @@ font-family: 'Open Sans', sans-serif;
 	border:none!important;
 	background-image: url('Trash_25x25.png')!important;
 	}
+	
+.othershare{
+  font-family: Helvetica;
+  text-decoration: none;
+  font-size: 11px;
+  color: #b8bbc0;
+  top:-45px!important;
+  }
 
 *{        
      /*You just need this if you are only concerned with android and not desktop browsers.*/

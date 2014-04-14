@@ -160,6 +160,7 @@ window.backbutton=function ()
 			gotoView("registernewTV",lastView);
 			break;
 		case "select_player2":
+			rememberSelectPlayers();
 			gotoView("select_player2",lastView);
 			break;
 		case "registernewroku2":

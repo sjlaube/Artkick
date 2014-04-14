@@ -45,11 +45,11 @@ function usersearch()
 				}
 				else
 				{
-				alert('No results for: "'+searchstring+'"');
+				myalert('No results for: "'+searchstring+'"');
 				}
 
             } else {
-                alert(result["Message"]);
+                myalert(result["Message"]);
             }
 
         }
