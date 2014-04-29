@@ -4,139 +4,59 @@ class Content1Controller < ApplicationController
   require 'json'
   include Mongo
   
-  @@userDbId = '63'
-  @@contentDbId = '53'
-  @@privateRange = 10000000000
-  @@dbMeta = {}
+  #@@server = 'ds031948.mongolab.com'
+  #@@port = 31948
+  #@@db_name = 'zwamy'
+  #@@username = 'leonzwamy'
+  #@@password = 'zw12artistic'
+  
+  #@@server = 'ds047478.mongolab.com'
+  #@@port = 47478
+  #@@db_name = 'heroku_app16778260'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
 
+  #@@server = 'ds051518-a0.mongolab.com'
+  #@@port = 51518
+  #@@db_name = 'heroku_app16777800'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
 
-  @@dbMeta['63'] = {:server => 'ds063698-a0.mongolab.com', :port => 63698, :db_name => 'heroku_app18544527', 
-    :username => 'artCoder', :password => 'zwamygogo'}  
-
-  
-  @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
-    :password => 'zw12artistic'}
-  
-  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
-    :username => 'artCoder', :password => 'zwamygogo' }
-  
-  @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
-    :username => 'artCoder', :password => 'zwamygogo'}
-
-
-    userDbInfo = @@dbMeta[@@userDbId]
-    @@userClient = MongoClient.new(userDbInfo[:server],userDbInfo[:port])
-    @@userDb = @@userClient[userDbInfo[:db_name]]
-    @@userDb.authenticate(userDbInfo[:username],userDbInfo[:password])
-    
-    contentDbInfo = @@dbMeta[@@contentDbId]
-    @@contentClient = MongoClient.new(contentDbInfo[:server],contentDbInfo[:port])
-    @@contentDb = @@contentClient[contentDbInfo[:db_name]]
-    @@contentDb.authenticate(contentDbInfo[:username],contentDbInfo[:password])
-    
-
-  def utcMillis
-    return (Time.new.to_f*1000).to_i
-  end
-    
-  def getListSet(listId)
-     if @@contentDb == nil or @@userDb == nil
-        connectDb()
-     end
-    
-     if (not listId.is_a? Numeric) and (listId.include? 'top')
-        return @@userDb['privLists'].find({'id'=>listId})
-     end
-     
-     if listId.to_i >= @@privateRange
-        return @@userDb['privLists'].find({'id'=>listId.to_i})
-     end
-     
-     return @@contentDb['viewlists'].find({'id'=>listId.to_i})   
-  end
-  
-  
-  def getImageSet(imageId)
-    
-     if @@contentDb == nil or @@userDb == nil
-        connectDb()
-     end
-     if imageId.to_i >= @@privateRange
-        return @@userDb['privImages'].find({'id'=>imageId.to_i})
-     end
-     
-     return @@contentDb['images'].find({'id'=>imageId.to_i})        
-         
-  end
-  
-  def getIndex(name)
-      names = ['image','privImage','viewlist','privList','user']
-      if not names.include? name
-        return -1
-      end
-      
-      baseUrl = 'http://pacific-oasis-9960.herokuapp.com/id/'
-      url = baseUrl + name
-      uri = URI(url)
-      http = Net::HTTP.new(uri.host, uri.port)
-      request = Net::HTTP::Get.new(uri.request_uri)
-      res = http.request(request)
-      dic = JSON.parse(res.body)
-      if dic['Status'] != 'success'
-        return -1
-      end
-      
-      return dic['id'].to_i
-  end   
-  
-  def connectDb
-    userDbInfo = @@dbMeta[@@userDbId]
-    @@userClient = MongoClient.new(userDbInfo[:server],userDbInfo[:port])
-    @@userDb = @@userClient[userDbInfo[:db_name]]
-    @@userDb.authenticate(userDbInfo[:username],userDbInfo[:password])
-    
-    contentDbInfo = @@dbMeta[@@contentDbId]
-    @@contentClient = MongoClient.new(contentDbInfo[:server],contentDbInfo[:port])
-    @@contentDb = @@contentClient[contentDbInfo[:db_name]]
-    @@contentDb.authenticate(contentDbInfo[:username],contentDbInfo[:password])
-    
-  end
-  
-  
-  def closeDb
-    if @@userClient != nil
-      @@userClient.close
-    end
-    
-    if @@contentClient != nil
-      @@contentClient.close
-    end
-  end
+  #singleNode2
+  @@server = 'ds053468-a0.mongolab.com'
+  @@port = 53468
+  @@db_name = 'heroku_app16778260'
+  @@username = 'luckyleon'
+  @@password = 'artkick123rocks' 
 
   def allCategories
-
-    result = {"categories"=>@@contentDb["categories"].find().sort({"name"=>1}).to_a}
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
+    result = {"categories"=>@db["categories"].find().sort({"name"=>1}).to_a}
+    @client.close
     render :json=>result, :callback => params[:callback]  
   end
   
   
   def allCategories2
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     if params[:featured]!=nil
-      catObjs = @@contentDb["categories"].find({},{:fields=>['name','featuredListNum']}).sort({"name"=>1}).to_a
+      catObjs = @db["categories"].find({},{:fields=>['name','featuredListNum']}).sort({"name"=>1}).to_a
       catObjs.each do |catObj|
         catObj['viewlistNum'] = catObj['featuredListNum']
         catObj.delete('featuredListNum')
       end
       result = {"categories"=>catObjs}
-
+      @client.close
       render :json=>result, :callback => params[:callback]  
       return
     end
     
-    result = {"categories"=>@@contentDb["categories"].find({},{:fields=>['name','viewlistNum']}).sort({"name"=>1}).to_a}
-
+    result = {"categories"=>@db["categories"].find({},{:fields=>['name','viewlistNum']}).sort({"name"=>1}).to_a}
+    @client.close
     render :json=>result, :callback => params[:callback]  
   end
     
@@ -154,17 +74,19 @@ class Content1Controller < ApplicationController
       return
     end
    
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
     field = 'viewlists2'
     if params[:featured]!=nil
       field = 'featuredLists2'
     end
     
-    catSet = @@contentDb["categories"].find({"name"=>params[:catName]},{:fields=>[field]})
+    catSet = @db["categories"].find({"name"=>params[:catName]},{:fields=>[field]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
-
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -178,7 +100,7 @@ class Content1Controller < ApplicationController
        quickSort(viewlists,0,viewlists.length-1)    
     end
     result = {"status"=>"success", "viewlists"=>viewlists}
-
+    @client.close
     render :json=>result, :callback => params[:callback]  
  end
  
@@ -196,13 +118,15 @@ class Content1Controller < ApplicationController
       return
     end
    
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
     
-    catSet = @@contentDb["categories"].find({"name"=>params[:catName]})
+    catSet = @db["categories"].find({"name"=>params[:catName]})
     if catSet.count == 0
       result = {"status"=>"failure", "message"=>"category doesn't exist!"}
-
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
       
@@ -211,14 +135,14 @@ class Content1Controller < ApplicationController
     category = catSet.to_a[0]
     viewlists = []
     category["viewlists"].each do |listId|
-      listSet = @@contentDb["viewlists"].find({"id"=>listId})
+      listSet = @db["viewlists"].find({"id"=>listId})
       if listSet.count > 0
         viewlists.push(listSet.to_a[0])
       end
     end
     quickSort(viewlists,0,viewlists.length-1)
     result = {"status"=>"success", "viewlists"=>viewlists}
-
+    @client.close
     render :json=>result, :callback => params[:callback]  
        
  end  
@@ -276,20 +200,11 @@ def lastNameQuickSort(objs,startIndex,endIndex)
        name1 = "Brueghel"
     end
     
-    if items1[0]=='All'
-      name1 = " All"
-    end
-    
     items2 = objs[endIndex]["name"].split()
     name2 = items2[items2.length-1]
     if objs[endIndex]["name"].include? "Brueghel"
        name2 = "Brueghel"
     end
-    
-    if items2[0]=='All'
-      name2 = " All"
-    end
-    
     
     
     if name1 < name2

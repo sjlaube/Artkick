@@ -4,117 +4,36 @@ class User1Controller < ApplicationController
   include Mongo
   require 'net/smtp'
 
-  @@userDbId = '63'
-  @@contentDbId = '53'
-  @@privateRange = 10000000000
-  @@dbMeta = {}
-
-
-  @@dbMeta['63'] = {:server => 'ds063698-a0.mongolab.com', :port => 63698, :db_name => 'heroku_app18544527', 
-    :username => 'artCoder', :password => 'zwamygogo'}  
-
+  #@@server = 'ds031948.mongolab.com'
+  #@@port = 31948
+  #@@db_name = 'zwamy'
+  #@@username = 'leonzwamy'
+  #@@password = 'zw12artistic'
   
-  @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
-    :password => 'zw12artistic'}
+  #@@server = 'ds047478.mongolab.com'
+  #@@port = 47478
+  #@@db_name = 'heroku_app16778260'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
   
-  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
-    :username => 'artCoder', :password => 'zwamygogo' }
+  #@@server = 'ds051518-a0.mongolab.com'
+  #@@port = 51518
+  #@@db_name = 'heroku_app16777800'
+  #@@username = 'luckyleon'
+  #@@password = 'artkick123rocks'
+ 
+  #singleNode2
+  @@server = 'ds053468-a0.mongolab.com'
+  @@port = 53468
+  @@db_name = 'heroku_app16778260'
+  @@username = 'luckyleon'
+  @@password = 'artkick123rocks'  
   
-  @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
-    :username => 'artCoder', :password => 'zwamygogo'}
-
   @@gmailAccount = 'leonzfarm'  
   @@gmailPassword = 'aljzcsjusqohrujk' 
-  
-  @@api_key = '7c028a32e596566b2632e6f672df55af-us7' 
-  
-  
-    userDbInfo = @@dbMeta[@@userDbId]
-    @@userClient = MongoClient.new(userDbInfo[:server],userDbInfo[:port])
-    @@userDb = @@userClient[userDbInfo[:db_name]]
-    @@userDb.authenticate(userDbInfo[:username],userDbInfo[:password])
-    
-    contentDbInfo = @@dbMeta[@@contentDbId]
-    @@contentClient = MongoClient.new(contentDbInfo[:server],contentDbInfo[:port])
-    @@contentDb = @@contentClient[contentDbInfo[:db_name]]
-    @@contentDb.authenticate(contentDbInfo[:username],contentDbInfo[:password])  
 
   def utcMillis
     return (Time.new.to_f*1000).to_i
-  end
-    
-  def getListSet(listId)
-     if @@contentDb == nil or @@userDb == nil
-        connectDb()
-     end
-    
-     if (not listId.is_a? Numeric) and (listId.include? 'top')
-        return @@userDb['privLists'].find({'id'=>listId})
-     end
-     
-     if listId.to_i >= @@privateRange
-        return @@userDb['privLists'].find({'id'=>listId.to_i})
-     end
-     
-     return @@contentDb['viewlists'].find({'id'=>listId.to_i})   
-  end
-  
-  
-  def getImageSet(imageId)
-    
-     if @@contentDb == nil or @@userDb == nil
-        connectDb()
-     end
-     if imageId.to_i >= @@privateRange
-        return @@userDb['privImages'].find({'id'=>imageId.to_i})
-     end
-     
-     return @@contentDb['images'].find({'id'=>imageId.to_i})        
-         
-  end
-  
-  def getIndex(name)
-      names = ['image','privImage','viewlist','privList','user']
-      if not names.include? name
-        return -1
-      end
-      
-      baseUrl = 'http://pacific-oasis-9960.herokuapp.com/id/'
-      url = baseUrl + name
-      uri = URI(url)
-      http = Net::HTTP.new(uri.host, uri.port)
-      request = Net::HTTP::Get.new(uri.request_uri)
-      res = http.request(request)
-      dic = JSON.parse(res.body)
-      if dic['Status'] != 'success'
-        return -1
-      end
-      
-      return dic['id'].to_i
-  end   
-  
-  def connectDb
-    userDbInfo = @@dbMeta[@@userDbId]
-    @@userClient = MongoClient.new(userDbInfo[:server],userDbInfo[:port])
-    @@userDb = @@userClient[userDbInfo[:db_name]]
-    @@userDb.authenticate(userDbInfo[:username],userDbInfo[:password])
-    
-    contentDbInfo = @@dbMeta[@@contentDbId]
-    @@contentClient = MongoClient.new(contentDbInfo[:server],contentDbInfo[:port])
-    @@contentDb = @@contentClient[contentDbInfo[:db_name]]
-    @@contentDb.authenticate(contentDbInfo[:username],contentDbInfo[:password])
-    
-  end
-  
-  
-  def closeDb
-    if @@userClient != nil
-      @@userClient.close
-    end
-    
-    if @@contentClient != nil
-      @@contentClient.close
-    end
   end
   
   
@@ -147,12 +66,15 @@ class User1Controller < ApplicationController
     
     
     
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
-    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -161,15 +83,15 @@ class User1Controller < ApplicationController
     
     if not userObj['private_lists'].include? params[:listId].to_i
       result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
-
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     
-    imageSet = getImageSet(params[:imgId])
+    imageSet = @db['images'].find({'id'=>params[:imgId].to_i})
     if imageSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, image doesn't exist!"}
-
+      @client.close
       render :json=>result, :callback => params[:callback]
       return      
 
@@ -177,10 +99,10 @@ class User1Controller < ApplicationController
   
     imageObj = imageSet.to_a[0]
     
-    listSet = getListSet(params[:listId])
+    listSet = @db['viewlists'].find({'id'=>params[:listId].to_i})
     if listSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, viewlist doesn't exist!"}
-
+      @client.close
       render :json=>result, :callback => params[:callback]
       return  
       
@@ -189,13 +111,13 @@ class User1Controller < ApplicationController
     listObj = listSet.to_a[0]
     
     if listObj['coverImage'] == nil
-       @@userDb['privLists'].update({'id'=>listObj['id'].to_i},{'$set'=>{'coverImage'=>imageObj['thumbnail']}})
+       @db['viewlists'].update({'id'=>listObj['id'].to_i},{'$set'=>{'coverImage'=>imageObj['thumbnail']}})
     end
     
-    @@userDb['privLists'].update({'id'=>listObj['id'].to_i},{'$push'=>{'images'=>imageObj['id'].to_i}})
+    @db['viewlists'].update({'id'=>listObj['id'].to_i},{'$push'=>{'images'=>imageObj['id'].to_i}})
     
     result = {"Status"=>"success", "Message"=>"The image has been added to the viewlist!"}
-
+    @client.close
     render :json=>result, :callback => params[:callback]
     
  end
@@ -230,13 +152,15 @@ class User1Controller < ApplicationController
     
     
     
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
     
-    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-
+        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -245,15 +169,15 @@ class User1Controller < ApplicationController
     
     if not userObj['private_lists'].include? params[:listId].to_i
       result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
-
+      @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
         
-    listSet = getListSet(params[:listId])
+    listSet = @db['viewlists'].find({'id'=>params[:listId].to_i})
     if listSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, viewlist doesn't exist!"}
-
+       @client.close
       render :json=>result, :callback => params[:callback]
       return  
       
@@ -262,7 +186,7 @@ class User1Controller < ApplicationController
     listObj = listSet.to_a[0]   
     
     
-    imageSet = getImageSet(params[:imgId])
+    imageSet = @db['images'].find({'id'=>params[:imgId].to_i})
     if imageSet.count > 0
        imageObj = imageSet.to_a[0]
        # in case we have removed the cover image
@@ -275,9 +199,9 @@ class User1Controller < ApplicationController
          end
          
          if leftImages.length > 0
-           covImageSet = getImageSet(leftImages[0])
+           covImageSet = @db['images'].find({'id'=>leftImages[0].to_i})
            if covImageSet.count > 0
-             @@userDb['privLists'].update({'id'=>listObj['id'].to_i},{'$set'=>{'coverImage'=>covImageSet.to_a[0]['thumbnail']}})
+             @db['viewlists'].update({'id'=>listObj['id'].to_i},{'$set'=>{'coverImage'=>covImageSet.to_a[0]['thumbnail']}})
            end
          end
        end
@@ -285,9 +209,9 @@ class User1Controller < ApplicationController
     end
     
     
-    @@userDb['privLists'].update({'id'=>listObj['id'].to_i},{'$pull'=>{'images'=>params[:imgId].to_i}})
+    @db['viewlists'].update({'id'=>listObj['id'].to_i},{'$pull'=>{'images'=>params[:imgId].to_i}})
     result = {"Status"=>"success", "Message"=>"The image has been removed from the viewlist!"}
-
+    @client.close
     render :json=>result, :callback => params[:callback]
     
  end    
@@ -315,47 +239,33 @@ class User1Controller < ApplicationController
     
     
     
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
-    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-
+         @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
     
     userObj = userSet.to_a[0]
-    if userObj['saved_lists'] == nil
-      userObj['saved_lists'] = []
-    end
-    
-    if userObj['private_lists'] == nil
-      userObj['private_lists'] = []
-    end
-    
-    
-    if userObj['saved_lists'].include? params[:listId].to_i
-      @@userDb['users'].update({'email'=>userObj['email']},{'$pull'=>{'saved_lists'=>params[:listId].to_i}})
-      result = {"Status"=>"successs", "Message"=>"the user unsuscribed the viewlist!"}
-
-      render :json=>result, :callback => params[:callback]
-      return
-    end
-    
     
     if not userObj['private_lists'].include? params[:listId].to_i
       result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
-
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     
-    @@userDb['users'].update({'email'=>userObj['email']},{'$pull'=>{'private_lists'=>params[:listId].to_i}})
-    @@userDb['privLists'].remove({'id'=>params[:listId].to_i})
+    @db['users'].update({'email'=>userObj['email']},{'$pull'=>{'private_lists'=>params[:listId].to_i}})
+    @db['viewlists'].remove({'id'=>params[:listId].to_i})
     
     result = {"Status"=>"success", "Message"=>"The viewlist has been removed!"}
-
+     @client.close
     render :json=>result, :callback => params[:callback]
  end
  
@@ -381,13 +291,15 @@ class User1Controller < ApplicationController
     
     
     
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
     
-    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-
+         @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -409,9 +321,9 @@ class User1Controller < ApplicationController
     
     keyMap = {}
     
-    # personal images are not searchable 
+
     keywords.each do |keyword|
-      imageSet = @@contentDb['images'].find({'topics'=>keyword},{:fields=>['id']}).limit(200)
+      imageSet = @db['images'].find({'topics'=>keyword},{:fields=>['id']}).limit(200)
       imageSet.to_a.each do |imageObj|
         if keyMap[imageObj['id'].to_i] == nil
            keyMap[imageObj['id'].to_i] = 1
@@ -429,40 +341,35 @@ class User1Controller < ApplicationController
     
     if listObj['images'].length > 0
       coverId = listObj['images'][0]
-      imageSet = @@contentDb['images'].find({'id'=>coverId},{:fields=>['thumbnail']})
+      imageSet = @db['images'].find({'id'=>coverId},{:fields=>['thumbnail']})
       if imageSet.count > 0
          listObj['coverImage'] = imageSet.to_a[0]['thumbnail']
       end
     end
     
     if userObj['search_list']!=nil
-      @@userDb['users'].update({'email'=>userObj['email']},{'$pull'=>{'private_lists'=>userObj['search_list'].to_i}})
-      @@userDb['privLists'].remove({'id'=>userObj['search_list'].to_i})
+      @db['users'].update({'email'=>userObj['email']},{'$pull'=>{'private_lists'=>userObj['search_list'].to_i}})
+      @db['viewlists'].remove({'id'=>userObj['search_list'].to_i})
     end
           
-    currIndex = getIndex('privList')
-    if currIndex == -1
-      result =  {"Status"=>"failure","Message"=>"ID server not available!"}
-
-      render :json=>result, :callback => params[:callback] 
-    end
-        
+    currIndex = @db['index'].find().to_a[0]['priv_viewlist'].to_i+1
     listObj['name'] = 'Last Search'
     listObj['id'] = currIndex
     listObj['datetime_created']=Time.now.utc.to_s
     listObj['private_user']=userObj['email']
-    @@userDb['privLists'].insert(listObj)
+    @db['viewlists'].insert(listObj)
     if userObj['private_lists'] == nil
-       @@userDb['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[currIndex]}})
+       @db['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[currIndex]}})
     else
-       @@userDb['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>currIndex}})
-    end  
-    @@userDb['users'].update({'email'=>userObj['email']},{'$set'=>{'search_list'=>currIndex}})
+       @db['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>currIndex}})
+    end 
+    @db['index'].update({},{'$set'=>{'priv_viewlist'=>currIndex}}) 
+    @db['users'].update({'email'=>userObj['email']},{'$set'=>{'search_list'=>currIndex}})
     userObj['search_list'] = currIndex
       
         
     result = {"Status"=>"success", "Message"=>"A viewlist has been created based on your search", "listId"=>userObj['search_list'].to_i, "images"=>listObj['images']}
-
+     @client.close
     render :json=>result, :callback => params[:callback]     
     
  
@@ -490,13 +397,15 @@ class User1Controller < ApplicationController
     
     
     
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
     
-    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-
+         @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -504,10 +413,10 @@ class User1Controller < ApplicationController
     userObj = userSet.to_a[0]
     
     
-    fromListSet = getListSet(params[:listId])
+    fromListSet = @db['viewlists'].find({'id'=>params[:listId].to_i})
     if fromListSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, list doesn't exist!"}
-
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -515,34 +424,43 @@ class User1Controller < ApplicationController
     fromListObj = fromListSet.to_a[0]
     if fromListObj['private_user'] == nil
       result = {"Status"=>"failure", "Message"=>"error, this list is not a private list, you don't need to save it!"}
-
+       @client.close
       render :json=>result, :callback => params[:callback]
       return      
     end
     
-
-    fromUserSet = @@userDb['users'].find({'email'=>fromListObj['private_user']})
+    newname = fromListObj['name']
+    fromUserSet = @db['users'].find({'email'=>fromListObj['private_user']})
     if fromUserSet.count > 0
       fromUserObj = fromUserSet.to_a[0]
       if fromUserObj['email']==userObj['email']
         result = {"Status"=>"failure", "Message"=>"error, this is your own viewlist, you don't have to save it again!"}
-
+         @client.close
         render :json=>result, :callback => params[:callback]
         return   
       end
       
+      
+      newname = fromUserObj['name']+': '+newname
     end
     
     
-
-    if userObj['saved_lists'] == nil
-      @@userDb['users'].update({'email'=>userObj['email']},{'$set'=>{'saved_lists'=>[fromListObj['id']]}})
-    else
-      @@userDb['users'].update({'email'=>userObj['email']},{'$push'=>{'saved_lists'=>fromListObj['id']}})
-    end 
+    currIndex = @db['index'].find().to_a[0]['priv_viewlist'].to_i+1
     
-    result = {"Status"=>"success","Message"=>"Viewlist is saved", "listId"=>fromListObj['id']}
-
+    
+    listObj = {'name'=>newname, 'datetime_created'=>Time.now.utc.to_s,
+      'id'=>currIndex,'images'=>fromListObj['images'], 'private_user'=>userObj['email'], 'coverImage'=>fromListObj['coverImage']}
+      
+    @db['viewlists'].insert(listObj)
+    if userObj['private_lists'] == nil
+      @db['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[currIndex]}})
+    else
+      @db['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>currIndex}})
+    end 
+    @db['index'].update({},{'$set'=>{'priv_viewlist'=>currIndex}})
+    
+    result = {"Status"=>"success","Message"=>"Viewlist "+newname+" is created!", "listId"=>currIndex}
+     @client.close
     render :json=>result, :callback => params[:callback] 
  end 
  
@@ -571,37 +489,35 @@ class User1Controller < ApplicationController
     
     
     
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
     
-    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-
+         @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
     
     userObj = userSet.to_a[0]
-    currIndex = getIndex('privList')
-    if currIndex == -1
-      result =  {"Status"=>"failure","Message"=>"ID server not available!"}
-
-      render :json=>result, :callback => params[:callback] 
-    end
-        
+    currIndex = @db['index'].find().to_a[0]['priv_viewlist'].to_i+1
+    
     listObj = {'name'=>params[:listName], 'datetime_created'=>Time.now.utc.to_s,
       'id'=>currIndex,'images'=>[], 'private_user'=>userObj['email']}
       
-    @@userDb['privLists'].insert(listObj)
+    @db['viewlists'].insert(listObj)
     if userObj['private_lists'] == nil
-      @@userDb['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[currIndex]}})
+      @db['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[currIndex]}})
     else
-      @@userDb['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>currIndex}})
+      @db['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>currIndex}})
     end 
+    @db['index'].update({},{'$set'=>{'priv_viewlist'=>currIndex}})
     
     result = {"Status"=>"success","Message"=>"Viewlist "+params[:listName]+" is created!", "listId"=>currIndex}
-
+     @client.close
     render :json=>result, :callback => params[:callback] 
  end
  
@@ -633,13 +549,15 @@ class User1Controller < ApplicationController
     
     
     
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
     
-    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-
+         @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -647,14 +565,14 @@ class User1Controller < ApplicationController
     userObj = userSet.to_a[0]
     if not userObj['private_lists'].include? params[:listId].to_i
       result = {"Status"=>"failure", "Message"=>"error, this viewlist doesn't belong to the user!"}
-
+       @client.close
       render :json=>result, :callback => params[:callback]
       return
     end
     
-    @@userDb['privLists'].update({'id'=>params[:listId].to_i},{'$set'=>{'name'=>params[:newname]}})
+    @db['viewlists'].update({'id'=>params[:listId].to_i},{'$set'=>{'name'=>params[:newname]}})
     result = {"Status"=>"success", "Message"=>"The viewlist has been renamed!"}
-
+     @client.close
     render :json=>result, :callback => params[:callback]
   end
  
@@ -673,41 +591,31 @@ class User1Controller < ApplicationController
     end
     
     
-    editable = false
     
-    if params[:editable]==1 
-      editable = true
-    end   
-
+    @client = MongoClient.new(@@server,@@port)
+    @db = @client[@@db_name]
+    @db.authenticate(@@username,@@password)
     
     
-    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-
+         @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
     
     userObj = userSet.to_a[0]
     if userObj['private_lists'] == nil
-      userObj['private_lists'] = []
-    end
+      result = {"Status"=>"success", "viewlists"=>[]}
+       @client.close
+      render :json=>result, :callback => params[:callback]
+      return
+    end    
     
-    if userObj['saved_lists'] == nil
-      userObj['saved_lists'] = []
-    end
-    
-    if editable
-      compLists = userObj['private_lists']
-    else
-      compLists = userObj['private_lists']+userObj['saved_lists']
-    end
-    
-        
     viewlists = []
-    compLists.each do |viewlistId|
-      viewlistSet = @@userDb['privLists'].find({'id'=>viewlistId.to_i})
+    userObj['private_lists'].each do |viewlistId|
+      viewlistSet = @db['viewlists'].find({'id'=>viewlistId.to_i})
       if viewlistSet.count >0
         viewlists.push(viewlistSet.to_a[0])
       end
@@ -715,7 +623,7 @@ class User1Controller < ApplicationController
     
     quickSort(viewlists,0,viewlists.length-1)
     result = {"Status"=>"success", "viewlists"=>viewlists}
-
+     @client.close
     render :json=>result, :callback => params[:callback]  
        
  end  
@@ -734,18 +642,7 @@ def quickSort(objs,startIndex,endIndex)
   fb = startIndex
   
   for i in (startIndex..endIndex-1)
-    comp1 = objs[i]["name"].downcase
-    comp2 = objs[endIndex]["name"].downcase
-    
-    if comp1 == "last search"
-      comp1 = " "
-    end
-    
-    if comp2 == "last search"
-      comp2 = " "
-    end
-    
-    if comp1 < comp2
+    if objs[i]["name"] < objs[endIndex]["name"]
       temp = objs[fb]
       objs[fb]=objs[i]
       objs[i]=temp

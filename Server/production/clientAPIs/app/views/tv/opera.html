@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+  <style>
+   *{
+   	overflow:hidden;
+   }
+  
+  
+	.imageTitle{
+		font-family:"Times New Roman",Times,serif;
+		font-style:oblique;
+		font-size:20px;
+		text-align:center;
+	}
+	
+	
+
+	div#registration {
+		background-color: white;
+		color:black;
+		position: absolute;
+		top:0;
+		left:0;
+		height: 100%;
+        width: 100%;
+        display:none;
+       
+	}
+	
+    div#screen {
+        background-size: contain;
+        position: absolute;
+        top:0;
+		left:0;
+        background-position: center;
+        background-color: black;
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 100%;
+
+    }
+	
+	#message{
+		color: red;
+		position: absolute;
+		top:30%;
+		width:70%;
+		left:15%;
+		z-index:900;
+		text-align:center;
+		font-size:50px;
+		display:none;
+	}
+
+    #caption{      
+    	width:50%;
+    	height:12%;
+        position:absolute;
+        left:24%;
+        bottom:10px;
+    	text-align:center;
+    	font-size:20px;
+    	background-color:gray;
+    	color:white;
+    	opacity:0.8;
+        border-radius:10px;
+        padding:1%;
+        display:none;
+        z-index:900;
+    }
+	
+	#logo{
+		position:absolute;
+		width:8%;
+		bottom:10px;
+		right:10px;
+		z-index:900;
+		display:none;
+	}
+	
+	
+	#regCode {
+		color: blue;
+	    font-size: 24px;
+	    font-weight: bold;
+    }
+</style>
+  
+  
+  
+ <script type="text/javascript">
+  
+  $(document).ready(function(){
+  	
+
+  	 function displayImage(result) {
+  	 	 $("#message").hide();
+ 
+         if(currImageUrl != result["imageURL"]){
+           		$('#logo').hide();       	
+            	$('div#screen').css('background-image', 'url('+result["imageURL"]+')');
+            	currImageUrl = result["imageURL"];
+            		   	   
+            		   	   
+                //wait the image to load then display catption
+                $('<img/>').attr('src', result["imageURL"]).load(function() {
+                	 //console.log(this.height);
+                	 
+                	 if (this.width/this.height >= window.innerWidth/window.innerHeight){
+                	 	var scaledWidth = window.innerWidth;
+                	 	var scaledHeight = window.innerWidth*this.height/this.width;
+                	 } else{
+                	 	var scaledHeight = window.innerHeight;
+                	 	var scaledWidth = window.innerHeight*this.width/this.height;
+                	 }
+                	 
+                	 leftOffset = (window.innerWidth - scaledWidth)/2;
+                	 topOffset = (window.innerHeight - scaledHeight)/2;
+                	 //console.log("scaledWidth: "+scaledWidth);
+                	 //console.log("leftOffset: "+leftOffset);
+                	 
+                     $(this).remove();
+                     if(currImageUrl!=$(this).attr('src')){
+                          //image is already changed!
+                          return;
+                     }
+
+        		     if(result["title"].length>200){
+        		     	result["title"] = result["title"].substring(0,137)+"...";
+        		     }
+        		           
+        		     var caption = result["title"]+"<br>"+result["caption"];
+
+        		       
+        		     if(capShow!=null){
+        		     	clearTimeout(capShow);
+        		     }  
+        		     
+        		     $('#caption').html(caption);
+        		     $('#caption').show();
+        		     
+        		/*     
+        	   if(result['stretch']=='true'){
+        		   $('div#screen').css('background-size','cover');
+        		   //$('#logo').css('bottom', '10px');
+        		   //$('#logo').css('right', '10px');
+        	   }
+        	   else{
+        		   $('div#screen').css('background-size','contain');
+        		   //$('#logo').css('bottom', Math.round(topOffset+10)+'px');
+        		   //$('#logo').css('right', Math.round(leftOffset+10)+'px');
+        	   }
+        		*/     
+        		     
+        		     $('#logo').show();
+        		     //caption stay 2 seconds
+        		     setTimeout(function(){
+        		       	  $('#caption').hide();
+        		     },2000);
+        		               
+        		               
+        		               
+        		               
+               });
+               
+               
+
+            		   
+        }
+        
+               if(result['stretch']=='true'){
+        		   $('div#screen').css('background-size','cover');
+        		   //$('#logo').css('bottom', '10px');
+        		   //$('#logo').css('right', '10px');
+        	   }
+        	   else{
+        		   $('div#screen').css('background-size','contain');
+        		   //$('#logo').css('bottom', Math.round(topOffset+10)+'px');
+        		   //$('#logo').css('right', Math.round(leftOffset+10)+'px');
+        	   }
+        	   $('div#screen').show();
+
+  	 }
+  	
+  	
+    
+     function updateImage(imageRequest){
+  	    //console.log(imageRequest);
+  	    
+  	    $("#registration").hide();
+  	    $("#screen").show();
+        $.ajax({
+            url: imageRequest,
+            type: 'GET',
+            dataType:'jsonp',
+            timeout: 10000,
+            tryTimes: 20,
+             
+            
+            
+            error: function(xhr, status, error) {
+            	if(inReg){
+            		return;
+            	}
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		
+            		this.tryTimes --;
+            		setTimeout(function(){
+            			$.ajax(this);
+            		},1000);
+                    
+                    
+            	}
+            	
+            	else{
+            		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+            		$("#message").show();
+            	}
+
+            },
+            
+            success: function(result) {     
+            	if(inReg){
+            		return;
+            	}
+            	       	
+            	if(result["Status"]=="Failure"){
+            		inReg = true;
+            		if(polling!=undefined){
+            			clearTimeout(polling);
+            		}
+            		
+            		$('div#screen').css('background-image','none');
+            		$('div#screen').hide();
+            		$('#logo').hide();
+            		//$("#message").html("Device is not linked correctly!");
+            		//$("#message").show();
+            		
+            		getRegCode();
+                    checkRegStatus();
+            		
+            	}
+            	
+            	else if(result["imageURL"]!=null){
+ 
+            		   displayImage(result);       		       
+        		       
+        		       if(result["nextPull"] != null){
+        		       	 pullInterval = result["nextPull"];
+        		       	 
+        		       }
+        		       //console.log("nextPull: "+pullInterval);
+      				   polling = setTimeout(
+      				   	function(){
+      				   		updateImage(imageRequest);},pullInterval);
+        		       
+
+            	}
+            	               
+               
+           }
+        });   
+      }
+  
+       
+   
+   
+       
+       
+       
+       function getRegCode(){
+       	  var requestLink = regBase+"/getRegCode?deviceId="+uid+"&deviceMaker="+maker;
+       	  $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 
+       	  	 
+       	  	 error: function(xhr, status, error) {
+       	  	 	if(this.tryTimes > 0){
+       	  	 		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+       	  	 		this.tryTimes --;
+       	  	 		setTimeout(function(){
+            			$.ajax(this);
+            		},1000);
+       	  	 	}
+       	  	 	
+       	  	 	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}
+       	  	 	
+       	  	 },
+       	  	 
+       	  	 
+       	  	 success: function(result){
+       	  	 	if(result['Status']=='success'){
+       	  	 		regCode = result['RegCode'];
+       	  	 		$("#registration").show();
+       	  	 		$("#message").hide();
+       	  	 		//$("#message").html("Your regcode is "+result['RegCode']);
+       	  	 		//$("#message").show();
+       	  	 		$("#screen").hide();
+       	  	 		$("#logo").hide();
+       	  	 		$("#registration").show();
+       	  	 		$("#regCode").html(result['RegCode']);
+       	  	 		// dealing with expire
+       	  	 		var expireDur = 900;
+       	  	 		if (result['RetryDuration'] != undefined){
+       	  	 			expireDur = result['RetryDuration'];
+       	  	 		}
+       	  	 		
+       	  	 		regCodePolling = setTimeout(function(){
+       	  	 			$('#registration').hide();
+       	  	 			$("#message").html("Your regcode is expired, getting a new one...");
+       	  	 			$("#message").show();
+       	  	 			getRegCode();
+       	  	 		}, expireDur*1000);
+       	  	 		
+       	  	 	}
+       	  	 	
+       	  	 	else{
+       	  	 		// in case there are semantic errors at the server side, we need to retry
+       	  	 		$('#registration').hide();
+       	  	 		$("#message").html("Failed to get your regcode, will retry soon...");
+       	  	        $("#message").show();
+       	  	 		var retryInterval = 30;
+       	  	 		if (result['RetryInterval'] != undefined){
+       	  	 			retryInterval = result['RetryInterval'];
+       	  	 		}
+       	  	 		
+       	  	 		regCodePolling = setTimeout(function(){
+       	  	 			$("#message").html("Geting regcode...");
+       	  	 			$("#message").show();
+       	  	 			
+       	  	 			getRegCode();
+       	  	 		}, retryInterval*1000);
+       	  	 		
+       	  	 		
+       	  	 	}
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  	 
+       	  });
+       	  
+       }
+       
+       function checkRegStatus(){
+       	   var requestLink = regBase+"/getRegStatus?deviceId="+uid+"&deviceMaker="+maker+"&regCode="+regCode;
+       	   console.log("checking regStatus...");
+       	   $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		this.tryTimes --;
+            		setTimeout(function(){
+            			$.ajax(this);
+            		},1000);
+                    
+            	}
+        	  	
+        	  	
+        	  	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}           	
+            	
+       	  	 },
+       	  	 
+       	  	 success: function(result){
+       	  	 	if(result['Status']=='success'){
+       	  	 		// registration finished!
+       	  	 		inReg = false;
+       	  	 		$("#message").hide();
+       	  	 		
+       	  	 		if(regCodePolling!= null){
+       	  	 			clearTimeout(regCodePolling);
+       	  	 		}
+       	  	 		
+       	  	 		updateImage(imageRequest);
+       	  	 	}
+       	  	 	
+       	  	 	
+       	  	 	else{
+       	  	 		setTimeout(function(){
+       	  	 			checkRegStatus();
+       	  	 		},500);
+       	  	 	}
+       	  	 	
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  });
+       }
+       
+
+
+
+
+       window.nextImage = function(next){
+       	   $('div#screen').css('background-image','none');
+       	   var requestLink = nextImageBase+"deviceId="+uid+"&deviceMaker="+maker+"&next="+next;
+       	   console.log(requestLink);
+       	   $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		this.tryTimes --;
+            		setTimeout(function(){
+            			$.ajax(this);
+            		},1000);
+                    
+            	}
+        	  	
+        	  	
+        	  	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}           	
+            	
+       	  	 },
+       	  	 
+       	  	 success: function(result){
+            	if(result["Status"]=="Failure"){
+            		
+            		if(polling!=undefined){
+            			clearTimeout(polling);
+            		}
+            		
+            		$('div#screen').css('background-image','none');
+            		//$("#message").html("Device is not linked correctly!");
+            		//$("#message").show();
+            		
+            		getRegCode();
+                    checkRegStatus();
+            		
+            	}
+            	
+            	else if(result["imageURL"]!=null){
+ 
+            		   displayImage(result);       		       
+        		       
+
+            	}
+       	  	 	
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  });
+       }       
+              
+       var pullInterval = 500;
+  	   var url = "";
+  	   var imageBase = "http://sleepy-scrubland-3038.herokuapp.com/client/v1.1/currentImage.json?";
+  	   var nextImageBase = "http://sleepy-scrubland-3038.herokuapp.com/client/v1.1/nextImage.json?";
+  	   var regBase = "http://evening-garden-3648.herokuapp.com/registration/v1.0/";
+  	   
+  	   
+       var requestURL = window.document.URL.toString(); 
+       var uid = requestURL.split('uid=')[1];
+       var regCode = null;
+       
+       //var maker = 'Opera';
+       var maker = 'Opera';
+       var currImageUrl = null;
+       
+       if(uid==undefined||uid.trim().length==0){
+    	 console.log("uid not provided!");
+    	 $("#message").html("Error, the device id is not provided!");
+    	 $("#message").show();
+    	 return;
+       }  
+       
+       
+       var polling = null;
+       var regCodePolling = null;
+       var capShow = null;
+       var topOffset = 0;
+       var leftOffset = 0;
+       
+       var inReg = false;
+       
+       var imageRequest = imageBase+"deviceId="+uid+"&deviceMaker="+maker;
+       
+       
+       //add key event listener 
+       /*if (window.KeyboardEvent){
+             window.addEventListener('keydown', handler, useCapture);
+       } else {
+             window.addEventListener('keypress', handler, useCapture);
+       } 
+       
+       */
+      
+      window.onkeydown = handler;
+      
+      function handler(event){
+      	   //console.log("KeyCode: " + event.keyCode);
+      	   //$("#message").html("KeyCode: "+event.keyCode);
+           //$("#message").show();
+           if(event.keyCode == 405){
+           	       if(inReg){
+           	       	  return;
+           	       }
+           	
+           	       inReg = true;
+           	       if(polling!=undefined){
+            			clearTimeout(polling);
+            		}
+            		
+            		$('div#screen').css('background-image','none');
+            		$('div#screen').hide();
+            		$('#logo').hide();            		
+            		getRegCode();
+                    checkRegStatus();
+           }
+           
+           else if(event.keyCode == 417 || event.keyCode == 425 || event.keyCode == 39) {
+           	   if(!inReg)
+           	          nextImage(1);
+           	   else{
+           	   	     window.scrollTo(0,0);
+           	   }
+           }
+           
+           else if(event.keyCode == 412 || event.keyCode == 424 || event.keyCode == 37) {
+           	   if(!inReg)
+           	          nextImage(0);
+           	   else{
+           	   	     window.scrollTo(0,0);
+           	   }
+           }
+           
+           else if(event.keyCode == 457 && !inReg){
+           	  $('#caption').show();
+        	  setTimeout(function(){
+        		  $('#caption').hide();
+              },5000);           	  
+           	
+           }
+       }
+      
+       console.log(imageRequest);
+       updateImage(imageRequest);
+       
+       
+      
+      
+
+  });
+    
+    
+    
+       
+    
+    
+  </script>
+  
+  
+  
+  
+  <title>ArtKick</title>
+  <body>
+        <img id="logo" src="/images/logo.png"> 
+        
+        
+        <div id="message">  </div>
+       
+              
+        
+        <div id = "caption"> </div>
+	
+		<!--  This is where the images will display (as background of div)-->
+		<div id = "screen">
+		</div>
+		
+		<!--  registration -- displays only if device not registered -->
+		<div id="registration">
+			<table style="width: 100%; height: 100%;">
+				<tr align="center">
+					<td>
+						<img src="/images/ArtkickLogo.png"></img>
+					</td>
+				</tr>
+				<tr align="center" height="50">
+					<td>
+						<label id="registrationReason">Please connect your Sony Smart TV to your account</label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<label>Artkick connects this TV to an IOS or Android phone or tablet.</label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<label>Install Artkick from the the App Store or Google Play.</label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>				
+						<label>Goto Settings/Connect New TV/Connect New SmartTV</label>		
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<label>and enter this code to activate:</label>
+					</td>
+				</tr>
+				<tr align="center" height="50">
+					<td>
+						<label id="regCode"></label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<label id="autoUpdateText">This screen will automatically update as soon as your activation completes</label>
+						<label id="timedOutText" style="display: none;color: red;">Request timed out. Unable to link to Artkick within time limit.</label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<button id="btnRetry" onclick="register();" type="button" style="display:none;" class="ui-button ui-button-text-only ui-widget ui-corner-all">Retry</button>
+					</td>
+				</tr>
+				<tr align="center" height="100">
+					<td>
+						
+					</td>
+				</tr>
+			</table>
+		</div>
+   
+  </body>
+</html>

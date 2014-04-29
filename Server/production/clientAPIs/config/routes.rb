@@ -56,5 +56,7 @@ Syncservice::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   match 'client/v1.0/currentImage' => 'client1#currentImage'
   match 'client/v1.0/nextImage' => 'client1#nextImage'
+  match 'client/v1.1/currentImage' => 'client2#currentImage'
+  match 'client/v1.1/nextImage' => 'client2#nextImage'
   match ':controller(/:action(/:id))(.:format)'
 end

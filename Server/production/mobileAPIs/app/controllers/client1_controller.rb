@@ -5,42 +5,139 @@ class Client1Controller < ApplicationController
   require 'net/smtp'
   require 'curb'
   require 'securerandom'
+  require 'net/http'
   
-  #@@server = 'ds031948.mongolab.com'
-  #@@port = 31948
-  #@@db_name = 'zwamy'
-  #@@username = 'leonzwamy'
-  #@@password = 'zw12artistic'
   
-  #@@server = 'ds047478.mongolab.com'
-  #@@port = 47478
-  #@@db_name = 'heroku_app16778260'
-  #@@username = 'luckyleon'
-  #@@password = 'artkick123rocks'
+  
+  @@userDbId = '63'
+  @@contentDbId = '53'
+  @@privateRange = 10000000000
+  @@dbMeta = {}
 
-  #@@server = 'ds051518-a0.mongolab.com'
-  #@@port = 51518
-  #@@db_name = 'heroku_app16777800'
-  #@@username = 'luckyleon'
-  #@@password = 'artkick123rocks'
+  @@dbMeta['63'] = {:server => 'ds063698-a0.mongolab.com', :port => 63698, :db_name => 'heroku_app18544527', 
+    :username => 'artCoder', :password => 'zwamygogo'}  
+
   
-  #singleNode2
-  @@server = 'ds053468-a0.mongolab.com'
-  @@port = 53468
-  @@db_name = 'heroku_app16778260'
-  @@username = 'luckyleon'
-  @@password = 'artkick123rocks'   
+  @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
+    :password => 'zw12artistic'}
   
+  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
+    :username => 'artCoder', :password => 'zwamygogo' }
+  
+  @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
+    :username => 'artCoder', :password => 'zwamygogo'}
+
   @@gmailAccount = 'leonzfarm'  
   @@gmailPassword = 'aljzcsjusqohrujk' 
   
   @@api_key = '7c028a32e596566b2632e6f672df55af-us7' 
+  
+  
+  
+    userDbInfo = @@dbMeta[@@userDbId]
+    @@userClient = MongoClient.new(userDbInfo[:server],userDbInfo[:port])
+    @@userDb = @@userClient[userDbInfo[:db_name]]
+    @@userDb.authenticate(userDbInfo[:username],userDbInfo[:password])
+    
+    contentDbInfo = @@dbMeta[@@contentDbId]
+    @@contentClient = MongoClient.new(contentDbInfo[:server],contentDbInfo[:port])
+    @@contentDb = @@contentClient[contentDbInfo[:db_name]]
+    @@contentDb.authenticate(contentDbInfo[:username],contentDbInfo[:password])
 
   def utcMillis
     return (Time.new.to_f*1000).to_i
   end
     
-
+  def getListSet(listId)
+     if @@contentDb == nil or @@userDb == nil
+        connectDb()
+     end
+    
+     if (not listId.is_a? Numeric) and (listId.include? 'top')
+        return @@userDb['privLists'].find({'id'=>listId})
+     end
+     
+     if listId.to_i >= @@privateRange
+        return @@userDb['privLists'].find({'id'=>listId.to_i})
+     end
+     
+     return @@contentDb['viewlists'].find({'id'=>listId.to_i})   
+  end
+  
+  
+  def getImageSet2(imageId,fields)
+    
+     if @@contentDb == nil or @@userDb == nil
+        connectDb()
+     end
+     if imageId.to_i >= @@privateRange
+        return @@userDb['privImages'].find({'id'=>imageId.to_i},{:fields=>fields})
+     end
+     
+     return @@contentDb['images'].find({'id'=>imageId.to_i},{:fields=>fields})        
+         
+  end  
+  
+  
+  def getImageSet(imageId)
+    
+     if @@contentDb == nil or @@userDb == nil
+        connectDb()
+     end
+     if imageId.to_i >= @@privateRange
+        return @@userDb['privImages'].find({'id'=>imageId.to_i})
+     end
+     
+     return @@contentDb['images'].find({'id'=>imageId.to_i})        
+         
+  end
+  
+  def getIndex(name)
+      names = ['image','privImage','viewlist','privList','user']
+      if not names.include? name
+        return -1
+      end
+      
+      baseUrl = 'http://pacific-oasis-9960.herokuapp.com/id/'
+      url = baseUrl + name
+      uri = URI(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Get.new(uri.request_uri)
+      res = http.request(request)
+      dic = JSON.parse(res.body)
+      if dic['Status'] != 'success'
+        return -1
+      end
+      
+      return dic['id'].to_i
+  end   
+  
+  def connectDb
+    userDbInfo = @@dbMeta[@@userDbId]
+    @@userClient = MongoClient.new(userDbInfo[:server],userDbInfo[:port])
+    @@userDb = @@userClient[userDbInfo[:db_name]]
+    @@userDb.authenticate(userDbInfo[:username],userDbInfo[:password])
+    
+    contentDbInfo = @@dbMeta[@@contentDbId]
+    @@contentClient = MongoClient.new(contentDbInfo[:server],contentDbInfo[:port])
+    @@contentDb = @@contentClient[contentDbInfo[:db_name]]
+    @@contentDb.authenticate(contentDbInfo[:username],contentDbInfo[:password])
+    
+  end
+  
+  
+  def closeDb
+    if @@userClient != nil
+      @@userClient.close
+    end
+    
+    if @@contentClient != nil
+      @@contentClient.close
+    end
+  end
+  
+  
+  
   def login
     if(params[:email]==nil or params[:email].strip=='')
         result = {"Status"=>"failure", "Message"=>"email is missing!"}
@@ -55,16 +152,18 @@ class Client1Controller < ApplicationController
         return
     end
     
-    
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+    if(params[:email]=="guest@guest.guest")
+      result = {"Status"=>"success", "Message"=>"user found!", "userObj"=>{'name'=>'guest'}, "token"=>'guest'}
+      render :json=>result, :callback => params[:callback]
+      return
+    end    
 
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase},{:fields=>['name','salt','pass_digest','tokens']})
+
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase},{:fields=>['name','salt','pass_digest','tokens','id','isAdmin']})
     
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"no user mathes!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -72,7 +171,7 @@ class Client1Controller < ApplicationController
     user = userSet.to_a[0]
     if user["salt"]==nil or user["pass_digest"]==nil
       result = {"Status"=>"failure", "Message"=>"password is not set correctly, please reset your password via email!"}
-      @client.close
+
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -80,25 +179,29 @@ class Client1Controller < ApplicationController
     passDigest = Digest::SHA1.hexdigest(params[:password]+user["salt"])
     if passDigest != user["pass_digest"]
         result = {"Status"=>"failure", "Message"=>"wrong password!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return  
     end    
     
     sessionToken = SecureRandom.hex
     if user['tokens'] == nil
-      @db['users'].update({'email'=>params[:email].strip.downcase},{'$set'=>{'tokens'=>[sessionToken]}})
+      @@userDb['users'].update({'email'=>params[:email].strip.downcase},{'$set'=>{'tokens'=>[sessionToken]}})
     else
       if user['tokens'].length == 5
         user['tokens'].shift 
       end
       
       user['tokens'].push(sessionToken)
-      @db['users'].update({'email'=>params[:email].strip.downcase},{'$set'=>{'tokens'=>user['tokens']}})
+      @@userDb['users'].update({'email'=>params[:email].strip.downcase},{'$set'=>{'tokens'=>user['tokens']}})
+    end
+    
+    if user['isAdmin'] == nil
+      user['isAdmin'] = false
     end
         
-    result = {"Status"=>"success", "Message"=>"user found!", "userObj"=>{'name'=>user['name']}, "token"=>sessionToken}
-    @client.close
+    result = {"Status"=>"success", "Message"=>"user found!", "userObj"=>{'name'=>user['name'], 'id'=>user['id'], 'isAdmin'=>user['isAdmin']}, "token"=>sessionToken}
+
     render :json=>result, :callback => params[:callback]
   end
   
@@ -130,15 +233,12 @@ class Client1Controller < ApplicationController
     end
     
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
 
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase})
     
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"no user mathes!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -147,7 +247,7 @@ class Client1Controller < ApplicationController
     
     if user["salt"]==nil or user["pass_digest"]==nil
       result = {"Status"=>"failure", "Message"=>"Password has never been set for this account, please get your temporal password via email!"}
-      @client.close
+
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -155,7 +255,7 @@ class Client1Controller < ApplicationController
     oldpassDigest = Digest::SHA1.hexdigest(params[:oldpassword]+user["salt"])
     if oldpassDigest != user["pass_digest"]
         result = {"Status"=>"failure", "Message"=>"wrong old password!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return  
     end    
@@ -164,9 +264,9 @@ class Client1Controller < ApplicationController
     newsalt = rand(10000).to_s
     newpassDigest = Digest::SHA1.hexdigest(params[:newpassword]+newsalt)
     
-    @db["users"].update({"email"=>(params[:email].strip).downcase},{"$set"=>{"salt"=>newsalt, "pass_digest"=>newpassDigest}})
+    @@userDb["users"].update({"email"=>(params[:email].strip).downcase},{"$set"=>{"salt"=>newsalt, "pass_digest"=>newpassDigest}})
     result = {"Status"=>"success", "Message"=>"Password is reset!"}
-    @client.close
+
     render :json=>result, :callback => params[:callback]
   end
   
@@ -178,15 +278,13 @@ class Client1Controller < ApplicationController
         return
     end
               
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
     
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -200,10 +298,10 @@ class Client1Controller < ApplicationController
     newsalt = rand(10000).to_s
     newpassDigest = Digest::SHA1.hexdigest(randomPassword+newsalt)
     
-    @db["users"].update({"email"=>(params[:email].strip).downcase},{"$set"=>{"salt"=>newsalt, "pass_digest" => newpassDigest}})
+    @@userDb["users"].update({"email"=>(params[:email].strip).downcase},{"$set"=>{"salt"=>newsalt, "pass_digest" => newpassDigest}})
     
     result = {"Status"=>"success", "Message"=>"Your temporary password has been sent to your email, please reset it!"}
-    @client.close
+
     render :json=>result, :callback => params[:callback]
     
     
@@ -242,13 +340,11 @@ class Client1Controller < ApplicationController
         return
     end
           
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
-    if @db['users'].find({"email"=>(params[:email].strip).downcase}).count > 0
+    if @@userDb['users'].find({"email"=>(params[:email].strip).downcase}).count > 0
         result = {"Status"=>"failure", "Message"=>"This email is taken, please use a different email!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -260,8 +356,15 @@ class Client1Controller < ApplicationController
     
                        
     userObj = {"name"=>params[:name].strip,"email"=>(params[:email].strip).downcase, "tokens"=>[sessionToken]}
-    currIndex = @db['index'].find().to_a[0]['user']
-    userObj["id"] = currIndex+1
+    currIndex = getIndex('user')
+    if currIndex == -1
+      result =  {"Status"=>"failure","Message"=>"ID server not available!"}
+
+      render :json=>result, :callback => params[:callback] 
+    end
+    
+        
+    userObj["id"] = currIndex
     
     userObj["salt"]=salt
     userObj["pass_digest"]=passDigest
@@ -274,13 +377,13 @@ class Client1Controller < ApplicationController
     end 
     
        
-    @db['users'].insert(userObj)
-    @db['index'].update({},{"$set"=>{"user"=>currIndex+1}})
+    @@userDb['users'].insert(userObj)
+
     
     
     
-    result = {"Status"=>"success", "Message"=>"user created!", "token"=>sessionToken}
-    @client.close
+    result = {"Status"=>"success", "Message"=>"user created!", "token"=>sessionToken, "id"=>userObj["id"]}
+
     render :json=>result, :callback => params[:callback]  
     
     Gibbon::API.timeout = 15
@@ -345,16 +448,9 @@ class Client1Controller < ApplicationController
     end
     
     
-    
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
-    
-    
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -363,18 +459,16 @@ class Client1Controller < ApplicationController
     if params[:stretch]!=nil
       stretch = params[:stretch]
     end
-         
-    listSet = @db['viewlists'].find({"id"=>params[:list].to_i})
-    if listSet.count == 0
-       listSet = @db['viewlists'].find({"id"=>params[:list]})
-    end
-
-         
-    if listSet.count > 0 
+    
+    
+    listSet = getListSet(params[:list])
+        
+    list = {}    
+    if listSet != nil and listSet.count > 0 
        list = listSet.to_a[0]
        if userSet.count >0 
           user = userSet.to_a[0]
-          if user["curr_list_images"] != nil and user["curr_list"].to_i==params[:list].to_i
+          if user["curr_list_images"] != nil and user["curr_list"].to_s==params[:list].to_s
              list["images"] = user["curr_list_images"]
           end
        end
@@ -393,30 +487,322 @@ class Client1Controller < ApplicationController
    if params[:players] == nil
       params[:players] = []
    end
+   
+    imageSet = getImageSet(params[:imageID])
+    if imageSet.count > 0
+      imageObj = imageSet.to_a[0]
+      message = {}
+      message['type'] = "image"
+      message['imageURL'] = imageObj['url']
+      message['title'] = URI.escape(imageObj['Title'])
+      message['stretch'] = stretch
+      message['nextPull'] = 0
+      if imageObj["Artist Last N"]==nil
+         message["caption"]=""
+      else
+         message["caption"]=URI.escape(imageObj["Artist First N"])+' '+URI.escape(imageObj["Artist Last N"])
+      end
+
+    end 
+    
+
+   userPlayers = user['owned_clients']+user['playable_clients']
+   unIns = []
+   
    params[:players].each do |account|
+       
+       if not userPlayers.include? account
+         unIns.push(account)
+         next
+       end
       
-       playerSet = @db['clients'].find({"account"=>account})
+       playerSet = @@userDb['clients'].find({"account"=>account})
        if playerSet.count > 0
          player = playerSet.to_a[0]
          currListImages = []
          if list["images"] != nil
            currListImages = list["images"]
          end
-         @db['clients'].update({"account"=>player["account"]},"$set"=>{"curr_image"=>params[:imageID].to_i,"image_time_stamp"=>utcMillis(), "stretch"=>stretch,
+         @@userDb['clients'].update({"account"=>player["account"]},"$set"=>{"curr_image"=>params[:imageID].to_i,"image_time_stamp"=>utcMillis(), "stretch"=>stretch,
       "curr_list"=>params[:list], "curr_index"=>currIndex, "curr_list_images"=>currListImages, "curr_user"=>params[:email]})
+      
+         if message != nil
+             base = 'http://shrouded-chamber-7349.herokuapp.com/push'
+             uri = URI(base)
+             message['receiver'] = player['account']
+             
+             begin
+                Net::HTTP.post_form(uri, message)
+             rescue
+               
+             end
+         end
+          
+          
           
        end
        
     end
     
-    @db['users'].update({"email"=>params[:email]},"$set"=>{"curr_image"=>params[:imageID],"curr_list"=>params[:list],"curr_cat"=>params[:cat], "fill"=>stretch,
+    currListId = params[:list]
+    if (not currListId.is_a? Fixnum) and (currListId.include? 'top')
+      currListId = currListId.to_s
+    else
+      currListId = currListId.to_i
+    end
+    
+    
+    @@userDb['users'].update({"email"=>params[:email]},"$set"=>{"curr_image"=>params[:imageID].to_i,"curr_list"=>currListId,"curr_cat"=>params[:cat], "fill"=>stretch,
       "curr_list_images"=>list["images"], "last_visit"=>utcMillis()})
       
       
-    result = {"result"=>"success", "Message"=>"updated!"}   
-    @client.close
+ 
+      
+  
+      
+    result = {"result"=>"success", "Message"=>"updated!", "players"=>userPlayers}   
     render :json=>result, :callback => params[:callback]    
   end  
+
+
+ def deleteComment
+    if(params[:imageId]==nil or params[:imageId].length==0)
+      result = result = {"Status"=>"failure", "Message"=>"no image id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    if(params[:email]==nil or params[:email].length==0)
+      result = {"Status"=>"failure", "Message"=>"no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end   
+    
+    
+    if params[:comment_id]==nil 
+        result = {"Status"=>"failure", "Message"=>"comment_id is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end   
+    
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]    
+    commentSet = @@userDb['imageComments'].find({"id"=>params[:imageId].to_i})
+    
+    if commentSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"no comment found!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    commentObj = commentSet.to_a[0]
+    
+    index = 0
+    commentObj["comments"].each do |cmt|
+      
+      if cmt['comment_id'] == params[:comment_id].to_i
+        if cmt["user_id"].to_i != userObj["id"].to_i and !userObj["isAdmin"]
+           result = {"Status"=>"failure", "Message"=>"the comment doesn't belong to the user!"}
+           render :json=>result, :callback => params[:callback]
+           return        
+        end
+        
+        break
+                
+      end
+      index += 1
+    end
+    
+    
+
+      
+    commentObj["commentNum"] -= 1
+    commentObj["comments"].delete_at(index)
+    @@userDb["imageComments"].update({"id"=>commentObj["id"].to_i},{"$set"=>{"commentNum"=>commentObj["commentNum"], "comments"=>commentObj["comments"]}})
+
+    
+    result = {"Status"=>"success", "Message"=>"comment deleted!"}
+    render :json=>result, :callback => params[:callback]    
+    
+ end  
+  
+ def getCommentId
+   idObj = @@userDb['ids'].find().to_a[0]
+   currIndex = idObj['comment']
+   @@userDb['ids'].update({},{'$set'=>{'comment'=>currIndex+1}})
+   return currIndex
+ end 
+
+ def commentImage
+    if(params[:imageId]==nil or params[:imageId].length==0)
+      result = result = {"Status"=>"failure", "Message"=>"no image id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    if(params[:email]==nil or params[:email].length==0)
+      result = {"Status"=>"failure", "Message"=>"no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end   
+    
+    
+    if params[:text]==nil 
+        result = {"Status"=>"failure", "Message"=>"text is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end   
+    
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]
+    
+    
+    cmt = {"user_id"=>userObj["id"].to_i, "user_name"=>userObj["name"], "text"=>params[:text], "time_stamp"=>utcMillis()}
+    cmt['comment_id'] = getCommentId()
+    
+    commentSet = @@userDb['imageComments'].find({"id"=>params[:imageId].to_i})
+    if commentSet.count == 0
+      commentObj = {"id"=>params[:imageId].to_i, "commentNum"=>1, "comments"=>[cmt]}
+      @@userDb["imageComments"].insert(commentObj)
+    else
+      commentObj = commentSet.to_a[0]
+      commentObj["commentNum"] += 1
+      commentObj["comments"].push(cmt)
+      @@userDb["imageComments"].update({"id"=>commentObj["id"].to_i},{"$set"=>{"commentNum"=>commentObj["commentNum"], "comments"=>commentObj["comments"]}})
+    end
+    
+    result = {"Status"=>"success", "Message"=>"comment uploaded!", "comment_id"=>cmt['comment_id']}
+    render :json=>result, :callback => params[:callback]    
+    
+ end  
+
+
+
+
+
+  
+  
+  def likeImage
+    if(params[:imageId]==nil or params[:imageId].length==0)
+      result = result = {"Status"=>"failure", "Message"=>"no image id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    if(params[:email]==nil or params[:email].length==0)
+      result = {"Status"=>"failure", "Message"=>"no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end   
+    
+    
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]
+    
+    like = true
+    if params[:like]=="0"
+      like = false
+    end
+    
+    if userObj["likeImages"] == nil
+      userObj["likeImages"] = []
+    end
+    
+    if like and not userObj["likeImages"].include? params[:imageId].to_i
+      userObj["likeImages"].push(params[:imageId].to_i)
+    end
+    
+    if not like
+      userObj["likeImages"].delete(params[:imageId].to_i)
+    end
+    
+    @@userDb["users"].update({"email"=>userObj["email"]},{"$set"=>{"likeImages"=>userObj["likeImages"]}})
+    imageSet = getImageSet(params[:imageId])
+    if imageSet.count > 0
+      imageObj = imageSet.to_a[0]
+    end
+    
+    imageLikeSet = @@userDb['imageLikes'].find({"id"=>params[:imageId].to_i})
+    if imageLikeSet.count == 0
+       if like      
+          imageLikeObj = {"id"=> params[:imageId].to_i, "likeMap"=>{userObj["id"].to_s=>true}, "likeNum"=>1}
+          if imageObj != nil and imageObj['categories']!= nil
+            imageLikeObj['categories'] = imageObj['categories']
+          end
+          @@userDb["imageLikes"].insert(imageLikeObj)
+       end
+    else
+      imageLikeObj = imageLikeSet.to_a[0]
+      if imageObj != nil and imageObj['categories']!= nil
+         @@userDb["imageLikes"].update({"id"=>imageObj["id"]},{"$set"=>{"categories"=>imageObj["categories"]}})
+      end
+      
+      if imageLikeObj["likeMap"][userObj["id"].to_s] != nil #this means the user liked it!
+        if like
+          # do nothing
+        else
+          imageLikeObj["likeMap"].delete(userObj["id"].to_s)
+          imageLikeObj["likeNum"] -=1 
+          if imageLikeObj["likeNum"]<0
+            imageLikeObj["likeNum"] = 0
+          end
+          @@userDb["imageLikes"].update({"id"=>imageLikeObj["id"].to_i},{"$set"=>{"likeMap"=>imageLikeObj["likeMap"], "likeNum"=>imageLikeObj["likeNum"]}})
+        end
+      else       
+        if like
+          imageLikeObj["likeMap"][userObj["id"].to_s] = true
+          imageLikeObj["likeNum"] += 1
+          @@userDb["imageLikes"].update({"id"=>imageLikeObj["id"].to_i},{"$set"=>{"likeMap"=>imageLikeObj["likeMap"], "likeNum"=>imageLikeObj["likeNum"]}})        
+        else
+          # do nothing
+        end  
+      end    
+    end
+    result = {"Status"=>"success", "Message"=>"like updated!"}
+    render :json=>result, :callback => params[:callback]
+            
+  end
   
    
   def rateImage
@@ -448,31 +834,29 @@ class Client1Controller < ApplicationController
     
     
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
     
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
     
-    if @db["imageRatings"].find({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase}).count > 0
+    if @@userDb["imageRatings"].find({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase}).count > 0
       if params[:rating].to_i > 0
-        @db["imageRatings"].update({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase},{"$set"=>{"rating"=>params[:rating].to_i}})
+        @@userDb["imageRatings"].update({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase},{"$set"=>{"rating"=>params[:rating].to_i}})
       else
-        @db["imageRatings"].remove({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase})
+        @@userDb["imageRatings"].remove({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase})
       end
       
     else
-      @db["imageRatings"].insert({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase, "rating"=>params[:rating].to_i})
+      @@userDb["imageRatings"].insert({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase, "rating"=>params[:rating].to_i})
     end
     result = {"result"=>"rating updated!"}
-    @client.close
+
     render :json=>result, :callback => params[:callback]
     
     
@@ -499,23 +883,20 @@ class Client1Controller < ApplicationController
     end
     
     
-    
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
     
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
     
-    @db["users"].update({"email"=>params[:email]},{"$set"=>{"selected_players"=>params[:players]}})
+    @@userDb["users"].update({"email"=>params[:email]},{"$set"=>{"selected_players"=>params[:players]}})
     result = {"Status"=>"success", "Message"=>"The players are selected!"}
-    @client.close
+
     render :json=>result, :callback => params[:callback]
     
   end
@@ -535,24 +916,60 @@ class Client1Controller < ApplicationController
     
     
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
-    
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
     
     selectedPlayers = userSet.to_a[0]["selected_players"]
     result = {"Status"=>"success", "selectedPlayers"=>selectedPlayers}
-    @client.close
+
     render :json=>result, :callback => params[:callback] 
   end
+  
+  
+   def setresolution
+    if(params[:email]==nil)
+      result = {"Status"=>"failure", "Message"=>"No user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]
+    
+    if params[:highres] == 'true'
+      hires = 1
+    else
+      hires = 0
+    end
+    
+    
+    @@userDb['users'].update({'email'=>userObj['email']},{'$set'=>{'hires'=>hires}})
+    result = {"Status"=>"success", "Message"=>"hires status is set!"}
+    render :json=>result, :callback => params[:callback]
+    
+   end
+  
   
   
    def getUserStatus
@@ -563,31 +980,29 @@ class Client1Controller < ApplicationController
     end
     
     
+
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
-    
-    
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
     
+    @@userDb['login_records'].insert({'email'=>(params[:email].strip).downcase,'time_stamp'=>utcMillis, 'ip_address'=>request.remote_ip})
+    
     user = userSet.to_a[0]
-    if(user["curr_image"]==nil or user["curr_image"]=='') or (@db["images"].find({"id"=>user["curr_image"].to_i}).count==0)
+    if(user["curr_image"]==nil or user["curr_image"]=='') or (getImageSet(user["curr_image"]).count==0)
       result = {"Status"=>"failure", "Message"=>"No image!"}
-      @client.close
+
       render :json=>result, :callback => params[:callback]
       return  
     end
     
-    if(user["curr_list"]==nil or user["curr_list"]=='') or ((@db["viewlists"].find({"id"=>user["curr_list"]}).count==0)and(@db["viewlists"].find({"id"=>user["curr_list"].to_i}).count==0))
+    if(user["curr_list"]==nil or user["curr_list"]=='') or getListSet(user["curr_list"]).count == 0
       result = {"Status"=>"failure", "Message"=>"No list!"}
-      @client.close
+
       render :json=>result, :callback => params[:callback]
       return  
     end
@@ -597,9 +1012,17 @@ class Client1Controller < ApplicationController
     if user["shuffle"] == 1
       shuffle = "true"
     end
+    
+    
+    hires = "false"
+    if user["hires"] == 1
+      hires = "true"
+    end
+    
+    
     result = {"Status"=>"success", "curr_image"=>user["curr_image"], "curr_list"=>user["curr_list"],"curr_cat"=>user["curr_cat"],
-      "fill"=>user["fill"], "autoInterval"=>user["autoInterval"], "shuffle"=>shuffle}
-    @client.close
+      "fill"=>user["fill"], "autoInterval"=>user["autoInterval"], "shuffle"=>shuffle, "hires"=>hires}
+
     render :json=>result, :callback => params[:callback]
     
   end
@@ -620,23 +1043,23 @@ class Client1Controller < ApplicationController
     
     
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
     
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
-
-    playerSet = @db['clients'].find({"account"=>params[:snumber].strip})
+    user = userSet.to_a[0]
+    
+    
+    playerSet = @@userDb['clients'].find({"account"=>params[:snumber].strip})
     if playerSet.count == 0
         result = {"Status"=>"failure", "Message"=>"no player found!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -650,39 +1073,56 @@ class Client1Controller < ApplicationController
     autoUser = params[:email]
     if params[:autoInterval].strip.to_i == 0
       #user quit auto play, to make it clear, we set the auto user to be the player's owner
-      userSet = @db['users'].find({'id'=>player['owner'].to_i})
+      userSet = @@userDb['users'].find({'id'=>player['owner'].to_i})
       if userSet.count > 0
         userObj = userSet.to_a[0]
         autoUser = userObj['email']
       end
     end
-
-    @db['clients'].update({"account"=>params[:snumber].strip},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i, "lastAutoAssign"=>-1,
-      "curr_index"=>currIndex, "auto_user"=>autoUser}})
+   
+    @@userDb['clients'].update({"account"=>{"$in"=>user['owned_clients']}},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i, "lastAutoAssign"=>-1,
+      "auto_user"=>autoUser}}, {"multi"=>true})
       
-    @db['users'].update({"email"=>params[:email]},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i}})
+    @@userDb['users'].update({"email"=>params[:email]},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i}})
 
     result = {"Status"=>"success", "Message"=>"updated!"}   
-    @client.close
+
     render :json=>result, :callback => params[:callback]
+    
+    
+    message = {}
+    message['type'] = "autoPlay"
+    message['autoInterval'] = params[:autoInterval].strip.to_i
+    
+    if message != nil
+      base = 'http://shrouded-chamber-7349.herokuapp.com/push'
+      user['owned_clients'].each do |client|
+        uri = URI(base)
+        message['receiver'] = client
+        
+        begin
+          Net::HTTP.post_form(uri, message)
+        rescue
+            
+        end
+      end
+    end    
  
   end
   
   def getDefault
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
-    defaultObjSet = @db['defaults'].find()
+
+    defaultObjSet = @@contentDb['defaults'].find()
     if defaultObjSet.count == 0
         result = {"Status"=>"failure", "Message"=>"no defaults found!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end
     
     
     result = {"Status"=>"success", "defaults"=>defaultObjSet.to_a[0]}   
-    @client.close   
+ 
     render :json=>result, :callback => params[:callback]
     
   end
@@ -711,15 +1151,13 @@ def getViewlist4
     
     
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
     
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -727,11 +1165,11 @@ def getViewlist4
     
     user = userSet.to_a[0]
     if user["curr_list_images"]==nil
-      listSet = @db["viewlists"].find({"id"=>user["curr_list".to_i]})
+      listSet = getListSet(user["curr_list"])
       if listSet.count > 0
         list = listSet.to_a[0]
         user["curr_list_images"]=list["images"]
-        @db["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>list["images"]}})
+        @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>list["images"]}})
         
       end
       
@@ -744,7 +1182,7 @@ def getViewlist4
       viewlist["imageSet"]=[]
       viewlist["images"]=[]
       
-      dynImages = @db["imageRatings"].find({"user_email"=>params[:email].strip.downcase}).to_a
+      dynImages = @@userDb["imageRatings"].find({"user_email"=>params[:email].strip.downcase}).to_a
       
       #get startIndex
       if params[:tarImage].to_i == -1 
@@ -813,7 +1251,7 @@ def getViewlist4
       end
       
       images.each do|image|      
-        imageSet = @db["images"].find({"id"=>image["img_id"].to_i})
+        imageSet = getImageSet(image["img_id"])
         if imageSet.count > 0
            imageObj = imageSet.to_a[0]
            imageObj["User Rating"]=image["rating"]
@@ -822,24 +1260,24 @@ def getViewlist4
               viewlist["imageSet"].append(imageObj)
               
            else
-             @db["imageRatings"].remove({"user_email"=>params[:email].strip.downcase, "img_id"=>image["img_id"].to_i})
+             @@userDb["imageRatings"].remove({"user_email"=>params[:email].strip.downcase, "img_id"=>image["img_id"].to_i})
            end
            
         else
-          @db["imageRatings"].remove({"user_email"=>params[:email].strip.downcase, "img_id"=>image["img_id"].to_i})
+          @@userDb["imageRatings"].remove({"user_email"=>params[:email].strip.downcase, "img_id"=>image["img_id"].to_i})
           
         end 
         
       
       end
-      
-      @db["viewlists"].remove({"id"=>params[:id]})
-      @db["viewlists"].insert(viewlist)
+      # this only applied for star rated images!
+      @@userDb["privLists"].remove({"id"=>params[:id]})
+      @@userDb["privLists"].insert(viewlist)
       viewlist["dynImages"]=images
-      @db["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"],
+      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"],
       "shuffle"=>params[:shuffle].to_i}})   
       
-      @client.close
+
       render :json=>viewlist, :callback => params[:callback]
       return
     end
@@ -847,11 +1285,11 @@ def getViewlist4
 
     
     
+    viewlistSet = getListSet(params[:id])
     
-    viewlistSet = @db["viewlists"].find({"id"=>params[:id].to_i})
     if viewlistSet.count == 0
       result = {"result"=>"unkown viewlist"}
-      @client.close
+
       render :json=>result, :callback => params[:callback]
     end
     
@@ -868,7 +1306,7 @@ def getViewlist4
          viewlist["images"] = viewlist["images"].shuffle
       end
       
-      @db["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"],
+      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"],
       "shuffle"=>params[:shuffle].to_i}})      
       
       
@@ -895,6 +1333,10 @@ def getViewlist4
           end
           startIndex = startIndex+1
         end
+      end
+      
+      if startIndex >= images.length
+        startIndex = images.length-1
       end
       
       viewlist["tarIndex"] = startIndex+1
@@ -945,13 +1387,13 @@ def getViewlist4
     
     images.each do|image|
       
-      imageSet = @db["images"].find({"id"=>image.to_i})
+      imageSet = getImageSet(image)
       if imageSet.count > 0
         
         
         imageObj = imageSet.to_a[0]
         if params[:email]!=nil
-           ratingSet = @db["imageRatings"].find({"img_id"=>image.to_i,"user_email"=>(params[:email].strip).downcase})
+           ratingSet = @@userDb["imageRatings"].find({"img_id"=>image.to_i,"user_email"=>(params[:email].strip).downcase})
            if ratingSet.count> 0
              ratingObj = ratingSet.to_a[0]
              imageObj["User Rating"]=ratingObj["rating"]
@@ -962,7 +1404,7 @@ def getViewlist4
       end
     end
     
-    @client.close
+ 
     render :json=>viewlist, :callback => params[:callback]
  
     
@@ -970,7 +1412,9 @@ def getViewlist4
  
  end 
  
- 
+
+
+
  
  
   def feedback
@@ -994,15 +1438,13 @@ def getViewlist4
     
     
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
     
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-         @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
@@ -1026,7 +1468,7 @@ def getViewlist4
     end
     
     result = {'result'=>'Your ticket is submitted!'}
-    @client.close
+
     render :json=>result, :callback => params[:callback]
   end
 
@@ -1046,21 +1488,23 @@ def getViewlist4
     
     
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
+
     
     
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip},{:fields=>['name']})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip},{:fields=>['name','id','isAdmin']})
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end 
     
-    result = result = {"Status"=>"success", "Message"=>"user found!", "userObj"=>userSet.to_a[0]}
-    @client.close
+    userObj = userSet.to_a[0]
+    if userObj['isAdmin'] == nil
+      userObj['isAdmin'] = false
+    end
+    result = {"Status"=>"success", "Message"=>"user found!", "userObj"=>userObj}
+
     render :json=>result, :callback => params[:callback]
   end
   
@@ -1081,15 +1525,13 @@ def getViewlist4
     end
     
     
-    @client = MongoClient.new(@@server,@@port)
-    @db = @client[@@db_name]
-    @db.authenticate(@@username,@@password)
 
-    userSet = @db['users'].find({"email"=>(params[:email].strip).downcase},{:fields=>['name','salt','pass_digest','tokens','private_lists','owned_clients','email']})
+
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase},{:fields=>['name','salt','pass_digest','tokens','private_lists','owned_clients','email']})
     
     if userSet.count == 0
         result = {"Status"=>"failure", "Message"=>"no user mathes!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return
     end
@@ -1097,7 +1539,7 @@ def getViewlist4
     user = userSet.to_a[0]
     if user["salt"]==nil or user["pass_digest"]==nil
       result = {"Status"=>"failure", "Message"=>"wrong password!"}
-      @client.close
+
       render :json=>result, :callback => params[:callback]
       return
     end
@@ -1105,7 +1547,7 @@ def getViewlist4
     passDigest = Digest::SHA1.hexdigest(params[:password]+user["salt"])
     if passDigest != user["pass_digest"]
         result = {"Status"=>"failure", "Message"=>"wrong password!"}
-        @client.close
+
         render :json=>result, :callback => params[:callback]
         return  
     end        
@@ -1113,34 +1555,963 @@ def getViewlist4
     # remove private lists
     if user['private_lists'] != nil
        user['private_lists'].each do |listId|
-           @db['viewlists'].remove({'id'=>listId.to_i})
+           @@contentDb['privLists'].remove({'id'=>listId.to_i})
        end 
     
     end
+    @@userDb['privLists'].remove({'private_user'=>user['email']})
+    
     
     # remove devices
     user['owned_clients'].each do |account|
-      playerSet = @db['clients'].find({'account'=>account},{:fields=>["account","playable_users"]})
+      playerSet = @@userDb['clients'].find({'account'=>account},{:fields=>["account","playable_users"]})
       if playerSet.count > 0
         player = playerSet.to_a[0]
         player["playable_users"].each do |userId|
-          @db['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
-          @db['users'].update({"id"=>userId.to_i},{"$pull"=>{"playable_clients"=>player["account"]}})
+          @@userDb['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
+          @@userDb['users'].update({"id"=>userId.to_i},{"$pull"=>{"playable_clients"=>player["account"]}})
         end
-        @db['clients'].remove({'account'=>account})
+        @@userDb['clients'].remove({'account'=>account})
       end
     end
 
-    @db['users'].remove({'email'=>user['email']}) 
+    @@userDb['users'].remove({'email'=>user['email']}) 
+    
+    
+    
     
     result = result = {"Status"=>"success", "Message"=>"user has been removed!"}
-    @client.close
+
     render :json=>result, :callback => params[:callback]
     
     
     end
     
-  
+   def getViewlist5
+
+    if(params[:id]==nil)
+      result = {"result"=>"error, no id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    if(params[:id].length==0)
+      result = {"result"=>"error, no id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
+
+    
+    
+    #userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase})
+    if params[:email]!='guest@guest.guest' and userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    
+    @@userDb['viewlist_records'].insert({'email'=>(params[:email].strip).downcase, 'viewlist'=>params[:id], 'time_stamp'=>utcMillis,'ip_address'=>request.remote_ip})
+    
+    if params[:email] == 'guest@guest.guest'
+       user = {'curr_list'=>-1, 'shuffle'=>0, 'email'=>'guest@guest.guest'}
+    else
+    
+       user = userSet.to_a[0]
+
+    end
+    
+    
+    if user["curr_list_images"]==nil
+       user["curr_list_images"]=[]
+    end      
+
+
+    if(params[:id][0..7]=='topLiked')
+      viewlist = {"id"=>params[:id], "name"=>"Most liked"}
+      viewlist["imageSet"]=[]
+      viewlist["images"]=[]
+                
+      
+      #get startIndex
+      if params[:tarImage].to_i == -1 or user['email'] == 'guest@guest.guest'
+        if params[:catName]!=nil
+          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "categories"=>params[:catName], "id"=>{"$lt"=>@@privateRange}}).sort({"likeNum"=>-1}).limit(100)
+        else
+          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "id"=>{"$lt"=>@@privateRange}}).sort({"likeNum"=>-1}).limit(100)
+        end
+        
+        dynImages = []
+        likeSet.to_a.each do |likeObj|
+          dynImages.push(likeObj["id"].to_i)
+        end
+        
+        if params[:shuffle].to_i==1
+           dynImages = dynImages.shuffle
+        end
+        
+        
+        startIndex = 0
+      
+        
+        dynImages.each do|image|
+          viewlist["images"].append(image.to_i)
+        end
+        
+      else
+        if user['curr_list_images']!= nil
+           dynImages = user['curr_list_images']
+        end
+        startIndex = 0
+        index = 0
+        dynImages.each do|image|
+          if image.to_i == params[:tarImage].to_i
+            startIndex = index
+          end
+          viewlist["images"].append(image.to_i)
+          index = index+1
+        end
+        
+        
+      end
+      
+      viewlist["tarIndex"] = startIndex+1
+      
+      if params[:forward] == "1"
+        if params[:include] == "1"
+          images = dynImages[startIndex..(startIndex+params[:numOfImg].to_i-1)]
+          
+          if images.length == 1 and viewlist["images"].length > 1
+            viewlist["backward"]="1"
+            images = dynImages[startIndex-1..(startIndex+params[:numOfImg].to_i-1)]
+          end          
+          
+        else
+          images = dynImages[startIndex+1..(startIndex+params[:numOfImg].to_i)]
+        end
+        
+        
+      #backward  
+      else
+        
+        fromIndex = 0
+        
+        
+        if params[:include] == "1"
+          if startIndex-params[:numOfImg].to_i+1 > 0
+            fromIndex = startIndex-params[:numOfImg].to_i+1          
+          end
+          images = dynImages[fromIndex..startIndex] 
+            
+        else
+          if startIndex-params[:numOfImg].to_i > 0
+            fromIndex = startIndex-params[:numOfImg].to_i          
+          end
+          images = dynImages[fromIndex..startIndex-1] 
+        end
+        
+        
+      end
+      
+      
+      
+      if images == nil
+        images = []
+      end
+      
+      images.each do|image|      
+        imageSet = getImageSet(image)
+        if imageSet.count > 0
+           imageObj = imageSet.to_a[0]
+           likeSet = @@userDb["imageLikes"].find({"id"=>image.to_i})
+           if likeSet.count > 0
+             likeObj = likeSet.to_a[0]
+           else
+             likeObj = {"id"=>imageObj["id"].to_i, "likeNum"=>0, "likeMap"=>{}}
+           end
+           
+           imageObj["likeNum"] = likeObj["likeNum"]
+           if likeObj["likeMap"][user["id"].to_s]
+             imageObj["like"] = true
+           else
+             imageObj["like"] = false
+           end
+           viewlist["imageSet"].append(imageObj)
+           
+           
+           commentSet = @@userDb["imageComments"].find({"id"=>image.to_i})
+           if commentSet.count > 0
+             commentObj = commentSet.to_a[0]
+           else
+             commentObj = {"id"=>imageObj["id"].to_i, "commentNum"=>0,"comments"=>[]}
+           end
+           imageObj["commentNum"] = commentObj["commentNum"]
+           imageObj["comments"] = commentObj["comments"][0...10]     
+           
+        end 
+      
+      end
+      
+      @@userDb["privLists"].remove({"id"=>params[:id]})
+      @@userDb["privLists"].insert(viewlist)
+      
+      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist['images'], "curr_list"=>viewlist["id"],
+      "shuffle"=>params[:shuffle].to_i}})   
+      
+
+      viewlist["imageNum"] = viewlist["images"].length
+      viewlist["startImage"] = viewlist["images"][0]
+      viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      viewlist.delete("images");
+
+      render :json=>viewlist, :callback => params[:callback]
+      return
+    end
+    
+    
+    
+    if(params[:id][0..2]=='top')
+      viewlist = {"id"=>params[:id], "name"=>"My Top Rated"}
+      viewlist["imageSet"]=[]
+      viewlist["images"]=[]
+      
+      if user['likeImages'] == nil
+        user['likeImages'] = []
+      end
+          
+      
+      #get startIndex
+      if params[:tarImage].to_i == -1 
+        dynImages = user['likeImages']
+        if params[:shuffle].to_i==1
+           dynImages = dynImages.shuffle
+        end
+        
+        
+        startIndex = 0
+      
+        
+        dynImages.each do|image|
+          viewlist["images"].append(image.to_i)
+        end
+        
+      else
+        if user['curr_list_images']!= nil
+           dynImages = user['curr_list_images']
+        end
+        startIndex = 0
+        index = 0
+        dynImages.each do|image|
+          if image.to_i == params[:tarImage].to_i
+            startIndex = index
+          end
+          viewlist["images"].append(image.to_i)
+          index = index+1
+        end
+        
+        
+      end
+      
+      viewlist["tarIndex"] = startIndex+1
+      
+      if params[:forward] == "1"
+        if params[:include] == "1"
+          images = dynImages[startIndex..(startIndex+params[:numOfImg].to_i-1)]
+          
+          if images.length == 1 and viewlist["images"].length > 1
+            viewlist["backward"]="1"
+            images = dynImages[startIndex-1..(startIndex+params[:numOfImg].to_i-1)]
+          end          
+          
+        else
+          images = dynImages[startIndex+1..(startIndex+params[:numOfImg].to_i)]
+        end
+        
+        
+      #backward  
+      else
+        
+        fromIndex = 0
+        
+        
+        if params[:include] == "1"
+          if startIndex-params[:numOfImg].to_i+1 > 0
+            fromIndex = startIndex-params[:numOfImg].to_i+1          
+          end
+          images = dynImages[fromIndex..startIndex] 
+            
+        else
+          if startIndex-params[:numOfImg].to_i > 0
+            fromIndex = startIndex-params[:numOfImg].to_i          
+          end
+          images = dynImages[fromIndex..startIndex-1] 
+        end
+        
+        
+      end
+      
+      
+      
+      if images == nil
+        images = []
+      end
+      
+      images.each do|image|      
+        imageSet = getImageSet(image)
+        if imageSet.count > 0
+           imageObj = imageSet.to_a[0]
+           likeSet = @@userDb["imageLikes"].find({"id"=>image.to_i})
+           if likeSet.count > 0
+             likeObj = likeSet.to_a[0]
+           else
+             likeObj = {"id"=>imageObj["id"].to_i, "likeNum"=>1, "likeMap"=>{user["id"].to_s=>true}}
+           end
+           
+           imageObj["likeNum"] = likeObj["likeNum"]
+           imageObj["like"] = true
+           viewlist["imageSet"].append(imageObj)
+           
+           
+           commentSet = @@userDb["imageComments"].find({"id"=>image.to_i})
+           if commentSet.count > 0
+             commentObj = commentSet.to_a[0]
+           else
+             commentObj = {"id"=>imageObj["id"].to_i, "commentNum"=>0,"comments"=>[]}
+           end
+           imageObj["commentNum"] = commentObj["commentNum"]
+           imageObj["comments"] = commentObj["comments"][0...10]     
+           
+        end 
+      
+      end
+      
+      
+      @@userDb["privLists"].remove({"id"=>params[:id]})
+      @@userDb["privLists"].insert(viewlist)
+      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist['images'], "curr_list"=>viewlist["id"],
+      "shuffle"=>params[:shuffle].to_i}})   
+      
+
+      viewlist["imageNum"] = viewlist["images"].length
+      viewlist["startImage"] = viewlist["images"][0]
+      viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      viewlist.delete("images");
+
+      render :json=>viewlist, :callback => params[:callback]
+      return
+    end
+    
+
+    
+    
+    viewlistSet = getListSet(params[:id])
+    
+    if viewlistSet.count == 0
+      result = {"Status"=>"failure", "Message"=>"unkown viewlist!"}
+
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    
+    
+    
+    
+    viewlist = viewlistSet.to_a[0] 
+    
+    if params[:tarImage].to_i == -1
+      #start over
+      if params[:shuffle].to_i==1
+         viewlist["images"] = viewlist["images"].shuffle
+      end  
+      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"].to_i,
+      "shuffle"=>params[:shuffle].to_i}})         
+      
+    else
+      #continuation do not re-shuffle
+      if user['email']!= 'guest@guest.guest' and user["curr_list_images"] != nil and user["curr_list"].to_s == viewlist['id'].to_s 
+        viewlist["images"] = user["curr_list_images"]
+      end
+      
+    end
+    
+    viewlist["imageSet"]=[]
+    
+    if viewlist['images'] == nil
+      viewlist['images'] = []
+    end
+    
+    
+    images = viewlist["images"]
+
+      #get startIndex
+      if params[:tarImage].to_i == -1 
+        startIndex = 0
+      else
+        startIndex = 0
+        images.each do|image|
+          if image == params[:tarImage].to_i
+            break
+          end
+          startIndex = startIndex+1
+        end
+      end
+      
+      if startIndex >= images.length
+        startIndex = images.length-1
+      end
+      
+      viewlist["tarIndex"] = startIndex+1
+      
+      if params[:forward] == "1"
+        if params[:include] == "1"
+          images = images[startIndex..(startIndex+params[:numOfImg].to_i-1)]
+          # if the target image is the last image, then append the second last to it and force the chunk to be backward
+          if images == nil
+            images = []
+          end
+          if images.length == 1 and viewlist["images"].length > 1
+            viewlist["backward"]="1"
+            images = viewlist["images"][startIndex-1..(startIndex+params[:numOfImg].to_i-1)]
+          end
+          
+        else
+          images = images[startIndex+1..(startIndex+params[:numOfImg].to_i)]
+        end
+        
+
+        
+      #backward  
+      else
+        
+        fromIndex = 0
+        
+        
+        
+        if params[:include] == "1"
+          if startIndex-params[:numOfImg].to_i+1 > 0
+            fromIndex = startIndex-params[:numOfImg].to_i+1          
+          end
+          images = images[fromIndex..startIndex] 
+            
+        else
+          if startIndex-params[:numOfImg].to_i > 0
+            fromIndex = startIndex-params[:numOfImg].to_i          
+          end
+          images = images[fromIndex..startIndex-1] 
+        end
+        
+        
+      end
+      
+      
+      
+      if images == nil or images.length == 0
+        defaultObj = @@contentDb['defaults'].find().to_a[0]
+        listObj = @@contentDb['viewlists'].find({'id'=>defaultObj['viewlist'].to_i}).to_a[0]
+        images = listObj['images']
+        viewlist['images'] = listObj['images']
+        viewlist['forward'] = 1
+        viewlist['tarIndex'] = 1
+        @@userDb['users'].update({'email'=>user['email']},{'$set'=>{'curr_list'=>defaultObj['viewlist'].to_i,
+          'curr_image'=>defaultObj['image'].to_i, 'curr_cat'=>defaultObj['category']}})
+        
+      end
+    
+    images.each do|image|
+      
+      imageSet = getImageSet(image)
+      if imageSet.count > 0
+        
+        
+        imageObj = imageSet.to_a[0]
+        if params[:email]!=nil
+                      
+           likeSet = @@userDb["imageLikes"].find({"id"=>image.to_i})
+           if likeSet.count > 0
+             likeObj = likeSet.to_a[0]
+             if likeObj["likeMap"][user["id"].to_s]!= nil
+               imageObj["like"]=true
+             else
+               imageObj["like"]=false
+             end
+             imageObj["likeNum"] = likeObj["likeNum"]             
+           else
+             imageObj["like"] = false
+             imageObj["likeNum"] = 0
+           end
+           
+           
+           commentSet = @@userDb["imageComments"].find({"id"=>image.to_i})
+           if commentSet.count > 0
+             commentObj = commentSet.to_a[0]
+           else
+             commentObj = {"id"=>imageObj["id"].to_i, "commentNum"=>0,"comments"=>[]}
+           end
+           imageObj["commentNum"] = commentObj["commentNum"]
+           imageObj["comments"] = commentObj["comments"][0...10]  
+           
+           
+        end
+        
+        viewlist["imageSet"].append(imageObj)
+      end
+    end
+    
+
+    viewlist["imageNum"] = viewlist["images"].length
+    viewlist["startImage"] = viewlist["images"][0]
+    viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+    viewlist.delete("images");
+    render :json=>viewlist, :callback => params[:callback]
+ 
+    
+ 
+ 
+ end  
+    
+    
+  def getViewlist6
+
+    if(params[:id]==nil)
+      result = {"result"=>"error, no id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    if(params[:id].length==0)
+      result = {"result"=>"error, no id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
+
+    
+    
+    #userSet = @db['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase})
+    if params[:email]!='guest@guest.guest' and userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    
+    @@userDb['viewlist_records'].insert({'email'=>(params[:email].strip).downcase, 'viewlist'=>params[:id], 'time_stamp'=>utcMillis,'ip_address'=>request.remote_ip})
+    
+    if params[:email] == 'guest@guest.guest'
+       user = {'curr_list'=>-1, 'shuffle'=>0, 'email'=>'guest@guest.guest'}
+    else
+    
+       user = userSet.to_a[0]
+
+    end
+    
+    
+    if user["curr_list_images"]==nil
+       user["curr_list_images"]=[]
+    end      
+
+
+    if(params[:id][0..7]=='topLiked')
+      viewlist = {"id"=>params[:id], "name"=>"Most liked"}
+      viewlist["imageSet"]=[]
+      viewlist["images"]=[]
+                
+      
+      #get startIndex
+      if params[:tarImage].to_i == -1 or user['email'] == 'guest@guest.guest'
+        if params[:catName]!=nil
+          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "categories"=>params[:catName], "id"=>{"$lt"=>@@privateRange}}).sort({"likeNum"=>-1}).limit(100)
+        else
+          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "id"=>{"$lt"=>@@privateRange}}).sort({"likeNum"=>-1}).limit(100)
+        end
+        
+        dynImages = []
+        likeSet.to_a.each do |likeObj|
+          dynImages.push(likeObj["id"].to_i)
+        end
+        
+        if params[:shuffle].to_i==1
+           dynImages = dynImages.shuffle
+        end
+        
+        
+        startIndex = 0
+      
+        
+        dynImages.each do|image|
+          viewlist["images"].append(image.to_i)
+        end
+        
+      else
+        if user['curr_list_images']!= nil
+           dynImages = user['curr_list_images']
+        end
+        startIndex = 0
+        index = 0
+        dynImages.each do|image|
+          if image.to_i == params[:tarImage].to_i
+            startIndex = index
+          end
+          viewlist["images"].append(image.to_i)
+          index = index+1
+        end
+        
+        
+      end
+      
+      viewlist["tarIndex"] = startIndex+1
+      
+      if params[:forward] == "1"
+        if params[:include] == "1"
+          images = dynImages[startIndex..(startIndex+params[:numOfImg].to_i-1)]
+          
+          if images.length == 1 and viewlist["images"].length > 1
+            viewlist["backward"]="1"
+            images = dynImages[startIndex-1..(startIndex+params[:numOfImg].to_i-1)]
+          end          
+          
+        else
+          images = dynImages[startIndex+1..(startIndex+params[:numOfImg].to_i)]
+        end
+        
+        
+      #backward  
+      else
+        
+        fromIndex = 0
+        
+        
+        if params[:include] == "1"
+          if startIndex-params[:numOfImg].to_i+1 > 0
+            fromIndex = startIndex-params[:numOfImg].to_i+1          
+          end
+          images = dynImages[fromIndex..startIndex] 
+            
+        else
+          if startIndex-params[:numOfImg].to_i > 0
+            fromIndex = startIndex-params[:numOfImg].to_i          
+          end
+          images = dynImages[fromIndex..startIndex-1] 
+        end
+        
+        
+      end
+      
+      
+      
+      if images == nil
+        images = []
+      end
+      
+      images.each do|image|      
+        imageSet = getImageSet2(image,['id','icon','url'])
+        if imageSet.count > 0
+           imageObj = imageSet.to_a[0]
+ 
+           viewlist["imageSet"].append(imageObj)
+                      
+        end 
+      
+      end
+      
+      @@userDb["privLists"].remove({"id"=>params[:id]})
+      @@userDb["privLists"].insert(viewlist)
+      
+      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist['images'], "curr_list"=>viewlist["id"],
+      "shuffle"=>params[:shuffle].to_i}})   
+      
+
+      viewlist["imageNum"] = viewlist["images"].length
+      viewlist["startImage"] = viewlist["images"][0]
+      viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      viewlist.delete("images");
+
+      render :json=>viewlist, :callback => params[:callback]
+      return
+    end
+    
+    
+    
+    if(params[:id][0..2]=='top')
+      viewlist = {"id"=>params[:id], "name"=>"My Top Rated"}
+      viewlist["imageSet"]=[]
+      viewlist["images"]=[]
+      
+      if user['likeImages'] == nil
+        user['likeImages'] = []
+      end
+          
+      
+      #get startIndex
+      if params[:tarImage].to_i == -1 
+        dynImages = user['likeImages']
+        if params[:shuffle].to_i==1
+           dynImages = dynImages.shuffle
+        end
+        
+        
+        startIndex = 0
+      
+        
+        dynImages.each do|image|
+          viewlist["images"].append(image.to_i)
+        end
+        
+      else
+        if user['curr_list_images']!= nil
+           dynImages = user['curr_list_images']
+        end
+        startIndex = 0
+        index = 0
+        dynImages.each do|image|
+          if image.to_i == params[:tarImage].to_i
+            startIndex = index
+          end
+          viewlist["images"].append(image.to_i)
+          index = index+1
+        end
+        
+        
+      end
+      
+      viewlist["tarIndex"] = startIndex+1
+      
+      if params[:forward] == "1"
+        if params[:include] == "1"
+          images = dynImages[startIndex..(startIndex+params[:numOfImg].to_i-1)]
+          
+          if images.length == 1 and viewlist["images"].length > 1
+            viewlist["backward"]="1"
+            images = dynImages[startIndex-1..(startIndex+params[:numOfImg].to_i-1)]
+          end          
+          
+        else
+          images = dynImages[startIndex+1..(startIndex+params[:numOfImg].to_i)]
+        end
+        
+        
+      #backward  
+      else
+        
+        fromIndex = 0
+        
+        
+        if params[:include] == "1"
+          if startIndex-params[:numOfImg].to_i+1 > 0
+            fromIndex = startIndex-params[:numOfImg].to_i+1          
+          end
+          images = dynImages[fromIndex..startIndex] 
+            
+        else
+          if startIndex-params[:numOfImg].to_i > 0
+            fromIndex = startIndex-params[:numOfImg].to_i          
+          end
+          images = dynImages[fromIndex..startIndex-1] 
+        end
+        
+        
+      end
+      
+      
+      
+      if images == nil
+        images = []
+      end
+      
+      images.each do|image|      
+        imageSet = getImageSet2(image,['id','icon','url'])
+        if imageSet.count > 0
+           imageObj = imageSet.to_a[0]
+
+           viewlist["imageSet"].append(imageObj)
+            
+           
+        end 
+      
+      end
+      
+      
+      @@userDb["privLists"].remove({"id"=>params[:id]})
+      @@userDb["privLists"].insert(viewlist)
+      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist['images'], "curr_list"=>viewlist["id"],
+      "shuffle"=>params[:shuffle].to_i}})   
+      
+
+      viewlist["imageNum"] = viewlist["images"].length
+      viewlist["startImage"] = viewlist["images"][0]
+      viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      viewlist.delete("images");
+
+      render :json=>viewlist, :callback => params[:callback]
+      return
+    end
+    
+
+    
+    
+    viewlistSet = getListSet(params[:id])
+    
+    if viewlistSet.count == 0
+      result = {"Status"=>"failure", "Message"=>"unkown viewlist!"}
+
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    
+    
+    
+    
+    viewlist = viewlistSet.to_a[0] 
+    
+    if params[:tarImage].to_i == -1
+      #start over
+      if params[:shuffle].to_i==1
+         viewlist["images"] = viewlist["images"].shuffle
+      end  
+      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"].to_i,
+      "shuffle"=>params[:shuffle].to_i}})         
+      
+    else
+      #continuation do not re-shuffle
+      if user['email']!= 'guest@guest.guest' and user["curr_list_images"] != nil and user["curr_list"].to_s == viewlist['id'].to_s 
+        viewlist["images"] = user["curr_list_images"]
+      end
+      
+    end
+    
+    viewlist["imageSet"]=[]
+    
+    if viewlist['images'] == nil
+      viewlist['images'] = []
+    end
+    
+    
+    images = viewlist["images"]
+
+      #get startIndex
+      if params[:tarImage].to_i == -1 
+        startIndex = 0
+      else
+        startIndex = 0
+        images.each do|image|
+          if image == params[:tarImage].to_i
+            break
+          end
+          startIndex = startIndex+1
+        end
+      end
+      
+      if startIndex >= images.length
+        startIndex = images.length-1
+      end
+      
+      viewlist["tarIndex"] = startIndex+1
+      
+      if params[:forward] == "1"
+        if params[:include] == "1"
+          images = images[startIndex..(startIndex+params[:numOfImg].to_i-1)]
+          # if the target image is the last image, then append the second last to it and force the chunk to be backward
+          if images == nil
+            images = []
+          end
+          if images.length == 1 and viewlist["images"].length > 1
+            viewlist["backward"]="1"
+            images = viewlist["images"][startIndex-1..(startIndex+params[:numOfImg].to_i-1)]
+          end
+          
+        else
+          images = images[startIndex+1..(startIndex+params[:numOfImg].to_i)]
+        end
+        
+
+        
+      #backward  
+      else
+        
+        fromIndex = 0
+        
+        
+        
+        if params[:include] == "1"
+          if startIndex-params[:numOfImg].to_i+1 > 0
+            fromIndex = startIndex-params[:numOfImg].to_i+1          
+          end
+          images = images[fromIndex..startIndex] 
+            
+        else
+          if startIndex-params[:numOfImg].to_i > 0
+            fromIndex = startIndex-params[:numOfImg].to_i          
+          end
+          images = images[fromIndex..startIndex-1] 
+        end
+        
+        
+      end
+      
+      
+      
+      if images == nil or images.length == 0
+        defaultObj = @@contentDb['defaults'].find().to_a[0]
+        listObj = @@contentDb['viewlists'].find({'id'=>defaultObj['viewlist'].to_i}).to_a[0]
+        images = listObj['images']
+        viewlist['images'] = listObj['images']
+        viewlist['forward'] = 1
+        viewlist['tarIndex'] = 1
+        @@userDb['users'].update({'email'=>user['email']},{'$set'=>{'curr_list'=>defaultObj['viewlist'].to_i,
+          'curr_image'=>defaultObj['image'].to_i, 'curr_cat'=>defaultObj['category']}})
+        
+      end
+    
+    images.each do|image|
+      
+      imageSet = getImageSet2(image,['id','icon','url'])
+      if imageSet.count > 0
+        
+        
+        imageObj = imageSet.to_a[0]
+        
+        viewlist["imageSet"].append(imageObj)
+      end
+    end
+    
+
+    viewlist["imageNum"] = viewlist["images"].length
+    viewlist["startImage"] = viewlist["images"][0]
+    viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+    viewlist.delete("images");
+    render :json=>viewlist, :callback => params[:callback]
+ 
+    
+ 
+ 
+ end      
+    
+    
     
 end
 
