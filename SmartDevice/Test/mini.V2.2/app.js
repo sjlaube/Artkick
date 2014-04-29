@@ -91,7 +91,7 @@ require(["jquery",
             function () {
 
                window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-               //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+              // window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -759,19 +759,7 @@ require(["jquery",
                                         dojo.io.script.get({
                                             url: base + "user/saveAsMyViewlist?email=" + window.email + "&token=" + window.token + "&listId=" + curl,
                                             callbackParamName: "callback",
-											timeout: 8000,
-											trytimes: 5,
-											error: function(error){
-												console.log("timeout!vsaveasmyviewlist"+url);
-												this.trytimes --;
-												if(this.trytimes>0){
-													dojo.io.script.get(this);
-												} else{
-													alert("Network problem6. Please check your connection and restart the app.");
-												}
-												
-											},
-                                            load: function (result) {
+											load: function (result) {
                                                 console.log(result['Message']);
 												if (result['Message'] == "error, list doesn't exist!")
 												{
