@@ -143,7 +143,7 @@
                      }
 
         		           
-        		     var caption = result["title"]+"<br>"+result["caption"];
+        		     var caption = decodeURI(result["title"])+"<br>"+decodeURI(result["caption"]);
 
         		       
         		     if(capShow!=null){
@@ -156,7 +156,7 @@
         		     
         		     $('#logo').show();
         		     //caption stay 2 seconds
-        		     setTimeout(function(){
+        		     capShow = setTimeout(function(){
         		       	  $('#caption').hide();
         		     },5000);
         		               
@@ -184,6 +184,158 @@
 
   	 }
   	
+
+
+  	 function handleAuto(result){
+  	 	  	 	   console.log("auto play!");	
+  	 			   if(autoRunning){
+  	 			   	 clearTimeout(autoRunning);
+  	 			   }
+  	 			   
+  	 			   if(morningChecker){
+  	 			   	 clearInterval(morningChecker);
+  	 			   }
+  	 			   
+  	 			   if(result['autoInterval'] == 0){
+  	 			   	  autoInterval = 0;
+  	 			   	 //do nothing
+  	 			   }else if(result['autoInterval']>0){
+  	 			   	  autoInterval = result['autoInterval'];
+  	 			   	  nextImage(1);
+  	 			   	  autoRunning = setTimeout(function(){
+  	 			   	  	 autoPlay();
+  	 			   	  },autoInterval);
+  	 			   }else if(result['autoInterval']==-1){
+  	 			   	  autoInterval = -1;
+  	 			   	 //every morning
+  	 			   	  console.log("every morning!");
+  	 			   	  morningChecker = setInterval(morningTimer,30*60*1000);
+  	 			   }
+  	 }
+  	 
+  	 
+  	 function morningTimer(){
+  	 	var date = new Date();
+  	 	var day = date.getDay();
+  	 	var hour = date.getHours();
+  	 	
+  	 	if(day!=lastSignDay && hour==3){
+  	 		nextImage(1);
+  	 		lastSignDay = day;
+  	 	}
+  	 	
+  	 }
+     
+     function autoPlay(){
+       	   $('div#screen').css('background-image','none');
+       	   var requestLink = nextImageBase+"deviceId="+window.deviceId+"&deviceMaker="+maker+"&next="+1;
+       	   console.log(requestLink);
+       	   $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		this.tryTimes --;
+                    $.ajax(this);
+                    
+            	}
+        	  	
+        	  	
+        	  	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}           	
+            	
+       	  	 },
+       	  	 
+       	  	 success: function(result){
+            	if(result["Status"]=="Failure"){            		
+            		$('div#screen').css('background-image','none');           		
+            	}
+            	
+            	else if(result["imageURL"]!=null){
+ 
+            		   displayImage(result);       		       
+        		       if(autoInterval > 0){
+        		       	 setTimeout(function(){
+        		       	 	autoPlay();
+        		       	 },autoInterval);
+        		       }
+
+            	}
+       	  	 	
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  });     	
+     }
+
+  	 function poll(pollRequest){
+  	 	console.log("Start polling...");
+  	 	$.ajax({
+  	 		url: pollRequest,
+  	 		type: 'GET',
+  	 		dataType: 'jsonp',
+  	 		timeout: 26000,
+  	 		error: function(xhr, status, error){
+  	 			console.log("timeout error");
+  	 			setTimeout(function(){
+  	 				poll(pollRequest);
+  	 			},30);
+  	 		},
+  	 		
+  	 		success: function(result){
+  	 			if(result['type']==null){
+  	 				console.log("Returned! Timeout, do nothing!");
+  	 			}
+  	 			else if(result['type']=='image'){
+  	 				console.log("Returned! New image!");
+  	 				window.result = result;
+  	 				displayImage(result);
+  	 			}
+  	 			
+  	 			else if(result['type']=='removePlayer'){
+  	 				console.log("Returned! Player removed!");
+  	 				$('div#screen').css('background-image','none');
+            		$('div#screen').hide();
+            		$('#logo').hide();     
+            		goToWaitMode();
+            		
+            		//clear interval
+            	    if(autoRunning){
+  	 			   	  clearTimeout(autoRunning);
+  	 			    }
+  	 			   
+  	 			    if(morningChecker){
+  	 			   	  clearInterval(morningChecker);
+  	 			    }
+            		       		
+
+  	 			}
+  	 			
+  	 			
+  	 			else if(result['type']=='autoPlay'){
+
+  	 			   handleAuto(result);
+  	 			}
+  	 			
+  	 			
+  	 			setTimeout(function(){
+  	 				poll(pollRequest);
+  	 			},30);
+  	 		}
+  	 		
+  	 	});
+  	 }
   	 
     
      function updateImage(imageRequest){
@@ -252,16 +404,8 @@
             		   }
             		
                        window.firstTime = false;
-            		   displayImage(result);       		       
-        		       
-        		       if(result["nextPull"] != null){
-        		       	 pullInterval = result["nextPull"];
-        		       	 
-        		       }
-        		       //console.log("nextPull: "+pullInterval);
-      				   polling = setTimeout(
-      				   	function(){
-      				   		updateImage(imageRequest);},pullInterval);
+            		   displayImage(result);       		            		       
+        		       handleAuto(result);
         		       
 
             	}
@@ -307,8 +451,57 @@
       }
              
        
-    var pullInterval = 500;
+      window.nextImage = function(next){
+       	   $('div#screen').css('background-image','none');
+       	   var requestLink = nextImageBase+"deviceId="+window.deviceId+"&deviceMaker="+maker+"&next="+next;
+       	   console.log(requestLink);
+       	   $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		this.tryTimes --;
+                    $.ajax(this);
+                    
+            	}
+        	  	
+        	  	
+        	  	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}           	
+            	
+       	  	 },
+       	  	 
+       	  	 success: function(result){
+            	if(result["Status"]=="Failure"){
+
+            	}
+            	
+            	else if(result["imageURL"]!=null){
+ 
+            		   displayImage(result);       		       
+            	}
+       	  	 	
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  });
+    }          
+    
+    
   	var imageBase = "https://sleepy-scrubland-3038.herokuapp.com/client/v1.1/currentImage.json?";
+  	var nextImageBase = "http://sleepy-scrubland-3038.herokuapp.com/client/v1.1/nextImage.json?";
+  	var pollBase = "http://shrouded-chamber-7349.herokuapp.com/poll?"
        
     var maker = 'chromecast';
     var currImageUrl = null;
@@ -321,7 +514,10 @@
     var inReg = false;
     window.firstTime = true;  
        
-    
+    var autoRunning = null;
+    var autoInterval = 0; 
+    var lastSignDay = -1;
+    var morningChecker = null;    
   	
     cast.receiver.logger.setLevelValue(0);
     window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
@@ -343,12 +539,11 @@
     	window.deviceId = event.data["deviceId"];
     	window.nickname = event.data["nickname"];
         window.imageRequest = imageBase+"deviceId="+window.deviceId+"&deviceMaker="+maker;
+        window.pollRequest = pollBase+"user="+maker+window.deviceId;
         console.log(imageRequest);
         //updateImage(imageRequest);
         
-        if(polling!=undefined){
-            clearTimeout(polling);
-        }
+
             		
         $('div#screen').css('background-image','none');
         $('div#screen').hide();
@@ -362,6 +557,7 @@
         }  
         
         regDevice(email,deviceId,nickname)
+        poll(pollRequest);
     }
     
 
