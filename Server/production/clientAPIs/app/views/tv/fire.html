@@ -49,7 +49,7 @@
 		left:15%;
 		z-index:900;
 		text-align:center;
-		font-size:50px;
+		font-size:20px;
 		display:none;
 	}
 
@@ -73,8 +73,8 @@
 	#logo{
 		position:absolute;
 		width:8%;
-		bottom:10px;
-		right:10px;
+		bottom:15px;
+		right:15px;
 		z-index:900;
 		display:none;
 	}
@@ -93,16 +93,17 @@
   
   $(document).ready(function(){
   	
-
-  	 function displayImage(result) {
+  	
+  	 window.displayImage = function(result) {
   	 	 $("#message").hide();
  
          if(currImageUrl != result["imageURL"]){
            		$('#logo').hide();       	
-            	$('div#screen').css('background-image', 'url('+result["imageURL"]+')');
+            	
+            	
             	currImageUrl = result["imageURL"];
             		   	   
-            		   	   
+            	$('div#screen').css('background-image', 'url('+result["imageURL"]+')');	   	   
                 //wait the image to load then display catption
                 $('<img/>').attr('src', result["imageURL"]).load(function() {
                 	 //console.log(this.height);
@@ -126,11 +127,8 @@
                           return;
                      }
 
-        		     if(result["title"].length>200){
-        		     	result["title"] = result["title"].substring(0,137)+"...";
-        		     }
         		           
-        		     var caption = result["title"]+"<br>"+result["caption"];
+        		      var caption = decodeURI(result["title"])+"<br>"+decodeURI(result["caption"]);
 
         		       
         		     if(capShow!=null){
@@ -139,33 +137,20 @@
         		     
         		     $('#caption').html(caption);
         		     $('#caption').show();
-        		     
-        		/*     
-        	   if(result['stretch']=='true'){
-        		   $('div#screen').css('background-size','cover');
-        		   //$('#logo').css('bottom', '10px');
-        		   //$('#logo').css('right', '10px');
-        	   }
-        	   else{
-        		   $('div#screen').css('background-size','contain');
-        		   //$('#logo').css('bottom', Math.round(topOffset+10)+'px');
-        		   //$('#logo').css('right', Math.round(leftOffset+10)+'px');
-        	   }
-        		*/     
+
         		     
         		     $('#logo').show();
         		     //caption stay 2 seconds
-        		     setTimeout(function(){
+        		     capShow = setTimeout(function(){
         		       	  $('#caption').hide();
-        		     },2000);
+        		     },5000);
         		               
         		               
         		               
         		               
                });
                
-               
-
+           
             		   
         }
         
@@ -180,11 +165,271 @@
         		   //$('#logo').css('right', Math.round(leftOffset+10)+'px');
         	   }
         	   $('div#screen').show();
+        	   $('div#screen').show();
 
   	 }
+  	 
+  	 window.processMessage = function(msgStr){
+  	 	try{
+  	 		result = JSON.parse(msgStr);
+  	 		if(result['type']==null){
+  	 			console.log("Returned! Timeout, do nothing!");
+  	 			log("Returned! Do nothing!");
+  	 	
+  	 		}
+  	 		else if(result['type']=='image'){
+  	 			console.log("Returned! New image!");
+ 	 			log("Returned! New image!");
+  	 			displayImage(result);
+  	 		}
+  	 		
+  	 		else if(result['type']=='removePlayer'){
+  	 			console.log("Returned! Player removed!");
+  	 			$('div#screen').css('background-image','none');
+            	$('div#screen').hide();
+            	$('#logo').hide();     
+            		
+            		
+            	//clear interval
+            	if(autoRunning){
+  	 			   clearTimeout(autoRunning);
+  	 			}
+  	 			   
+  	 			if(morningChecker){
+  	 			   clearInterval(morningChecker);
+  	 			}
+            		       		
+                getRegCode();
+  	 	    }
+  	 			
+  	 		else if(result['type']=='regPlayer'){
+  	 			$("#registration").hide();
+  	            $("#screen").show();
+  	 			console.log("Returned! Player linked!");
+  	 			updateImage(imageRequest);
+  	 			if(regCodePolling!= null){
+       	  	 	  clearTimeout(regCodePolling);
+       	  	 	}
+  	 				
+  	 		}
+  	 			
+  	 		else if(result['type']=='autoPlay'){
+
+  	 			handleAuto(result);
+  	 		}  	 		
+  	 		
+  	 	}catch(err){
+  	 		console.log("invalid json string");
+  	 	}
+  	 	
+  	 }
   	
-  	
-    
+  	 function handleAuto(result){
+  	 	  	 	   console.log("auto play!");	
+  	 			   if(autoRunning){
+  	 			   	 clearTimeout(autoRunning);
+  	 			   }
+  	 			   
+  	 			   if(morningChecker){
+  	 			   	 clearInterval(morningChecker);
+  	 			   }
+  	 			   
+  	 			   if(result['autoInterval'] == 0){
+  	 			   	  autoInterval = 0;
+  	 			   	 //do nothing
+  	 			   }else if(result['autoInterval']>0){
+  	 			   	  autoInterval = result['autoInterval'];
+  	 			   	  nextImage(1);
+  	 			   	  autoRunning = setTimeout(function(){
+  	 			   	  	 autoPlay();
+  	 			   	  },autoInterval);
+  	 			   }else if(result['autoInterval']==-1){
+  	 			   	  autoInterval = -1;
+  	 			   	 //every morning
+  	 			   	  console.log("every morning!");
+  	 			   	  morningChecker = setInterval(morningTimer,30*60*1000);
+  	 			   }
+  	 }
+  	 
+  	 
+  	 function morningTimer(){
+  	 	var date = new Date();
+  	 	var day = date.getDay();
+  	 	var hour = date.getHours();
+  	 	
+  	 	if(day!=lastSignDay && hour==3){
+  	 		nextImage(1);
+  	 		lastSignDay = day;
+  	 	}
+  	 	
+  	 }
+     
+  	 function poll(pollRequest){
+  	 	console.log("Start polling...");
+  	 	$.ajax({
+  	 		url: pollRequest,
+  	 		type: 'GET',
+  	 		dataType: 'jsonp',
+  	 		timeout: 29000,
+  	 		error: function(xhr, status, error){
+  	 			console.log("timeout error");
+  	 			setTimeout(function(){
+  	 				poll(pollRequest);
+  	 			},30);
+  	 		},
+  	 		
+  	 		success: function(result){
+  	 			if(result['type']==null){
+  	 				console.log("Returned! Timeout, do nothing!");
+  	 			}
+  	 			else if(result['type']=='image'){
+  	 				console.log("Returned! New image!");
+  	 				window.result = result;
+  	 				displayImage(result);
+  	 			}
+  	 			
+  	 			else if(result['type']=='removePlayer'){
+  	 				console.log("Returned! Player removed!");
+  	 				$('div#screen').css('background-image','none');
+            		$('div#screen').hide();
+            		$('#logo').hide();     
+            		
+            		
+            		//clear interval
+            	    if(autoRunning){
+  	 			   	  clearTimeout(autoRunning);
+  	 			    }
+  	 			   
+  	 			    if(morningChecker){
+  	 			   	  clearInterval(morningChecker);
+  	 			    }
+            		       		
+            		getRegCode();
+  	 			}
+  	 			
+  	 			else if(result['type']=='regPlayer'){
+  	 				$("#registration").hide();
+  	                $("#screen").show();
+  	 				console.log("Returned! Player linked!");
+  	 				updateImage(imageRequest);
+  	 				if(regCodePolling!= null){
+       	  	 			clearTimeout(regCodePolling);
+       	  	 		}
+  	 				
+  	 			}
+  	 			
+  	 			else if(result['type']=='autoPlay'){
+
+  	 			   handleAuto(result);
+  	 			}
+  	 			
+  	 			setTimeout(function(){
+  	 				poll(pollRequest);
+  	 			},30);
+  	 			
+  	 		}
+  	 		
+  	 	});
+  	 }     
+     
+     
+     function autoPlay(){
+       	   //$('div#screen').css('background-image','none');
+       	   var requestLink = nextImageBase+"deviceId="+uid+"&deviceMaker="+maker+"&next="+1;
+       	   console.log(requestLink);
+       	   $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		this.tryTimes --;
+                    $.ajax(this);
+                    
+            	}
+        	  	
+        	  	
+        	  	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}           	
+            	
+       	  	 },
+       	  	 
+       	  	 success: function(result){
+            	if(result["Status"]=="Failure"){
+            		
+            		if(polling!=undefined){
+            			clearTimeout(polling);
+            		}
+            		
+            		$('div#screen').css('background-image','none');
+            		
+            	}
+            	
+            	else if(result["imageURL"]!=null){
+ 
+            		   displayImage(result);       		       
+        		       if(autoInterval > 0){
+        		       	 setTimeout(function(){
+        		       	 	autoPlay();
+        		       	 },autoInterval);
+        		       }
+
+            	}
+       	  	 	
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  });     	
+     }
+
+     
+     window.removePlayer = function(){
+     	$.ajax({
+     		url:removalBase+"uid="+uid+"&maker="+maker,
+            type: 'GET',
+            dataType:'jsonp',
+            timeout: 10000,
+            tryTimes: 3,
+            error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		
+            		this.tryTimes --;
+                    $.ajax(this);
+                    
+            	}
+            	
+            	else{
+            		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+            		$("#message").show();
+            	}
+
+            },
+            
+            success: function(result) {
+            	if(result["Status"]=="success"){
+            		
+            	}
+            	            	               
+               
+           } 
+     	});
+     }
+     
      function updateImage(imageRequest){
   	    //console.log(imageRequest);
   	    
@@ -200,9 +445,6 @@
             
             
             error: function(xhr, status, error) {
-            	if(inReg){
-            		return;
-            	}
             	if(this.tryTimes > 0){
             		try{
             			console.log('ajax error '+error);
@@ -211,10 +453,7 @@
             		}
             		
             		this.tryTimes --;
-            		setTimeout(function(){
-            			$.ajax(this);
-            		},1000);
-                    
+                    $.ajax(this);
                     
             	}
             	
@@ -225,16 +464,8 @@
 
             },
             
-            success: function(result) {     
-            	if(inReg){
-            		return;
-            	}
-            	       	
+            success: function(result) {
             	if(result["Status"]=="Failure"){
-            		inReg = true;
-            		if(polling!=undefined){
-            			clearTimeout(polling);
-            		}
             		
             		$('div#screen').css('background-image','none');
             		$('div#screen').hide();
@@ -243,24 +474,13 @@
             		//$("#message").show();
             		
             		getRegCode();
-                    checkRegStatus();
             		
             	}
             	
             	else if(result["imageURL"]!=null){
  
             		   displayImage(result);       		       
-        		       
-        		       if(result["nextPull"] != null){
-        		       	 pullInterval = result["nextPull"];
-        		       	 
-        		       }
-        		       //console.log("nextPull: "+pullInterval);
-      				   polling = setTimeout(
-      				   	function(){
-      				   		updateImage(imageRequest);},pullInterval);
-        		       
-
+        		       handleAuto(result);
             	}
             	               
                
@@ -292,9 +512,7 @@
             			
             		}
        	  	 		this.tryTimes --;
-       	  	 		setTimeout(function(){
-            			$.ajax(this);
-            		},1000);
+       	  	 		$.ajax(this);
        	  	 	}
        	  	 	
        	  	 	else{
@@ -359,70 +577,11 @@
        	  
        }
        
-       function checkRegStatus(){
-       	   var requestLink = regBase+"/getRegStatus?deviceId="+uid+"&deviceMaker="+maker+"&regCode="+regCode;
-       	   console.log("checking regStatus...");
-       	   $.ajax({
-       	  	 url: requestLink,
-       	  	 type: 'GET',
-       	  	 dataType:'jsonp',
-       	  	 timeout:10000,
-       	  	 tryTimes:5,
-       	  	 error: function(xhr, status, error) {
-            	if(this.tryTimes > 0){
-            		try{
-            			console.log('ajax error '+error);
-            		} catch(err){
-            			
-            		}
-            		this.tryTimes --;
-            		setTimeout(function(){
-            			$.ajax(this);
-            		},1000);
-                    
-            	}
-        	  	
-        	  	
-        	  	else{
-       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
-       	  	 		$("#message").show();
-       	  	 	}           	
-            	
-       	  	 },
-       	  	 
-       	  	 success: function(result){
-       	  	 	if(result['Status']=='success'){
-       	  	 		// registration finished!
-       	  	 		inReg = false;
-       	  	 		$("#message").hide();
-       	  	 		
-       	  	 		if(regCodePolling!= null){
-       	  	 			clearTimeout(regCodePolling);
-       	  	 		}
-       	  	 		
-       	  	 		updateImage(imageRequest);
-       	  	 	}
-       	  	 	
-       	  	 	
-       	  	 	else{
-       	  	 		setTimeout(function(){
-       	  	 			checkRegStatus();
-       	  	 		},500);
-       	  	 	}
-       	  	 	
-       	  	 }
-       	  	 
-       	  	 
-       	  	 
-       	  });
-       }
-       
-
 
 
 
        window.nextImage = function(next){
-       	   $('div#screen').css('background-image','none');
+       	   //$('div#screen').css('background-image','none');
        	   var requestLink = nextImageBase+"deviceId="+uid+"&deviceMaker="+maker+"&next="+next;
        	   console.log(requestLink);
        	   $.ajax({
@@ -439,9 +598,7 @@
             			
             		}
             		this.tryTimes --;
-            		setTimeout(function(){
-            			$.ajax(this);
-            		},1000);
+                    $.ajax(this);
                     
             	}
         	  	
@@ -465,7 +622,6 @@
             		//$("#message").show();
             		
             		getRegCode();
-                    checkRegStatus();
             		
             	}
             	
@@ -481,22 +637,30 @@
        	  	 
        	  	 
        	  });
-       }       
-              
-       var pullInterval = 500;
+       }   
+       
+       var logs = [];
+       var polling = null;
   	   var url = "";
   	   var imageBase = "http://sleepy-scrubland-3038.herokuapp.com/client/v1.1/currentImage.json?";
   	   var nextImageBase = "http://sleepy-scrubland-3038.herokuapp.com/client/v1.1/nextImage.json?";
+  	   var removalBase = "http://sleepy-scrubland-3038.herokuapp.com/client2/removePlayer?";
   	   var regBase = "http://evening-garden-3648.herokuapp.com/registration/v1.0/";
+  	   var pollBase = "http://shrouded-chamber-7349.herokuapp.com/poll?"
   	   
   	   
        var requestURL = window.document.URL.toString(); 
        var uid = requestURL.split('uid=')[1];
        var regCode = null;
        
-       //var maker = 'Opera';
-       var maker = 'Opera';
+
+       var maker = 'Amazon';
        var currImageUrl = null;
+       var autoRunning = null;
+       var autoInterval = 0; 
+       var lastSignDay = -1;
+       var morningChecker = null;
+       
        
        if(uid==undefined||uid.trim().length==0){
     	 console.log("uid not provided!");
@@ -506,25 +670,13 @@
        }  
        
        
-       var polling = null;
-       var regCodePolling = null;
        var capShow = null;
        var topOffset = 0;
        var leftOffset = 0;
        
-       var inReg = false;
        
        var imageRequest = imageBase+"deviceId="+uid+"&deviceMaker="+maker;
-       
-       
-       //add key event listener 
-       /*if (window.KeyboardEvent){
-             window.addEventListener('keydown', handler, useCapture);
-       } else {
-             window.addEventListener('keypress', handler, useCapture);
-       } 
-       
-       */
+       var pollRequest = pollBase+"user="+maker+uid;
       
       window.onkeydown = handler;
       
@@ -532,40 +684,15 @@
       	   //console.log("KeyCode: " + event.keyCode);
       	   //$("#message").html("KeyCode: "+event.keyCode);
            //$("#message").show();
-           if(event.keyCode == 405){
-           	       if(inReg){
-           	       	  return;
-           	       }
-           	
-           	       inReg = true;
-           	       if(polling!=undefined){
-            			clearTimeout(polling);
-            		}
-            		
-            		$('div#screen').css('background-image','none');
-            		$('div#screen').hide();
-            		$('#logo').hide();            		
-            		getRegCode();
-                    checkRegStatus();
-           }
-           
-           else if(event.keyCode == 417 || event.keyCode == 425 || event.keyCode == 39) {
-           	   if(!inReg)
-           	          nextImage(1);
-           	   else{
-           	   	     window.scrollTo(0,0);
-           	   }
+           if(event.keyCode == 417 || event.keyCode == 425 || event.keyCode == 39) {
+           	   nextImage(1);
            }
            
            else if(event.keyCode == 412 || event.keyCode == 424 || event.keyCode == 37) {
-           	   if(!inReg)
-           	          nextImage(0);
-           	   else{
-           	   	     window.scrollTo(0,0);
-           	   }
+           	   nextImage(0);
            }
            
-           else if(event.keyCode == 457 && !inReg){
+           else if(event.keyCode == 457){
            	  $('#caption').show();
         	  setTimeout(function(){
         		  $('#caption').hide();
@@ -573,10 +700,32 @@
            	
            }
        }
+
+
+       window.log = function(msg){
+       	  if(logs.length > 6){
+       	  	logs.shift();
+       	  }
+       	  
+       	  logs.push(msg+" "+new Date().getTime());
+       	  var msgStr ="";
+       	  for(var i in logs){
+       	  	msgStr+=logs[i];
+            msgStr+="<br>";
+       	  }
+       	  	
+       	  $("#message").html(msgStr);
+       	  $("#message").show();
+       }
+       
+
+
       
        console.log(imageRequest);
        updateImage(imageRequest);
-       
+       console.log(pollRequest);
+       poll(pollRequest);
+       //Android.startPolling(pollRequest);
        
       
       
@@ -595,17 +744,17 @@
   
   <title>ArtKick</title>
   <body>
-        <img id="logo" src="/images/logo.png"> 
+        <img id="logo" class="normal" src="/images/logo.png"> 
         
         
-        <div id="message">  </div>
+        <div id="message" class="normal">  </div>
        
-              
-        
-        <div id = "caption"> </div>
+       
+
+        <div id = "caption" class="normal"> </div>
 	
 		<!--  This is where the images will display (as background of div)-->
-		<div id = "screen">
+	   <div id = "screen"  class="normal"> </div>
 		</div>
 		
 		<!--  registration -- displays only if device not registered -->
@@ -633,7 +782,7 @@
 				</tr>
 				<tr align="center" >
 					<td>				
-						<label>Tap Menu/Connect TV</label>		
+						<label>Goto ConnectTV</label>		
 					</td>
 				</tr>
 				<tr align="center" >
@@ -654,7 +803,7 @@
 				</tr>
 				<tr align="center" >
 					<td>
-						
+						<button id="btnRetry" onclick="register();" type="button" style="display:none;" class="ui-button ui-button-text-only ui-widget ui-corner-all">Retry</button>
 					</td>
 				</tr>
 				<tr align="center" height="100">
