@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+<html>
+  <script src="https://www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js">
+  </script>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+  <style>
+  
+   *{
+   	overflow:hidden;
+   }
+  
+  	.imageTitle{
+		font-family:"Times New Roman",Times,serif;
+		font-style:oblique;
+		font-size:20px;
+		text-align:center;
+	}
+	
+    #regSection{      
+    	width:70%;
+    	height:50%;
+        position:absolute;
+        left:14%;
+        top:25%;
+    	text-align:center;
+    	font-size:30px;
+    	background-color:white;
+    	color:blue;
+        padding:1%;
+        z-index:900;
+    }
+
+	div#registration {		
+		background-color: white;
+		position: absolute;
+		left:0;
+		top:0;
+		height: 100%;
+        width: 100%;
+        display:none;
+	}
+	
+    div#screen {
+        background-size: contain;
+        position: absolute;
+        background-position: center;
+        background-color: black;
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 100%;
+
+    }
+	#labelMessage{
+		text-align:center;
+		color:black;
+		background-color:white;
+	}
+	#message{
+		color: red;
+		position: absolute;
+		top:30%;
+		width:70%;
+		left:15%;
+		z-index:900;
+		text-align:center;
+		font-size:50px;
+		display:none;
+	}
+
+    #caption{      
+    	width:50%;
+    	height:12%;
+        position:absolute;
+        left:24%;
+        bottom:10px;
+    	text-align:center;
+    	font-size:20px;
+    	background-color:gray;
+    	color:white;
+    	opacity:0.8;
+        border-radius:10px;
+        padding:1%;
+        display:none;
+        z-index:900;
+    }
+	
+	#logo{
+		position:absolute;
+		width:8%;
+		bottom:25px;
+		right:35px;
+		z-index:900;
+		display:none;
+	}
+		
+</style>
+  
+  
+  <script type="text/javascript">
+
+  
+  $(document).ready(function(){
+    
+    function displayImage(result) {
+  	 	 $("#message").hide();
+ 
+         if(currImageUrl != result["imageURL"]){
+           		$('#logo').hide();  
+           		$('#message').hide();
+           		$('div#screen').show();     	
+            	$('div#screen').css('background-image', 'url('+result["imageURL"]+')');
+            	currImageUrl = result["imageURL"];
+            		   	   
+            		   	   
+                //wait the image to load then display catption
+                $('<img/>').attr('src', result["imageURL"]).load(function() {
+                	 //console.log(this.height);
+                	 
+                	 if (this.width/this.height >= window.innerWidth/window.innerHeight){
+                	 	var scaledWidth = window.innerWidth;
+                	 	var scaledHeight = window.innerWidth*this.height/this.width;
+                	 } else{
+                	 	var scaledHeight = window.innerHeight;
+                	 	var scaledWidth = window.innerHeight*this.width/this.height;
+                	 }
+                	 
+                	 leftOffset = (window.innerWidth - scaledWidth)/2;
+                	 topOffset = (window.innerHeight - scaledHeight)/2;
+                	 //console.log("scaledWidth: "+scaledWidth);
+                	 //console.log("leftOffset: "+leftOffset);
+                	 
+                     $(this).remove();
+                     if(currImageUrl!=$(this).attr('src')){
+                          //image is already changed!
+                          return;
+                     }
+
+
+                     if(result["title"].length>140){
+                        result["title"] = result["title"].substring(0,137)+"...";
+                     }
+
+        		           
+        		     var caption = decodeURI(result["title"])+"<br>"+decodeURI(result["caption"]);
+
+        		       
+        		     if(capShow!=null){
+        		     	clearTimeout(capShow);
+        		     }  
+        		     
+        		     $('#caption').html(caption);
+        		     $('#caption').show();
+        		        
+        		     
+        		     $('#logo').show();
+        		     //caption stay 2 seconds
+        		     capShow = setTimeout(function(){
+        		       	  $('#caption').hide();
+        		     },5000);
+        		               
+        		               
+        		               
+        		               
+               });
+               
+               
+
+            		   
+        }
+        
+               if(result['stretch']=='true'){
+        		   $('div#screen').css('background-size','cover');
+        		   //$('#logo').css('bottom', '10px');
+        		   //$('#logo').css('right', '10px');
+        	   }
+        	   else{
+        		   $('div#screen').css('background-size','contain');
+        		   //$('#logo').css('bottom', Math.round(topOffset+10)+'px');
+        		   //$('#logo').css('right', Math.round(leftOffset+10)+'px');
+        	   }
+        	   $('div#screen').show();
+
+  	 }
+  	
+
+
+  	 function handleAuto(result){
+  	 	  	 	   console.log("auto play!");	
+  	 			   if(autoRunning){
+  	 			   	 clearTimeout(autoRunning);
+  	 			   }
+  	 			   
+  	 			   if(morningChecker){
+  	 			   	 clearInterval(morningChecker);
+  	 			   }
+  	 			   
+  	 			   if(result['autoInterval'] == 0){
+  	 			   	  autoInterval = 0;
+  	 			   	 //do nothing
+  	 			   }else if(result['autoInterval']>0){
+  	 			   	  autoInterval = result['autoInterval'];
+  	 			   	  nextImage(1);
+  	 			   	  autoRunning = setTimeout(function(){
+  	 			   	  	 autoPlay();
+  	 			   	  },autoInterval);
+  	 			   }else if(result['autoInterval']==-1){
+  	 			   	  autoInterval = -1;
+  	 			   	 //every morning
+  	 			   	  console.log("every morning!");
+  	 			   	  morningChecker = setInterval(morningTimer,30*60*1000);
+  	 			   }
+  	 }
+  	 
+  	 
+  	 function morningTimer(){
+  	 	var date = new Date();
+  	 	var day = date.getDay();
+  	 	var hour = date.getHours();
+  	 	
+  	 	if(day!=lastSignDay && hour==3){
+  	 		nextImage(1);
+  	 		lastSignDay = day;
+  	 	}
+  	 	
+  	 }
+     
+     function autoPlay(){
+       	   $('div#screen').css('background-image','none');
+       	   var requestLink = nextImageBase+"deviceId="+window.deviceId+"&deviceMaker="+maker+"&next="+1;
+       	   console.log(requestLink);
+       	   $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		this.tryTimes --;
+                    $.ajax(this);
+                    
+            	}
+        	  	
+        	  	
+        	  	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}           	
+            	
+       	  	 },
+       	  	 
+       	  	 success: function(result){
+            	if(result["Status"]=="Failure"){            		
+            		$('div#screen').css('background-image','none');           		
+            	}
+            	
+            	else if(result["imageURL"]!=null){
+ 
+            		   displayImage(result);       		       
+        		       if(autoInterval > 0){
+        		       	 setTimeout(function(){
+        		       	 	autoPlay();
+        		       	 },autoInterval);
+        		       }
+
+            	}
+       	  	 	
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  });     	
+     }
+
+  	 function poll(pollRequest){
+  	 	console.log("Start polling...");
+  	 	$.ajax({
+  	 		url: pollRequest,
+  	 		type: 'GET',
+  	 		dataType: 'jsonp',
+  	 		timeout: 26000,
+  	 		error: function(xhr, status, error){
+  	 			console.log("timeout error");
+  	 			setTimeout(function(){
+  	 				poll(pollRequest);
+  	 			},30);
+  	 		},
+  	 		
+  	 		success: function(result){
+  	 			if(result['type']==null){
+  	 				console.log("Returned! Timeout, do nothing!");
+  	 			}
+  	 			else if(result['type']=='image'){
+  	 				console.log("Returned! New image!");
+  	 				window.result = result;
+  	 				displayImage(result);
+  	 			}
+  	 			
+  	 			else if(result['type']=='removePlayer'){
+  	 				console.log("Returned! Player removed!");
+  	 				$('div#screen').css('background-image','none');
+            		$('div#screen').hide();
+            		$('#logo').hide();     
+            		goToWaitMode();
+            		
+            		//clear interval
+            	    if(autoRunning){
+  	 			   	  clearTimeout(autoRunning);
+  	 			    }
+  	 			   
+  	 			    if(morningChecker){
+  	 			   	  clearInterval(morningChecker);
+  	 			    }
+            		       		
+
+  	 			}
+  	 			
+  	 			
+  	 			else if(result['type']=='autoPlay'){
+
+  	 			   handleAuto(result);
+  	 			}
+  	 			
+  	 			
+  	 			setTimeout(function(){
+  	 				poll(pollRequest);
+  	 			},30);
+  	 		}
+  	 		
+  	 	});
+  	 }
+  	 
+    
+     function updateImage(imageRequest){
+  	    //console.log(imageRequest);
+  	    
+  	    $("#registration").hide();
+  	    $("#message").hide();
+  	    $("#screen").show();
+        $.ajax({
+            url: imageRequest,
+            type: 'GET',
+            dataType:'jsonp',
+            timeout: 10000,
+            tryTimes: 20,
+             
+            
+            
+            error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		
+            		this.tryTimes --;
+                    $.ajax(this);
+                    
+            	}
+            	
+            	else{
+            		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+            		$("#message").show();
+            	}
+
+            },
+            
+            success: function(result) {
+            	if(result["Status"]=="Failure"){
+            		
+            		if(polling!=undefined){
+            			clearTimeout(polling);
+            		}
+            		
+            		$('div#screen').css('background-image','none');
+            		$('div#screen').hide();
+            		$('div#message').hide();
+            		$('#logo').hide();
+            		
+                   if(window.firstTime){
+                        $('#labelMessage').html("Your ChromeCast is being registered...");
+                        $('#registration').show();
+                        window.firstTime = false;
+                        regDevice(window.email,window.deviceId,window.nickname);
+                    }  else{
+                        goToWaitMode();
+                        window.firstTime = true;
+                    }        		
+            		
+            		
+            	}
+            	
+            	else if(result["imageURL"]!=null){
+            		   if(inReg){
+            		   	 return;
+            		   }
+            		
+                       window.firstTime = false;
+            		   displayImage(result);       		            		       
+        		       handleAuto(result);
+        		       
+
+            	}
+            	               
+               
+           }
+        });   
+      }
+  
+   function goToWaitMode(){
+   	    $('#labelMessage').html("This ChromeCast is unlinked. To relink it, press the Cast Button again!");
+   	    $('#registration').show();
+   }
+  
+   function regDevice(email,deviceId,nickname){
+   	    inReg = true;
+      	var link = "https://evening-garden-3648.herokuapp.com/reg/chromeReg?";
+      	link += "email="+email+"&deviceId="+deviceId+"&nickname="+nickname;
+      	console.log(link);
+      	$.ajax({
+      		url:link,
+      		type: 'GET',
+      		dataType: 'jsonp',
+      		timeout:2000,
+      		error: function(xhr, status, error) {
+      			 //alert("error");
+      			 console.log('ajax error '+error);
+      			 $.ajax(this);
+      		},
+      		success: function(result) {
+      			if(result["Status"]=="success"){
+      				inReg = false;
+                    updateImage(imageRequest);
+      			}else{
+      				$('#labelMessage').html("It seems the registration is not successfull, please try again!");
+   	                $('#registration').show();
+      			}
+
+      		}
+      		
+      	});
+      	
+      }
+             
+       
+      window.nextImage = function(next){
+       	   $('div#screen').css('background-image','none');
+       	   var requestLink = nextImageBase+"deviceId="+window.deviceId+"&deviceMaker="+maker+"&next="+next;
+       	   console.log(requestLink);
+       	   $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 error: function(xhr, status, error) {
+            	if(this.tryTimes > 0){
+            		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+            		this.tryTimes --;
+                    $.ajax(this);
+                    
+            	}
+        	  	
+        	  	
+        	  	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}           	
+            	
+       	  	 },
+       	  	 
+       	  	 success: function(result){
+            	if(result["Status"]=="Failure"){
+
+            	}
+            	
+            	else if(result["imageURL"]!=null){
+ 
+            		   displayImage(result);       		       
+            	}
+       	  	 	
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  });
+    }          
+    
+    
+  	var imageBase = "https://sleepy-scrubland-3038.herokuapp.com/client/v1.1/currentImage.json?";
+  	var nextImageBase = "http://sleepy-scrubland-3038.herokuapp.com/client/v1.1/nextImage.json?";
+  	var pollBase = "http://shrouded-chamber-7349.herokuapp.com/poll?"
+       
+    var maker = 'chromecast';
+    var currImageUrl = null;
+    
+           
+    var polling = null;
+    var capShow = null;
+    var topOffset = 0;
+    var leftOffset = 0;
+    var inReg = false;
+    window.firstTime = true;  
+       
+    var autoRunning = null;
+    var autoInterval = 0; 
+    var lastSignDay = -1;
+    var morningChecker = null;    
+  	
+    cast.receiver.logger.setLevelValue(0);
+    window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
+
+    window.pvt = window.castReceiverManager.getCastMessageBus("urn:x-cast:artkick",cast.receiver.CastMessageBus.MessageType.JSON);
+    window.castReceiverManager.start({maxInactivity:Infinity});
+    
+    pvt.onMessage = function(event) {
+    	//event.senderId
+    	//event.type
+    	window.firstTime = true;
+    	console.log("recevied!");
+    	console.log(event.data);
+    	console.log(event.data["deviceId"]);
+    	console.log(event.data["userEmail"]);
+    	console.log(event.data["nickname"]);
+    	
+    	window.email = event.data["userEmail"];
+    	window.deviceId = event.data["deviceId"];
+    	window.nickname = event.data["nickname"];
+        window.imageRequest = imageBase+"deviceId="+window.deviceId+"&deviceMaker="+maker;
+        window.pollRequest = pollBase+"user="+maker+window.deviceId;
+        console.log(imageRequest);
+        //updateImage(imageRequest);
+        
+
+            		
+        $('div#screen').css('background-image','none');
+        $('div#screen').hide();
+        $('div#message').hide();
+        $('#logo').hide();
+            		
+        if(window.firstTime){
+            $('#labelMessage').html("Your ChromeCast is being registered...");
+            $('#registration').show();
+            window.firstTime = false;                 
+        }  
+        
+        regDevice(email,deviceId,nickname)
+        poll(pollRequest);
+    }
+    
+
+    
+    
+
+  });
+    
+    
+    
+       
+    
+    
+  </script>
+  
+  
+  
+  
+  <title>ArtKick</title>
+  <body>
+        <img id="logo" src="images/logo.png"> 
+        
+        
+        <div id="message">  </div>
+              
+                
+        <div id = "caption"> </div>
+	
+		<!--  This is where the images will display (as background of div)-->
+		<div id = "screen" style="position:absolute;top:0;left:0;height:100%;width:100%">
+		</div>
+		
+		<!--  registration -- displays only if device not registered -->
+		<div id="registration">
+			<div id="regSection">
+			   <img src="/images/ArtkickLogo.png"></img>
+			   <div id="labelMessage">Your ChromeCast is being registered...</div>
+			</div>
+		</div>
+   
+  </body>
+</html>
+

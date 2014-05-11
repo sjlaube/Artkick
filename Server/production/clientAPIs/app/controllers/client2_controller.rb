@@ -1,4 +1,4 @@
-class Client1Controller < ApplicationController
+class Client2Controller < ApplicationController
   require 'rubygems'
   require 'mongo'
   include Mongo
@@ -117,7 +117,8 @@ class Client1Controller < ApplicationController
       @@contentClient.close
     end
   end
-    
+  
+  
   def player 
   end
   
@@ -126,28 +127,44 @@ class Client1Controller < ApplicationController
   def nextImage       
     if(params[:deviceId]==nil)
       result = {"Status"=>"Failure", "message"=>"no device id!"}
-      render json: result
+      render :json=>result, :callback => params[:callback]
       return
     end
     
     if(params[:deviceMaker]==nil)
       result = {"Status"=>"Failure", "message"=>"no deviceMaker!"}
-      render json: result
+      render :json=>result, :callback => params[:callback]
       return
     end
     
     
+    #if(params[:regToken]==nil)
+    #  result = {"Status"=>"Failure", "message"=>"no reg token!"}
+    #  render :json=>result, :callback => params[:callback]
+    #  return
+    #end
     
     
+    
+    
+    
+
     
     defaultObj = @@contentDb['defaults'].find().to_a[0]
     
     if @@userDb['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId]}).count == 0
       result = {"Status"=>"Failure", "StatusCode"=>101, "message"=>"Player doesn't exist!"}
-      render json: result 
+      render :json=>result, :callback => params[:callback]
       return
     end
     
+    
+    #if @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId], "reg_token"=>params[:regToken]}).count == 0
+    #  result = {"Status"=>"Failure", "StatusCode"=>102,"message"=>"Wrong regtoken!"}
+    #  @client.close
+    #  render :json=>result, :callback => params[:callback]
+    #  return
+    #end
     
     utctime = utcMillis() #current utc millis
     
@@ -183,15 +200,15 @@ class Client1Controller < ApplicationController
          if @player["curr_list_images"]!=nil and @player["curr_list_images"].length>0
            images = @player["curr_list_images"]
          end
-          
+    
          if currListObj['id'].to_s.include? 'getty'
            testId = images[0]
            if currListObj['imageMap'][testId] == nil
              images = currListObj['images']
            end
-         end 
-          
-          
+         end    
+    
+    
     if params[:next].to_i == 1
        currIndex = (@player["curr_index"].to_i + images.length + 1)%images.length
           while true
@@ -232,8 +249,7 @@ class Client1Controller < ApplicationController
             
          end
     end
-    
- 
+      
     
 
              
@@ -258,7 +274,7 @@ class Client1Controller < ApplicationController
          
          
     @@userDb['clients'].update({'account'=>params[:deviceMaker]+params[:deviceId]},"$set"=>{'last_visit'=>utctime,
-    'curr_index'=>currIndex,'curr_image'=>currImage["id"], 'image_time_stamp'=>utcMillis()})
+    'curr_index'=>currIndex,'curr_image'=>currImage["id"]})
   
                     
     result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"].sub('https://','http://'),"title"=>currImage["Title"],
@@ -270,7 +286,7 @@ class Client1Controller < ApplicationController
         result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
     end
     
-        render json: JSON.pretty_generate(result)   
+        render :json=>result, :callback => params[:callback]
   end 
   
   
@@ -280,13 +296,13 @@ class Client1Controller < ApplicationController
   def currentImage       
     if(params[:deviceId]==nil)
       result = {"Status"=>"Failure", "message"=>"no device id!"}
-      render json: result
+      render :json=>result, :callback => params[:callback]
       return
     end
     
     if(params[:deviceMaker]==nil)
       result = {"Status"=>"Failure", "message"=>"no deviceMaker!"}
-      render json: result
+      render :json=>result, :callback => params[:callback]
       return
     end
     
@@ -300,17 +316,25 @@ class Client1Controller < ApplicationController
     
     
     
+  
     
     
     defaultObj = @@contentDb['defaults'].find().to_a[0]
     
     if @@userDb['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId]}).count == 0
       result = {"Status"=>"Failure", "StatusCode"=>101, "message"=>"Player doesn't exist!"}
-      render json: result
+
+      render :json=>result, :callback => params[:callback]
       return
     end
     
     
+    #if @db['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId], "reg_token"=>params[:regToken]}).count == 0
+    #  result = {"Status"=>"Failure", "StatusCode"=>102,"message"=>"Wrong regtoken!"}
+    #  @client.close
+    #  render json: result
+    #  return
+    #end
     
         
     @player = @@userDb['clients'].find({'account'=>params[:deviceMaker]+params[:deviceId]}).to_a[0]
@@ -320,8 +344,7 @@ class Client1Controller < ApplicationController
     if image_time_stamp == nil
       image_time_stamp = utctime
     end
-  
-      
+    
     if utctime - image_time_stamp > 40*60000
       pullInterval = 18000
     elsif utctime - image_time_stamp > 20*60000
@@ -330,7 +353,11 @@ class Client1Controller < ApplicationController
       pullInterval = 4000
     else
       pullInterval = 500
-    end  
+    end 
+    
+    if @player["autoInterval"] == nil
+      @player["autoInterval"] = 0
+    end
     
 
     
@@ -345,7 +372,7 @@ class Client1Controller < ApplicationController
           
          lastMorning = utctime
          
-          currListObj = nil
+         currListObj = nil
          userObj = nil
          if @player["curr_list"].to_s.include?'getty'
            userEmail = @player["curr_list"][6,@player["curr_list"].length-1]
@@ -368,18 +395,16 @@ class Client1Controller < ApplicationController
          end
          
          images = currListObj["images"]
-         if @player["curr_list_images"]!=nil and @player["curr_list_images"].length>0 
+         if @player["curr_list_images"]!=nil and @player["curr_list_images"].length>0
            images = @player["curr_list_images"]
          end
-         
-         
+ 
          if currListObj['id'].to_s.include? 'getty'
            testId = images[0]
            if currListObj['imageMap'][testId] == nil
              images = currListObj['images']
            end
-         end
-         
+         end 
          
          currIndex = (@player["curr_index"].to_i + 1)%images.length
          while true
@@ -403,6 +428,11 @@ class Client1Controller < ApplicationController
             
          end
          
+         
+             
+    
+
+         
 
     
          stretch = "false"
@@ -410,7 +440,7 @@ class Client1Controller < ApplicationController
            stretch = @player["stretch"].to_s
          end
          
-         @@userDb['clients'].update({'account'=>params[:deviceMaker]+params[:deviceId]},"$set"=>{'last_visit'=>utctime,
+         @userDb['clients'].update({'account'=>params[:deviceMaker]+params[:deviceId]},"$set"=>{'last_visit'=>utctime,
            'curr_index'=>currIndex, 'lastMorning'=>lastMorning,  'curr_image'=>currImage["id"]})
   
          if @player["auto_user"] != nil
@@ -418,14 +448,14 @@ class Client1Controller < ApplicationController
          end
                     
          result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"].sub('https://','http://'),"title"=>currImage["Title"],
-            "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval}
+            "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval, "autoInterval"=>@player["autoInterval"].to_i}
             
          if currImage["Artist Last N"]==nil
             result["caption"]=""
          else
             result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
          end
-         render json: JSON.pretty_generate(result)   
+         render :json=>result, :callback => params[:callback]
          
          return
          
@@ -470,14 +500,14 @@ class Client1Controller < ApplicationController
          if @player["curr_list_images"]!=nil and @player["curr_list_images"].length>0
            images = @player["curr_list_images"]
          end
-         
+
+
          if currListObj['id'].to_s.include? 'getty'
            testId = images[0]
            if currListObj['imageMap'][testId] == nil
              images = currListObj['images']
            end
          end
-         
          
          currIndex = (@player["curr_index"].to_i + 1)%images.length
          while true
@@ -516,14 +546,14 @@ class Client1Controller < ApplicationController
          end
                     
          result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"].sub('https://','http://'),"title"=>currImage["Title"],
-            "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval}
+            "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval, "autoInterval"=>@player["autoInterval"].to_i}
             
          if currImage["Artist Last N"]==nil
             result["caption"]=""
          else
             result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
          end
-         render json: JSON.pretty_generate(result)   
+         render :json=>result, :callback => params[:callback]
          
          return
          
@@ -583,10 +613,130 @@ class Client1Controller < ApplicationController
     else
       result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
     end
-    render json: JSON.pretty_generate(result)     
+    render :json=>result, :callback => params[:callback]   
   end
   
   
+  def currUserImage
+    pullInterval = 500
+    if(params[:email]==nil)
+      result = {"Status"=>"Failure", "message"=>"no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    defaultObj = @@contentDb['defaults'].find().to_a[0]
+    
+    userSet = @@userDb['users'].find({'email'=>params[:email]})
+    if userSet.count == 0
+      result = {"Status"=>"Failure", "message"=>"User doesn't exist!"}
 
+      render :json=>result, :callback => params[:callback]
+      return
+    end   
+    
+    userObj = userSet.to_a[0]
+    
+    currImageIndex = defaultObj["image"]
+    if userObj["curr_image"].to_i != -1
+      currImageIndex = userObj["curr_image"].to_i
+    end
+    
+    imageSet =getImageSet(currImageIndex)
+    if imageSet.count > 0
+      currImage = imageSet.to_a[0]
+    else
+      currImage = getImageSet(defaultObj["image"].to_i).to_a[0]
+    end
+    
+    
+    stretch = "false"
+    if userObj["fill"] != nil
+      stretch = userObj["fill"].to_s
+    end
+    
+    result = {"Status"=>"Success","imageURL"=>currImage["url"].sub('https://','http://'),"title"=>currImage["Title"], 
+      "stretch"=>stretch, "nextPull"=>pullInterval}
+      
+    if currImage["Artist Last N"]==nil
+      result["caption"]=""
+    else
+      result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
+    end
+    render :json=>result, :callback => params[:callback]   
+    
+  end    
+ 
+
+  def removePlayer    
+    if(params[:uid]==nil)
+      result = {"Status"=>"failure", "Message"=>"No player id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+   
+    if(params[:maker]==nil)
+      result = {"Status"=>"failure", "Message"=>"No maker!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+   
+    
+    playerSet = @@userDb['clients'].find({"account"=>params[:maker]+params[:uid]})
+    if playerSet.count==0
+      result = {"Status"=>"failure", "Message"=>"No player found!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    player = playerSet.to_a[0]
+    
+    userId = player['owner'].to_i
+    
+    userSet = @@userDb['users'].find({'id'=>userId})
+    if userSet.count==0
+      result = {"Status"=>"failure", "Message"=>"No user found!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end 
+    user = userSet.to_a[0]
+    
+    
+    
+    if true
+      @@userDb["clients"].remove({"account"=>player["account"]})
+      @@userDb["users"].update({"id"=>user["id"]},{"$pull"=>{"owned_clients"=>player["account"]}})
+      @@userDb["users"].update({},{"$pull"=>{"playable_clients"=>player["account"]}},{"multi"=>true})
+      
+      player["playable_users"].each do |userId|
+        @@userDb['users'].update({"id"=>userId},{"$pull"=>{"playable_clients"=>player["account"]}})
+        @@userDb['users'].update({"id"=>userId.to_i},{"$pull"=>{"playable_clients"=>player["account"]}})
+      end
+      
+      
+      result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is deleted by its owner "+user["email"].strip.downcase+"!"}
+
+       
+      base = 'http://shrouded-chamber-7349.herokuapp.com/push'
+      uri = URI(base)
+      message = {}
+      message['type'] = 'removePlayer'
+      message['receiver'] = player['account']
+      Net::HTTP.post_form(uri, message)
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    
+    @@userDb["users"].update({"id"=>user["id"]},{"$pull"=>{"playable_clients"=>player["account"]}})
+    @@userDb["users"].update({"id"=>user["id"].to_i},{"$pull"=>{"playable_clients"=>player["account"]}})
+    @@userDb['clients'].update({"account"=>player["account"]},{"$pull"=>{"playable_users"=>user["id"].to_i}})
+
+    
+    result = {"Status"=>"success", "Message"=>"Player "+player["nickname"]+" is dismissed by user "+user["email"].strip.downcase+"!"}
+    render :json=>result, :callback => params[:callback]
+  end  
+  
+  
   
 end  

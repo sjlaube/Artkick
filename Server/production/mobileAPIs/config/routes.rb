@@ -61,6 +61,7 @@ Userpages::Application.routes.draw do
   
   match 'api/v1.1/client/getDefault' => 'client1#getDefault'
   match 'api/v1.1/client/getViewlist4' => 'client1#getViewlist4'
+  match 'api/v1.1/client/getViewlist5' => 'client1#getViewlist5'
   match 'api/v1.1/client/getUserStatus'=> 'client1#getUserStatus'
   match 'api/v1.1/client/selectPlayers' => 'client1#selectPlayers'
   match 'api/v1.1/client/getSelectedPlayers' => 'client1#getSelectedPlayers'
