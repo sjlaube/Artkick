@@ -47,6 +47,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 <script type="text/javascript" src="mini.V2.3/social.js?V1.3"></script> 
 <script type="text/javascript" src="mini.V2.3/getty.js?V1.3"></script> 
 <script type="text/javascript" src="mini.V2.3/Premium.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.3/Editviewlist.js?V1.3"></script> 
 
 <script type="text/javascript">
 
@@ -931,6 +932,27 @@ Server is
 	</ul>  
 
 </div>
+<div id="EditListView" data-dojo-type="dojox/mobile/ScrollableView" >
+<div   id="EditListViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Tap to Delete Image"' style="color:white;font-size: 14px; line-height:150%">
+   <div  data-dojo-type="dojox/mobile/ToolBarButton"  onclick="EditListViewDone()" style="float: left;" >
+    <img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
+
+ </div>
+
+  <div data-dojo-type="dojox/mobile/ContentPane" id="Picturegrid2" style="z-index:900; position: relative; top:10px" ></div>
+
+
+</div>
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteItems" data-dojo-props='modal:true,top:"61px"' 
+style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+Delete Viewlist Images
+<br>
+<a id='DeleteItemNumber'>No items to delete</a>
+<br>
+
+<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:gray" onclick="doneeditviewlist(true)">Delete</button>
+<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:gray" onclick="doneeditviewlist(false)">Cancel</button>
+</div>
 <div data-dojo-type="dojox/mobile/View" id="TalkToArt" >
 
 <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Talk to Artkick"'>
@@ -994,6 +1016,8 @@ Connect TV Later</button>
 </div>
 <div class="wipestyle" onclick="callmyListView()"> Add to viewlist
 </div>
+<div class="wipestyle" id="showeditmyviewlists" style="display:none" onclick="callEditmyListView()"> Edit My Viewlists
+</div>
 <div class="wipestyle" onclick="gotoView(window.currentView,'registernewTV')"> Connect TV
 </div>
 <div class="wipestyle" onclick="callHelp()"> Help
@@ -1024,7 +1048,7 @@ Connect TV Later</button>
 </div>
 <div class="wipestyle" onclick="gotoView(window.currentView,'Slideshow')"> TV Slideshow
 </div>
-<div class="wipestyle" id="showeditmyviewlists" onclick="callEditmyListView()"> Edit My Viewlists
+<div class="wipestyle" onclick="callEditmyListView()"> Edit My Viewlists
 </div>
 <div class="wipestyle" onclick="gotoView(window.currentView,'registernewTV')"> Connect TV
 </div>
@@ -1197,6 +1221,8 @@ style="border:0px!important;outline:none!important;background-image:none!importa
 	 onclick="photoimport('picasa')">Import from Picasa</li>
 	<li class="mblListItem"
 	 onclick="photoimport('smugmug')">Import from SmugMug</li>
+	 <li class="mblListItem"
+	 onclick="photoimport('dropbox')">Import from Dropbox</li>
 	
 </ul>
 
@@ -1266,7 +1292,7 @@ Rename Viewlist
 <img src="images/getty_logo.png" alt="" style="height:25px;margin-top:6px;"></img>
    <div  data-dojo-type="dojox/mobile/ToolBarButton"  onclick="backbutton()" style="float: left;" >
     <img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
-
+<a id="gettynumberdelete" style="float:right;display:none"> Tap image to remove&nbsp&nbsp </a>
 <span>
 <br>
  <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="&nbsp;&nbsp;Search GettyImages" id="gettysearchbox" onclick="gettysearchclick()"

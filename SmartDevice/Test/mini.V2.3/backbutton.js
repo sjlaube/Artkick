@@ -185,8 +185,13 @@ window.backbutton=function ()
 			
 		case "GettyView":
 			gettyReset();
+			dojo.style(dojo.byId("GettyView"), "display", "none");
 			gotoCategory('Getty Images');
 			dojo.byId("gettysearchbox").value="";
+			// when user clicks done in getty search, if there are images to delete from viewlist delete them here before returning to list...
+			break;
+		case "EditListView":
+			EditListViewDone();
 			break;
 		default:
 			break;

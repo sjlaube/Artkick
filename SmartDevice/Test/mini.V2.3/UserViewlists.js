@@ -224,14 +224,14 @@ function CreateUserList()
 					//	alert("return from getmyviewlists="+result);
                         for (var i in lists) {
 					//	alert(lists[i]["id"]+" Myviewlist="+window.MyViewlist+" name:"+lists[i]["name"] );
-						 if ( lists[i]["name"] != "Last Search") // user can't manually add to Last Search viewlist
+						 if ( lists[i]["name"] != "Last Search"&& lists[i]["private_user"]==window.email) // user can't manually add to Last Search viewlist and you can only edit your own lists
 						 {
 							listcount += 1;
 							window.shownoviewlist=true;
 						   newList2 = new dojox.mobile.ListItem({
                                 id: 'my'+lists[i]["id"],
                                 label: lists[i]["name"] ,
-								variableHeight: false,
+								variableHeight: true,
 								noArrow: true,
 								checkClass: "images/blank.png",
 								checked:false
@@ -258,7 +258,7 @@ function CreateUserList()
 							});
 							newList2.addChild(sw2);
 					// button to edit viewlist contents for next release need to modify gridview to allow selection and deleting
-					/*	var sw3 = new dojox.mobile.Button({
+						var sw3 = new dojox.mobile.Button({
 								id: 'my4'+lists[i]["id"],
 								label:"Images",
 								classname:'detailclass',
@@ -266,7 +266,7 @@ function CreateUserList()
 									EditMyViewlistImages(this.id);
 								}
 							});
-							newList2.addChild(sw3);*/
+							newList2.addChild(sw3);
 						    window.MyViewlistEdit.addChild(newList2);
 								// alert("added child");
 						}

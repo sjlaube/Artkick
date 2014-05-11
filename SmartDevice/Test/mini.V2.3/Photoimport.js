@@ -70,6 +70,18 @@ if (service == "picasa")
     }
 
 }
+if (service == "dropbox")
+{
+ calliOSFunction("loadLink", ["http://ancient-caverns-7624.herokuapp.com/dropbox?email="+window.email], "onSuccess", "onError");
+    try{
+	//alert("loading android artkick roku");
+    	Android.loadLink("http://ancient-caverns-7624.herokuapp.com/dropbox?email="+window.email);
+    }
+    catch(err){
+    	
+    }
+
+}
 
 
 }

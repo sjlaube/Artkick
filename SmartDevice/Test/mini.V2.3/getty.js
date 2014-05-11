@@ -23,6 +23,9 @@ function gettysearchclick()
 		 $("#prevGettySearches").html('');
 	progressBar1.set("value",0);
 	progressBar1.set("label","0%");
+	dojo.byId("gettynumberdelete").innerHTML="Tap image to remove&nbsp&nbsp";
+	dojo.style("gettynumberdelete","display","none");
+	window.itemstodelete=0;
 	/* show the previous searches */
 	for (var i in previousgettysearch){
 		var segment="Editorial"; 
@@ -193,11 +196,14 @@ window.gettyReset=function()
 			gettyView.scrollTo({y:0});
 			progressBar1.set("value",0);
 			progressBar1.set("label","0%");
+			window.itemstodelete=0;
 			dojo.style("gettyadvanced","display","none");
 ;
 			dojo.style("editorialselected","display","block");
 	
 			dojo.style("creativeselected","display","none");
+			dojo.byId("gettynumberdelete").innerHTML="Tap image to remove&nbsp&nbsp";
+			dojo.style("gettynumberdelete","display","none");
 
 		//	dojo.style("prevGettySearches","display","none");
 			
@@ -206,6 +212,9 @@ window.gettyReset=function()
 
 function gettyload()
 {
+dojo.byId("gettynumberdelete").innerHTML="Tap image to remove&nbsp&nbsp";
+dojo.style("gettynumberdelete","display","block");
+editviewlist();
 loadGrid(0,Gettygrid);
 }
 

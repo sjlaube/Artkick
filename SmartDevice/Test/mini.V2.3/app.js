@@ -112,6 +112,7 @@ require(["jquery",
                 var optionsView = registry.byId("OptionsList");
                 var aboutView = registry.byId("About");
                 var pictureGrid = registry.byId("Picturegrid");
+				var pictureGrid2 = registry.byId("Picturegrid2");
                 var gridView = registry.byId("GridView");
 				window.gettyView = registry.byId("GettyView");
 				window.progressBar1= registry.byId("gettyprogress");
@@ -323,6 +324,9 @@ require(["jquery",
                                     //        var currView = dijit.registry.byId("Intro0");
                                     //        var mycurrView = currView.getShowingView();
                                     window.email = email;
+									try {Android.setEmail(window.email);
+									}catch (err) {}
+									
 									window.userID = result.userObj.id;
 									window.isAdmin = result.userObj.isAdmin;
 									calliOSFunction("setemail", [window.email], "onSuccess", "onError");
@@ -1289,10 +1293,15 @@ require(["jquery",
                                 //	  alert(linelabel);
                                 if (lists[i]["imageNum"]) {
                                     linelabel = linelabel + lists[i]["name"] + "<br><i><small>" + lists[i]["imageNum"] + " pictures</small></i></br>";
-                                } else {
+                                } else if(catName == "My Viewlists" && lists[i]["private_user"]!=window.email)
+								{
+									linelabel = linelabel + lists[i]["name"] + "<br><i><small>following</small></i></br>";
+								}
+								else
+								{
                                     linelabel = linelabel + lists[i]["name"];
                                 }
-                                //		alert("label:"+linelabel+"lists:"+lists[i]["id"]);
+                                //console.log("label:"+linelabel+"lists:"+lists[i]["id"]);
 
 
 
@@ -1328,7 +1337,8 @@ require(["jquery",
                                 if (lists[i]["imageNum"])
                                     var title = linename + "<br><i><small>" + lists[i]["imageNum"] + " pictures</small></i>";
 
-
+								if(catName == "My Viewlists" && lists[i]["private_user"]!=window.email)
+									 var title = lists[i]["name"]+ "<br><i><small>by "+ lists[i]["private_user"] +"</small></i></br>";
                                 var newdiv2 = dojo.create("div", {}, "listList2");
                                 domAttr.set(newdiv2, "class", "imagediv");
                                 //	console.log("newdiv2 "+ newdiv2);
@@ -1980,23 +1990,23 @@ require(["jquery",
           //      BrowserDetect.init();
 				$(".mblTabBarButtonLabel").each (function(i, obj){
 		
-				if(obj.innerHTML == "Shuffle On")
-				{
-					console.log("found:"+obj.className);
-				obj.id="myshuffle";
+					if(obj.innerHTML == "Shuffle On")
+					{
+						console.log("found:"+obj.className);
+						obj.id="myshuffle";
 
-				}
-				$(".categoryclass").css("margin","-2px");
-				$('.mblToolBarButton').css('background-color','transparent');
-				$('.mblToolBarButton').css('background-image','none');
-				$('.mblToolBarButton').css('border-width','0px');
-				$('.mblToolBarButton').css('border-style','none');
-				$('.mblToolBarButton').css('box-shadow','none');
-				$('.mblToolBarButton').css('margin-left','-5px');
-				$('.mblToolBarButton').css('margin-top','10px');
-				$('.mblToolBarButton').css('font-family',"Roboto");
-				$('.mblToolBarButton').css('font-weight',"700");
-				$('.mblToolBarButton').css('font-size',"15px");
+					}
+					$(".categoryclass").css("margin","-2px");
+					$('.mblToolBarButton').css('background-color','transparent');
+					$('.mblToolBarButton').css('background-image','none');
+					$('.mblToolBarButton').css('border-width','0px');
+					$('.mblToolBarButton').css('border-style','none');
+					$('.mblToolBarButton').css('box-shadow','none');
+					$('.mblToolBarButton').css('margin-left','-5px');
+					$('.mblToolBarButton').css('margin-top','10px');
+					$('.mblToolBarButton').css('font-family',"Roboto");
+					$('.mblToolBarButton').css('font-weight',"700");
+					$('.mblToolBarButton').css('font-size',"15px");
 		
 		
 				})
@@ -2487,49 +2497,71 @@ require(["jquery",
 						},
                         load: function (viewlist) {
                             for (var i in viewlist["imageSet"]) {
-                              // console.log("id="+viewlist["imageSet"][i]["id"]);
+                               //console.log("id="+viewlist["imageSet"][i]["id"]);
 								icon=viewlist["imageSet"][i]["thumbnail"];
 								if (viewlist["imageSet"][i]["icon"])
 									icon=viewlist["imageSet"][i]["icon"];
 							//	alert("icon="+icon);
-                                var pic = dojo.create("img", {
+								var gridimage=dojo.create("div",{classname:"griddiv"},whichgrid);
+                                window.pic = dojo.create("img", {
 									className: "imageclass",
                                     id: viewlist["imageSet"][i]["id"],
                                     src: icon,
-                                    onclick: function () {
-                                        window.tarImage = this.id;
-                                        window.currImage = null;
-                                        window.gridset = true;
-                                        window.switchView = true;
-										updateImages(this.id);
-                                        // 	setTimeout(function(){updateImages(this.id)},10);
-
-
-                                        //dijit.registry.byId("GridView").performTransition("blankview", 1, "fade", null);
-										if (window.currentView=="GridView")
-											gotoView('GridView', 'blankview');
+                                    onclick: function () {	
+										if(!window.editlist)
+										{
+											window.tarImage = this.id;
+											window.currImage = null;
+											window.gridset = true;
+											window.switchView = true;
+											updateImages(this.id);
+											
+											if (window.currentView=="GridView")
+												gotoView('GridView', 'blankview');
+											else
+											{
+												gettyReset();
+												gotoView('GettyView','blankview');
+											}
+										}
 										else
 										{
-											gettyReset();
-											gotoView('GettyView','blankview');
+											clickdelete(this.parentNode,'ckc'+this.id);
+											
+										
 										}
-                                        // loadImages(this.id,1,15,1);
-
-
                                     },
                                     width: wd + "px",
                                     height: ht + "px",
                                     hspace: "0px",
 									vspace: "0px"
+								//	margin:"0px"
 
-                                }, whichgrid);
+                                }, gridimage);
+								if(window.editlist)
+								{
+								 var ckc = dojo.create("img", {
+									classname: "checkclass",
+                                    id: 'ckc'+viewlist["imageSet"][i]["id"],
+									src: 'images/GrayTrash_25x25.png',
+                                    onclick: function () {
+										clickdelete(this.parentNode,this.id);
+										
+									},
+									width:'20px',
+									height:'20px',
+									zindex:950
+								},gridimage);
+								}
+								
 								
 								if(firstnode="")
 									firstnode=pic;
 									
 								
 
-                            }
+							}
+                            
 							/* check to see if there are more images to show in the grid, but only show up to 1000 images */
 							if (window.currGridPage < window.gridPages && window.currGridPage<10 )
 							{
@@ -2554,26 +2586,14 @@ require(["jquery",
 							
                             window.firstGridImage = viewlist["imageSet"][0]["id"];
                             window.lastGridImage = viewlist["imageSet"][viewlist["imageSet"].length-1]["id"];
+							console.log("displaying picturegrid");
 							    dojo.style(dojo.byId("Picturegrid"), "display", "block");
-                        //  console.log("first="+window.firstGridImage+" last="+window.lastGridImage);
-	/*				window.paneHeight=dojo._getMarginSize(Picturegrid).h;
-					window.scrollHeight=Picturegrid['scrollHeight'];
-					window.bottomPos=Picturegrid['scrollTop']+paneHeight;
-					alert("paneheight: "+paneHeight+" scrollHeight:"+scrollHeight+" bottomPos:"+bottomPos);*/
-                        }
 
+                      }
 
+					
                     })
-					   //  reset the scrollable view to the top
-                  //  var c = dijit.byId("GridView").containerNode;
 
-					//dijit.byId("GridView").scrollIntoView();
-                  /*  dojo.setStyle(c, {
-                        webkitTransform: '',
-                        top: 10,
-                        left: 0
-                    });*/
-					//gridView.scrollTo({y:0});
 					
 
                 };
@@ -3010,6 +3030,14 @@ function showmenu() {
 		menuname= "wipemenu2";
 	else
 		menuname = "wipemenu";
+	
+	if(window.currCat=="My Viewlists")
+	{
+		dojo.style("showeditmyviewlists","display","block");
+		console.log("show edit my viewlists");
+	}
+	else
+		dojo.style("showeditmyviewlists","display","none");
 		
 	dojo.style(menuname, "left", $(window).width()-185+"px");
 	             
@@ -3018,7 +3046,6 @@ function showmenu() {
 		window.wipemenu=false;
 		dojo.style(window.showingmenu, "height", "");
 		dojo.style(window.showingmenu, "display", "block");
-
 		var wipeArgs = {
 		node: showingmenu,
 		duration:100

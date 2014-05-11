@@ -106,8 +106,8 @@ function createUser() {
     var currView = dijit.registry.byId("registeruser");
     var pw="";
 	var verifypw="";
-	pw=dojo.byId("regUserPW").value;
-	verifypw=dojo.byId("regUserPW2").value;
+	pw=dojo.byId("regUserPW").value.trim();
+	verifypw=dojo.byId("regUserPW2").value.trim();
 	if (pw=="")
 	{
 		myalert("Password cannot be blank");
@@ -118,7 +118,7 @@ function createUser() {
 		myalert("Passwords don't match");
 		return;
 	}
-	var emailaddress=dojo.byId("regUserEmail").value;
+	var emailaddress=dojo.byId("regUserEmail").value.trim();
 	if (emailaddress =="")
 	{
 		myalert("User email cannot be blank");
@@ -156,6 +156,8 @@ function createUser() {
             //    currView.performTransition("ImageView", 1, "slide", null);
 				window.userName = dojo.byId("regUserName").value;
                 window.email = dojo.byId("regUserEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
+				try {Android.setEmail(window.email);
+									}catch (err) {}
 				window.token = result['token'];
 				window.userID = result['id'];
 				setCookie("email", window.email, 365);
@@ -178,6 +180,7 @@ function createUser() {
 			    dijit.registry.byId("registeruser").performTransition("quickhint", 1, "", null);
             } else {
                 myalert(result["Message"]);
+			//	gotoView('registeruser','Login');
             }
 
         }
@@ -253,7 +256,9 @@ function login() {
 				//dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
 
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
-                window.token = result['token'];
+               try {Android.setEmail(window.email);
+									}catch (err) {}
+				window.token = result['token'];
 				window.userName = userObj["name"];
 				window.userID = result.userObj.id;
 				window.isAdmin = result.userObj.isAdmin;
