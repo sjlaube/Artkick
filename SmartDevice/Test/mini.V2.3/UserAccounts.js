@@ -227,7 +227,7 @@ function login() {
         return;
 	window.loginClickTime = currTime;
 	dojo.byId("browse-search").innerHTML= "Browse/Search";
-    
+    		dojo.style("searchmenu","display","block");
     if (is_email(dojo.byId("loginEmail").value))
 	{
 
@@ -397,6 +397,7 @@ window.guest=true;
 window.email="guest@guest.guest";
 window.token="guest";
 dojo.byId("browse-search").innerHTML= "Browse";
+dojo.style("searchmenu","display","none");
 $("#MyViewlists").hide();
 $("#searchbox").hide();
 //$("#searchbutton").hide();

@@ -214,7 +214,7 @@ function CreateUserList()
 						if(this.trytimes>0){
 							dojo.io.script.get(this);
 						} else{
-							alert("Network problem28. Please check your connection and restart the app.");
+							alert("Network problem28a. Please check your connection and restart the app.");
 						}
 						
 					},
@@ -224,7 +224,7 @@ function CreateUserList()
 					//	alert("return from getmyviewlists="+result);
                         for (var i in lists) {
 					//	alert(lists[i]["id"]+" Myviewlist="+window.MyViewlist+" name:"+lists[i]["name"] );
-						 if ( lists[i]["name"] != "Last Search"&& lists[i]["private_user"]==window.email) // user can't manually add to Last Search viewlist and you can only edit your own lists
+						 if ( lists[i]["name"] != "Last Search" ) // user can't manually add to Last Search viewlist and you can only edit your own lists
 						 {
 							listcount += 1;
 							window.shownoviewlist=true;
@@ -248,6 +248,9 @@ function CreateUserList()
 								}
 							});
 							newList2.addChild(sw);
+							if (lists[i]["private_user"]==window.email)		// you can only rename/edit your own viewlists
+							{
+							
 							var sw2 = new dojox.mobile.Button({
 								id: 'my3'+lists[i]["id"],
 								label:"Rename",
@@ -257,8 +260,8 @@ function CreateUserList()
 								}
 							});
 							newList2.addChild(sw2);
-					// button to edit viewlist contents for next release need to modify gridview to allow selection and deleting
-						var sw3 = new dojox.mobile.Button({
+						// button to edit viewlist contents for next release need to modify gridview to allow selection and deleting
+							var sw3 = new dojox.mobile.Button({
 								id: 'my4'+lists[i]["id"],
 								label:"Images",
 								classname:'detailclass',
@@ -267,6 +270,7 @@ function CreateUserList()
 								}
 							});
 							newList2.addChild(sw3);
+							}
 						    window.MyViewlistEdit.addChild(newList2);
 								// alert("added child");
 						}

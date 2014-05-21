@@ -90,8 +90,8 @@ require(["jquery",
 
             function () {
 
-               window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-              // window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+             //  window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
+              window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -221,6 +221,7 @@ require(["jquery",
 				window.gettylastQuery="";
 				window.gettysubscribe=false;
 				window.sharedlist=false;
+				window.searchboxshow=false;
 
 
 
@@ -3190,7 +3191,8 @@ function refreshView() {
  
         cleanUp();
 		dojo.byId('browse-search').innerHTML= "Browse";
-		$("#searchbox").hide();
+		dojo.style("searchmenu","display","none");
+
 	//	$("#searchbutton").hide();
 		gotoView(window.currentView,"newLogin");
 		return;
@@ -3249,6 +3251,7 @@ function cleanUp() {
 	window.userID="";
 	window.gettysubscribe=false;
 	window.sharedlist=false;
+	window.searchboxshow=false;
     $("#addPlayerEmail").attr('value', '');
     getDefaults();
 }

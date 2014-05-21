@@ -12,8 +12,9 @@ function usersearch()
 	if(window.searchClickTime!=undefined && currTime - window.searchClickTime < 7000)
         return;
 	window.searchClickTime = currTime;
-	searchstring = dojo.byId("searchbox").value;
+	searchstring = dojo.byId("searchbox2").value;
 	if (searchstring == "") return;
+	dijit.registry.byId('SearchBox').hide();
 	var url=base + "user/search?"  + "email=" + window.email+"&keyword="+searchstring+"&token="+window.token;
 
 //	alert("search called:"+url);
@@ -55,6 +56,13 @@ function usersearch()
 
         }
     });
-	dojo.byId("searchbox").value="";
+	dojo.byId("searchbox2").value="";
 
+}
+
+function showsearch()
+{
+	dojo.byId("searchbox2").value="";
+	dijit.registry.byId('SearchBox').show(); 
+	window.searchboxshow=true;
 }

@@ -40,14 +40,51 @@ function doneeditviewlist(status)
 	{// if status true then actually delete, else abort the edit
 		console.log("Now deleting: "+window.itemstodelete+" items");
 	}
+	else
+	{
+		dijit.registry.byId('DeleteItems').hide();
+		gotoView("EditListView","MylistViewEdit");
+		return;
+	}
+	
+	
+	
+	// now lets try to actually delete the items
+	var url=base + "user/removeImagesFromList?"  + "email=" + window.email+"&listId="+window.currList+"&token="+window.token;
+	for (var i in window.itemlist)
+	{
+		url+="&imgIds[]="+window.itemlist[i];
+	}
+	console.log("delete items url="+url);
+   dojo.io.script.get({
+        url: url,
+        callbackParamName: "callback",
+		
+        load: function (result) {
+            if (result["Status"] == "success") {
+               
+				usermessage(window.itemstodelete+" were deleted");
+				window.itemstodelete=0;
+				dojo.byId('DeleteItemNumber').innerHTML = "No items to delete";
+				dijit.registry.byId('EditListViewHeader').set('label', "Tap to Delete Image");
+				dijit.registry.byId('DeleteItems').hide();
+				
+				window.editlist=false;
+				window.itemlist=[];
+				gotoView("EditListView","MylistViewEdit");
 
-		dojo.byId('DeleteItemNumber').innerHTML = "No items to delete";
-	dijit.registry.byId('EditListViewHeader').set('label', "Tap to Delete Image");
-	dijit.registry.byId('DeleteItems').hide();
-	window.itemstodelete=0;
-	window.editlist=false;
-	window.itemlist=[];
-	gotoView("EditListView","MylistViewEdit");
+            } else {
+                myalert(result["Message"]);
+				gotoView("EditListView","MylistViewEdit");
+            }
+
+        }
+    });
+	
+	
+	
+
+
 }
 
 function EditMyViewlistImages(id)

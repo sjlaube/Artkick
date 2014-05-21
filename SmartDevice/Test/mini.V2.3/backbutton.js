@@ -55,12 +55,20 @@ window.backbutton=function ()
 			break;
 		case "select_category": // if android exit otherwise nothing
 		case "Intro0":
+			if (window.searchboxshow)
+			{
+				dijit.registry.byId('SearchBox').hide(); 
+				window.searchboxshow=false;
+			}	
+			else
+			{
 			 try {
                     Android.exitArtkick();
 
                     } catch (err) {
 
                     }
+			}
 			break;
 		case "Options":
 			gotoView("Options","OptionsList");
@@ -180,6 +188,8 @@ window.backbutton=function ()
 			break;	
 		case "MylistViewEdit":
 			updateLists("My Viewlists");
+			dijit.registry.byId('DeleteViewlist').hide(); 
+			dijit.registry.byId('RenameViewlist').hide(); 
 			gotoView("MylistViewEdit","PlaylistView");
 			break;	
 			
@@ -191,7 +201,7 @@ window.backbutton=function ()
 			// when user clicks done in getty search, if there are images to delete from viewlist delete them here before returning to list...
 			break;
 		case "EditListView":
-			EditListViewDone();
+			doneeditviewlist(false);
 			break;
 		default:
 			break;
