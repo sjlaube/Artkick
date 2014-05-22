@@ -11,7 +11,7 @@ if (devicetype == "Samsung")
 myalert('Available on recent Samsung TVs (others soon)<br>Install Artkick from the Samsung Store<br> Access the store by clicking the SmartHub button on your remote, then scroll through the applications and click the Artkick Icon. Start Artkick and a registration code will appear on your screen');
 
 if (devicetype == "Sony")
-myalert('Awaiting App Store Approval<br> Install Artkick by first going to the Opera Store. Access the store by clicking the SEN button on your remote, then scroll through the applications and click the Opera Store Icon.  Then search for Artkick and click to install the Artkick application. Start Artkick and a registration code will appear on your screen');
+myalert('Install Artkick by first going to the Opera Store. Access the store by clicking the SEN button on your remote, then scroll through the applications and click the Opera Store Icon.  Then search for Artkick and click to install the Artkick application. Start Artkick and a registration code will appear on your screen');
 if (devicetype == "Sharp")
 myalert('Open SmartCentral, click Social and Life icon and click the Artkick icon. A registration code will appear');
 if (devicetype == "AppleTV")

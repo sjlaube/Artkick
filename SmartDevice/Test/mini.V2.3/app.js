@@ -90,8 +90,8 @@ require(["jquery",
 
             function () {
 
-             //  window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-              window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+               window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
+              //window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -510,12 +510,14 @@ require(["jquery",
 							console.log("viewlist5 return:"+viewlist["Status"]);
 							//myalert("viewlist5 return:"+viewlist["Status"]);
                             if (viewlist["imageSet"].length == 0) {
-                               // myalert("'My Favorites' is empty, please star-rate some images and they will be added to it!");
-                                window.currList = window.defList;
-                                window.currCat = window.defCat;
-                                window.currImage = window.defImage;
-                                updateImages(-1);
-                                return;
+								//window.currList = window.defList;
+                              //  window.currCat = window.defCat;
+                             //   window.currImage = window.defImage;
+                               // updateImages(-1);
+                           		myalert("This viewlist is empty");
+								dojo.style(dojo.byId("blankview"), "display", "none");
+								gotoCategory('0');
+								return;
                             }
 
                             window.imageMap = {};

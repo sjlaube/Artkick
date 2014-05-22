@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.samsung.com/">
+	<cpname itemtype="string"/>
+	<cplogo itemtype="string"/>
+	<cpauthjs itemtype="string"/>
+	<ThumbIcon itemtype="string">icon/ARTKICKlogoFULLCOLOR-APP_86x70.png</ThumbIcon>
+	<BigThumbIcon itemtype="string">icon/ARTKICKlogoFULLCOLOR-APP_86x70.png</BigThumbIcon>
+	<ListIcon itemtype="string">icon/ARTKICKlogoFULLCOLOR-APP_86x70.png</ListIcon>
+	<BigListIcon itemtype="string">icon/ARTKICKlogoFULLCOLOR-APP_86x70.png</BigListIcon>
+	<category itemtype="string"/>
+	<autoUpdate itemtype="boolean">n</autoUpdate>
+	<ver itemtype="string">0.131</ver>
+	<mgrver itemtype="string"/>
+	<fullwidget itemtype="boolean">y</fullwidget>
+	<type itemtype="string">user</type>
+	<srcctl itemtype="boolean">y</srcctl>
+	<ticker itemtype="boolean">n</ticker>
+	<childlock itemtype="boolean">n</childlock>
+	<videomute itemtype="boolean">n</videomute>
+	<dcont itemtype="boolean">y</dcont>
+	<widgetname itemtype="string">Artkick</widgetname>
+	<description itemtype="string">Display art on your TV</description>
+	<width itemtype="string">960</width>
+	<height itemtype="string">540</height>
+	<author itemtype="group"> 
+		<name itemtype="string">Artkick</name>
+		<email itemtype="string">support@artkick.com</email>
+		<link itemtype="string">www.artkick.com</link>
+		<organization itemtype="string">Zwamy, Inc.</organization>
+	</author>
+</widget>

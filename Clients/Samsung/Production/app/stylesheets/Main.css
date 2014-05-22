@@ -1,0 +1,163 @@
+*
+{
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+/* Layout */
+body
+{
+	width: 960px;
+	height: 540px;
+}
+
+button
+{
+	padding-left: 2;
+	padding-right: 2;
+	font-size: 24px;
+}
+
+label
+{
+	font-size: 24px;
+}
+
+#registration
+{
+	display: none;
+	background-color: #62ADC9;
+	width: 100%;
+	height: 100% !important;
+	/* margin-top: 0; */
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+div#screen {
+    background-size: contain;
+    position: absolute;
+    background-position: center;
+    background-color: black;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+#information {
+	position : absolute;
+	left: 100px;
+    top: 480px;
+	/*width: 640px;*/
+    /*height: 60px;*/
+	
+	text-align : left;
+	font-size : 14px;
+	color : #FFFFFF;
+	padding-left : 10px;
+	padding-right: 10px;
+	padding-top : 5px;
+	padding-left : 5px;
+	
+	z-index: 6;
+	
+	display:none;
+	background-color: #6E6E6E;
+	opacity: 0.8;
+	
+	/*border-style: solid;
+	border-color: #888888;
+	border-width: 1px;*/
+	border-width: 0px;
+	border-radius: 10px;
+}
+
+#imageTitle
+{
+	width: 100%;
+	display: inline-block;
+	font-style: italic;
+	text-align: center;
+}
+
+#imageCaption
+{
+	width: 100%;
+	display: inline-block;
+	text-align: center;
+}
+
+#imageInfo {
+	position : absolute;
+	left: 100px;
+    top: 480px;
+	/*width: 640px;*/
+    /*height: 60px;*/
+	
+	text-align : center;
+	font-size : 14px;
+	color : #000000;
+	
+	z-index: 6;
+	display : block;
+	
+	display:none;
+	background-color: white;
+	opacity: 0.9;
+}
+
+#regCode 
+{
+	font-size: 24px;
+	font-weight: bold;
+}
+
+#advancingImageNotice
+{
+	position : absolute;
+	left: 5%;
+    top: 95%;
+
+	font-size : 10px;
+	color : white;
+	
+	z-index: 7;
+	display : block;
+	background-color: black;
+	display: none;
+}
+
+#logo
+{
+	position : absolute;
+	top: 93%;
+    left: 88%;
+}
+
+#noInternetConnection
+{
+	display: none;
+	background-color: black;
+	color : white;
+	position : absolute;
+	top: 20%;
+    left: 10%;
+}
+
+#lostInternetConnection
+{
+	position : absolute;
+	left: 5%;
+    top: 95%;
+
+	font-size : 10px;
+	color : white;
+	
+	z-index: 7;
+	display : block;
+	background-color: black;
+	display: none;
+}

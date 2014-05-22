@@ -1,0 +1,14 @@
+title=Artkick
+subtitle=Art for free on your TV
+mm_icon_focus_hd=pkg:/images/ARTKICKlogoFULLCOLOR-APP_336x210.png
+mm_icon_side_hd=pkg:/images/ARTKICKlogoFULLCOLOR-APP_108x69.png
+mm_icon_focus_sd=pkg:/images/ARTKICKlogoFULLCOLOR-APP_248x140.png
+mm_icon_side_sd=pkg:/images/ARTKICKlogoFULLCOLOR-APP_80x46.png
+splash_screen_hd=pkg:/images/RokuLoadScreen1280x720.jpg
+splash_screen_sd=pkg:/images/RokuLoadScreen720x480.jpg
+major_version=1
+minor_version=0
+build_version=00008
+screensaver_title=Artkick
+screensaver_private=0
+dial_title=com.artkick.artkick
