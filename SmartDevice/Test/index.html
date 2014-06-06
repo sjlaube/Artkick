@@ -34,20 +34,20 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 ['.*','',['WebContent-V2.2/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script> 
  <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
-<script type="text/javascript" src="mini.V2.3/app.js?V1.3"></script>
-<script type="text/javascript" src="mini.V2.3/Browser-Detect.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/UserViewlists.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/PlayerFunctions.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/UserAccounts.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/Feedback.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/Search.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/backbutton.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/registrationhelp.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/Photoimport.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/social.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/getty.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/Premium.js?V1.3"></script> 
-<script type="text/javascript" src="mini.V2.3/Editviewlist.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/app.js?V1.3"></script>
+<script type="text/javascript" src="mini.V2.4/Browser-Detect.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/UserViewlists.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/PlayerFunctions.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/UserAccounts.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/Feedback.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/Search.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/backbutton.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/registrationhelp.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/Photoimport.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/social.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/getty.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/Premium.js?V1.3"></script> 
+<script type="text/javascript" src="mini.V2.4/Editviewlist.js?V1.3"></script> 
 
 <script type="text/javascript">
 
@@ -105,7 +105,7 @@ require([
 <style>@import "WebContent/themes/claro/claro.css";@import "WebContent/lib/shapes/shapes.css";
 
 @import "WebContent/app.css";
-@import "mini.V2.3/Artkick.css";
+@import "mini.V2.4/Artkick.css";
 </style>
 
 
@@ -242,7 +242,7 @@ require([
     <div id="AutoPlaySelect">
 	  <label>
        Slideshow speed</label>
-     <select style="position: relative; left: 15px;text-size:10px" onchange="setAuto(this.value)">
+     <select style="position: relative; left: 15px;text-size:10px" id="slideshowvalue" onchange="setAuto(this.value)">
        <option value=0 id="0">
          Off</option>
        <option value=-1 id="-1">
@@ -909,7 +909,7 @@ Logoff</button>
     <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">  
 	<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: gray;">
-Artkick Version 2.3 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
+Artkick Version 2.4 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
   </span>
   <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: gray;">
 Server is
@@ -1095,11 +1095,13 @@ style="border:0px!important;outline:none!important;background-image:none!importa
 <span style="position:relative;top:-10px;">Then you can:</span><br>
 <span class="msgstyle" style="top:-5px">Connect TVs</span><br>
 <span class="msgstyle" style="top:-5px">Import personal photos</span><br>
-<span class="msgstyle" style="top:-10px;font-size:80%">(from Facebook, Flickr,Instagram,</span><br>
-<span class="msgstyle" style="top:-15px;font-size:80%">Picasa&SmugMug)</span><br>
+<span class="msgstyle" style="top:-10px;font-size:80%">(from Facebook,Flickr,Instagram,</span><br>
+<span class="msgstyle" style="top:-15px;font-size:80%">Picasa,Dropbox&SmugMug)</span><br>
 <span class="msgstyle" style="top:-15px;">Create personal viewlists</span><br>
 <span class="msgstyle" style="top:-15px;">Share Viewlists via:</span><br>
 <span class="msgstyle" style="top:-20px;font-size:80%">Facebook, Twitter & Email</span><br>
+<span class="msgstyle" style="top:-20px;">Search by:</span><br>
+<span class="msgstyle" style="top:-25px;font-size:80%">Artist, Genre or Museum</span><br>
 
 </div>
 <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;"
@@ -1137,7 +1139,7 @@ Search Artkick
    <span id="browse-search" style="top:-10px;">
    Search/Browse</span>
     <div  id="searchmenu" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/search-icon.png"' 
-   style="float: left;top:-1px;width:55px;height:55px" onclick="showsearch()">
+   style="float: left;top:0px;width:55px;height:55px" onclick="showsearch()">
    </div> 
    <div  id="catlinemenu" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/3lineicon_menu-blue.png"' 
    style="float: right;top:-1px;width:55px!important;height:55px!important" onclick="showmenu()">
@@ -1157,7 +1159,7 @@ Search Artkick
    	<img src="images/Categories/Cat320x200_Highlights.jpg" alt=" " onclick="gotoCategory('Highlights')" class="categoryclass" >
     <img src="images/Categories/Cat320x200_Top Lists.jpg" alt=" " onclick="gotoCategory(' Top Lists')" class="categoryclass" >
 	<img id="MyViewlists" src="images/Categories/Cat320x200_My View Lists.jpg" alt=" " onclick="gotoCategory('My Viewlists')" class="categoryclass">
-	<img id="Gettylists" src="images/Categories/Cat320x200_Getty_Images.jpg" alt=" " onclick="gotoCategory('Getty Images')" class="categoryclass" style="display:none">
+	<img id="Gettylists" src="images/Categories/Cat320x200_Getty_Images.jpg" alt=" " onclick="gotoCategory('Getty Images')" class="categoryclass" >
     <img src="images/Categories/Cat320x200_Architecture.jpg" alt=" " onclick="gotoCategory('Architecture')" class="categoryclass">
 	<img src="images/Categories/Cat320x200_Artists.jpg" alt=" " onclick="gotoCategory('Artists')" class="categoryclass">
     <img src="images/Categories/Cat320x200_Collections.jpg" alt=" " onclick="gotoCategory('Collections')" class="categoryclass">

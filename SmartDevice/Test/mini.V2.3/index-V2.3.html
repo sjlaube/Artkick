@@ -103,7 +103,7 @@ require([
 ]);
 </script>
 <style>@import "WebContent/themes/claro/claro.css";@import "WebContent/lib/shapes/shapes.css";
-
+@import "WebContent/lib/dojo/dojox/mobile/themes/common/domButtons/DomButtonRedBadge.css";
 @import "WebContent/app.css";
 @import "mini.V2.3/Artkick.css";
 </style>
@@ -233,7 +233,8 @@ require([
 
   </div>
   
-
+ <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;height:320px">
+ Which TV?
    <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;height:140px">
    
 	 
@@ -242,7 +243,7 @@ require([
     <div id="AutoPlaySelect">
 	  <label>
        Slideshow speed</label>
-     <select style="position: relative; left: 15px;text-size:10px" id="slideshowvalue" onchange="setAuto(this.value)">
+     <select style="position: relative; left: 15px;text-size:10px" onchange="setAuto(this.value)">
        <option value=0 id="0">
          Off</option>
        <option value=-1 id="-1">
@@ -280,7 +281,7 @@ require([
      <button  data-dojo-type="dojox/mobile/ToggleButton" id="fillswitch"  style="left: 70px;color:white" data-dojo-props='label:"Not Active"' onclick="fillswitch()"></button>
      <br>
 	</div>
-
+	</div>
  </div>
  <div data-dojo-type="dojox/mobile/ScrollableView" id="add_user_player" style="background-color: black;">
    <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Add User to TV",moveTo:"ImageView",fixed:"top"'>
@@ -909,7 +910,7 @@ Logoff</button>
     <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">  
 	<span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
 <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: gray;">
-Artkick Version 2.33 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
+Artkick Version 2.3 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
   </span>
   <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: gray;">
 Server is
@@ -1095,13 +1096,11 @@ style="border:0px!important;outline:none!important;background-image:none!importa
 <span style="position:relative;top:-10px;">Then you can:</span><br>
 <span class="msgstyle" style="top:-5px">Connect TVs</span><br>
 <span class="msgstyle" style="top:-5px">Import personal photos</span><br>
-<span class="msgstyle" style="top:-10px;font-size:80%">(from Facebook,Flickr,Instagram,</span><br>
-<span class="msgstyle" style="top:-15px;font-size:80%">Picasa,Dropbox&SmugMug)</span><br>
+<span class="msgstyle" style="top:-10px;font-size:80%">(from Facebook, Flickr,Instagram,</span><br>
+<span class="msgstyle" style="top:-15px;font-size:80%">Picasa&SmugMug)</span><br>
 <span class="msgstyle" style="top:-15px;">Create personal viewlists</span><br>
 <span class="msgstyle" style="top:-15px;">Share Viewlists via:</span><br>
 <span class="msgstyle" style="top:-20px;font-size:80%">Facebook, Twitter & Email</span><br>
-<span class="msgstyle" style="top:-20px;">Search by:</span><br>
-<span class="msgstyle" style="top:-25px;font-size:80%">Artist, Genre or Museum</span><br>
 
 </div>
 <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;"
@@ -1139,7 +1138,7 @@ Search Artkick
    <span id="browse-search" style="top:-10px;">
    Search/Browse</span>
     <div  id="searchmenu" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/search-icon.png"' 
-   style="float: left;top:0px;width:55px;height:55px" onclick="showsearch()">
+   style="float: left;top:-1px;width:55px;height:55px" onclick="showsearch()">
    </div> 
    <div  id="catlinemenu" data-dojo-type="dojox/mobile/ToolBarButton" data-dojo-props='icon:"images/3lineicon_menu-blue.png"' 
    style="float: right;top:-1px;width:55px!important;height:55px!important" onclick="showmenu()">
