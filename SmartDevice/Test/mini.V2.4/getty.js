@@ -83,10 +83,21 @@ function gettyusersearch()
 		window.gettylastQuery="";
 	}
 	
-	dojo.style("gettyadvanced","display","none");
+	//dojo.style("gettyadvanced","display","none");
 		//dojo.style("prevGettySearches","display","none");
+	if(window.newgettylist) // create a new getty viewlist for this user
+	{
+		var templistid=window.lastgettylist++;
+		
+		lid='0'+templistid.toString();
+	}
+	else
+	{
+		lid=window.currentGettyListId;
+	}
 	var url="http://salty-chamber-1299.herokuapp.com/getty/search?"+"email=" + window.email+"&query="+searchstring
 	+"&token="+window.token
+	+"&listId=getty_"+lid+"_"+window.email
 	+"&EditorialSegments="+window.gettyEditoral
 	+"&date="+window.gettyEditorialTime
 	+"&orientation="+gettyEditorialOrientation;
@@ -101,7 +112,7 @@ function gettyusersearch()
 	v+=10;
 	},450);
 	//alert("gettysearch called:"+url);
-	dojo.empty(Gettygrid);
+	//dojo.empty(Gettygrid);
 
     dojo.io.script.get({
         url: url,
@@ -120,11 +131,40 @@ function gettyusersearch()
 		},
         load: function (result) {
             if (result["Status"] == "success") {
-		
-              //   usermessage(result["images"].length+' images found & stored in "Last Getty Search"');*/
-
-			
+			if( window.newgettylist)
+			{
+				window.lastgettylist=templistid;// successfully created new list increment out count
+				gettylists.push(
+				{   name:"getty search: "+searchstring,
+				    id:"getty_"+lid+"_"+window.email,
+				    coverImage:result['viewlist']['coverImage'],
+					searchTerm:{
+							query:searchstring, 
+							EditorialSegments:window.EditorialSegments, 
+							orientation:window.gettyEditorialOrientation, 
+							date:window.gettyEditorialTime}
+					
+				});
+			}
+			else
+				gettylists[Number(window.currentGettyListId)]=
+				{   name:"getty search: "+searchstring,
+				    id:"getty_"+lid+"_"+window.email,
+				    coverImage:result['viewlist']['coverImage'],
+					searchTerm:{
+							query:searchstring, 
+							EditorialSegments:window.EditorialSegments, 
+							orientation:window.gettyEditorialOrientation, 
+							date:window.gettyEditorialTime}
+				};
+					
+				
+      //      usermessage(result["imageNum"]+' images found & stored in "Last Getty Search"');
+			//console.log("test123");
+			dijit.registry.byId('IVGettySearchBox').hide(); 
+			window.IVsearchboxshow=false;
 			//	swapview(result["listId"]);
+
 			window.gname=result['viewlist']['name'];
 			window.gimage=result['viewlist']['coverImage'];
 			progressBar1.set("value",100);
@@ -134,8 +174,15 @@ function gettyusersearch()
 				window.currCat="Getty Images";
 				window.currViewList="Last Getty Search";
 				window.currGridList=-1;
-				gettyload();
-						previousgettysearch.push( {query:searchstring, EditorialSegments:window.EditorialSegments, orientation:window.gettyEditorialOrientation, date:window.gettyEditorialTime});
+				window.moregridpages = false;
+                gotoView(window.currentView, 'blankview');
+                                        
+				window.switchView = true;
+                updateImages(-1);
+				usermessage(result["imageNum"]+' images found for:"'+searchstring+'"');
+				
+			//	gettyload();
+			//	previousgettysearch.push( {query:searchstring, EditorialSegments:window.EditorialSegments, orientation:window.gettyEditorialOrientation, date:window.gettyEditorialTime});
 
 
             } else {
@@ -212,9 +259,70 @@ window.gettyReset=function()
 
 function gettyload()
 {
-dojo.byId("gettynumberdelete").innerHTML="Tap image to remove&nbsp&nbsp";
-dojo.style("gettynumberdelete","display","block");
-editviewlist();
+//dojo.byId("gettynumberdelete").innerHTML="Tap image to remove&nbsp&nbsp";
+//dojo.style("gettynumberdelete","display","block");
+//editviewlist();
 loadGrid(0,Gettygrid);
+}
+
+function gettyuserrefresh(newlist)
+{
+
+
+console.log("getty user refresh hit, newlist:"+newlist);
+	hidemenu();
+	if(newlist)
+	{
+		window.newgettylist=true;
+		gettyclearsearch();
+	}
+	else
+	{
+		// check if this is an existing search and prefill in stuff
+		window.newgettylist=false;
+		var id1=window.currList.substr(6,2);
+		console.log("gettylistname "+id1);
+		window.currentGettyListId=id1;
+		id=parseInt(id1);
+		window.gettylastQuery=gettylists[id]['searchTerm']["query"];
+		window.gettyEditorial=gettylists[id]['searchTerm']["EditorialSegments"];
+		window.gettyEditorialTime=gettylists[id]['searchTerm']["date"];
+		window.gettyEditorialOrientation=gettylists[id]['searchTerm']["orientation"];
+		
+		$("#editorialValue").val(gettyEditorial);
+		$("#dateValue").val(gettyEditorialTime);
+		$("#orientationValue").val(gettyEditorialOrientation);
+		dojo.byId("gettysearchbox").value=window.gettylastQuery;
+	//	setEditorial(window.gettyEditorial);
+	}
+	progressBar1.set("value",0);
+	progressBar1.set("label","0%");
+	
+	dijit.registry.byId('IVGettySearchBox').show(); 
+	window.IVsearchboxshow=true;
+}
+
+function gettyclearsearch()
+{
+	window.gettylastQuery='';;
+	window.gettyEditorial='Any';
+	window.gettyEditorialTime='Any';
+	window.gettyEditorialOrientation='Any';
+	$("#editorialValue").val(gettyEditorial);
+	$("#dateValue").val(gettyEditorialTime);
+	$("#orientationValue").val(gettyEditorialOrientation);
+	dojo.byId("gettysearchbox").value='';
+
+}
+
+function gettydonesearch()
+{
+	dijit.registry.byId('IVGettySearchBox').hide();
+	if (window.newgettylist)
+	{
+		window.newgettylist=false;
+		backbutton();
+	}
+	
 }
 

@@ -90,8 +90,8 @@ require(["jquery",
 
             function () {
 
-             //  window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-              window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+               window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
+             // window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
                 //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
 
                 var selectListView = registry.byId("PlaylistView");
@@ -485,7 +485,15 @@ require(["jquery",
 						url += "&catName="+window.currCat;
 					
 					console.log("getViewlist5:"+url);
-
+					// check if we are looking at a personal getty viewlist and add the refresh/change search buttons
+					if(window.currList.substr(0,5)=="getty") // show getty refresh icon
+					{
+						dojo.style("resetsearch","display","block");
+					}
+					else
+					{
+						dojo.style("resetsearch","display","none");
+					}
 					if (window.shuffle) {
                         url += "&shuffle=1";
                     } else {
@@ -739,14 +747,17 @@ require(["jquery",
 										window.previousgettysearch=result['gettyHistory'];
 									else
 										window.previousgettysearch="";
-
+									if(result['gettyLists'])
+										window.gettylists=result['gettyLists'];
+									else
+										window.gettylists="";
                                     window.fill = (result["fill"] == "true");
 									window.highresolution = (result["hires"] == "true");
                                     window.shuffle = (result["shuffle"] == "true");
                                     console.log("currList:" + window.currList + " currCat:" + window.currCat + " tarImage:" + window.tarImage);
                                     if (window.shuffle) {
 											dijit.registry.byId('shuffletab').set('label', "Shuffle On");
-							window.		        $("#myshuffle").addClass("mblTabBarButtonLabel2");
+											window.$("#myshuffle").addClass("mblTabBarButtonLabel2");
 
 										   //    dojo.byId('shuffletile').innerHTML = "Turn off shuffle";
                                  //       dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle3.png');
@@ -1185,14 +1196,19 @@ require(["jquery",
 							console.log("getty images viewlists");
 							/* get the name of last getty search */
 						//	getgettyresults();
-							console.log("name:"+window.gname+ "img: "+window.gimage);
+							//console.log("name:"+window.gname+ "img: "+window.gimage);
+							// now for each personal getty list we create the icon for it
+							window.lastgettylist=window.gettylists.length;// keep track of last getty list
+							for (var i in window.gettylists)
+							{
+							console.log("getty:"+gettylists[i]['id']);
 							var newdiv2 = dojo.create("div", {}, "listList2");
                                 domAttr.set(newdiv2, "class", "imagediv");
                                 //	console.log("newdiv2 "+ newdiv2);
                                 var newimg2 = dojo.create("img", {
-                                    id: "getty_" + window.email,
+                                    id: gettylists[i]['id'],
 
-                                    src: window.gimage,
+                                    src: gettylists[i]['coverImage'],
 
                                     onclick: function () {
                                         // alert(this.id);
@@ -1209,12 +1225,13 @@ require(["jquery",
                                     margin: "0px"
                                 }, newdiv2);
                                 var newtxt = dojo.create("div", {
-                                    innerHTML: window.gname
+                                    innerHTML: gettylists[i]['name']
                                 }, newdiv2);
                                 domAttr.set(newtxt, "class", "imagetxt");
                                 domStyle.set(newimg2, "width", imagewidth + 'px');
                                 domStyle.set(newdiv2, "width", imagewidth + 'px');
                                 domStyle.set(newimg2, "height", imageheight + 'px');
+							}
 								var newdiv2 = dojo.create("div", {}, "listList2");
                                 domAttr.set(newdiv2, "class", "imagediv");
                                 //	console.log("newdiv2 "+ newdiv2);
@@ -1225,12 +1242,17 @@ require(["jquery",
 
                                     onclick: function () {
                                         // alert(this.id);
-										
+										if (window.lastgettylist>4) // check to make sure they are not over the limit
+										{
+											myalert("You can only have 5 Getty personal viewlists\nReuse one of your existing lists");
+											gettydonesearch();
+											return;
+										}
                                         gotoView('PlaylistView', 'GettyView');
-										dojo.style("creativeselected","display","none");
-										dojo.style("EditorialTime","display","block");
-											dojo.style("orientationValue","top","-16px");
-										gettysearchclick();
+									//	dojo.style("creativeselected","display","none");
+									//	dojo.style("EditorialTime","display","block");
+									//		dojo.style("orientationValue","top","-16px");
+										gettyuserrefresh(true);
                                         
 
                                     },
@@ -1806,18 +1828,20 @@ require(["jquery",
 
                                     li = new dojox.mobile.ListItem({
                                         id: "s" + player["account"],
-									//	icon:  player["curr_image"]["icon"],
+										icon:  player["curr_image"]["icon"],
                                         rightIcon2: status,
                                         label: "<b>"+player["nickname"]+"</b>",
                                         onClick: function () {
                                             playerClick(this.id);
                                         },
 										variableHeight:true,
+										checkClass: "images/Checkmark.png",
+										uncheckClass: "images/Checkbox.png",
                                         checked: checked
 
                                     });
 							//	leave out details till next release 
-								/*	var sw = new dojox.mobile.Button({
+									var sw = new dojox.mobile.Button({
 										id:"sd"+i,
 										label:"Details",
 										classname:'detailclass',
@@ -1825,7 +1849,7 @@ require(["jquery",
 											playerDetail(this.id);
 										}
 									});
-									li.addChild(sw);*/
+									li.addChild(sw);
                                     playerList2.addChild(li);
 
                                 }
@@ -2069,7 +2093,7 @@ require(["jquery",
 
                 on(regPlayerView, "beforeTransitionIn",
                     function () {
-					console.log("new chromecast");
+						console.log("new chromecast");
                         window.currentView = "registernewchromecast";
                         window.updatePlayerLoop = setInterval(updatePlayers, 1500);
                         calliOSFunction("sayHello", ["On", window.email], "onSuccess", "onError");

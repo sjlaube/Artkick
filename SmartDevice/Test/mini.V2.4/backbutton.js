@@ -194,7 +194,7 @@ window.backbutton=function ()
 			break;	
 			
 		case "GettyView":
-			gettyReset();
+			//gettyReset();
 			dojo.style(dojo.byId("GettyView"), "display", "none");
 			gotoCategory('Getty Images');
 			dojo.byId("gettysearchbox").value="";

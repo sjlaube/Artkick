@@ -116,6 +116,7 @@ require([
   })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
+  ga('require', 'displayfeatures');
   ga('send', 'pageview');
 
 </script>
@@ -636,13 +637,61 @@ style="border:0px!important;outline:none!important;background-image:none!importa
 Content
 </div>
 
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="IVGettySearchBox" data-dojo-props='modal:true,top:"61px"' 
+style="width:90%;height:180px;border:0px!important;outline:none!important;background-image:none!important">
+Search Getty
+<input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="&nbsp;&nbsp;Getty Editorial Images" id="gettysearchbox"
+
+    style="width:99%;height:25px;font-size:15px;"   
+  data-dojo-props='ignoreCase: true, incremental:false,onSearch:gettyusersearch'></input>
+
+
+
+	   <span id="EditorialTime" style="white-space:nowrap;">
+
+     <select style="position: absolute; top: 50px;left:2%;text-size:16px;" id="dateValue" onchange="setEditorialTime(this.value)">
+       <option value='Any' selected="selected" >
+         Any date</option>
+       <option value='24H'>
+         Last 24 Hours</option>
+	   <option value='7D' >
+         Last 7 days</option>
+	   <option value='30D' >
+         Last 30 days</option>
+       <option value='12M' >
+         Last 12 months</option>
+
+
+     </select><br>
+	 </span>
+	 	   <span id="EditorialOrientation" style="white-space:nowrap;">
+     <select style="position: absolute;top:50px; left:52%;text-size:16px" id="orientationValue" onchange="setEditorialOrientation(this.value)">
+       <option value='Any' >
+         Any</option>
+       <option value='horizontal' selected="selected">
+         Horizontal</option>
+	   <option value='vertical' >
+         Vertical
+	 
+     </select>
+	 </span>
+	 
+
+
+  <button data-dojo-type="dojox/mobile/Button" style="position:absolute;top:75px;left:10%;background-color: white !important;color:gray" onclick="gettyusersearch()">Search</button>
+<button data-dojo-type="dojox/mobile/Button" style="position:absolute;top:75px;left:35%;background-color: white !important;color:gray" onclick="gettyclearsearch()">Clear</button>
+  <button data-dojo-type="dojox/mobile/Button" style="position:relative;top:25px;left:40%;background-color: white !important;color:gray" onclick="gettydonesearch()">Cancel</button>
+ <span data-dojo-type="dojox/mobile/ProgressBar" data-dojo-props='value:"0%", label:"0/100"' id="gettyprogress" style="position:absolute;top:120px;width:95%;height:30px;left:5px"></span>
+</div>
+
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index=901"  >
    <div id="ImageViewHeader" data-dojo-type="dojox/mobile/Heading"  data-dojo-props='fixed:"top"' style="font-size:14px; color:white; line-height:150%">hello
 	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="viewlistbutton" class="clearbutton" data-dojo-props='toggle:"true", ' onclick="gotoCategory('0')" style="float: left;height:45px">GoToCategory</div>
    
-
-	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="linemenu" data-dojo-props='icon:"images/3lineicon_menu-blue.png"' style="float: right;top:0px;width:65px;height:45px" onclick="showmenu()"></div> 
+	
+	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="linemenu" data-dojo-props='icon:"images/3lineicon_menu-blue.png"' style="float: right;top:0px;width:65px;height:45px" onclick="showmenu()"></div>
+ <div  data-dojo-type="dojox/mobile/ToolBarButton" id="resetsearch" data-dojo-props='icon:"images/refresh.png"' style="display:none;float: right;top:0px;width:65px;height:45px" onclick="gettyuserrefresh(false)"></div> 	 
  </div>
 <div data-dojo-type="dojox/mobile/DataCarousel" id="ImageList" 
  data-dojo-props='height:"850px",numVisible:1,pageIndicator:false,selectable:false,navButton:false' onclick="hidemenu()"></div>
@@ -1304,23 +1353,16 @@ Rename Viewlist
 <img src="images/getty_logo.png" alt="" style="height:25px;margin-top:6px;"></img>
    <div  data-dojo-type="dojox/mobile/ToolBarButton"  onclick="backbutton()" style="float: left;" >
     <img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
-<a id="gettynumberdelete" style="float:right;display:none"> Tap image to remove&nbsp&nbsp </a>
-<span>
-<br>
- <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="&nbsp;&nbsp;Search GettyImages" id="gettysearchbox" onclick="gettysearchclick()"
-   style="width:78%;height:30px;font-size:15px;position:absolute;top:40px;left:5px"   data-dojo-props='lowercase: true,incremental:false,onSearch:gettyusersearch'></input>
-   <button data-dojo-type="dojox/mobile/Button" style="height:30px;font-size:12px;position:absolute;left:80%;top:40px" onclick="gettyusersearch()">Search
-   </button>
-</span>
- 
- <div data-dojo-type="dojox/mobile/ProgressBar" data-dojo-props='value:"0%", label:"0/100"' id="gettyprogress" style="width:95%;height:20px;top:25px;left:5px"></div>
- </div>
+	</div>
 
-  <div data-dojo-type="dojox/mobile/ContentPane" id="Gettygrid" style="z-index:900; position: relative; top:10px" ></div>
- 
+  <div data-dojo-type="dojox/mobile/ContentPane"  style="z-index:900; position: relative; top:175px" >
+<p style='color:white!important;font-size:14px'>
+Enter your search terms to create a new getty search list</p>
+</div>
+
 
 </div>
-<div id="gettyadvanced" style="color:white;text-color:white;position:absolute;top:100px;left:5px;z-index:1000;display:none;background-color:#404040;width:95%">
+<div id="gettyadvanced1" style="color:white;text-color:white;position:absolute;top:100px;left:5px;z-index:1000;display:none;background-color:#404040;width:95%">
 &nbsp;Search Options
 <br>
 <span >
@@ -1342,9 +1384,9 @@ Rename Viewlist
   </span>
   
 	 
-	   <span id="EditorialTime" style="white-space:nowrap;">
+	   <span id="EditorialTime1" style="white-space:nowrap;">
 
-     <select style="position: relative; top: 10px;left:2%;text-size:16px;" id="dateValue" onchange="setEditorialTime(this.value)">
+     <select style="position: relative; top: 10px;left:2%;text-size:16px;" id="dateValue2" onchange="setEditorialTime(this.value)">
        <option value='Any' selected="selected" >
          Any date</option>
        <option value='24H'>
@@ -1359,8 +1401,8 @@ Rename Viewlist
 
      </select><br>
 	 </span>
-	 	   <span id="EditorialOrientation" style="white-space:nowrap;">
-     <select style="position: relative;top:-16px; left:52%;text-size:16px" id="orientationValue" onchange="setEditorialOrientation(this.value)">
+	 	   <span id="EditorialOrientation1" style="white-space:nowrap;">
+     <select style="position: relative;top:-16px; left:52%;text-size:16px" id="orientationValue2" onchange="setEditorialOrientation(this.value)">
        <option value='Any' >
          Any</option>
        <option value='horizontal' selected="selected">
