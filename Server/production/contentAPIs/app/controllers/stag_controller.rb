@@ -3,26 +3,42 @@ class StagController < ApplicationController
   require 'mongo'
   require 'json'
   include Mongo
-
+  require 'net/http'
   
-  #@@server = 'ds047478.mongolab.com'
-  #@@port = 47478
-  #@@db_name = 'heroku_app16778260'
-  #@@username = 'luckyleon'
-  #@@password = 'artkick123rocks'
   
-  @@server = 'ds051518-a0.mongolab.com'
-  @@port = 51518
-  @@db_name = 'heroku_app16777800'
-  @@username = 'luckyleon'
-  @@password = 'artkick123rocks'
+  #@@server = 'ds047539-a0.mongolab.com'
+  #@@port = 47539
+  #@@db_name = 'heroku_app24219881'
+  #@@username = 'artCoder'
+  #@@password = 'zwamygogo'
 
-  #@@server = 'ds053468-a0.mongolab.com'
-  #@@port = 53468
-  #@@db_name = 'heroku_app16778260'
-  #@@username = 'luckyleon'
-  #@@password = 'artkick123rocks'  
 
+  @@server = 'ds053468-a0.mongolab.com'
+  @@port = 53468
+  @@db_name = 'heroku_app16778260'
+  @@username = 'artCoder'
+  @@password = 'zwamygogo'
+
+
+  def getIndex(name)
+      names = ['image','privImage','viewlist','privList','user']
+      if not names.include? name
+        return -1
+      end
+      
+      baseUrl = 'http://pacific-oasis-9960.herokuapp.com/id/'
+      url = baseUrl + name
+      uri = URI(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Get.new(uri.request_uri)
+      res = http.request(request)
+      dic = JSON.parse(res.body)
+      if dic['Status'] != 'success'
+        return -1
+      end
+      
+      return dic['id'].to_i
+  end   
 
  def setFeatured 
    if params[:listId] == nil or params[:listId].strip.length==0
@@ -285,11 +301,16 @@ class StagController < ApplicationController
     miniListArr[0] = listObj['id']
     miniListArr[1] = listObj['name']
     
-    currIndex = @db['index'].find().to_a[0]['image'].to_i+1
-    
+
+    currIndex = getIndex('image')
+    if currIndex == -1
+      result =  {"Status"=>"failure","Message"=>"ID server not available!"}
+      @client.close
+      render :json=>result, :callback => params[:callback] 
+    end
+        
     imageObj = {'id'=>currIndex, 'viewlists'=>[params[:listId].to_i], 'viewlists2'=>[miniListArr]}
     
-    @db['index'].update({},{'$set'=>{'image'=>currIndex}})
     @db['images'].insert(imageObj)
     @db['viewlists'].update({'id'=>params[:listId].to_i},{'$push'=>{'images'=>currIndex}})
     
@@ -390,8 +411,12 @@ class StagController < ApplicationController
       return
     end  
     
-    currIndex = @db['index'].find().to_a[0]['viewlist'].to_i+1
-    
+    currIndex = getIndex('viewlist')
+    if currIndex == -1
+      result =  {"Status"=>"failure","Message"=>"ID server not available!"}
+      @client.close
+      render :json=>result, :callback => params[:callback] 
+    end    
     listObj = {'name'=>params[:listName], 'categories'=>[params[:catName]], 'datetime_created'=>Time.now.utc.to_s,
       'id'=>currIndex,'images'=>[]}
       
@@ -408,7 +433,7 @@ class StagController < ApplicationController
     @db['categories'].update({'name'=>params[:catName]},{'$push'=>{'viewlists2'=>miniListObj}})
 
     
-    @db['index'].update({},{'$set'=>{'viewlist'=>currIndex}})
+
     
     result = {"Status"=>"success","Message"=>"Viewlist "+params[:listName]+" is created!", "listId"=>currIndex}
      @client.close
@@ -454,6 +479,13 @@ class StagController < ApplicationController
     listObj = listSet.to_a[0]
     @db['viewlists'].update({"id"=>params[:listId].to_i},{'$pull'=>{'categories'=>params[:catName]}})
     
+    catObj['viewlistNum'] = catObj['viewlists'].length
+    if catObj['featuredLists'] != nil
+      catObj['featuredListNum'] = catObj['featuredLists'].length
+    else
+      catObj['featuredListNum'] = 0
+    end
+    
     #viewlists
     #viewlists2
     #viewlistNum
@@ -467,6 +499,11 @@ class StagController < ApplicationController
     #featuredLists
     #featuredLists2
     #featuredListNum
+    if catObj['featuredLists'] == nil
+      catObj['featuredLists'] = []
+      catObj['featuredLists2'] = []
+      catObj['featuredListNum'] = 0
+    end
     
     oldIndex = catObj['featuredLists'].index(listObj['id'].to_i)
     if oldIndex != nil
@@ -607,17 +644,21 @@ class StagController < ApplicationController
    params[:images].each do |imageId|
      imageSet = @db['images'].find({'id'=>imageId.to_i})
 
-     if imageSet.count >0 and listObj['images'].include?imageId.to_i
+     if listObj['images'].include?imageId.to_i
          
           @db['viewlists'].update({'id'=>params[:listId].to_i},{'$pull'=>{'images'=>imageId.to_i}})
           imageNum -= 1
-          imageObj = imageSet.to_a[0]
+
           
           @db['images'].update({'id'=>imageId.to_i},{'$pull'=>{'viewlists'=>params[:listId].to_i}})
           @db['images'].update({'id'=>imageId.to_i},{'$pull'=>{'viewlists2'=>[params[:listId].to_i,listObj['name']]}})
           
           trashImages = @db['trashes'].find({'type'=>'images'}).to_a[0]['images']
-          if not trashImages.include?imageId.to_i and imageObj['viewlists'].length == 1
+          
+          if imageSet.count > 0
+            imageObj = imageSet.to_a[0]
+          end
+          if not trashImages.include?imageId.to_i and imageObj != nil and imageObj['viewlists'].length == 1
              @db['trashes'].update({'type'=>'images'},{'$push'=>{'images'=>imageId.to_i}})
           end
           removed.push(imageId.to_s)       
@@ -924,7 +965,7 @@ class StagController < ApplicationController
           category["featuredLists2"].push(miniListObj)
           category["featuredListNum"] += 1
         end
-        processedLists.push(list.to_i)
+        processedLists.push(listId.to_i)
         
       end
         
@@ -1090,6 +1131,14 @@ end
     
     category = catSet.to_a[0]
     viewlists = category['viewlists2']
+    
+    viewlists.each do |listObj|
+      if listObj['name'].include?'All in'
+        viewlists.delete(listObj)
+      end
+    end 
+      
+      
     if params[:catName] == 'Artist'
        lastNameQuickSort(viewlists,0,viewlists.length-1)      
     else

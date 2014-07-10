@@ -5,7 +5,7 @@ class Client2Controller < ApplicationController
   require 'json'
   
   @@userDbId = '63'
-  @@contentDbId = '53'
+  @@contentDbId = '47'
   @@privateRange = 10000000000
   @@dbMeta = {}
 
@@ -16,10 +16,9 @@ class Client2Controller < ApplicationController
   
   @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
     :password => 'zw12artistic'}
-
   
-  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
-    :username => 'artCoder', :password => 'zwamygogo'}
+  @@dbMeta['47'] = {:server => 'ds047539-a0.mongolab.com', :port => 47539, :db_name => 'heroku_app24219881',
+    :username => 'artCoder', :password => 'zwamygogo' }
   
   @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
     :username => 'artCoder', :password => 'zwamygogo'}
@@ -44,6 +43,45 @@ class Client2Controller < ApplicationController
     return (Time.new.to_f*1000).to_i
   end
     
+
+  def isSubs(userEmail)
+    if userEmail == nil
+      return false
+    end
+    
+    userSet = @@userDb['users'].find({'email'=>userEmail})
+    if userSet.count == 0
+      return false
+    end
+    
+    user = userSet.to_a[0]
+    
+    iosSubs = false
+    if user['iosExpireMs'] != nil and user['iosExpireMs'].to_i - utcMillis() > 0
+      iosSubs = true
+    end
+    
+    androidSubs = false
+    if user['androidSubs'] == true
+      androidSubs = true
+    end
+    
+    testSubs = false
+    if user['testSubs'] == true
+      testSubs = true
+    end
+    
+    subs = iosSubs or androidSubs    
+       
+    if testSubs == true
+      subs = true
+    end   
+    
+    return subs
+  end     
+    
+    
+    
   def getListSet(listId)
      if @@contentDb == nil or @@userDb == nil
         connectDb()
@@ -51,6 +89,10 @@ class Client2Controller < ApplicationController
     
      if (not listId.is_a? Numeric) and (listId.include? 'top')
         return @@userDb['privLists'].find({'id'=>listId})
+     end
+     
+     if (not listId.is_a? Numeric) and (listId.include? 'getty')
+        return @@userDb['gettyLists'].find({'id'=>listId})
      end
      
      if listId.to_i >= @@privateRange
@@ -66,6 +108,12 @@ class Client2Controller < ApplicationController
      if @@contentDb == nil or @@userDb == nil
         connectDb()
      end
+     
+     if (not imageId.is_a? Numeric) and (imageId.include? 'getty')
+        return @@userDb['gettyImages'].find({'id'=>imageId})
+     end
+     
+     
      if imageId.to_i >= @@privateRange
         return @@userDb['privImages'].find({'id'=>imageId.to_i})
      end
@@ -176,21 +224,12 @@ class Client2Controller < ApplicationController
   
         currListObj = nil
          userObj = nil
-         if @player["curr_list"].to_s.include?'getty'
-           userEmail = @player["curr_list"][6,@player["curr_list"].length-1]
-           userSet = @@userDb['users'].find({'email'=>userEmail})
-           if userSet.count > 0
-             userObj = userSet.to_a[0]
-             if userObj['gettyList'] != nil
-               currListObj = userObj['gettyList']
-             end
-           end
-         else
+
            listSet = getListSet(@player["curr_list"])
            if listSet.count > 0
               currListObj = listSet.to_a[0]
            end
-         end
+
          
          if currListObj == nil
            currListObj = getListSet(defaultObj['viewlist']).to_a[0]
@@ -201,50 +240,32 @@ class Client2Controller < ApplicationController
            images = @player["curr_list_images"]
          end
     
-         if currListObj['id'].to_s.include? 'getty'
-           testId = images[0]
-           if currListObj['imageMap'][testId] == nil
-             images = currListObj['images']
-           end
-         end    
+ 
     
     
     if params[:next].to_i == 1
        currIndex = (@player["curr_index"].to_i + images.length + 1)%images.length
           while true
            currImageIndex = images[currIndex]
-           if currImageIndex.to_s.include? 'getty'
-             if currListObj['imageMap'][currImageIndex]!= nil
-               currImage = currListObj['imageObjs'][currListObj['imageMap'][currImageIndex]]
-               break
-             end
-           else
            
              imageSet = getImageSet(currImageIndex)
              if imageSet.count > 0
                 currImage = imageSet.to_a[0]
                 break
-             end
-           end
+             end           
+           
            currIndex = (currIndex+1)%images.length
          end
     else
        currIndex = (@player["curr_index"].to_i + images.length - 1)%images.length
         while true
            currImageIndex = images[currIndex]
-           if currImageIndex.to_s.include? 'getty'
-             if currListObj['imageMap'][currImageIndex]!= nil
-               currImage = currListObj['imageObjs'][currListObj['imageMap'][currImageIndex]]
-               break
-             end
-           else
            
              imageSet = getImageSet(currImageIndex)
              if imageSet.count > 0
                 currImage = imageSet.to_a[0]
                 break
-             end
-           end
+             end           
            currIndex = (currIndex+images.length-1)%images.length
             
          end
@@ -285,6 +306,20 @@ class Client2Controller < ApplicationController
     else
         result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
     end
+    
+    if currImage['id'].to_s.include? 'getty'
+      @@userDb['gettyImages'].update({'id'=>currImage['id']},{'$set'=>{'last_visit'=>utcMillis()}})
+      if currImage['has_highres'] == true
+       result['imageURL'] = currImage['artkick_url']
+      end
+      
+      if (!isSubs(@player["curr_user"])) and (currImage['waterMark']!=nil)
+        result['imageURL'] = currImage['waterMark']
+      end
+      
+      result['caption'] = URI.escape(currImage['Copyright'])
+    end  
+    
     
         render :json=>result, :callback => params[:callback]
   end 
@@ -374,21 +409,11 @@ class Client2Controller < ApplicationController
          
          currListObj = nil
          userObj = nil
-         if @player["curr_list"].to_s.include?'getty'
-           userEmail = @player["curr_list"][6,@player["curr_list"].length-1]
-           userSet = @@userDb['users'].find({'email'=>userEmail})
-           if userSet.count > 0
-             userObj = userSet.to_a[0]
-             if userObj['gettyList'] != nil
-               currListObj = userObj['gettyList']
-             end
-           end
-         else
+         
            listSet = getListSet(@player["curr_list"])
            if listSet.count > 0
               currListObj = listSet.to_a[0]
-           end
-         end
+           end         
          
          if currListObj == nil
            currListObj = getListSet(defaultObj['viewlist']).to_a[0]
@@ -399,30 +424,17 @@ class Client2Controller < ApplicationController
            images = @player["curr_list_images"]
          end
  
-         if currListObj['id'].to_s.include? 'getty'
-           testId = images[0]
-           if currListObj['imageMap'][testId] == nil
-             images = currListObj['images']
-           end
-         end 
+
          
          currIndex = (@player["curr_index"].to_i + 1)%images.length
          while true
            currImageIndex = images[currIndex]
            
-           if currImageIndex.to_s.include? 'getty'
-             if currListObj['imageMap'][currImageIndex]!= nil
-               currImage = currListObj['imageObjs'][currListObj['imageMap'][currImageIndex]]
-               break
-             end
-           else
-           
              imageSet = getImageSet(currImageIndex)
              if imageSet.count > 0
                 currImage = imageSet.to_a[0]
                 break
-             end
-           end
+             end           
            
            currIndex = (currIndex+1)%images.length
             
@@ -455,6 +467,22 @@ class Client2Controller < ApplicationController
          else
             result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
          end
+         
+         
+    if currImage['id'].to_s.include? 'getty'
+      @@userDb['gettyImages'].update({'id'=>currImage['id']},{'$set'=>{'last_visit'=>utcMillis()}})
+      if currImage['has_highres'] == true
+       result['imageURL'] = currImage['artkick_url']
+      end
+
+
+      if (!isSubs(@player["curr_user"])) and (currImage['waterMark']!=nil)
+        result['imageURL'] = currImage['waterMark']
+      end
+      
+      result['caption'] = URI.escape(currImage['Copyright'])
+    end          
+         
          render :json=>result, :callback => params[:callback]
          
          return
@@ -476,21 +504,12 @@ class Client2Controller < ApplicationController
          
          currListObj = nil
          userObj = nil
-         if @player["curr_list"].to_s.include?'getty'
-           userEmail = @player["curr_list"][6,@player["curr_list"].length-1]
-           userSet = @@userDb['users'].find({'email'=>userEmail})
-           if userSet.count > 0
-             userObj = userSet.to_a[0]
-             if userObj['gettyList'] != nil
-               currListObj = userObj['gettyList']
-             end
-           end
-         else
+
+         
            listSet = getListSet(@player["curr_list"])
            if listSet.count > 0
               currListObj = listSet.to_a[0]
            end
-         end
          
          if currListObj == nil
            currListObj = getListSet(defaultObj['viewlist']).to_a[0]
@@ -502,30 +521,17 @@ class Client2Controller < ApplicationController
          end
 
 
-         if currListObj['id'].to_s.include? 'getty'
-           testId = images[0]
-           if currListObj['imageMap'][testId] == nil
-             images = currListObj['images']
-           end
-         end
          
          currIndex = (@player["curr_index"].to_i + 1)%images.length
          while true
            currImageIndex = images[currIndex]
-           
-           if currImageIndex.to_s.include? 'getty'
-             if currListObj['imageMap'][currImageIndex]!= nil
-               currImage = currListObj['imageObjs'][currListObj['imageMap'][currImageIndex]]
-               break
-             end
-           else
            
              imageSet = getImageSet(currImageIndex)
              if imageSet.count > 0
                 currImage = imageSet.to_a[0]
                 break
              end
-           end
+
            
            currIndex = (currIndex+1)%images.length
             
@@ -576,22 +582,12 @@ class Client2Controller < ApplicationController
       currImageIndex = @player["curr_image"]
     end
     
-    if currImageIndex.to_s.include? 'getty'
-       userEmail = @player["curr_list"][6,@player["curr_list"].length-1]
-       userSet = @@userDb['users'].find({'email'=>userEmail})
-       if userSet.count > 0
-         userObj = userSet.to_a[0]
-         if userObj['gettyList'] != nil and userObj['gettyList']['imageMap'][currImageIndex]!=nil
-           currImage = userObj['gettyList']['imageObjs'][userObj['gettyList']['imageMap'][currImageIndex]]
-         end
-       end
-    
-    else
+
        imageSet = getImageSet(currImageIndex)
        if imageSet.count > 0
          currImage = imageSet.to_a[0]
        end
-    end
+
     
     if currImage == nil
       currImage = getImageSet(defaultObj["image"]).to_a[0]
@@ -613,6 +609,20 @@ class Client2Controller < ApplicationController
     else
       result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
     end
+    
+    if currImage['id'].to_s.include? 'getty'
+      @@userDb['gettyImages'].update({'id'=>currImage['id']},{'$set'=>{'last_visit'=>utcMillis()}})
+      if currImage['has_highres'] == true
+       result['imageURL'] = currImage['artkick_url']
+      end
+
+      if (!isSubs(@player["curr_user"])) and (currImage['waterMark']!=nil)
+        result['imageURL'] = currImage['waterMark']
+      end
+      
+      result['caption'] = URI.escape(currImage['Copyright'])
+    end      
+    
     render :json=>result, :callback => params[:callback]   
   end
   
@@ -663,6 +673,20 @@ class Client2Controller < ApplicationController
     else
       result["caption"]=currImage["Artist First N"]+' '+currImage["Artist Last N"]
     end
+    
+    if currImage['id'].to_s.include? 'getty'
+      @@userDb['gettyImages'].update({'id'=>currImage['id']},{'$set'=>{'last_visit'=>utcMillis()}})
+      if currImage['has_highres'] == true
+       result['imageURL'] = currImage['artkick_url']
+      end
+
+      if (!isSubs(@player["curr_user"])) and (currImage['waterMark']!=nil)
+        result['imageURL'] = currImage['waterMark']
+      end
+      
+      result['caption'] = URI.escape(currImage['Copyright'])
+    end      
+    
     render :json=>result, :callback => params[:callback]   
     
   end    
