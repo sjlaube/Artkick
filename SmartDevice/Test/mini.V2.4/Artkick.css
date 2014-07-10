@@ -13,6 +13,67 @@ float:left;margin-right:2px}
 	display:inline-block;
 }
 
+.checkboxclass {
+	background-image: url(../images/Checkbox25x25.png)!important;
+	background-repeat: no-repeat;
+	border-style:none!important;
+	border-color:none;
+	height:25px;
+	width:25px;
+	position:relative;
+	float:right;
+	margin-right:5px;
+	top:-24px;
+}
+.checkboxclass2 {
+	background-image: url(../images/Checkmark25x25.png)!important;
+	background-repeat: no-repeat;
+	border-style:none!important;
+	border-color:none;
+	height:25px;
+	width:25px;
+	position:relative;
+	float:right;
+	margin-right:5px;
+	top:-24px;
+}
+.statusclass {
+	background-image: url(../images/greenbutton.png)!important;
+	background-repeat: no-repeat;
+	border-style:none!important;
+	border-color:none;
+	height:20px;
+	width:20px;
+	position:relative;
+	float:right;
+	margin-right:0px;
+	top:-24px;
+}
+
+.detailclass {
+	background-image: url(../images/settings-icon25x25.png)!important;
+	background-repeat: no-repeat;
+	border-style:none!important;
+	border-color:none;
+	height:25px;
+	width:25px;
+	position:relative;
+	float:right;
+	margin-right:15px;
+	top:-24px;
+	}
+	
+.mblListItemRightIcon2
+ {
+  position: relative;
+  float: right!important;
+height:20px;
+width:20px;
+  top:11px;
+  display:inline;
+
+margin-right:5px
+}
 .socialTable{
 	border-spacing: 0px;
 	border-collapse:collapse;
@@ -162,8 +223,8 @@ float:left;margin-right:2px}
 	}
 	
 	.mblListItemIcon {
-		width:60px;
-		height:60px
+		width:50px;
+		height:50px
 	}
 	
 	.thumbDiv {
@@ -292,7 +353,18 @@ float:left;margin-right:2px}
 		font-size:11px;
 		color:white;
 		background-color:black;
+
+
 		}
+	.imagetxt2 {
+	position:relative;
+	top:-90px!important;
+	left:10px;
+
+
+
+
+	}
 
      .CarouselMeta {
      	text-align:left;
@@ -329,7 +401,14 @@ float:left;margin-right:2px}
 
 	margin-top:-5px;
 	}
-	
+	.logoclass {
+	display:block;
+	margin: 0 auto;
+	margin-botton:0px;
+	text-align:center;
+
+
+	}
 	.moregrid {
 
 	}
@@ -356,6 +435,19 @@ float:left;margin-right:2px}
 		font-weight: 400;
 		width:65px;
 		height:45px;
+	}
+	
+	.tvstyle {
+	position:relative;
+	top: -2px;
+	color: #00ABDE;
+	background-color:white;
+	  border-radius: 5px;
+		border: 1px outset #9cacc0;
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 400;
+		width:75px;
+		height:50px;
 	}
 	.backstyle2 {
 	position:absolute;
@@ -385,6 +477,11 @@ float:left;margin-right:2px}
 	}
 	.categoryclass
 	{
+	}
+	.categoryclass2
+	{
+	float:left;
+	margin:0;
 	}
 	.showingclass1
 	{
@@ -426,6 +523,7 @@ float:left;margin-right:2px}
   font-size: 12px;
   color: black;
 }
+
 	
 .mblToggleButtonChecked {
     background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#bfbfbf), color-stop(0.5, #ebebeb), color-stop(0.5, #dedede));
@@ -480,12 +578,7 @@ font-family: 'Open Sans', sans-serif;
 		color:#404040;
 }
 
-.detailclass {
-	position:relative;
-	float:right;
-	margin-right:15px;
-	top:-0px;
-	}
+
 	
 .deleteclass {
 	position:relative;
@@ -529,3 +622,18 @@ font-family: 'Open Sans', sans-serif;
   font-size: 15px!important;
   top:-1px!important;
 }
+div.evenit {
+width: 100%;
+margin:0 auto;
+
+}
+nav{
+display:block;
+overflow:auto;
+}
+nav button
+{
+float:left;
+text-align:center;
+}
+

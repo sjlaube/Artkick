@@ -51,7 +51,7 @@ window.backbutton=function ()
 			gotoView("Login","newLogin");
 			break;
 		case "newLogin":
-			gotoView("newLogin","Intro0");
+			gotoView("newLogin","IntroA");
 			break;
 		case "select_category": // if android exit otherwise nothing
 		case "Intro0":
@@ -95,7 +95,7 @@ window.backbutton=function ()
 			gotoView("select_player","OptionsList");
 			break;
 		case "registeruser":
-			gotoView("registeruser","Login");
+			gotoView("registeruser","IntroA");
 			break;
 		case "LogOff":
 			gotoView("LogOff","OptionsList");
@@ -202,6 +202,18 @@ window.backbutton=function ()
 			break;
 		case "EditListView":
 			doneeditviewlist(false);
+			break;
+			
+		case "TVDetail":
+			gotoView("TVDetail","select_player2");
+			break;
+		case "SearchView":
+			dojo.style(dojo.byId("SearchView"), "display", "none");
+			dojo.byId("searchbox2").value="";
+			dojo.byId("gettysearchbox").value='';
+			dijit.registry.byId('SearchBox').hide();
+			dijit.registry.byId('IVGettySearchBox').hide();
+			gotoView("SearchView",window.lastView);
 			break;
 		default:
 			break;

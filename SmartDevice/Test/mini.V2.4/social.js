@@ -219,7 +219,7 @@ function CreateComment (stat)
 	alert("Comment cannot be blank");
 	return;
    }
-
+	// do we need to encode the comments?????
 
    var url=base + "client/commentImage?"  + "email=" + window.email+"&token="+window.token+"&imageId="+window.currImage+"&text="+newlistname;
    var newlistid;

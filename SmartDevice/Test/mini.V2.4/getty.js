@@ -85,16 +85,21 @@ function gettyusersearch()
 	
 	//dojo.style("gettyadvanced","display","none");
 		//dojo.style("prevGettySearches","display","none");
-	if(window.newgettylist) // create a new getty viewlist for this user
+/*	if(window.newgettylist) // create a new getty viewlist for this user
 	{
 		var templistid=window.lastgettylist++;
 		
 		lid='0'+templistid.toString();
 	}
 	else
-	{
-		lid=window.currentGettyListId;
-	}
+	{*/
+	if (window.currentGettyListId)
+		lid=window.currentGettyListId;// for now just replace last getty search, should replace oldest one
+	else
+		lid='00';
+//	}
+	dijit.registry.byId('SearchBox').hide(); 
+	$("#IVGettySearchBox").css("top","41px");
 	var url="http://salty-chamber-1299.herokuapp.com/getty/search?"+"email=" + window.email+"&query="+searchstring
 	+"&token="+window.token
 	+"&listId=getty_"+lid+"_"+window.email
@@ -161,7 +166,9 @@ function gettyusersearch()
 				
       //      usermessage(result["imageNum"]+' images found & stored in "Last Getty Search"');
 			//console.log("test123");
-			dijit.registry.byId('IVGettySearchBox').hide(); 
+			dijit.registry.byId('IVGettySearchBox').hide();
+			dijit.registry.byId('SearchBox').hide();	
+			$("#searchGrid").css("top","0px");			
 			window.IVsearchboxshow=false;
 			//	swapview(result["listId"]);
 
@@ -175,12 +182,15 @@ function gettyusersearch()
 				window.currViewList="Last Getty Search";
 				window.currGridList=-1;
 				window.moregridpages = false;
-                gotoView(window.currentView, 'blankview');
+          //      gotoView(window.currentView, 'blankview');
                                         
-				window.switchView = true;
-                updateImages(-1);
+			//	window.switchView = true;
+             //   updateImages(-1);
 				usermessage(result["imageNum"]+' images found for:"'+searchstring+'"');
-				
+				if (result["imageNum"]>0)
+				{
+					loadGrid(0,searchGrid,result["id"]);
+				}
 			//	gettyload();
 			//	previousgettysearch.push( {query:searchstring, EditorialSegments:window.EditorialSegments, orientation:window.gettyEditorialOrientation, date:window.gettyEditorialTime});
 
@@ -318,11 +328,13 @@ function gettyclearsearch()
 function gettydonesearch()
 {
 	dijit.registry.byId('IVGettySearchBox').hide();
+	dijit.registry.byId('SearchBox').hide(); 
+
 	if (window.newgettylist)
 	{
 		window.newgettylist=false;
-		backbutton();
+
 	}
-	
+			backbutton();
 }
 

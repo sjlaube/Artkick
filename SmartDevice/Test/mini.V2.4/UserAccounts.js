@@ -119,6 +119,7 @@ function createUser() {
 		return;
 	}
 	var emailaddress=dojo.byId("regUserEmail").value.trim();
+	console.log("user email="+emailaddress);
 	if (emailaddress =="")
 	{
 		myalert("User email cannot be blank");
@@ -192,6 +193,9 @@ function dologout() {
 	window.currentView = "LogOff";
     var currView = dijit.registry.byId("LogOff");
     window.email = null;
+	try {Android.clearCookie();
+		}catch (err) {};
+	calliOSFunction("clearCookie", [], "onSuccess", "onError");
     // code to delete cookie and log out user goes here
     setCookie("email", null, 1);
     setCookie("token", null, 1);
@@ -207,14 +211,14 @@ function dologout() {
 
 function goToReg1() {
 	window.currentView = "registeruser";
-    var currView = dijit.registry.byId("Intro0");
+    var currView = dijit.registry.byId("IntroA");
     var mycurrView = currView.getShowingView()
     mycurrView.performTransition("registeruser", 1, "", null);
 }
 
 function goToLogin1() {
 		window.currentView = "newLogin";
-    var currView = dijit.registry.byId("Intro0");
+    var currView = dijit.registry.byId("IntroA");
     var mycurrView = currView.getShowingView();
 //	myalert("goto login"+mycurrView);
     mycurrView.performTransition("newLogin", 1, "", null);
@@ -302,7 +306,7 @@ function goToReg() {
 function goToresetpassword() {
 	window.currentView = "reset_password";
 
-    var currView = dijit.registry.byId("Login");
+    var currView = dijit.registry.byId("newLogin");
     currView.performTransition("reset_password", 1, "", null);
 }
 
@@ -495,12 +499,12 @@ function nativelink(url) {
 }
 function showterms()
 {
-	window.lastView="newLogin";
+	window.lastView="registeruser";
 	showiframe("terms of service.htm");
 }
 
 function showprivacy()
 {
-	window.lastView="newLogin";
+	window.lastView="registeruser";
 	showiframe("privacy.htm");
 }

@@ -56,6 +56,53 @@ function removePlayersAction() {
     }
 }
 
+
+function removePlayer() {
+	var currTime = new Date().getTime();
+	//alert("currTime"+currTime);
+	//alert("lastTime"+window.rmplayerClickTime);
+    if(window.rmplayerClickTime!=undefined && currTime - window.rmplayerClickTime < 7000)
+        return;
+	window.rmplayerClickTime = currTime;
+
+    var r = confirm("Are you sure you want to delete the selected players?");
+    if (r == false) {
+        return;
+    }
+
+
+			key=window.currentplayer["account"];
+            dojo.io.script.get({
+                url: base + "player/removePlayer?email=" + window.email + "&playerId=" + key+"&token="+window.token,
+                callbackParamName: "callback",
+				timeout: 8000,
+				trytimes: 5,
+				error: function(error){
+					console.log("timeout!removePlayer"+url);
+					this.trytimes --;
+					if(this.trytimes>0){
+						dojo.io.script.get(this);
+					} else{
+						alert("Network problem19. Please check your connection and restart the app.");
+					}
+					
+				},
+                load: function (result) {
+                	if(result["Status"]=="success")
+					{
+                        usermessage(result["Message"]);
+						window.numberplayers--;
+						// now delete the listitem out of the player list
+						dojo.destroy(dojo.byId('s'+currentplayer['account']));
+					}
+					gotoView("TVDetail","select_player2");
+                   
+                }
+            });
+        
+
+    
+}
 function addUserToPlayers() {
     var currTime = new Date().getTime();
     if(window.addUserClickTime!=undefined && currTime - window.addUserClickTime < window.boucingTime)
@@ -71,22 +118,26 @@ function addUserToPlayers() {
 	else
 	{
 // add check to see if any player is checked
-    for (var key in window.ownedPlayers) {
-        if (window.ownedPlayers[key]) {
+			key=window.currentplayer["account"];
             dojo.io.script.get({
                 url: base + "player/addUserToPlayer?queryEmail=" + email + "&playerId=" + key+"&token="+window.token+"&myEmail="+window.email,
                 callbackParamName: "callback",
 				load: function (result) {
                     usermessage(result["Message"]);
+					dojo.byId("addPlayerEmail").value='';
                 }
             });
         }
 
-    }
-	}
+   
 
 }
+function adduserPlayer()
+{
 
+        dijit.registry.byId("SearchUser").show();
+
+}
 function searchUser() {
 	var currTime = new Date().getTime();
     if(window.searchuClickTime!=undefined && currTime - window.searchuClickTime < window.boucingTime)
@@ -113,7 +164,14 @@ function searchUser() {
 			
 		},
         load: function (result) {
-            usermessage(result["Message"]);
+			if(result["Status"]=="success")
+			{
+				dijit.registry.byId('SearchUser').hide();
+				addUserToPlayers();
+			}
+			else
+			
+				alert(result["Message"]);
         }
     });
 	//dojo.byId("addPlayerEmail").value = "";
@@ -264,11 +322,12 @@ function installartkick() {
 
 }
 function setAuto(interval) {
-    for (var player in window.playerSet) {
-        if (window.playerSet[player]) {
+ //   for (var player in window.playerSet) {
+   //     if (window.playerSet[player]) {
             //alert(base+"setAuto?email="+window.email+"&snumber="+player.substring(1)+"&autoInterval="+interval);
-            dojo.io.script.get({
-                url: base + "client/setAuto?email=" + window.email + "&snumber=" + player.substring(1) + "&autoInterval=" + interval+"&token="+window.token,
+            key=window.currentplayer["account"];
+			dojo.io.script.get({
+                url: base + "client/setAuto?email=" + window.email + "&snumber=" + key + "&autoInterval=" + interval+"&token="+window.token,
                 callbackParamName: "callback",
 				timeout: 8000,
 				trytimes: 5,
@@ -283,13 +342,46 @@ function setAuto(interval) {
 					
 				},
                 load: function (result) {
-				usermessage("Slideshow set");}
+				usermessage("Slideshow set");
+				var timing="never";
+				switch(interval)
+				{
+					case "0":
+						timing="Off";
+						break;
+					case "-1":
+						timing="Every Morning";
+						break;
+					case "60000":
+						timing="Every Minute";
+						break;
+					case "600000":
+						timing="Every 10 Minutes";
+						break;
+					case "3600000":
+						timing="Every Hour";
+						break;
+					case "10800000":
+						timing="Every 3 Hours";
+						break;
+					case "21600000":
+						timing="Every 6 Hours";
+						break;
+					case "43200000":
+						timing="Every 12 Hours";
+						break;
+			
+			
+				}
+				dijit.registry.byId('s'+currentplayer['account']).set("label",
+				currentplayer["nickname"] +"<br><small>&nbsp;&nbsp;&nbsp;Slideshow: "+timing+"</small>");
+				}
             });
 
-        }
+    //    }
 
 
-    }
+  //  }
 
 }
 
@@ -298,14 +390,14 @@ function setAuto(interval) {
 
 function fillswitch() {
     //alert(window.fill);
-	console.log($("#fillswitch"));
-	var fillsw = dijit.registry.byId("fillswitch");
+	//console.log($("#fillswitch"));
+	//var fillsw = dijit.registry.byId("fillswitch");
     if (window.fill) {
-	    fillsw.set('label', "Not Active");
+	  //  fillsw.set('label', "Not Active");
         window.fill = false;
     } else {
         window.fill = true;
-		fillsw.set('label', "Active");
+	//	fillsw.set('label', "Active");
     }
     syncImage();
     //alert(window.fill);
@@ -392,8 +484,15 @@ function noregisterTV()
 function playerDetail(id)
 {
 
-console.log("clicked for player"+window.playerlist[id.substr(2)]["nickname"]);
+	console.log("details clicked for player"+window.playerlist[id.substr(2)]["nickname"]);
+	window.currentplayer = window.playerlist[id.substr(2)];
 
+	$("#slideshowvalue").val(currentplayer["autoInterval"]);
+	$("#fillswitch3").val(currentplayer["stretch"]);
+	//document.getElementById("detailshowing").setAttribute("src", player["curr_image"]["icon"]);
+
+	dijit.registry.byId("detailheading").set("label", currentplayer["nickname"]+" Details");
+	gotoView(currentView,"TVDetail");
 }
 window.countplayers = function()
 {
@@ -422,5 +521,12 @@ thisurl= base + "player/getPlayers?email=" + window.email + "&token=" + window.t
 					})
 }
 
+window.dialsearch=function()
+{
+// this function calls the dial search to locate devices
+jsonStr = "{\"0a21fe82-00aa-1000-8bb9-5cf6dce19f18\":\"[TV]Samsung LED75\",\"015d80c1-9000-105d-80df-b83e591640e1\":\"Roku Streaming Player 1GH31T024031\",\"01a130c9-1801-1020-80f3-b83e59ec760b\":\"Roku Streaming Player 1XC396073971\",\"010d3053-9c01-1061-80c6-cc6da03af95d\":\"Roku Streaming Player 13C1CW090566\",\"14da096a-2742-11e2-84f8-34F62D3F2D9C\":\"AQUOS C6500U\",\"36d33576-02bf-6c39-0000-0000019acabf\":\"Sheldon's Fire TV\",\"015d70c4-7800-10ba-8082-b83e593b7e51\":\"Roku Streaming Player 1GG34N047746\",\"02125bb1-18eb-bb8e-cd43-f46255b0fa0c\":\"Artkick Chromecast1\"}";
 
+window.dialMap = JSON.parse(jsonStr);
+
+}
  
