@@ -4,21 +4,10 @@ class ClientController < ApplicationController
   include Mongo
   require 'json'
   
-  #@@server = 'ds031948.mongolab.com'
-  #@@port = 31948
-  #@@db_name = 'zwamy'
-  #@@username = 'leonzwamy'
-  #@@password = 'zw12artistic'
   
-  #@@server = 'ds047478.mongolab.com'
-  #@@port = 47478
-  #@@db_name = 'heroku_app16778260'
-  #@@username = 'luckyleon'
-  #@@password = 'artkick123rocks'
-  
-  #@@server = 'ds051518-a0.mongolab.com'
-  #@@port = 51518
-  #@@db_name = 'heroku_app16777800'
+  #@@server = 'ds047539-a0.mongolab.com'
+  #@@port = 47539
+  #@@db_name = 'heroku_app24219881'
   #@@username = 'artCoder'
   #@@password = 'zwamygogo'
  

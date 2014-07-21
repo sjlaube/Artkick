@@ -15,6 +15,25 @@
 	}
 	
 	
+	#fullScreenButton {
+    	display:none;
+    	position:fixed;
+    	margin-left: -125px;
+    	margin-top: -40px;
+    	z-index:900;
+    	top: 25%;
+    	left: 50%;
+    	width: 250px;
+    	height: 50px;
+    	background-color:gray;
+    	font-size:40px;
+    	text-align:center;
+    	padding:2px;
+    	color:white;
+    	border-radius: 30px;
+    	opacity:0.8;
+    }
+	
 
 	div#registration {
 		background-color: white;
@@ -92,6 +111,79 @@
  <script type="text/javascript">
   
   $(document).ready(function(){
+  
+  
+  
+  
+  	(function() {
+    var
+        fullScreenApi = {
+            supportsFullScreen: false,
+            isFullScreen: function() { return false; },
+            requestFullScreen: function() {},
+            cancelFullScreen: function() {},
+            fullScreenEventName: '',
+            prefix: ''
+        },
+        browserPrefixes = 'webkit moz o ms khtml'.split(' ');
+ 
+    // check for native support
+    if (typeof document.cancelFullScreen != 'undefined') {
+        fullScreenApi.supportsFullScreen = true;
+    } else {
+        // check for fullscreen support by vendor prefix
+        for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
+            fullScreenApi.prefix = browserPrefixes[i];
+ 
+            if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] != 'undefined' ) {
+                fullScreenApi.supportsFullScreen = true;
+ 
+                break;
+            }
+        }
+    }
+ 
+    // update methods to do something useful
+    if (fullScreenApi.supportsFullScreen) {
+        fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
+ 
+        fullScreenApi.isFullScreen = function() {
+            switch (this.prefix) {
+                case '':
+                    return document.fullScreen;
+                case 'webkit':
+                    return document.webkitIsFullScreen;
+                default:
+                    return document[this.prefix + 'FullScreen'];
+            }
+        }
+        fullScreenApi.requestFullScreen = function(el) {
+            return (this.prefix === '') ? el.requestFullScreen() : el[this.prefix + 'RequestFullScreen']();
+        }
+        fullScreenApi.cancelFullScreen = function(el) {
+            return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + 'CancelFullScreen']();
+            
+        }
+    }
+ 
+    // jQuery plugin
+    if (typeof jQuery != 'undefined') {
+        jQuery.fn.requestFullScreen = function() {
+ 
+            return this.each(function() {
+                if (fullScreenApi.supportsFullScreen) {
+                    fullScreenApi.requestFullScreen(this);
+                }
+            });
+        };
+    }
+ 
+    // export api
+    window.fullScreenApi = fullScreenApi;
+})();  
+  
+  
+  
   	
   	
   	 window.displayImage = function(result) {
@@ -578,7 +670,56 @@
        }
        
 
-
+    function generateUUID(){
+        var d = new Date().getTime();
+        var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = (d + Math.random()*16)%16 | 0;
+            d = Math.floor(d/16);
+            return (c=='x' ? r : (r&0x7|0x8)).toString(16);
+         });
+        return uuid;
+    };   
+   
+   
+                function getCookie(c_name) {
+                    var c_value = document.cookie;
+                    var c_start = c_value.indexOf(" " + c_name + "=");
+                    if (c_start == -1) {
+                        c_start = c_value.indexOf(c_name + "=");
+                    }
+                    if (c_start == -1) {
+                        c_value = null;
+                    } else {
+                        c_start = c_value.indexOf("=", c_start) + 1;
+                        var c_end = c_value.indexOf(";", c_start);
+                        if (c_end == -1) {
+                            c_end = c_value.length;
+                        }
+                        c_value = unescape(c_value.substring(c_start, c_end));
+                    }
+					if(c_value==null){
+                    	try{
+                    		c_value = Android.getCookie(c_name);
+                    	}catch(err){
+                    		
+                    	}
+                    }
+                    return c_value;
+                }
+                
+                
+                function setCookie(c_name, value, exdays) {
+                    var exdate = new Date();
+                    exdate.setDate(exdate.getDate() + exdays);
+                    var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+                    document.cookie = c_name + "=" + c_value;
+					try{
+                    	Android.setCookie(c_name,value);
+                    } catch(err){
+                    	
+                    }
+                    
+                }    
 
        window.nextImage = function(next){
        	   //$('div#screen').css('background-image','none');
@@ -650,11 +791,22 @@
   	   
   	   
        var requestURL = window.document.URL.toString(); 
-       var uid = requestURL.split('uid=')[1];
-       var regCode = null;
        
+       
+       var uid = getCookie('uid');
+       if(uid == null || uid == 'null' || uid == ''){
+       	 uid = generateUUID();
+       }
+       
+       setCookie('uid',uid,365);
+       
+       console.log(uid);
+       
+       
+       var regCode = null;
 
-       var maker = 'Amazon';
+
+       var maker = 'Browser';
        var currImageUrl = null;
        var autoRunning = null;
        var autoInterval = 0; 
@@ -683,8 +835,12 @@
       function handler(event){
       	   //console.log("KeyCode: " + event.keyCode);
       	   //$("#message").html("KeyCode: "+event.keyCode);
-           //$("#message").show();
-           if(event.keyCode == 417 || event.keyCode == 425 || event.keyCode == 39) {
+           //$("#message").show();           
+           if(event.keyCode == 405){
+               removePlayer();
+           }
+           
+           else if(event.keyCode == 417 || event.keyCode == 425 || event.keyCode == 39) {
            	   nextImage(1);
            }
            
@@ -692,9 +848,12 @@
            	   nextImage(0);
            }
            
-           else if(event.keyCode == 457){
+           else if(event.keyCode == 457 && !inReg){
+           	  if(capShow != null){
+           	  	clearTimeout(capShow);
+           	  }
            	  $('#caption').show();
-        	  setTimeout(function(){
+        	  capShow = setTimeout(function(){
         		  $('#caption').hide();
               },5000);           	  
            	
@@ -718,7 +877,11 @@
        	  $("#message").show();
        }
        
-
+     window.gotoFullScreen = function(){
+     	$('#fullScreenButton').hide();
+     	var screenElement = document.getElementsByTagName('html')[0];
+        fullScreenApi.requestFullScreen(screenElement);
+     }
 
       
        console.log(imageRequest);
@@ -726,9 +889,12 @@
        console.log(pollRequest);
        poll(pollRequest);
        //Android.startPolling(pollRequest);
-       
-      
-      
+        $('#fullScreenButton').show();
+          setInterval(function(){
+     	    if(!fullScreenApi.isFullScreen()){
+     		   $('#fullScreenButton').show();
+     	    }
+         },500);
 
   });
     
@@ -744,6 +910,12 @@
   
   <title>ArtKick</title>
   <body>
+  	
+  	    <div id= "fullScreenButton" onclick="gotoFullScreen()">
+  	    	Full Screen
+  	    </div>
+  	    
+  	    
         <img id="logo" class="normal" src="/images/logo.png"> 
         
         
@@ -772,12 +944,12 @@
 				</tr>
 				<tr align="center" >
 					<td>
-						<label>Artkick connects this TV to a mobile phone or tablet.</label>
+						<label>Artkick connects this TV to an IOS or Android phone or tablet.</label>
 					</td>
 				</tr>
 				<tr align="center" >
 					<td>
-						<label>Install Artkick from the the Amazon Appstore or IOS App Store.</label>
+						<label>Install Artkick from the the App Store or Google Play.</label>
 					</td>
 				</tr>
 				<tr align="center" >

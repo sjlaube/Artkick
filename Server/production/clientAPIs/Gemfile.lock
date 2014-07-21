@@ -57,6 +57,7 @@ GEM
     mongo (1.8.5)
       bson (~> 1.8.5)
     multi_json (1.7.7)
+    newrelic_rpm (3.7.2.195)
     pg (0.15.1)
     polyglot (0.3.3)
     rack (1.4.5)
@@ -112,6 +113,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   jquery-rails
   mongo
+  newrelic_rpm
   pg
   rails (= 3.2.13)
   sass-rails (~> 3.2.3)
