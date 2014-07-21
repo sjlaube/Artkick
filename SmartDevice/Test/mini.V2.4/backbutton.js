@@ -207,6 +207,12 @@ window.backbutton=function ()
 		case "TVDetail":
 			gotoView("TVDetail","select_player2");
 			break;
+		case "RegCodeInstall":
+			gotoView("RegCodeInstall","select_player2");
+			break;
+		case "GettySubscribe":
+			gotoView("GettySubscribe","select_category");
+			break;
 		case "SearchView":
 			dojo.style(dojo.byId("SearchView"), "display", "none");
 			dojo.byId("searchbox2").value="";

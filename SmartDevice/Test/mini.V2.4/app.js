@@ -48,6 +48,7 @@ require(["jquery",
 		"dojox/mobile/Accordion",
 		"dojo/_base/lang",
 		"dojo/dom-geometry"
+
     ],
     function (
         $,
@@ -83,7 +84,8 @@ require(["jquery",
 		fx,
 		Accordion,
 		lang,
-		domgeometry) {
+		domgeometry
+		) {
 
 
 
@@ -122,6 +124,7 @@ require(["jquery",
 				window.gettyView = registry.byId("GettyView");
 				window.progressBar1= registry.byId("gettyprogress");
 				window.progressBar2 = registry.byId("searchprogress");
+			//	window.progressBar3 = registry.byId("scanprogress");
 
 				var loginpassword = registry.byId("loginPassword");
 				var loginx=registry.byId("Login");
@@ -228,6 +231,10 @@ require(["jquery",
 				window.gettysubscribe=false;
 				window.sharedlist=false;
 				window.searchboxshow=false;
+				window.adnumber=0;
+				window.spotlightlist=false;
+				window.dialMap={};
+				window.firstupdateplayers=true;
 
 
 
@@ -391,6 +398,17 @@ require(["jquery",
 						}
 					
 					}
+					if(toView=="select_player2")
+					{
+						
+						if (window.firstupdateplayers)
+						{
+							dijit.registry.byId("ScanNetwork").show();
+							window.firstupdateplayers=false;
+						
+						}
+						updatePlayers();
+					}
                     window.currentView = toView;
                     dojo.style(dojo.byId(fromView), "display", "none");
                     dojo.style(dojo.byId(toView), "display", "block");
@@ -432,12 +450,12 @@ require(["jquery",
                 window.syncImage = function () {
 				
                     var url = base + "client/update2?imageID=" + window.currImage + "&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat + "&token=" + window.token;
-                    for (var player in window.playerSet) {
-                        if (window.playerSet[player]) {
-                            url += "&players[]=" + player.substring(1);
+                    for (var i in window.selectedPlayers) {
+                        if (window.selectedPlayers[i]) {
+                            url += "&players[]=" + i;
                         }
                     }
-                    //alert(url);
+                   // alert('syncimage '+url);
 					if (!window.guest)
 					{
                     dojo.io.script.get({
@@ -451,23 +469,7 @@ require(["jquery",
 
 
 
-                    /*
-                for (var player in window.playerSet) {
-                    if (window.playerSet[player]) {
-                        //alert(base + "update.json?snumber=" + player.substring(1) + "&imageID=" + window.currImage +"&stretch="+window.fill+"&email="+window.email+"&list="
-                        //   +window.currList+"&image="+window.currImage);
-                        dojo.io.script.get({
-                            url: base + "update.json?snumber=" + player.substring(1) + "&imageID=" + window.currImage + "&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat,
-                            callbackParamName: "callback",
-                            load: function (result) {
-                                //alert(base + "update.json?snumber=" + player.substring(1) + "&imageID=" + view.getChildren()[0]['alt']+"&stretch="+window.fill);
 
-                            }
-                        });
-
-                    }
-                }
- */
                 }
 
 				window.getartists = function(){
@@ -546,12 +548,29 @@ require(["jquery",
                             if (window.currImage == window.tarImage) {
                                 window.foundIndex = true;
                             }
+							window.isgettyviewlist=false;
+							console.log("looking at viewlist: "+currViewList);
+							if (viewlist["searchTerm"]){
+								if (viewlist["searchTerm"]["getty_db"]=="getty"){
+									console.log("getty viewlist");
+									window.isgettyviewlist=true;
+									}
+							}
+							else
+							{
+									console.log("not getty viewlist");
+							}
 
 
-
+							var imagecount=0;
 
                             for (var i in viewlist["imageSet"]) {
-
+								imagecount++;
+								if (isgettyviewlist && !gettysubscribe && imagecount>5)
+								{							
+								console.log("breaking loop with imagecount="+imagecount);
+								//break;
+								}
                                 imageMap[viewlist["imageSet"][i]["id"]] = viewlist["imageSet"][i];
                                 //alert(viewlist["imageSet"][i]["User Rating"]);
                                 //      alert(viewlist["imageSet"][i]["Title"].replace(":","\:"));                            
@@ -658,7 +677,7 @@ require(["jquery",
 								
 									
 									// if this is either login or restart then we go to category view as default
-									if (window.restart && !window.sharedlist)
+									if (window.restart && !window.sharedlist && !window.spotlightlist)
 									{
 										window.restart=false;									
 										gotoView('blankview','select_category');
@@ -705,8 +724,9 @@ require(["jquery",
                  //   alert("update images");
 					if (window.guest)
 					{
-						
+						console.log("guest");
 						window.switchView = true;
+						
 						dijit.registry.byId('shuffletab').set('label', "Shuffle");
 						gotoView("IntroA","blankview");
 				
@@ -739,6 +759,8 @@ require(["jquery",
                                     window.currList = result["curr_list"];
                                     window.currCat = result["curr_cat"];
 									window.gettysubscribe = result["subscribed"];
+									/*if(!window.gettysubscribe)// get rid of the getty viewlists
+										$("#Gettylists").css("display","none");*/
 									window.temptarImage = result["curr_image"];
                                    // alert("tar"+window.tarImage);
                                     window.tempcurrList = result["curr_list"];
@@ -1100,12 +1122,14 @@ require(["jquery",
                                         var currView2 = currView.getShowingView();
 
 										window.currCat = 'Browse';
-                                        //	alert("currView2="+currView2);
+                                        	//alert("currView2="+currView2);
                                         //currView2.performTransition("blankview", 1, "", null);
                                         gotoView('select_category', 'blankview');
                                         window.currList = this.id;
 
                                         window.switchView = true;
+										window.restart=false;
+										window.spotlightlist=true;
                                         updateImages(-1);
 
                                     },
@@ -1226,7 +1250,7 @@ require(["jquery",
 								domStyle.set(newdiv2, "height", imageheight+45 + 'px');
 
                             }
-							else if (catName== "Getty Images")
+							else if (catName== "My Searches")
 							{
 							console.log("getty images viewlists");
 							/* get the name of last getty search */
@@ -1605,12 +1629,12 @@ require(["jquery",
                     var url = base + "client/selectPlayers?email=" + window.email + "&token=" + window.token;
                     var count = 0;
 
-                    for (var player in window.playerSet) {
+                    for (var i in window.selectedPlayers) {
                         //alert(playerSet[player]);
-                        if (window.playerSet[player]) {
-                            url += "&players[]=" + player.substring(1);
+                        if (window.selectedPlayers[i]) {
+                            url += "&players[]=" + i;
                             count++;
-                            // alert(url);
+                             
                         }
 
                     }
@@ -1618,6 +1642,7 @@ require(["jquery",
                     if (count == 0) {
                         url += "&players[]=";
                     }
+					// alert('remembering :'+url);
 
                     //alert(url);
                 //    console.log(url);
@@ -1636,27 +1661,56 @@ require(["jquery",
 							}
 							
 						},
-                        load: function (result) {}
+                        load: function (result) {
+						//updatePlayers();
+						}
                     });
                 }
 
 
-                function playerClick(id) {
-					//console.log("playerclick: "+id);
-					var newid = 's' + id.substr(1);
-					var xid = id.substr(1);
-					//console.log("now id "+newid+" xid "+xid);
-                    if (window.playerSet[newid]) {
-						document.getElementById(id).className='checkboxclass';
+                window.playerClick=function(id,quiet) {
+					console.log("playerclick: "+id);
+					var newid = 's' + id.substr(4);
+					var xid = id.substr(4).trim();
+					mid='icon'+xid;
+					// we need to check if device is stopped and restart it if the user selects it
+
+					 console.log("playerclick id "+newid+" xid "+xid);
+					var titleid=dojo.byId('ptitle'+xid).innerHTML;
+                    if (selectedPlayers[xid]) {
+						document.getElementById(mid).setAttribute("src", "images/CheckBox25x25.png");
+					//	dojo.byId(mid).src="images/Checkbox25x25.png";
+						//domAttr.set(aid, "src", "images/Checkmark25x25.png");
                         window.playerSet[newid] = false;
+						usermessage("Stopped controlling "+titleid);
 						delete selectedPlayers[xid];
 						
                     } else {
+						for (var i in playerlist)
+							{
+								if(playerlist[i]['account']==xid && playerlist[i]['state']=='stopped')
+								{
+									usermessage("Reconnecting to "+playerlist[i]['nickname']);
+									console.log ("trying to restart "+playerlist[i]['nickname']);
+									playerlist[i]['state']='running';
+									dialLaunch(playerlist[i]['dialuuid']);
+									
+								}
+							
+							}	
                         window.playerSet[newid] = true;
-						document.getElementById(id).className='checkboxclass2';
-						selectedPlayers[id.substr(1)] = 1;
+						document.getElementById(mid).setAttribute("src", "images/CheckMark25x25.png");
+						//dojo.byId(mid).src="images/Checkmark25x25.png";
+						//document.getElementById(id).className='checkboxclass2';
+					//	domAttr.set(id, "src", "images/Checkbox25x25.png");
+					
+						
+						if (!quiet)usermessage("Now controlling "+titleid);
+						selectedPlayers[xid] = 1;
+						
                     }
-					updatePlayers();
+					rememberSelectPlayers();
+					//updatePlayers();
 					loadmetadata();
 					
 
@@ -1685,7 +1739,7 @@ require(["jquery",
 					disp="";
 
 
-                    console.log("Loadmetadata activeplayers:"+Object.keys(selectedPlayers).length);
+               //     console.log("Loadmetadata activeplayers:"+Object.keys(selectedPlayers).length);
 					title="No Title";
 					icon=window.imageMap[window.currImage]["thumbnail"];
 					if (imageMap[currImage]["Title"])
@@ -1745,123 +1799,16 @@ require(["jquery",
 
 
 
-                    /*
-				if 	(imageMap[currImage]["Artist First N"])
-					artist = imageMap[currImage]["Artist First N"] + " " + imageMap[currImage]["Artist Last N"];
-				else
-					artist = imageMap[currImage]["Artist Last N"] 
-                title = "<b>" + imageMap[currImage]["Title"].replace("'", "", "") + "</b>" ;
-				if (imageMap[currImage]["Year"])
-					title = title  + " " + imageMap[currImage]["Year"];
-                // check if there is a video
-			//	alert("video="+imageMap[currImage]["Video"]);
-				if (imageMap[currImage]["Video"])			
-			           title = title +"  "+ "<a style=\"color:#568BFF\" onclick='showiframe(\"" + imageMap[currImage]["Video"] + "\")' >" + "<img src='images/Play_Icon2.png' align='center' >" + "</a>";
-
-				if(imageMap[currImage]["Type  Detail"])
-					type=imageMap[currImage]["Type  Detail"];
-				else
-					type=imageMap[currImage]["Type"]
-                if (imageMap[currImage]["Width cm"] > 0)
-                    imagesize = type + " " + imageMap[currImage]["Width cm"] + "x" + imageMap[currImage]["Height cm"] + "cm";
-                else
-                if (imageMap[currImage]["Width Px"] > 0)
-                    imagesize = type + " " + imageMap[currImage]["Width Px"] + "x" + imageMap[currImage]["Height Px"] + "px";
-
-                metaPlane3.innerHTML = title;
-                metaPlane4.innerHTML = artist;
-                metaPlane5.innerHTML = imagesize;
-                metaPlane6.innerHTML = imageMap[currImage]["Location"];
-                
-                
-				if (imageMap[currImage]["Genre"])
-				{
-					genre = imageMap[currImage]["Genre"];
-				}
-				metaPlane7.innerHTML = genre;
-				metaPlane8.innerHTML = "";
-				if (imageMap[currImage]["User Rating"]!=undefined) {
-					ratingvalue=imageMap[currImage]["User Rating"];
-				}
-						            						
-				else
-							ratingvalue=0;
-				userrating.set("value",ratingvalue);
-				metaPlane8.appendChild(userrating.domNode);
-				//alert("user rating2=" + userrating.value);
-				// get the other viewlists
-				dojo.empty(metaPlane10);
-			
-			//	metaPlane10.destroyDescendants();
-			//	alert("window currViewlist"+window.currList);
-			    var vcount=0;
-				for (var i in imageMap[currImage]["viewlists2"]){
-				
-				   //   alert ("view=" + imageMap[currImage]["viewlists2"][i][0]+imageMap[currImage]["viewlists2"][i][1]);
-					  vlnumber=imageMap[currImage]["viewlists2"][i][0];
-					  vlname=imageMap[currImage]["viewlists2"][i][1];
-					  if (vlname!=window.currViewList && vlname != "All"){
-					  // create button for each viewlist
-					  vcount += 1;
-				  //   alert("create new button" + vlname + "number" +vlnumber);
-					  var myButton = new Button({
-					  num: vlnumber,
-                      label: vlname, 
-					  onClick: function(){
-					             swapview(this.num);
-					  }					  
-					  });
-					  myButton.startup();
-					  myButton.placeAt(metaPlane10);
-				
-				
-				//	   alert("mybutton" + myButton.onClick + "vlnumber="+vlnumber);
-                     
-									  
-					//     viewlists = viewlists + vlname +"-"+"<img src='images/switch1.png' align='top' onclick=swapview(" + vlnumber + ")><br>";
-				   //   alert ("viewlists="+viewlists);
-					  }
-				}
-			//	alert("done creating buttons vcount="+ vcount);
-
-
-				if (vcount>0)
-				      dojo.byId("viewtableline6a").innerHTML="Also in:"
-			    else
-					dojo.byId("viewtableline6a").innerHTML=""
-				
-				
-				
-				
-				
-				
-                if (imageMap[currImage]["More Info Link"]) {
-                    if (imageMap[currImage]["More Info Link"].substring(0, 4) == "http")
-                        metaPlane3.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + imageMap[currImage]["More Info Link"] + "\")' >"+ title+"</a>";
-                    else
-                        metaPlane3.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["More Info Link"] + "\")' >" + title+ "</a>";
-                } 
-				if (imageMap[currImage]["Artist Info"]) {
-                    if (imageMap[currImage]["Artist Info"].substring(0, 4) == "http")
-                        metaPlane4.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + imageMap[currImage]["Artist Info"] + "\")' >"+ artist+"</a>";
-                    else
-                        metaPlane4.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["Artist Info"] + "\")' >" + artist+ "</a>";
-                }
-				if (imageMap[currImage]["Genre Link"]) {
-                    if (imageMap[currImage]["Genre Link"].substring(0, 4) == "http")
-                        metaPlane7.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + imageMap[currImage]["Genre Link"] + "\")' >"+ genre+"</a>";
-                    else
-                        metaPlane7.innerHTML = "<a   style=\"color:#568BFF\" onclick='showiframe(\"" + "http://" + imageMap[currImage]["Genre Link"] + "\")' >" + genre+ "</a>";
-                }
-                
-                */
+                   
                 }
 
 
-                window.updatePlayers = function () {
+                window.updatePlayers2 = function () {
                      //console.log("players");
-
-						thisurl= base + "player/getPlayers?email=" + window.email + "&token=" + window.token;
+				//	dialsearch(); //this is called from the IOS/android app
+				// first time through throw up window which says scanning network for connected displays
+				
+					thisurl= base + "player/getPlayers?email=" + window.email + "&token=" + window.token;
                     dojo.io.script.get({
                         url: thisurl,
                         callbackParamName: "callback",
@@ -1883,92 +1830,123 @@ require(["jquery",
                             var newPlayerSet = {};
 							window.activeplayer='No TV Selected';
 
-                            if (window.justLogin) {
-                                //alert("justLogin,updatePlayers");
-                                //playerList.destroyRecursive(true);
-                                //$("#ownedPlayerList").html('');
-                                playerList2.destroyDescendants();
+                       
+                                playerList2.destroyDescendants(); playerList2.destroyRecursive(true);
+								$("#playerList2").html('');
 
 								window.playerlist=result["players"];
 								window.numberplayers=result["players"].length;
+								for (var i in dialMap) 
+									checkDial(i);
+								
+								var lix = dojo.create("div",{
+									innerHTML:result["players"].length+" Devices linked to Artkick",
+									className: 'wificlass',
+									id:"devicescan"
+								
+								},"playerList2");
                                 for (var i in result["players"]) {
                                     var player = result["players"][i];
 
                                     //alert(curr-player["last_visit"]);
 									
 
-                                    if (curr - player["last_visit"] < 7000|| player["online"]) {
+                               /*     if (curr - player["last_visit"] < 7000|| player["online"]) {
                                         var status = "images/greenbutton.png";
 
                                     } else {
                                         var status = "images/graybutton.png";
-                                    }
+                                    }*/
 
                                     //     	alert ("player:"+ player["nickname"] + status+ "time=" + curr);
 
-                                    var li = registry.byId("s" + player["account"]);
+                                 //   var li = registry.byId("s" + player["account"]);
 
-
+									
                                     if (player["account"] in selectedPlayers) {
                                         console.log(player["account"]+"in");
-                                        var checked = true;
-										var xclass = "checkboxclass2";
+										xclass='images/CheckMark25x25.png';
                                         window.playerSet["s" + player["account"]] = true;
 										window.activeplayer=player["nickname"];
                                     } else {
                                         console.log(player["account"]+"out");
-                                        var checked = false;
-										var xclass = "checkboxclass";
+										xclass='images/CheckBox25x25.png';
                                         window.playerSet["s" + player["account"]] = false;
                                     }
-
-                                    li = new dojox.mobile.ListItem({
-                                        id: "s" + player["account"],
-										icon:  player["curr_image"]["icon"],
-                                     //   rightIcon2: status,
-											label: player["nickname"] +"<br><small>&nbsp;&nbsp;&nbsp;Slideshow: "+player["autoPlay"]+"</small>",
-											variableHeight:true,
-											checkClass: "images/blank.png",
-											clickable:false,
-											checked:false
-											
-											
-											
-                                      /*  onClick: function () {
-                                            playerClick(this.id);
-                                       },
-									
+									var image=player["curr_image"]["icon"];
+									if (player['online']==false)
+									{
+										if (window.platform=="Android")
+											image='images/cast_off.png';
+										else
+											image="images/airplay.png";
+										playerlist[i]['state']="stopped";
+									}	
+									if (player['state']=="stopped")
+									{
+										if (window.platform=="Android")
+											image='images/cast_off.png';
+										else
+											image="images/airplay.png";
+										// if player is stopped also uncheck it
 										
-										uncheckClass: "images/Checkbox.png",
-                                        checked: checked*/
-
-                                    });
-
-									var ckc = new dojox.mobile.Button({
-									classname: xclass,
-                                    id: "x"+player["account"],
-							        onClick: function () {
-										playerClick(this.id);
-										
-									},
-									zindex:950
-									});
-									li.addChild(ckc);
-									var sw = new dojox.mobile.Button({
-										id:"sd"+i,
-										//label:"Details",
-										classname:'detailclass',
-										onClick: function() {
-											playerDetail(this.id);
+										xclass='images/CheckBox25x25.png';
+                                    //    window.playerSet["s" + player["account"]] = false;
+										if (player["account"] in selectedPlayers){
+											delete selectedPlayers[player["account"]];
+											//window.playerSet["s" + player["account"]] = false;
 										}
-									});
-									li.addChild(sw);
-                                    playerList2.addChild(li);
-									dojo.style("s" + player["account"], "height", '42px');
+										
+									}
+                                    var li = dojo.create("div",{
+									id: "s"+player["account"],
+									},"playerList2");
+									domAttr.set(li,"class","mblListItem");
+									var ckbox=dojo.create("img",{
+										src: xclass,
+										className: 'checkboxclass',
+										id: "icon"+player["account"],
+										onclick: function () {
+											playerClick(this.id);
+										}
+									},li);
+
+
+									var nam=dojo.create("span",{
+										id: "ptitle"+player["account"],
+										className: 'playertitleclass',
+										innerHTML:player["nickname"].substr(0,22),
+									},li);
+									var nam=dojo.create("span",{
+										className: 'playerautoplayclass',
+										innerHTML: "Slideshow: "+player["autoPlay"]
+									},li);
+									var ico= dojo.create("img",{
+									
+                                        id: "img" + player["account"],
+										className: 'iconclass',
+										zindex:950,
+										src: image,
+										onclick: function() {
+											changeplayerstatus(this.id);
+										},																	
+                                    },li);
+									var ico= dojo.create("img",{
+									
+                                        id:"sd"+i,
+										classname:'detailclass',
+										zindex:950,
+										src: "images/settings-icon25x25.png",
+										onclick: function() {
+											playerDetail(this.id);
+										}																	
+                                    },li);
+								
+							
 									
 
                                 }
-                                window.justLogin = false;
+                                
 								// always check if there is only 1 player, force it to be selected
 								if (window.numberplayers==1)
 								{
@@ -1979,11 +1957,80 @@ require(["jquery",
 									}
 									
 								}
-
+								// now create entries for the dial discovered devices which are not already in players
+								
+								var lix = dojo.create("div",{
+									innerHTML:"Discovered no new devices on your wifi network",
+									className: 'wificlass',
+									id:"wifiscan"
+								
+								},"playerList2");
+								var whichlist;
+								
+								//alert("dialmap length="+dialMap.length);
+								newdevicecnt=0;
+								for (var i in dialMap) {
+								//alert("checking dialMap with i="+i);
+									//console.log("i= "+i);
+									//console.log("TV: "+dialMap[i]["friendlyName"]);
+									//check if it is already registered
+									var tvexist=checkDial(i);
+									
+									//console.log("checkDial for :"+i+" returned:"+tvexist);
+									if (!tvexist) 
+									{	
+										
+										iconsrc='images/link2.png';
+										if (dialMap[i]['modelName'])
+											if(dialMap[i]['modelName']=="Eureka Dongle"||dialMap[i]['modelName']=="Chromecast"||dialMap[i]['modelName']=="Apple TV")
+											{
+												if (window.platform=="Android")
+													iconsrc='images/cast_off.png';
+												else
+													iconsrc="images/airplay.png";
+												
+												
+											}
+										
+										if (dialMap[i]['state']!="running")
+										{ // if it is running then we assume that Artkick was installed before
+											var lix = dojo.create("div",{},"playerList2");
+											domAttr.set(lix,"class","mblListItem");
+											var nam=dojo.create("span",{
+												id: "dial"+i,
+												className: 'playertitleclass',
+												innerHTML:dialMap[i]["friendlyName"].substr(0,22),
+											},lix);
+											
+											
+											var ico= dojo.create("img",{
+											
+												id:"dialx"+i,
+												classname:'iconclass',
+												zindex:950,
+												src: iconsrc,
+												onclick: function() {
+													playerInstall(this.id);
+												}																	
+											},lix);
+											newdevicecnt++;
+										}
+										
+										
+									}
+									//else
+										//console.log("tvexist was false for :"+dialMap[i]["friendlyName"]);
+							
+									
+								}
+								dojo.byId("wifiscan").innerHTML="Discovered "+newdevicecnt+" new devices on your wifi network";
                                 //syncImage();
+								if (window.justLogin) {
+								window.justLogin=false;
                                 return;
+								}
 
-                            }
+                     
 
 
 
@@ -2005,78 +2052,22 @@ require(["jquery",
 								if (player["account"] in selectedPlayers)
 								{
 									window.activeplayer=player["nickname"];
-								//	console.log("player: "+player["account"]+" active");
+									//console.log("player: "+player["account"]+" active");
 								}
 								else
 								{
-								//	console.log("player: "+player["account"]);
+									//console.log("player: "+player["account"]);
 								}
 									
                                 newPlayerSet["s" + player["account"]] = 1;
 							//	console.log("newps:"+"s" + player["account"]);
-                                var li = registry.byId("s" + player["account"]);
-                                //  alert(player["account"]);
-                                if (li == undefined) {
-                                    //alert("new"+player["account"]);
-                                    window.justCreatePlayer = true;
-                                    li = new dojox.mobile.ListItem({
-                                        id: "s" + player["account"],
-										icon:  player["curr_image"]["icon"],
-                                        rightIcon2: status,
-										label: +player["nickname"] +"<br><small>&nbsp;&nbsp;&nbsp;Slideshow: "+player["autoPlay"]+"</small>",
-                                       	variableHeight:true,
-											checkClass: "images/blank.png",
-											clickable:false
-                                      //  checked: true
-
-                                    });
-									var ckc = new dojox.mobile.Button({
-									classname: xclass,
-                                    id: "x"+player["account"],
-							        onClick: function () {
-										playerClick(this.id);
-										
-									},
-									zindex:950
-									});
-									li.addChild(ckc);
-									var sw = new dojox.mobile.Button({
-										id:"sd"+i,
-										label:"Details",
-										classname:'detailclass',
-										onClick: function() {
-											playerDetail(this.id);
-										}
-									});
-									li.addChild(sw);
-                                    playerList2.addChild(li);
-                                    window.playerSet["s" + player["account"]] = true;
-									dojo.style("s" + player["account"], "height", '42px');
-
-                                } else {
-                                 //   li.set("rightIcon2", status);
-									li.set("icon",player["curr_image"]["icon"]);
-                                }
-
-                            }
+                                var li = dojo.byId("s" + player["account"]);
+                             //   console.log("li="+li);
+             
 
 
 
-                            //clear up deleted ones
-							var playersDom = $('#playerList2')[0];
-                            for (var i=0; i<playersDom.childElementCount; i++){
-                            	playerId = playersDom.childNodes[i]['id'];
-                            	console.log('playerList_'+playerId);
-                            	if (!(playerId in newPlayerSet)) {
-                                    //alert(playerId+"is gone!");
-                                    registry.remove(playerId);
-                                    playersDom.removeChild(playersDom.childNodes[i]);
-                                    delete window.playerSet[playerId];
 
-                                }
-							
-                            	
-                            }
 
                             //check if we are in select player view and tell users if there are no players
 
@@ -2112,9 +2103,9 @@ require(["jquery",
                                 rememberSelectPlayers();
 								if (window.numberplayers==1)
 								{
-                                window.currList = window.defList;
-                                window.currImage = window.defImage;
-                                window.currCat = window.defCat;
+									window.currList = window.defList;
+									window.currImage = window.defImage;
+									window.currCat = window.defCat;
 								}
                                 if (window.shuffle) {
                                     // if random, then switch to normal!
@@ -2132,13 +2123,15 @@ require(["jquery",
 
                             }
                         }
-                    });
+                    }
+					});
 
                 }
                 window.BrowserDetect.init();
                 	console.log("OS="+window.BrowserDetect.OS+" browser="+window.BrowserDetect.browser+" version="+window.BrowserDetect.version);
                 	if (window.BrowserDetect.OS.substr(0,6)!="iPhone" )
 					{
+						window.platform="Android";
 					// we are on android only show facebook and "other" share buttons
 					   	dojo.style("twittershare", "display", "none");
 						dojo.style("facebookshare","margin-right","30px");
@@ -2149,6 +2142,8 @@ require(["jquery",
 						dojo.byId("emailShare").innerHTML=
 						'<a class="mblIconMenuItemAnchor" role="presentation"><table class="mblIconMenuItemTable" role="presentation"><tbody><tr><td><img alt="" src="images/share_android.png" class="mblImageIcon"><div class="mblIconMenuItemLabel">More</div></td></tr></tbody></table></a>';
 					}
+					else
+						window.platform="IOS";
 						
                		
                 //window.tellbrowser.init();
@@ -2197,6 +2192,7 @@ require(["jquery",
                 dojo.byId("baseurlname").innerHTML = "DB:" + window.base.substring(7, 23);
                 console.log("database:" + window.base);
 				updateCats();
+				window.AdInterval=setInterval(changeAd,5000);
                 //	alert("browser="+window.BrowserDetect.browser+" OS="+window.BrowserDetect.OS+regPlayerView+selectPlayerView+imageView+selectCatView+selectListView+optionsView+addUserView+removePlayerView+gridView);
 
                 on(regRokuView, "beforeTransitionIn",
@@ -2274,10 +2270,10 @@ require(["jquery",
 
                 //   document.addEventListner("backbutton", function(){ alert ("back pushed");});
                 // select player transition
-                on(selectPlayerView2, "beforeTransitionIn",
+               
 
-                    function () {
-                        window.currentView = "select_player2";
+                    window.updatePlayers=function () {
+                        //window.currentView = "select_player2";
                         dojo.io.script.get({
                             url: base + "client/getSelectedPlayers?email=" + window.email + "&token=" + window.token,
                             callbackParamName: "callback",
@@ -2300,7 +2296,7 @@ require(["jquery",
                                         //alert(result["selectedPlayers"][i]);
                                     }
 
-                                    updatePlayers();
+                                    updatePlayers2();
 
                                 }
                             }
@@ -2309,7 +2305,7 @@ require(["jquery",
 
 
 
-                    });
+                    };
 
 
 
@@ -2362,9 +2358,16 @@ require(["jquery",
 
                                 updatePlayers();
 								window.switchView = true;
-                    updateImages(window.tarImage);
-
+                    
+								updateImages(window.tarImage);
                             }
+							else
+							{
+								window.switchView = true;
+                    
+								updateImages(window.tarImage);
+							}
+							
                         }
                     });
                 }
@@ -2939,12 +2942,12 @@ require(["jquery",
                     //var url = "http://localhost:3000/api/v1.1/client/update2?imageID="+view.getChildren()[0]['alt']+"&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat+"&token=" + window.token;
                     var url = base + "client/update2?imageID=" + view.getChildren()[0]['alt'] + "&stretch=" + window.fill + "&email=" + window.email + "&list=" + window.currList + "&cat=" + window.currCat + "&token=" + window.token;
                     //console.log(url);
-                    for (var player in window.playerSet) {
-                        if (window.playerSet[player]) {
-                            url += "&players[]=" + player.substring(1);
+                    for (var i in window.selectedPlayers) {
+                        if (window.window.selectedPlayers[i]) {
+                            url += "&players[]=" + i;
                         }
                     }
-                    //alert(url);
+                   // alert('view changed :'+url);
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
@@ -3393,10 +3396,13 @@ function refreshView() {
 		gotoView(window.currentView,"IntroA");
 		return;
 	}
+	window.firstupdateplayers=false;
     var currView = dijit.registry.byId("IntroA");
     var mycurrView = currView.getShowingView();
     //alert(mycurrView);
     //mycurrView.performTransition("blankview", 1, "fade", null);
+		dojo.style("gettyad","display","block");
+		window.AdInterval=setInterval(changeAd,5000);
     gotoView(window.currentView, 'blankview');
     updateImages(-1);
 }
@@ -3450,6 +3456,10 @@ function cleanUp() {
 	window.searchboxshow=false;
     $("#addPlayerEmail").attr('value', '');
     getDefaults();
+	window.adnumber=0;
+	window.spotlightlist=false;
+	window.firstupdateplayers=true;
+
 }
 
 

@@ -366,7 +366,7 @@ function usersearch()
 			    if (result["listIds"].length>0)
 				{
 					var numimages=result["listIds"][0]["imageNum"]+result["listIds"][1]["imageNum"];
-                 usermessage(numimages+' images found');
+                 usermessage(numimages+' images found and saved in "My Searches"');
 				window.currCat="My Viewlists";
 				dijit.registry.byId('SearchBox').hide();
 				dijit.registry.byId('IVGettySearchBox').hide();

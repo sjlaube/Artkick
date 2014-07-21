@@ -262,6 +262,7 @@ function login() {
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
                try {Android.setEmail(window.email);
 									}catch (err) {}
+				calliOSFunction("setemail", [window.email], "onSuccess", "onError");
 				window.token = result['token'];
 				window.userName = userObj["name"];
 				window.userID = result.userObj.id;
@@ -348,7 +349,7 @@ function deleteAccount()
 				cleanUp();
 				setTimeout(function(){
 				gotoView("blankview","newLogin");
-				},1000);
+				},500);
                 
                 
                 
@@ -400,6 +401,7 @@ function GuestLogin() {
 window.guest=true;
 window.email="guest@guest.guest";
 window.token="guest";
+window.activeplayer='No TV Selected';
 dojo.byId("browse-search").innerHTML= "Browse";
 dojo.style("searchmenu","display","block");
 $("#MyViewlists").hide();
@@ -455,10 +457,11 @@ var currView = dijit.registry.byId("Login");
 
 function FBlogin() {
 //myalert("Facebook login not implemented yet");
-calliOSFunction("loadLink", ["http://mighty-mountain-4653.herokuapp.com/flogin"], "onSuccess", "onError");
+calliOSFunction("callFbLogin", [], "onSuccess", "onError");
     try{
 	//alert("loading android artkick roku");
-    	Android.loadLink("http://mighty-mountain-4653.herokuapp.com/flogin");
+    	//Android.loadLink("http://mighty-mountain-4653.herokuapp.com/flogin");
+    	Android.callFbLogin();
     }
     catch(err){
     	
@@ -467,10 +470,11 @@ calliOSFunction("loadLink", ["http://mighty-mountain-4653.herokuapp.com/flogin"]
 
 function Googlelogin() {
 //myalert("Google login not implemented yet");
-    calliOSFunction("loadLink", ["http://mighty-mountain-4653.herokuapp.com/glogin"], "onSuccess", "onError");
+    calliOSFunction("callGoogleLogin", [], "onSuccess", "onError");
     try{
 	//alert("loading android artkick roku");
-    	Android.loadLink("http://mighty-mountain-4653.herokuapp.com/glogin");
+    	//Android.loadLink("http://mighty-mountain-4653.herokuapp.com/glogin");
+    	Android.callGoogleLogin();
     }
     catch(err){
     	

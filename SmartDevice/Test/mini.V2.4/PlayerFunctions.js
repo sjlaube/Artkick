@@ -91,7 +91,8 @@ function removePlayer() {
                 	if(result["Status"]=="success")
 					{
                         usermessage(result["Message"]);
-						window.numberplayers--;
+						window.numberPlayers--;
+						updatePlayers();
 						// now delete the listitem out of the player list
 						dojo.destroy(dojo.byId('s'+currentplayer['account']));
 					}
@@ -258,7 +259,7 @@ function createPlayer2() {
     var currView = dijit.registry.byId("registernewTV");
     //alert(base + "reg/userReg?regCode=" + dojo.byId("regPlayerCode").value + "&nickname=" + dojo.byId("regPlayerName").value + "&email=" + window.email);
     dojo.io.script.get({
-        url: base + "reg/userReg?regCode=" + (dojo.byId("regPlayerCode2").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName2").value + "&email=" + window.email+"&token="+window.token,
+        url: base + "reg/userReg?regCode=" + (dojo.byId("regPlayerCode2").value).toLowerCase() + "&nickname=" + dojo.byId("regPlayerName2").value + "&email=" + window.email+"&token="+window.token+"&uuid="+window.playeruuid,
         callbackParamName: "callback",
 		
         load: function (result) {
@@ -266,9 +267,9 @@ function createPlayer2() {
                 myalert("Player " + dojo.byId("regPlayerName").value + " is now registered!");
 				 if (window.numberplayers==0) // only switch to default view if this is first player
 				{
-                window.tarImage = window.defImage;
-                window.currList = window.defList;
-                window.currCat = window.defCat;
+					window.tarImage = window.defImage;
+					window.currList = window.defList;
+					window.currCat = window.defCat;
 				}
 				window.numberplayers++;
                 window.justCreatePlayer = true;
@@ -280,15 +281,22 @@ function createPlayer2() {
                     mediashuffle();
                 }
 			//	console.log("call update players from registernewTV");
-				updatePlayers();
+				
                 //two possible cases, either from roku or chromecast, so we just make both registraion view gone
 				//console.log("trying to hide register view");
 				dojo.byId("regPlayerCode2").value = "";
 				dojo.byId("regPlayerName2").value = "";
                 dojo.style(dojo.byId("registernewTV"),"display", "none");  
+				var playeracct=result["account"];
+				console.log("playeracct="+playeracct);
+				//playerClick("s" + result["account"]);
+			//	window.playerSet['s'+playeracct] = true;
+				selectedPlayers[playeracct] = 1;
+				rememberSelectPlayers();
 				
                 gotoView("registernewTV","blankview");
                 window.switchView = true;
+				updatePlayers();
              //   updateImages(-1);
                
 
@@ -322,9 +330,7 @@ function installartkick() {
 
 }
 function setAuto(interval) {
- //   for (var player in window.playerSet) {
-   //     if (window.playerSet[player]) {
-            //alert(base+"setAuto?email="+window.email+"&snumber="+player.substring(1)+"&autoInterval="+interval);
+
             key=window.currentplayer["account"];
 			dojo.io.script.get({
                 url: base + "client/setAuto?email=" + window.email + "&snumber=" + key + "&autoInterval=" + interval+"&token="+window.token,
@@ -352,29 +358,35 @@ function setAuto(interval) {
 					case "-1":
 						timing="Every Morning";
 						break;
+					case "30000":
+						timing="30 Seconds";
+						break;
 					case "60000":
-						timing="Every Minute";
+						timing="Minute";
+						break;
+					case "120000":
+						timing="2 Minutes";
+						break;
+					case "300000":
+						timing="5 Minutes";
 						break;
 					case "600000":
-						timing="Every 10 Minutes";
+						timing="10 Minutes";
+						break;
+					case "1800000":
+						timing="30 Minutes";
 						break;
 					case "3600000":
-						timing="Every Hour";
-						break;
-					case "10800000":
-						timing="Every 3 Hours";
-						break;
-					case "21600000":
-						timing="Every 6 Hours";
+						timing="Hour";
 						break;
 					case "43200000":
-						timing="Every 12 Hours";
+						timing="12 Hours";
 						break;
 			
 			
 				}
-				dijit.registry.byId('s'+currentplayer['account']).set("label",
-				currentplayer["nickname"] +"<br><small>&nbsp;&nbsp;&nbsp;Slideshow: "+timing+"</small>");
+			//	dijit.registry.byId('s'+currentplayer['account']).set("label",
+			//	currentplayer["nickname"] +"<br><small>&nbsp;&nbsp;&nbsp;Slideshow: "+timing+"</small>");
 				}
             });
 
@@ -521,12 +533,31 @@ thisurl= base + "player/getPlayers?email=" + window.email + "&token=" + window.t
 					})
 }
 
-window.dialsearch=function()
+window.changeplayerstatus = function (id)
 {
-// this function calls the dial search to locate devices
-jsonStr = "{\"0a21fe82-00aa-1000-8bb9-5cf6dce19f18\":\"[TV]Samsung LED75\",\"015d80c1-9000-105d-80df-b83e591640e1\":\"Roku Streaming Player 1GH31T024031\",\"01a130c9-1801-1020-80f3-b83e59ec760b\":\"Roku Streaming Player 1XC396073971\",\"010d3053-9c01-1061-80c6-cc6da03af95d\":\"Roku Streaming Player 13C1CW090566\",\"14da096a-2742-11e2-84f8-34F62D3F2D9C\":\"AQUOS C6500U\",\"36d33576-02bf-6c39-0000-0000019acabf\":\"Sheldon's Fire TV\",\"015d70c4-7800-10ba-8082-b83e593b7e51\":\"Roku Streaming Player 1GG34N047746\",\"02125bb1-18eb-bb8e-cd43-f46255b0fa0c\":\"Artkick Chromecast1\"}";
-
-window.dialMap = JSON.parse(jsonStr);
-
+	console.log("change player status for id="+id.substr(3));
+	//now lets find the uuid to give back to leon to restart it with Dial
+	for (var i in playerlist)
+	{ 
+		if(playerlist[i]['account']==id.substr(3))
+		{
+			if (!playerlist[i]['state'])
+				return; // if there is no state just return and do nothing
+		//	alert("state="+playerlist[i]['state']);
+			 window.playerSet[id.substr(3)] = true; // force player to be selected
+			if(playerlist[i]['state']=="stopped"||playerlist[i]['state']=="unknown")
+			{
+			  // alert("calling up to restart "+playerlist[i]['nickname']);
+			   usermessage("Reconnecting to "+playerlist[i]['nickname']);
+			   if (!selectedPlayers[id.substr(3)]) // if player not selected then select it if reconnecting
+					playerClick('icon'+id.substr(3),true);
+			   dialLaunch(playerlist[i]['dialuuid']);
+			  
+			}
+				
+		
+		}
+	}
 }
+
  
