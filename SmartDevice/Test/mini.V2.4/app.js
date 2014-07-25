@@ -47,7 +47,8 @@ require(["jquery",
 		"dojo/fx",
 		"dojox/mobile/Accordion",
 		"dojo/_base/lang",
-		"dojo/dom-geometry"
+		"dojo/dom-geometry",
+		"dojox/widget/Standby"
 
     ],
     function (
@@ -84,7 +85,8 @@ require(["jquery",
 		fx,
 		Accordion,
 		lang,
-		domgeometry
+		domgeometry,
+		Standby
 		) {
 
 
@@ -403,10 +405,12 @@ require(["jquery",
 						
 						if (window.firstupdateplayers)
 						{
-							dijit.registry.byId("ScanNetwork").show();
+							
 							window.firstupdateplayers=false;
 						
 						}
+						dialUpdate();
+						dijit.registry.byId("ScanNetwork").show();
 						updatePlayers();
 					}
                     window.currentView = toView;
@@ -1189,6 +1193,8 @@ require(["jquery",
                     $("#listList2").html('');
                     window.MyViewlist.destroyDescendants();
                     //dojo.empty(listList2);
+
+					standby.show();
                     dojo.io.script.get({
                         url: url,
                         callbackParamName: "callback",
@@ -1499,8 +1505,9 @@ require(["jquery",
                             }
 
 
-
+						standby.hide();
                         }
+						
 
 
                     });
@@ -1692,25 +1699,30 @@ require(["jquery",
 								{
 									usermessage("Reconnecting to "+playerlist[i]['nickname']);
 									console.log ("trying to restart "+playerlist[i]['nickname']);
-									playerlist[i]['state']='running';
+									//playerlist[i]['state']='running';
+									selectedPlayers[xid] = 1;
+									rememberSelectPlayers();
 									dialLaunch(playerlist[i]['dialuuid']);
-									
+									return;
 								}
 							
 							}	
-                        window.playerSet[newid] = true;
+                       
 						document.getElementById(mid).setAttribute("src", "images/CheckMark25x25.png");
+						selectedPlayers[xid] = 1;
+						rememberSelectPlayers();
+						
 						//dojo.byId(mid).src="images/Checkmark25x25.png";
 						//document.getElementById(id).className='checkboxclass2';
 					//	domAttr.set(id, "src", "images/Checkbox25x25.png");
 					
 						
 						if (!quiet)usermessage("Now controlling "+titleid);
-						selectedPlayers[xid] = 1;
+						
 						
                     }
 					rememberSelectPlayers();
-					//updatePlayers();
+					updatePlayers();
 					loadmetadata();
 					
 
@@ -1768,15 +1780,15 @@ require(["jquery",
 					if (activeplayers>1)
 					{	
 						var morep=activeplayers-1;
-						disp=window.activeplayer+" +"+morep+" others<br>"+disp;
+						disp2=window.activeplayer+" +"+morep+" others<br>"+disp;
 					}
 					else
 					{
-						disp=window.activeplayer+"<br>"+disp;
+						disp2=window.activeplayer+"<br>"+disp;
 					}
 					
-					dojo.byId("showingtitle").innerHTML=disp;
-					dojo.byId("showingtitle2").innerHTML=disp;
+					dojo.byId("showingtitle").innerHTML=disp2;
+					dojo.byId("showingtitle2").innerHTML=disp2;
 					var listname=window.currViewList;
 					if (listname == "Most liked")
 					{
@@ -1807,7 +1819,7 @@ require(["jquery",
                      //console.log("players");
 				//	dialsearch(); //this is called from the IOS/android app
 				// first time through throw up window which says scanning network for connected displays
-				
+					
 					thisurl= base + "player/getPlayers?email=" + window.email + "&token=" + window.token;
                     dojo.io.script.get({
                         url: thisurl,
@@ -1840,7 +1852,7 @@ require(["jquery",
 									checkDial(i);
 								
 								var lix = dojo.create("div",{
-									innerHTML:result["players"].length+" Devices linked to Artkick",
+									innerHTML:result["players"].length+" Devices connected to Artkick",
 									className: 'wificlass',
 									id:"devicescan"
 								
@@ -1901,7 +1913,31 @@ require(["jquery",
                                     var li = dojo.create("div",{
 									id: "s"+player["account"],
 									},"playerList2");
-									domAttr.set(li,"class","mblListItem");
+									domAttr.set(li,"class","mblListItem2");
+								//	dojo.style(li,"height","55px");
+									var xli=dojo.create("span",{
+										classname:'iconsright'
+									},li);
+									var ico= dojo.create("img",{
+									
+                                        id: "img" + player["account"],
+										className: 'iconclass',
+										zindex:950,
+										src: image,
+										onclick: function() {
+											changeplayerstatus(this.id);
+										},																	
+                                    },xli);
+									var ico= dojo.create("img",{
+									
+                                        id:"sd"+i,
+										className:'playerdetailclass',
+										zindex:950,
+										src: "images/settings-icon25x25.png",
+										onclick: function() {
+											playerDetail(this.id);
+										}																	
+                                    },xli);
 									var ckbox=dojo.create("img",{
 										src: xclass,
 										className: 'checkboxclass',
@@ -1914,33 +1950,16 @@ require(["jquery",
 
 									var nam=dojo.create("span",{
 										id: "ptitle"+player["account"],
-										className: 'playertitleclass',
-										innerHTML:player["nickname"].substr(0,22),
+										className: 'playertitleclass2',
+										innerHTML:player["nickname"],
 									},li);
-									var nam=dojo.create("span",{
+									
+										
+									var nam=dojo.create("div",{
 										className: 'playerautoplayclass',
-										innerHTML: "Slideshow: "+player["autoPlay"]
+										innerHTML: 'Slideshow '+player["autoPlay"]
 									},li);
-									var ico= dojo.create("img",{
 									
-                                        id: "img" + player["account"],
-										className: 'iconclass',
-										zindex:950,
-										src: image,
-										onclick: function() {
-											changeplayerstatus(this.id);
-										},																	
-                                    },li);
-									var ico= dojo.create("img",{
-									
-                                        id:"sd"+i,
-										classname:'detailclass',
-										zindex:950,
-										src: "images/settings-icon25x25.png",
-										onclick: function() {
-											playerDetail(this.id);
-										}																	
-                                    },li);
 								
 							
 									
@@ -1953,14 +1972,15 @@ require(["jquery",
 									for (var i in result["players"]) {
 									var player = result["players"][i];
 									playerClick("s" + player["account"]);
-									rememberSelectPlayers();
+									
 									}
 									
 								}
+								rememberSelectPlayers();
 								// now create entries for the dial discovered devices which are not already in players
 								
-								var lix = dojo.create("div",{
-									innerHTML:"Discovered no new devices on your wifi network",
+								var lix2 = dojo.create("div",{
+									innerHTML:"No unconnected devices",
 									className: 'wificlass',
 									id:"wifiscan"
 								
@@ -1979,9 +1999,10 @@ require(["jquery",
 									//console.log("checkDial for :"+i+" returned:"+tvexist);
 									if (!tvexist) 
 									{	
-										
-										iconsrc='images/link2.png';
+										iconsrc='images/ConnectButton.png';
+										// check if this is a 'cast' device
 										if (dialMap[i]['modelName'])
+										{
 											if(dialMap[i]['modelName']=="Eureka Dongle"||dialMap[i]['modelName']=="Chromecast"||dialMap[i]['modelName']=="Apple TV")
 											{
 												if (window.platform=="Android")
@@ -1991,39 +2012,65 @@ require(["jquery",
 												
 												
 											}
+										}
 										
-										if (dialMap[i]['state']!="running")
-										{ // if it is running then we assume that Artkick was installed before
+										
+										
+							
 											var lix = dojo.create("div",{},"playerList2");
-											domAttr.set(lix,"class","mblListItem");
-											var nam=dojo.create("span",{
-												id: "dial"+i,
-												className: 'playertitleclass',
-												innerHTML:dialMap[i]["friendlyName"].substr(0,22),
-											},lix);
-											
-											
+											domAttr.set(lix,"class","mblListItem2");
+										//	dojo.style(lix,"height","55px");
 											var ico= dojo.create("img",{
 											
 												id:"dialx"+i,
-												classname:'iconclass',
+												className:'iconclass',
 												zindex:950,
 												src: iconsrc,
 												onclick: function() {
 													playerInstall(this.id);
 												}																	
 											},lix);
+											var nam=dojo.create("span",{
+												id: "dial"+i,
+												className: 'playertitleclass2',
+												innerHTML:dialMap[i]["friendlyName"],
+											},lix);
+											
+											
+											
 											newdevicecnt++;
+											if (iconsrc=='images/ConnectButton.png')
+											{
+												dojo.byId("dialx"+i).className='iconclass2';
+											}
+												
 										}
 										
 										
-									}
+								//	}
 									//else
 										//console.log("tvexist was false for :"+dialMap[i]["friendlyName"]);
 							
 									
 								}
-								dojo.byId("wifiscan").innerHTML="Discovered "+newdevicecnt+" new devices on your wifi network";
+								dojo.byId("wifiscan").innerHTML="Discovered "+newdevicecnt+" unconnected devices";
+								dojo.create("div",{
+									innerHTML:"Other devices",
+									className: 'wificlass'
+																
+								},"playerList2");
+									var lix = dojo.create("div",{
+										innerHTML: "<big><big><big>&nbsp;&nbsp;+&nbsp;&nbsp;</big></big></big>",
+										className: 'mblListItem2',
+										onclick: function(){
+											playerInstall('unknown');									
+										}
+									},"playerList2");
+									dojo.create("span",{
+										innerHTML: "Add Device Manually",
+										className: 'adddevice'
+									},lix);
+									
                                 //syncImage();
 								if (window.justLogin) {
 								window.justLogin=false;
@@ -2031,8 +2078,24 @@ require(["jquery",
 								}
 
                      
-
-
+							// check if there are selected players which are not in the playerlist and remove from selectedplayers
+							// this happens when someone else takes over a player which user has selected
+							
+							for (var i in selectedPlayers)
+							{
+								found=false;
+								for (var x in playerlist)
+								{
+									if (i==playerlist[x]['account'])
+										found=true;
+								}
+							
+								if (!found)
+								{
+									console.log("didn't find player: "+i);
+									delete selectedPlayers[i];
+								}
+							}
 
 							window.activeplayer="No active TV";
                             for (var i in result["players"]) {
@@ -2069,20 +2132,7 @@ require(["jquery",
 
 
 
-                            //check if we are in select player view and tell users if there are no players
-
-                            var currView = dijit.registry.byId("select_player");
-                            var currView2 = currView.getShowingView();
-                            if (currView2 == selectPlayerView) {
-                                if (result["players"].length == 0) {
-                                    myalert("There are no TVs registered.");
-                                    currView2.performTransition("OptionsList", -1, "", null);
-                                    removePlayerView.hide();
-                                    //gotoView("select_player","OptionsList");
-                                }
-
-                            }
-
+                        
 							// always check if there is only 1 player, force it to be selected
 							if (window.numberplayers==1)
 							{
@@ -2119,6 +2169,7 @@ require(["jquery",
                                 window.currentView = "blankview";
                                 optionsView.hide();
                                 mycurrView.performTransition("blankview", 1, "", null);
+								loadmetadata();
                                 updateImages(-1);
 
                             }
@@ -2160,6 +2211,12 @@ require(["jquery",
                     openCustomURLinIFrame(url);
                 }
                 hidemenu();
+				window.standby=new Standby({target: "PlaylistView"});
+				document.body.appendChild(standby.domNode);
+				window.standby2=new Standby({target: "MylistViewEdit"});
+				document.body.appendChild(standby2.domNode);
+				window.standby3=new Standby({target: "MylistView"});
+				document.body.appendChild(standby3.domNode);
 
 
                 getDefaults();
@@ -2292,7 +2349,8 @@ require(["jquery",
                             load: function (result) {
                                 if (result["Status"] == "success") {
                                     for (var i in result["selectedPlayers"]) {
-                                        selectedPlayers[result["selectedPlayers"][i]] = 1;
+										if(result["selectedPlayers"][i]!="")
+											selectedPlayers[result["selectedPlayers"][i]] = 1;
                                         //alert(result["selectedPlayers"][i]);
                                     }
 
@@ -2352,7 +2410,8 @@ require(["jquery",
                             if (result["Status"] == "success") {
                                 window.selectedPlayers = {};
                                 for (var i in result["selectedPlayers"]) {
-                                    selectedPlayers[result["selectedPlayers"][i]] = 1;
+									if (result["selectedPlayers"][i]!="")
+										selectedPlayers[result["selectedPlayers"][i]] = 1;
                                     //alert(result["selectedPlayers"][i]);
                                 }
 
@@ -3332,7 +3391,7 @@ if(window.wipemenu)
 		showmenu();
 	}
 var curview=dijit.registry.byId(window.currentView);
-curview.performTransition('MylistView',1,'slide',null);
+curview.performTransition('MylistView',1,'none',null);
 }
 function callEditmyListView(){
 if(window.wipemenu)
@@ -3340,7 +3399,7 @@ if(window.wipemenu)
 		showmenu();
 	}
 var curview=dijit.registry.byId(window.currentView);
-curview.performTransition('MylistViewEdit',1,'slide',null);
+curview.performTransition('MylistViewEdit',1,'none',null);
 }
 function goToShare() {
     var currView = dijit.registry.byId("ImageView");

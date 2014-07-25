@@ -36,10 +36,12 @@ if (service == "smugmug")
 }
 if (service == "facebook")
 {
- calliOSFunction("loadLink", ["http://ancient-caverns-7624.herokuapp.com/facebook?email="+window.email], "onSuccess", "onError");
+ //calliOSFunction("loadLink", ["http://ancient-caverns-7624.herokuapp.com/facebook?email="+window.email], "onSuccess", "onError");
+ calliOSFunction("importFbPhotos", [], "onSuccess", "onError");
     try{
 	//alert("loading android artkick roku");
-    	Android.loadLink("http://ancient-caverns-7624.herokuapp.com/facebook?email="+window.email);
+    //	Android.loadLink("http://ancient-caverns-7624.herokuapp.com/facebook?email="+window.email);
+		Android.importFbPhotos();
     }
     catch(err){
     	

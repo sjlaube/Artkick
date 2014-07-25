@@ -32,10 +32,8 @@ function showmyviewlists()
 				var listcount=0;
 				 window.MyViewlist.destroyDescendants();
 			//	 window.listList.destroyRecursive(true);
-                $("#listList").html('');
-			 //   window.MyViewlist.destroyRecursive(true);
-             //     $("#MyViewList").html('');
-
+                $("#MyViewLists").html('');
+				standby3.show();
                 dojo.io.script.get({
                     url: base + "user/getMyViewlists?email="+ window.email+"&token="+window.token,
                     callbackParamName: "callback",
@@ -53,6 +51,20 @@ function showmyviewlists()
 					},
                     load: function (result) {
                         var lists = result["viewlists"]; 
+						var liz = dojo.create("div",{
+							className:'mblListItem2',
+							innerHTML:"<big><big><big>&nbsp;&nbsp;+&nbsp;&nbsp;</big></big></big>",
+							 onclick: function () {
+                                	//AddImageToViewlist (this.id,this.label);
+									CreateUserList();
+									}
+                                
+							},'MyViewLists');
+							dojo.create("span",{
+								innerHTML: "Create New Viewlist",
+								className: 'adddevice'
+							},liz);
+							dojo.style(liz,"height","35px");
 						//  put user's tops lists first in the list
 					//	alert("return from getmyviewlists="+result);
                         for (var i in lists) {
@@ -61,7 +73,32 @@ function showmyviewlists()
 						 {
 							listcount += 1;
 							window.shownoviewlist=true;
-						   newList2 = new dojox.mobile.ListItem({
+							var liz = dojo.create("div",{
+							id: lists[i]["id"],
+							id2: lists[i]['name'],
+							className:'mblListItem2',
+							
+							 onclick: function () {
+                                	//AddImageToViewlist (this.id,this.label);
+									AddImageToViewlist (this.id,this.id2);
+									}
+                                
+							},'MyViewLists');
+							dojo.style(liz,"height","75px");
+							dojo.create("img",{
+								src:lists[i]['coverImage'],
+								className:'pvlIcon',
+								},liz);
+							var lizz= dojo.create("span",{
+								innerHTML:lists[i]['name'],
+								className:'pvlTitle'
+							},liz);
+							dojo.create("div",{
+								innerHTML:lists[i]['images'].length+" images",
+								className:'pvlTitle2'
+							},liz);
+						//	domAttr.set(liz,"class","mblListItem2");
+					/*	   newList2 = new dojox.mobile.ListItem({
                                 id: lists[i]["id"],
                                 label: lists[i]["name"] ,
 								variableHeight: false,
@@ -77,10 +114,11 @@ function showmyviewlists()
                             });
                               //   alert("add child"+lists[i]["name"]);
 							     window.MyViewlist.addChild(newList2);
-								// alert("added child");
+								// alert("added child");*/
 						}
 
                         }
+						
 					//	alert("done loading number:"+listcount);
 						if(listcount == 0 && window.shownoviewlist==false)
 						{
@@ -88,7 +126,7 @@ function showmyviewlists()
 							alert("Use the '+' button to create personal viewlists");
 						}
                         
-                        
+                       standby3.hide(); 
                        
                     }
                     
@@ -190,7 +228,7 @@ function CreateUserList()
  }
 
  
- function editmyviewlists()
+window.editmyviewlists=function()
 {
 // alert("switch to personal viewlist view Myviewlists="+window.MyViewlist);
 // get the personal viewlists
@@ -198,6 +236,8 @@ function CreateUserList()
 				var listcount=0;
 				console.log("editmyviewlists");
 				 window.MyViewlistEdit.destroyDescendants();
+					standby2.startup();
+					standby2.show();
 			//	 window.listList.destroyRecursive(true);
                 $("#listList").html('');
 			 //   window.MyViewlist.destroyRecursive(true);
@@ -237,6 +277,7 @@ function CreateUserList()
 								variableHeight: true,
 								noArrow: true,
 								checkClass: "images/blank.png",
+								classname:'mblListItem2',
 								checked:false
                                
 								
@@ -287,7 +328,7 @@ function CreateUserList()
 						}
                         
                         
-                       
+                      standby2.hide(); 
                     }
                     
 

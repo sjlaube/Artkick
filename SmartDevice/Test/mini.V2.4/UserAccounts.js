@@ -260,6 +260,7 @@ function login() {
 				//dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
 
                 window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
+				
                try {Android.setEmail(window.email);
 									}catch (err) {}
 				calliOSFunction("setemail", [window.email], "onSuccess", "onError");

@@ -92,6 +92,9 @@ function removePlayer() {
 					{
                         usermessage(result["Message"]);
 						window.numberPlayers--;
+						// force unselection of this player
+						delete selectedPlayers[currentplayer['account']];
+						rememberSelectPlayers();
 						updatePlayers();
 						// now delete the listitem out of the player list
 						dojo.destroy(dojo.byId('s'+currentplayer['account']));
@@ -498,12 +501,16 @@ function playerDetail(id)
 
 	console.log("details clicked for player"+window.playerlist[id.substr(2)]["nickname"]);
 	window.currentplayer = window.playerlist[id.substr(2)];
-
+	if (!currentplayer['autoInterval'])
+		currentplayer["autoInterval"]=0;
+	if (!currentplayer['stretch'])
+		currentplayer["stretch"]='false';
 	$("#slideshowvalue").val(currentplayer["autoInterval"]);
 	$("#fillswitch3").val(currentplayer["stretch"]);
 	//document.getElementById("detailshowing").setAttribute("src", player["curr_image"]["icon"]);
 
-	dijit.registry.byId("detailheading").set("label", currentplayer["nickname"]+" Details");
+	//dijit.registry.byId("detailheading").set("label", currentplayer["nickname"]+" Details");
+	dojo.byId("playerDetailsName").innerHTML='Details for: '+currentplayer["nickname"];
 	gotoView(currentView,"TVDetail");
 }
 window.countplayers = function()
@@ -536,22 +543,25 @@ thisurl= base + "player/getPlayers?email=" + window.email + "&token=" + window.t
 window.changeplayerstatus = function (id)
 {
 	console.log("change player status for id="+id.substr(3));
+	//alert("change player status for:"+id.substr(3));
 	//now lets find the uuid to give back to leon to restart it with Dial
 	for (var i in playerlist)
 	{ 
 		if(playerlist[i]['account']==id.substr(3))
 		{
+			
 			if (!playerlist[i]['state'])
 				return; // if there is no state just return and do nothing
 		//	alert("state="+playerlist[i]['state']);
-			 window.playerSet[id.substr(3)] = true; // force player to be selected
 			if(playerlist[i]['state']=="stopped"||playerlist[i]['state']=="unknown")
 			{
 			  // alert("calling up to restart "+playerlist[i]['nickname']);
 			   usermessage("Reconnecting to "+playerlist[i]['nickname']);
 			   if (!selectedPlayers[id.substr(3)]) // if player not selected then select it if reconnecting
+			   {
 					playerClick('icon'+id.substr(3),true);
-			   dialLaunch(playerlist[i]['dialuuid']);
+				}
+			  // dialLaunch(playerlist[i]['dialuuid']);
 			  
 			}
 				

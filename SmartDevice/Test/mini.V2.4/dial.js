@@ -12,8 +12,7 @@ window.dialsearch=function(str)
 // this function calls the dial search to locate devices
 
 if (!str)
-//	jsonStr = '[{\"uuid\":\"f5437504-52b9-4044-abed-f2643ab34b2d\",\"friendlyName":\"Sheldon\'s Fire TV\",\"modelName\":\"FireTV\",\"state\":\"stopped\",\"IpAddress\":\"192.168.2.188\"},{\"uuid\":\"9622a2f9-0916-4bdb-96bb-5b2482b03fca\",\"friendlyName":\"Roku Streaming Player\",\"modelName\":\"Roku Streaming Player 3100X\",\"state\":\"stopped\",\"serialNumber\":\"13C1CW090566\",\"IpAddress\":\"192.168.2.142\"},{\"uuid\":\"e63e3d42-f299-478a-9018-68c5f8cc9a4e\",\"friendlyName":\"Roku Streaming Player 1XC396073971\",\"modelName\":\"Roku Streaming Player 2710X\",\"state\":\"running\",\"serialNumber\":\"1XC396073971\",\"IpAddress\":\"192.168.2.244\"},{\"uuid\":\"d508101b-ddbf-43e1-a8c2-075df7c47c39\",\"friendlyName":\"Roku Streaming Player\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"running\",\"serialNumber\":\"1GH31T024031\",\"IpAddress\":\"192.168.2.159\"},{\"uuid\":\"a713bfa0-e7ab-450a-843b-7c0cb997b1c3\",\"friendlyName":\"[TV]Samsung LED75\",\"modelName\":\"UN75F6400\",\"state\":\"stopped\",\"serialNumber\":\"20090804RCR\",\"IpAddress\":\"192.168.2.125\"},{\"uuid\":\"a1a64d52-5ba5-464b-93a0-8f99b2a3174e\",\"friendlyName":\"AQUOS C6500U\",\"modelName\":\"C6500U\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.170\"},{\"uuid\":\"544e4eec-1bcf-4c8a-ac11-684aeaf4e415\",\"friendlyName":\"Vizio DTV\",\"modelName\":\"Vizio_M401i-A3\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.152\"},{\"uuid\":\"6f039e74-f570-4be3-ac88-f6bdc187e1c4\",\"friendlyName":\"Roku Streaming Player\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"stopped\",\"serialNumber\":\"1GG34N047746\",\"IpAddress\":\"192.168.2.207\"},{\"uuid\":\"a0dab4ad-1c72-49e1-ab2a-f98b70cea5e8\",\"friendlyName":\"Artkick Chromecast1\",\"modelName\":\"Chromecast\",\"state\":\"stopped\",\"IpAddress\":\"192.168.2.242\"},{\"uuid\":\"bc282ccc-ae48-4e29-8a6e-7541c4a9d8ef\",\"friendlyName":\"Apple TV\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.110\"}]';
-	jsonStr='[{\"uuid\":\"3dac8a03-9ae4-4d62-8703-4e50d3627d23\",\"friendlyName":\"Sheldon\'s Fire TV\",\"modelName\":\"FireTV\",\"state\":\"stopped\",\"IpAddress\":\"192.168.2.188\"},{\"uuid\":\"68196aeb-b8bc-45e1-bc78-5d4df1d29f07\",\"friendlyName":\"Roku Streaming Player 13C1CW090566\",\"modelName\":\"Roku Streaming Player 3100X\",\"state\":\"stopped\",\"serialNumber\":\"13C1CW090566\",\"IpAddress\":\"192.168.2.142\"},{\"uuid\":\"04eb1955-13d8-4540-bc6b-c354effb7006\",\"friendlyName":\"Roku Streaming Player 1XC396073971\",\"modelName\":\"Roku Streaming Player 2710X\",\"state\":\"running\",\"serialNumber\":\"1XC396073971\",\"IpAddress\":\"192.168.2.244\"},{\"uuid\":\"ad7666fe-b20a-4c83-a095-510dce0857e7\",\"friendlyName":\"Roku Streaming Player\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"running\",\"serialNumber\":\"1GH31T024031\",\"IpAddress\":\"192.168.2.159\"},{\"uuid\":\"fff43b92-3460-4978-b916-fbaf01ecaeb5\",\"friendlyName":\"[TV]Samsung LED75\",\"modelName\":\"UN75F6400\",\"state\":\"stopped\",\"serialNumber\":\"20090804RCR\",\"IpAddress\":\"192.168.2.125\"},{\"uuid\":\"7fe4c8e8-677b-4431-9b23-4bbb4106f5c9\",\"friendlyName":\"Roku Streaming Player\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"stopped\",\"serialNumber\":\"1GG34N047746\",\"IpAddress\":\"192.168.2.207\"},{\"uuid\":\"90c0403c-11d5-4ffe-82a8-08fe6259975b\",\"friendlyName":\"Artkick Chromecast1\",\"modelName\":\"Eureka Dongle\",\"state\":\"unknown\",\"serialNumber\":\"02125bb118ebbb8ecd43f46255b0fa0c\",\"IpAddress\":\"192.168.2.242\"},{\"uuid\":\"999677ab-b309-4a4e-b9ce-884928e9b47c\",\"friendlyName":\"Apple TV\",\"IpAddress\":\"192.168.2.110\"}]';
+jsonStr='[{\"uuid\":\"a43a14a5-2d6c-4f6c-8602-ce9f8aeb3206\",\"friendlyName":\"Vizio DTV\",\"modelName\":\"Vizio_M401i-A3\",\"state\":\"unkown\",\"serialNumber\":\"unknown\",\"IpAddress\":\"192.168.2.154\"},{\"uuid\":\"ce6aa0c9-73a9-4022-8490-b90ba9759cf3\",\"friendlyName":\"Roku 1GH31T024031\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"running\",\"serialNumber\":\"1GH31T024031\",\"IpAddress\":\"192.168.2.159\"},{\"uuid\":\"4d558c9d-9d44-4ac5-b4a2-b709e786bd68\",\"friendlyName":\"Roku 1GG34N047746\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"stopped\",\"serialNumber\":\"1GG34N047746\",\"IpAddress\":\"192.168.2.207\"},{\"uuid\":\"9bd584db-96b1-47db-8b0d-711434e3d385\",\"friendlyName":\"[TV]Samsung LED75\",\"modelName\":\"UN75F6400\",\"state\":\"stopped\",\"serialNumber\":\"20090804RCR\",\"IpAddress\":\"192.168.2.125\"},{\"uuid\":\"bbd2e2a5-a3e5-4753-b04f-f2f533b34c9f\",\"friendlyName":\"Artkick Chromecast1\",\"modelName\":\"Eureka Dongle\",\"state\":\"unkown\",\"serialNumber\":\"02125bb118ebbb8ecd43f46255b0fa0c\",\"IpAddress\":\"192.168.2.242\"},{\"uuid\":\"9724528b-4bb6-4965-8883-abc25339367d\",\"friendlyName":\"Roku 13C1CW090566\",\"modelName\":\"Roku Streaming Player 3100X\",\"state\":\"running\",\"serialNumber\":\"13C1CW090566\",\"IpAddress\":\"192.168.2.142\"},{\"uuid\":\"3a63c902-3f22-4cd9-aa83-b641e3a6ca3e\",\"friendlyName":\"Chromecast EO\",\"modelName\":\"Eureka Dongle\",\"state\":\"unkown\",\"serialNumber\":\"af2249bb907e7e33e9cab2789f721cb6\",\"IpAddress\":\"192.168.2.226\"},{\"uuid\":\"ff7f0629-a40b-4e59-95f1-19b1bc59463d\",\"friendlyName":\"BRAVIA KDL-32W650A\",\"modelName\":\"KDL-32W650A\",\"state\":\"unkown\",\"serialNumber\":\"unkown\",\"IpAddress\":\"192.168.2.200\"},{\"uuid\":\"8c94fc0e-4407-4abc-b9ad-47d84bd17141\",\"friendlyName":\"Roku 1XC396073971\",\"modelName\":\"Roku Streaming Player 2710X\",\"state\":\"running\",\"serialNumber\":\"1XC396073971\",\"IpAddress\":\"192.168.2.244\"},{\"uuid\":\"bc8f7dcb-5989-4cd9-b14b-d35a54ec0c69\",\"friendlyName":\"Apple TV\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.110\"},{\"uuid\":\"e7c837a0-81fa-4c2f-81be-af9484581908\",\"friendlyName":\"Sheldon\'s Fire TV\",\"modelName\":\"FireTV\",\"state\":\"running\",\"serialNumber\":\"unkown\",\"IpAddress\":\"192.168.2.188\"}]';
 else
 
 		jsonStr = str;
@@ -40,9 +39,11 @@ else
 			dialMap[i]['modelName']="Apple TV";
 		}
 		if (dialMap[i]["modelName"]){	
-			if (dialMap[i]["modelName"].indexOf("FireTV") >-1)
+			if (dialMap[i]["modelName"].toLowerCase().indexOf("fireTV") >-1)
 				dialMap[i]["manufacturer"]="Amazon";
-			if (dialMap[i]["modelName"].indexOf("Eureka") >-1)
+			if (dialMap[i]["modelName"].toLowerCase().indexOf("eureka") >-1)
+				dialMap[i]["manufacturer"]="Google";
+			if (dialMap[i]["modelName"].toLowerCase().indexOf("chromecast") >-1)
 				dialMap[i]["manufacturer"]="Google";
 			
 		}
@@ -66,6 +67,7 @@ else
 		}
 		
 	}
+	dijit.registry.byId("ScanNetwork").hide();
 }
 function modelnamecount(id)
 {
@@ -90,7 +92,7 @@ if (id!="unknown")
 	dojo.byId('regPlayerName2').value=dialMap[nid]["friendlyName"];
 	dijit.byId("tvinstallheading").set("label","Connect "+swid);
 	window.playeruuid=dialMap[nid]["ArtkickID"];
-	
+	serialnumber=dialMap[nid]['serialNumber'];
 }
 else
 {
@@ -115,7 +117,10 @@ switch(swid)
 					case "Google":
 						console.log("Chromecast");
 						usermessage("Installing Artkick on "+dialMap[nid]['friendlyName']);
-						dialLaunch(dialMap[nid]['uuid']);	
+							
+						selectedPlayers['chromecast'+serialnumber] = 1;
+						rememberSelectPlayers();
+						dialLaunch(dialMap[nid]['uuid']);
 						break;
 					case  "Samsung":
 						dojo.byId("helpcontents").innerHTML=
@@ -126,6 +131,9 @@ switch(swid)
 					case "Roku":
 						console.log("Roku");
 						usermessage("Installing Artkick on "+dialMap[nid]['friendlyName']);
+						
+						selectedPlayers['Roku'+serialnumber] = 1;
+						rememberSelectPlayers();
 						dialLaunch(dialMap[nid]['uuid']);
 						//dojo.byId("helpcontents").innerHTML="Install Artkick from the Roku channel store<br>Start Artkick and registration code will display on TV screen";
 					//	gotoView(currentView,'RegCodeInstall');
@@ -170,10 +178,7 @@ if (dialMap[id]["modelName"]=="Apple TV" && window.BrowserDetect.OS.substr(0,6)!
 for (var i in playerlist)
 { 
 	//Since there is no uuid for rokus in playerlist then lets put it in
-	if (playerlist[i]['account'].substr(0,4)=='Roku')
-	{
-		playerlist[i]['uuid']=playerlist[i]['account'].substr(4);
-	}
+
 	if (playerlist[i]['uuid'])
 	{
 	//	console.log("i="+i+ "player="+playerlist[i]['uuid']);
@@ -208,13 +213,43 @@ window.dialReady=function()
 
 function dialLaunch(uuid)
 {
-	console.log("dial launching uuid="+uuid);
+	//alert("dial launching uuid="+uuid);
+	console.log("dialLaunching uuid="+uuid);
+	// set status to running
+	for (i in dialMap)
+	{
+		if (dialMap[i]['uuid']==uuid)
+			dialMap[i]['state']="running";
+	
+	}
+	  calliOSFunction("launchApp", [uuid], "onSuccess", "onError");
 	try {
 		Android.launchApp(uuid);
 	}
 	catch (err) {};
+	//set this as a selected player
 	 setTimeout(function () {
-		updatePlayers()
+		dialUpdate();
+
 	}, 5000);
+	setTimeout(function () {
+
+		syncImage();
+		updatePlayers();
+	}, 5000);
+	
+
+}
+
+function dialUpdate()
+{
+// update the state of dial devices, he will call dialsearch when he is done
+console.log("updatestate called");
+	 calliOSFunction("updatestate", [], "onSuccess", "onError");
+	try {
+		Android.updatestate();
+	}
+	catch (err) {};
+
 
 }

@@ -100,13 +100,15 @@ require([
   "clipart/Facebook",
   	"dojo/dom",
   	"dojo/dom-class",
-	"dojox/mobile/Accordion"
+	"dojox/mobile/Accordion",
+	"dojox/widget/Standby"
 	
 ]);
 </script>
-<style>@import "WebContent/themes/claro/claro.css";@import "WebContent/lib/shapes/shapes.css";
+<style>@import "WebContent-V2.2/themes/claro/claro.css";
+@import "WebContent-V2.2/lib/shapes/shapes.css";
 
-@import "WebContent/app.css";
+@import "WebContent-V2.2/app.css";
 @import "mini.V2.4/Artkick.css";
 </style>
 
@@ -478,11 +480,11 @@ Add User to TV(s)</button>
 	<div   data-dojo-type="dojox/mobile/ToolBarButton" onclick="DonePersonalViewlists()"  style="float: left" >
 	<img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
 	<div   data-dojo-type="dojox/mobile/ToolBarButton"   onclick="CreateUserList()" style="float: right;" >
-	<span class="tvstyle" style="font-size:15px">&nbsp;&nbsp;&nbsp;New Viewlist&nbsp;&nbsp;&nbsp;</span></div>
+	<span class="tvstyle" style="font-size:15px;display:none">&nbsp;&nbsp;&nbsp;New Viewlist&nbsp;&nbsp;&nbsp;</span></div>
 
  </div>
-    <ul data-dojo-type="dojox/mobile/RoundRectList" id="MyViewLists"	data-dojo-props='editable:true'	     >
-	</ul>	     		   
+    <div data-dojo-type="dojox/mobile/EdgeToEdgeList" id="MyViewLists"	data-dojo-props='editable:true'	     >
+	</div>	     		   
 </div>
 
  <div data-dojo-type="dojox/mobile/ScrollableView" id="MylistViewEdit"  >
@@ -494,8 +496,8 @@ Add User to TV(s)</button>
 <div  data-dojo-type="dojox/mobile/ToolBarButton"   style="float: right;" >
        <span class="editstyle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
  </div>
-    <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="MyViewListsEdit"	 data-dojo-props='select:"multiple"' style="position:relative;top:0px"   >
-	</ul>	     		   
+    <div data-dojo-type="dojox/mobile/ContentPane" id="MyViewListsEdit"	 data-dojo-props='select:"multiple"' style="position:relative;top:0px"   >
+	</div>	     		   
 </div>
 
 <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddUserList" data-dojo-props='modal:true,top:"61px"' 
@@ -522,7 +524,7 @@ Create new Viewlist
     <div  data-dojo-type="dojox/mobile/ToolBarButton"  id="manageTVback" style="float: left" onclick='backbutton()'>
 	<img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done&nbsp;&nbsp;&nbsp;</span></div>
 
-	   <div  data-dojo-type="dojox/mobile/ToolBarButton" onclick="playerInstall('unknown')" style="float: right;" ><span class="tvstyle">&nbsp; + New TV&nbsp;&nbsp;</span></div>
+	  
    </div>
 
  
@@ -825,7 +827,8 @@ Search (excluding Getty Images)
 	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="viewlistbutton" class="clearbutton" data-dojo-props='toggle:"true", ' onclick="gotoCategory('0')" style="float: left;height:45px">GoToCategory</div>
    
 	
-	 <div  data-dojo-type="dojox/mobile/ToolBarButton" id="linemenu" data-dojo-props='icon:"images/3lineicon_menu-blue.png"' style="float: right;top:0px;width:65px;height:45px" onclick="showmenu()"></div>
+<div  data-dojo-type="dojox/mobile/ToolBarButton" id="linemenu" data-dojo-props='icon:"images/3lineicon_menu-blue2.png"' style="float: right;top:0px;height:45px" onclick="showmenu()"></div>
+<div  data-dojo-type="dojox/mobile/ToolBarButton"  data-dojo-props='icon:"images/plus_button.png"' style="float: right;top:0px;height:45px" onclick="callmyListView()"></div>
  <div  data-dojo-type="dojox/mobile/ToolBarButton" id="resetsearch" data-dojo-props='icon:"images/reset-icon.png"' style="display:none;float: right;top:0px;width:65px;height:45px" onclick="gettyuserrefresh(false)"></div> 	 
  </div>
 <div data-dojo-type="dojox/mobile/DataCarousel" id="ImageList" 
@@ -1580,7 +1583,9 @@ TV Details
     <img src="images/Arrows-Back-icon-blue.png" alt=''><span class="backstyle">Done</span></div>
 
 	</div>
-
+<div style="position:relative;left:10px;text-size:14px;color:white"  id="playerDetailsName">
+Name of TV
+</div>
 
 
     <div id="AutoPlaySelect" >
