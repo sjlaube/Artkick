@@ -4,19 +4,21 @@ Copyright 2013,2014 Zwamy, Inc.  All Rights Reserved
 
 */
  
+ function removePlayerconfirm()
+ {
+ // pop up dialog to confirm that the user really wants to delete the device.....
+  dijit.registry.byId("ConfirmTVDelete").show();
+ }
 
 function removePlayersAction() {
 	var currTime = new Date().getTime();
 	//alert("currTime"+currTime);
 	//alert("lastTime"+window.rmplayerClickTime);
-    if(window.rmplayerClickTime!=undefined && currTime - window.rmplayerClickTime < 7000)
+   /* if(window.rmplayerClickTime!=undefined && currTime - window.rmplayerClickTime < 7000)
         return;
-	window.rmplayerClickTime = currTime;
+	window.rmplayerClickTime = currTime;*/
 
-    var r = confirm("Are you sure you want to delete the selected players?");
-    if (r == false) {
-        return;
-    }
+
     var currView = dijit.registry.byId("removeplayer");
     var i = 0;
     for (var key in window.removePlayers) {
@@ -25,6 +27,7 @@ function removePlayersAction() {
 			window.numberplayers--;
         }
     }
+	window.numberplayers--;
     for (var key in window.removePlayers) {
         if (window.removePlayers[key]) {
             dojo.io.script.get({
@@ -65,10 +68,7 @@ function removePlayer() {
         return;
 	window.rmplayerClickTime = currTime;
 
-    var r = confirm("Are you sure you want to delete the selected players?");
-    if (r == false) {
-        return;
-    }
+  dijit.registry.byId("ConfirmTVDelete").hide();
 
 
 			key=window.currentplayer["account"];
@@ -299,6 +299,7 @@ function createPlayer2() {
 				
                 gotoView("registernewTV","blankview");
                 window.switchView = true;
+				syncImage();
 				updatePlayers();
              //   updateImages(-1);
                

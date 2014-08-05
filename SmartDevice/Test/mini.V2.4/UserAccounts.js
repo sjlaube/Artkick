@@ -10,8 +10,7 @@ function emailPwLogout(){
     // code to delete cookie and log out user goes here
     setCookie("email", null, 1);
     setCookie("token", null, 1);
-	window.currentView = "Login";
-    currView.performTransition("Login", 1, "slide", null);
+	gotoView(currentView,'newLogin');
     cleanUp();
 }
 

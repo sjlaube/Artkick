@@ -41914,6 +41914,7 @@ define([
 					  var myButton = new Button({
 					  num: vlnumber,
                       label: vlname, 
+                      className: "vlclass",
 					  onClick: function(){
 					             swapview(this.num);
 					  }					  

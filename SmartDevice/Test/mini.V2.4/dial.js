@@ -113,6 +113,9 @@ switch(swid)
 						break;
 					case "Vizio":
 						console.log("Vizio");
+						dojo.byId("helpcontents").innerHTML=
+						'Install and start Artkick on your display device. A registration code will appear.';
+						gotoView(currentView,'RegCodeInstall');
 						break;
 					case "Google":
 						console.log("Chromecast");

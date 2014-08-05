@@ -400,6 +400,8 @@ require(["jquery",
 						}
 					
 					}
+					if(toView=="AccountSettings")
+						dojo.byId("useraccount").innerHTML = "User: "+window.email;
 					if(toView=="select_player2")
 					{
 						
@@ -1966,17 +1968,7 @@ require(["jquery",
 
                                 }
                                 
-								// always check if there is only 1 player, force it to be selected
-								if (window.numberplayers==1)
-								{
-									for (var i in result["players"]) {
-									var player = result["players"][i];
-									playerClick("s" + player["account"]);
-									
-									}
-									
-								}
-								rememberSelectPlayers();
+
 								// now create entries for the dial discovered devices which are not already in players
 								
 								var lix2 = dojo.create("div",{
@@ -2003,33 +1995,46 @@ require(["jquery",
 										// check if this is a 'cast' device
 										if (dialMap[i]['modelName'])
 										{
+																	
+											var lix = dojo.create("div",{},"playerList2");
+											domAttr.set(lix,"class","mblListItem2");
+										//	dojo.style(lix,"height","55px");
 											if(dialMap[i]['modelName']=="Eureka Dongle"||dialMap[i]['modelName']=="Chromecast"||dialMap[i]['modelName']=="Apple TV")
 											{
 												if (window.platform=="Android")
 													iconsrc='images/cast_off.png';
 												else
 													iconsrc="images/airplay.png";
+												var ico= dojo.create("img",{
+													id:"dialx"+i,
+													className:'iconclass3',
+													zindex:950,
+													src: iconsrc,
+													onclick: function() {
+														playerInstall(this.id);
+													}																	
+												},lix);
 												
-												
+											}
+											else // not a directly castable device use a connect device button instead
+											{
+											var ico= dojo.create("span",{
+													id:"dialx"+i,
+													className:'mybuttonclass',
+													zindex:950,
+													innerHTML: "Connect",
+													onclick: function() {
+														playerInstall(this.id);
+													}																	
+												},lix);
+											
 											}
 										}
 										
 										
 										
-							
-											var lix = dojo.create("div",{},"playerList2");
-											domAttr.set(lix,"class","mblListItem2");
-										//	dojo.style(lix,"height","55px");
-											var ico= dojo.create("img",{
+
 											
-												id:"dialx"+i,
-												className:'iconclass',
-												zindex:950,
-												src: iconsrc,
-												onclick: function() {
-													playerInstall(this.id);
-												}																	
-											},lix);
 											var nam=dojo.create("span",{
 												id: "dial"+i,
 												className: 'playertitleclass2',
@@ -2039,10 +2044,7 @@ require(["jquery",
 											
 											
 											newdevicecnt++;
-											if (iconsrc=='images/ConnectButton.png')
-											{
-												dojo.byId("dialx"+i).className='iconclass2';
-											}
+										
 												
 										}
 										
@@ -2134,15 +2136,13 @@ require(["jquery",
 
                         
 							// always check if there is only 1 player, force it to be selected
-							if (window.numberplayers==1)
-							{
-								for (var i in result["players"]) {
-                                var player = result["players"][i];
-							    playerClick("s" + player["account"]);
-								rememberSelectPlayers();
+							// always check if there is only 1 player, force it to be selected
+								if (window.numberplayers==1)
+								{
+									selectedPlayers[playerlist[0]['account']]=1;
+									
 								}
-								
-							}
+								rememberSelectPlayers();
 
                             if (window.justCreatePlayer) {
                                 if (!window.autoIntro) {
@@ -2217,7 +2217,11 @@ require(["jquery",
 				document.body.appendChild(standby2.domNode);
 				window.standby3=new Standby({target: "MylistView"});
 				document.body.appendChild(standby3.domNode);
-
+				if (window.BrowserDetect.OS == "Windows"||window.BrowserDetect.OS == "Mac")
+				{
+					dojo.style('otherlogins','display','none');
+					dojo.style('othersignup','display','none');
+				}
 
                 getDefaults();
                 checkCookie();
@@ -2372,9 +2376,9 @@ require(["jquery",
                         rememberSelectPlayers()
                     });
 
-                on(quickhint, "beforeTransitionIn",
-                    function () {
-                        window.currentView = "quickhint";
+                
+               window.showquickhint =     function () {
+                       
 
                         hintsrc = "images/Artkick_Hints.jpg";
                         x = dojo.window.getBox();
@@ -2383,7 +2387,9 @@ require(["jquery",
                             hintsrc = "images/Android_Hints.jpg";
                         //alert("width="+x.w+"url:"+hintsrc);
                         document.getElementById("hinturl").setAttribute("src", hintsrc);
-                    });
+						gotoView(currentView,'quickhint');
+				};
+                    
 
                 window.afterLogin = function () {
                     dojo.style(dojo.byId("OptionsList"), "display", "none");

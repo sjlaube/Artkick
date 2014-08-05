@@ -75,12 +75,12 @@ function showmyviewlists()
 							window.shownoviewlist=true;
 							var liz = dojo.create("div",{
 							id: lists[i]["id"],
-							id2: lists[i]['name'],
+							title: lists[i]['name'],
 							className:'mblListItem2',
 							
 							 onclick: function () {
                                 	//AddImageToViewlist (this.id,this.label);
-									AddImageToViewlist (this.id,this.id2);
+									AddImageToViewlist (this.id,this.title);
 									}
                                 
 							},'MyViewLists');
@@ -271,7 +271,46 @@ window.editmyviewlists=function()
 							vtitle=lists[i]["name"];
 							if(lists[i]["private_user"]!=window.email) //subscribed viewlist
 							vtitle=vtitle+"<small><i>(subscribed)</i></small>"; 
-						   newList2 = new dojox.mobile.ListItem({
+							
+							newline= dojo.create("div",{
+								id: 'my'+lists[i]["id"],
+								className:'mblListItem3',
+							//	innerHTML:vtitle
+							
+							},'MyViewListsEdit');
+							dojo.create("span",{
+								innerHTML:vtitle
+							},newline);
+							icons=dojo.create("div",{},newline);
+							dojo.create("img",{
+								id: 'my2'+lists[i]["id"],
+								className:'iconclass4',
+								src: "images/Trash_25x25_gray_on_black.png",
+								onclick: function() {
+									ShowdeleteMyViewlist(this.id);
+								}						
+							},icons);
+							if (lists[i]["private_user"]==window.email)		// you can only rename/edit your own viewlists
+							{
+								dojo.create("span",{
+								id: 'my3'+lists[i]["id"],
+								innerHTML: "Rename",
+								className: 'mybuttonclass',
+								onclick: function() {
+									ShowRenameMyViewlist(this.id);
+									}			
+								},icons);
+								dojo.create("span",{
+								id: 'my4'+lists[i]["id"],
+								innerHTML:"Images",
+								className:'mybuttonclass',
+								onclick: function() {
+									EditMyViewlistImages(this.id);
+								}
+								
+								},icons);
+							}
+				/*		   newList2 = new dojox.mobile.ListItem({
                                 id: 'my'+lists[i]["id"],
                                 label: vtitle ,
 								variableHeight: true,
@@ -315,7 +354,7 @@ window.editmyviewlists=function()
 							});
 							newList2.addChild(sw3);
 							}
-						    window.MyViewlistEdit.addChild(newList2);
+						    window.MyViewlistEdit.addChild(newList2);*/
 								// alert("added child");
 						}
 
@@ -341,21 +380,15 @@ window.editmyviewlists=function()
  newid='my'+id.substr(3);
  dojo.byId('deleteVLname').innerHTML = "unknown";
  window.viewlistfordelete=newid;
- var playersDom = $('#MyViewListsEdit')[0];
-	for (var i=0; i<=playersDom.childElementCount; i++){
-		playerId = playersDom.childNodes[i]['id'];
-		console.log("playerID="+playerId+":"+playersDom.childNodes[i]['name']);
-		if (playerId==newid) {
-			var label1=playersDom.childNodes[i].childNodes[1].innerHTML;
-			console.log('label '+label1);
-			dojo.byId('deleteVLname').innerHTML = "'"+label1+"'?";
-		}
-  
- 
- 
+ lastchar=dojo.byId(newid).innerHTML.indexOf('<');
+ label1=dojo.byId(newid).innerHTML.substr(0,lastchar);
+ console.log('innerhtml '+label1);
+
+
+ dojo.byId('deleteVLname').innerHTML = "'"+label1+"'?";
   dijit.registry.byId('DeleteViewlist').show();
  
- }
+ 
  }
  
 
@@ -363,18 +396,7 @@ window.editmyviewlists=function()
  	dijit.registry.byId('DeleteViewlist').hide(); 
  console.log("deleting personal viewlist: "+'my'+window.viewlistfordelete.substr(2));
  var id=window.viewlistfordelete;
-	var playersDom = $('#MyViewListsEdit')[0];
-	for (var i=0; i<=playersDom.childElementCount; i++){
-		playerId = playersDom.childNodes[i]['id'];
-		if (playerId==id) {
-			var label1=playersDom.childNodes[i].childNodes[1].innerHTML;
-			console.log('label '+label1);
-			dijit.registry.remove(playerId);
-			playersDom.removeChild(playersDom.childNodes[i]);
-
-		}
-		
-	}
+dojo.byId(window.viewlistfordelete).remove();
 	// now get it out of the database
 	var url = base + "user/removeMyViewlist?" + "email=" + window.email + "&listId=" + id.substr(2) + "&token=" + window.token;
 
@@ -400,7 +422,10 @@ window.editmyviewlists=function()
  {
  newid='my'+id.substr(3);
  window.viewlistforrename=newid;
- var playersDom = $('#MyViewListsEdit')[0];
+ vlname=dojo.byId(newid).innerHTML.substr(6);
+  lastchar=vlname.indexOf('<');
+ label1=vlname.substr(0,lastchar);
+/* var playersDom = $('#MyViewListsEdit')[0];
 	for (var i=0; i<=playersDom.childElementCount; i++){
 		playerId = playersDom.childNodes[i]['id'];
 		if (playerId==newid) {
@@ -408,9 +433,11 @@ window.editmyviewlists=function()
 			console.log('label '+label1+" i="+i);
 			dojo.byId('RenameVLname').innerHTML = "'"+label1+"'?";
 		}
+		*/
+	dojo.byId('RenameVLname').innerHTML = "'"+label1+"'?";
     dijit.registry.byId('RenameViewlist').show();
  
- }
+ 
  }
  
  
@@ -419,7 +446,7 @@ window.editmyviewlists=function()
  newname=dojo.byId("newVLname").value;
 // myalert("rename personal viewlist: "+window.viewlistforrename+" to "+newname);
  var newid=window.viewlistforrename;
- var playersDom = $('#MyViewListsEdit')[0];
+/* var playersDom = $('#MyViewListsEdit')[0];
 	for (var i=0; i<=playersDom.childElementCount; i++){
 		playerId = playersDom.childNodes[i]['id'];
 		console.log("playerId:"+playerId);
@@ -427,7 +454,10 @@ window.editmyviewlists=function()
 			console.log("found for rename "+newid);
 			playersDom.childNodes[i].childNodes[1].innerHTML=newname;
 		}
- }
+		*/
+	lastchar=dojo.byId(newid).innerHTML.indexOf('<');
+	dojo.byId(newid).innerHTML=newname+dojo.byId(newid).innerHTML.substr(lastchar);
+ 
  var url = base + "user/renameMyViewlist?" + "email=" + window.email + "&listId=" + newid.substr(2) + "&token=" + window.token + "&newname="+newname;
 
                     dojo.io.script.get({

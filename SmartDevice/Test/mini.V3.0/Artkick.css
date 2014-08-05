@@ -7,6 +7,7 @@ float:left;margin-right:2px}
 	width:100%;
 	height:45px;
 	text-align:center;
+
 }
 
 .socialChildNode{
@@ -107,6 +108,7 @@ float:left;margin-right:2px}
 
 	float:right;
 	margin-right:30px;
+	top:-4px;
 
 	}
 .iconclass4{
@@ -140,12 +142,18 @@ min-height:20px;
 }
 .playerautoplayclass {
 
-font-size:12px;
+	font-size:12px;
+	margin-left:30px;
+	position:relative;
+	top:0px;
+	padding: 0px 8px;
 
-margin-left:30px;
-position:relative;
-top:0px;
-
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 400;
+	color: #00C7FF;
+	border-radius: 5px;
+	background-color: #28272D;
+	text-align: center;
 }
 .installclass {
 	position:relative;
@@ -187,6 +195,7 @@ margin-right:5px
 	width:20px;
 	position:relative;
 	top:3px;
+
 }
 
 .commentImg{
@@ -211,6 +220,7 @@ margin-right:5px
 	position:relative;
 	top:-1px;
 	left:2px;
+
 }
 
 .commentSpan{
@@ -312,6 +322,7 @@ margin-right:5px
 		font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
 		font-size: 15px;
+		height:50px;
 	}
 	
 	.mblListItemIcon {
@@ -504,20 +515,24 @@ margin-right:5px
 	.moregrid {
 
 	}
-	
+
 	.wipestyle {
 	font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
 		font-size: 15px;
 
-	  border-bottom: 1px solid #47494C;
-	background-color: #3A3B3E;
+	  border-top: 1px solid rgba(71,73,76,.5);
+
+
 	height:40px;
 	line-height:45px;
 	vertical-align:middle;
 	color:white;
 	position:relative;
-	text-indent:15px
+	text-indent:15px;
+	width:225px;
+
+	
 	}
 	.backstyle {
 	position:relative;
@@ -527,6 +542,7 @@ margin-right:5px
 		font-weight: 400;
 		width:65px!important;
 		height:45px;
+		left:5px;
 	}
 	
 	.tvstyle {
@@ -569,11 +585,18 @@ margin-right:5px
 	}
 	.categoryclass
 	{
+	width:33%;
+	overflow:hidden;
+	}
+	.categoryclass img {
+	width:200px;
+	height:200px;
 	}
 	.categoryclass2
 	{
 	float:left;
 	margin:0;
+	overflow:hidden;
 	}
 	.showingclass1
 	{
@@ -729,6 +752,24 @@ font-family: 'Open Sans', sans-serif;
 
 		
 }
+.wificlass2{
+background-color: #504E5B;
+font-family: 'Open Sans', sans-serif;
+		font-weight: 400;
+		font-size: 15px;
+		color:#404040;
+		text-align:center;
+		color:white;
+
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
+		-webkit-tap-highlight-color: transparent!important;
+		-webkit-user-select: none;
+		border-bottom: 2px solid black;
+		height:25px;
+		clear:both;
+
+		
+}
 .timestamp {
 			font-size: 12px;
 		color:#404040;
@@ -811,13 +852,35 @@ top:-3px;
 		color: white;
 		font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
-		color: #00C7FF;
+		color: #blue;
 
 		border-radius: 5px;
 		background-color: #28272D;
 		text-align: center;
 		float:right;
 		margin-right:5px;
+	}
+.mybclass2 {
+		position: relative;
+
+		padding: 0px 8px;
+		color: white;
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 400;
+		color: #00C7FF;
+		font-size:12px;
+		border-radius: 5px;
+		background-color: #28272D;
+		text-align: center;
+		left:30px;
+		margin-right:5px;
+		width:'190px';
+		height:20px;
+		line-height:20px;
+		vertical-align:middle;
+		
+		
+
 	}
 	
 .vlclass {
@@ -835,4 +898,20 @@ top:-3px;
 		float:right;
 		margin-right:5px;
 	}
+.myselect {
+	position:relative;
+	left:10px;
+	display:block;
+
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 400;
+		color: #00C7FF;
+
+		border-radius: 5px;
+		background-color: #28272D;
+		text-align: center;
+		border-color: #28272D;
+		margin-left:20px;
+		 -webkit-appearance: none;
+}
 
