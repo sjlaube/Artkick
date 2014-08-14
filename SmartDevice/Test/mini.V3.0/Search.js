@@ -37,7 +37,7 @@ function usersearch()
         "Vik Muniz",
         "Wayne Thiebaud",
         "Robert Mapplethorpe",
-        "Edouard Vuillard",
+
         "Jean-Michel Basquiat",
         "Georges Rouault",
         "Sally Mann",
@@ -120,13 +120,11 @@ function usersearch()
         "Elizabeth Catlett",
         "Jean Paul Riopelle",
         "Mel Bochner",
-        "Edward Hopper",
         "Günther Förg",
         "George Grosz",
         "Yang Yongliang",
         "Mel Ramos",
         "Neo Rauch",
-        "Paul Klee",
         "Retna",
         "Imi Knoebel",
         "Jasper Johns",
@@ -147,8 +145,6 @@ function usersearch()
         "Manolo Valdés",
         "Ranulph Bye",
         "Zhang Daqian",
-        "Camille Pissarro",
-        "Pissarro",
         "Wade Guyton",
         "Peter Beard",
         "Carlo Mense",
@@ -225,7 +221,7 @@ function usersearch()
         "Martin Sharp",
         "Barry Flanagan",
         "Brassaï",
-        "Alexander Roslin",
+     
         "Pierre Bonnard",
         "Ralph Gibson",
         "Louis Valtat",
@@ -250,7 +246,6 @@ function usersearch()
         "Cleve Gray",
         "Elvira Bach",
         "Kcho",
-        "Joseph Henry Sharp",
         "Dieter Roth",
         "Jing Kewen",
         "Howard Hodgkin",
@@ -290,7 +285,6 @@ function usersearch()
         "Gaetano Pesce",
         "Comte",
         "Le Corbusier",
-        "Henri Rousseau",
         "Peter Weber",
         "Miklos Gaál",
         "Martha Walter",
@@ -312,14 +306,22 @@ function usersearch()
         "Robert Barry",
         "Ruth Duckworth"
     ];
+	if (gettyEditorial!="")
+	{
+		
+		gettyusersearch();
+		return;
+    }
     var currTime = new Date().getTime();
     if (window.searchClickTime != undefined && currTime - window.searchClickTime < 7000)
         return;
     window.searchClickTime = currTime;
-    searchstring = dojo.byId("searchbox2").value;
+
+	searchstring = dojo.byId("searchbox2").value;
+	dojo.style('searchresults',"display","none");
     if (searchstring == "") return;
     dijit.registry.byId('IVGettySearchBox').hide();
-	 $("#SearchBox").css("top", "41px");
+	// $("#SearchBox").css("top", "41px");
     var artlist2 = artlist.join('~').toLowerCase();
     var artlist3 = artlist2.split('~');
     if (artlist3.indexOf(searchstring.toLowerCase()) > 0)
@@ -332,9 +334,16 @@ function usersearch()
         console.log("artist: " + searchstring + " is under copyright");
     }
 	//window.searchdomain='artkick'; // we will change this to 'both' in future to include photos.com
-	window.searchdomain='both';
-    var url = "http://gentle-crag-2965.herokuapp.com/joint/search?" + "email=" + window.email + "&keyword=" + searchstring + "&token=" + window.token+"&domain="+window.searchdomain;
+	//window.searchdomain='both';
+    var url = "http://gentle-crag-2965.herokuapp.com/joint/search?" 
+		+ "email=" + window.email 
+		+ "&keyword=" + searchstring 
+		+ "&token=" + window.token
+		+"&domain="+window.searchdomain;
     v = 0;
+	if (replacesearchID&&window.replacesearchID!="") // replace this search
+		url += "&listId="+window.replacesearchID;
+	dojo.style('searchprogressdiv',"display","block");
     var timer = setInterval(function()
     {
         progressBar2.set("value", v);
@@ -371,11 +380,17 @@ function usersearch()
                 if (result["listId"]&&result["listId"]["imageNum"] > 0)
                 {
                     var numimages = result["listId"]["imageNum"] ;
-                    usermessage(numimages + ' images found and saved in "My Searches"');
+					dojo.style('searchprogressdiv',"display","none");		
+					dojo.byId('searchresults').innerHTML=numimages+" images found and saved in 'My Searches'";
+					dojo.style('searchresults',"display","block");
+					// add into place of progressdiv the results of search...
+					gotoView(window.currentView, "SearchView");
+                  //  usermessage(numimages + ' images found and saved in "My Searches"');
                     window.currCat = "My Searches";
-                    dijit.registry.byId('SearchBox').hide();
-                    dijit.registry.byId('IVGettySearchBox').hide();
-                    $("#searchGrid").css("top", "0px");
+                   // dijit.registry.byId('SearchBox').hide();
+				   window.searchboxshow = false;
+                   // dijit.registry.byId('IVGettySearchBox').hide();
+
                     progressBar2.set("value", 100);
                     progressBar2.set("label", "Complete");
                     clearTimeout(timer);
@@ -432,16 +447,20 @@ function usersearch()
             {
                 progressBar2.set("value", 100);
                 progressBar2.set("label", "Complete");
-				dijit.registry.byId('SearchBox').hide();
-                dijit.registry.byId('IVGettySearchBox').hide();
+				//dijit.registry.byId('SearchBox').hide();
+               // dijit.registry.byId('IVGettySearchBox').hide();
                 clearTimeout(timer);
 				if (result["Message"]=="no image found!")
 				{
-					usermessage("No matching images found");
+					//usermessage("No matching images found");
+					dojo.style('searchprogressdiv',"display","none");		
+					dojo.byId('searchresults').innerHTML="No matching images found";
+					dojo.style('searchresults',"display","block");
 					setTimeout(function()
 					{
 								dijit.registry.byId('SearchBox').show();
-								dijit.registry.byId('IVGettySearchBox').show();
+								window.searchboxshow = true;
+								//dijit.registry.byId('IVGettySearchBox').show();
 					},2000);
 					
 				}
@@ -454,7 +473,7 @@ function usersearch()
     });
 }
 
-function showsearch()
+function showsearch(domain)
 {
     if (window.guest)
     {
@@ -462,8 +481,11 @@ function showsearch()
         window.guestmenu = true;
         return;
     }
+
     hidemenu();
+	window.gettydomain="";
     dojo.empty(searchGrid);
+	dojo.style('searchresults',"display","none");
     //dojo.empty(searchGrid2);
     dojo.byId("searchbox2").value = "";
     dojo.byId("gettysearchbox").value = '';
@@ -471,22 +493,81 @@ function showsearch()
     progressBar1.set("label", "0%");
     progressBar2.set("value", 0);
     progressBar2.set("label", "0%");
-	gotoView(window.currentView, "SearchView");
-	if (gettysubscribe)
-	{	
-		dojo.byId('searchtitle').innerHTML="Search (excluding Getty Images)";
+	//gotoView(window.currentView, "SearchView");
+	//createoption("Test1");
+	isGetty=false;
+	if (domain&&domain.substr(0,5)=="Getty")
+		isGetty=true;
+	else if(domain&&domain.substr(0,5)!="Getty")
+		isGetty=false;
+	else if (window.currCat.substr(0,5)=="Getty"&&(currentView=="PlaylistView"||currentView=="ImageView"))
+		isGetty=true;
+
+	
+	
+	if (isGetty)
+	{
+		if (domain)
+			window.gettydomain=domain.substr(6).toLowerCase();
+		else 
+		{
+			window.gettydomain=currCat.substr(6).toLowerCase();
+			   $("#searchSelectValue3").val(currCat);
+		}	
+		$("#gettybuttons").show();
+		$("#dateValue").val('Any');
+		$("#orientationValue").val('Any');
+		switch(gettydomain)
+		{
+			case "news":
+				window.gettyEditorial="News";
+				dojo.byId('searchbox2').placeholder="News event, Figure";
+				//dojo.byId('gettysubdomain').innerHTML="News";
+				//dojo.style("gNews", "display", "none");
+				break;
+			case "entertainment":
+				window.gettyEditorial="Entertainment&EditorialSegments=Royalty&EditorialSegments=Publicity";
+				dojo.byId('searchbox2').placeholder="Celebrity, Royal, Event";
+				//dojo.byId('gettysubdomain').innerHTML="Entertainment";
+				//dojo.style("gEntertainment", "display", "none");
+				break;
+			case "sports":
+				window.gettyEditorial="Sports";
+				dojo.byId('searchbox2').placeholder="Sports team, Player, Event";
+				//dojo.byId('gettysubdomain').innerHTML="Sports";
+				//dojo.style("gSports", "display", "none");
+				break;
+		}
+
 		dijit.registry.byId('SearchBox').show();
-		dijit.registry.byId('IVGettySearchBox').show();
+		window.searchboxshow = true;
+	
 	}
+
 	else
 	{	
-		dojo.byId('searchtitle').innerHTML="Search";
-		$("#SearchBox").css("top", "41px");
+		//dojo.byId('searchtitle').innerHTML="Search Artkick";
+//		$("#SearchBox").css("top", "41px");
+		window.gettyEditorial="";
+		dojo.byId('searchbox2').placeholder="Artist Name, Genre, Museum";
+
+		if(domain)
+		{
+			window.searchdomain=domain.toLowerCase();
+			$("#searchSelectValue3").val(domain);
+		}
+		else
+		{
+			window.searchdomain="fine art";
+			$("#searchSelectValue3").val("Fine Art");
+		}
+		$("#gettybuttons").hide();
 		dijit.registry.byId('SearchBox').show();
-		$("#SearchBox").css("top", "41px");
+		window.searchboxshow = true;
+
 	}	
 
-
+	window.replacesearchID='';
     window.searchboxshow = true;
 }
 
@@ -541,4 +622,43 @@ dojo.io.script.get(
 						}
 					)
 		
+}
+
+function createoption(segment)
+{
+	dojo.create("option",
+	{
+		value:segment,
+		label:'Getty '+segment
+	},'searchSelectValue3');
+
+}
+
+function setSearchSelection(value)
+{
+		if(value)
+			showsearch(value);
+		else
+		{
+			if(window.searchboxshow)
+			{
+				dijit.registry.byId('SearchBox').hide();
+				window.searchboxshow=false;
+			}
+			else
+				showsearch();
+		}
+
+}
+
+function cancelsearch()
+{
+if (currentView=="SearchView")
+	gotoView(currentView,lastView);
+else
+{
+	dijit.registry.byId('SearchBox').hide();
+	window.searchboxshow=false;
+}
+
 }

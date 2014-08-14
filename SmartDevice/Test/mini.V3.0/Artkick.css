@@ -323,6 +323,7 @@ margin-right:5px
 		font-weight: 400;
 		font-size: 15px;
 		height:50px;
+		text-overflow:ellipsis;
 	}
 	
 	.mblListItemIcon {
@@ -588,15 +589,27 @@ margin-right:5px
 	width:33%;
 	overflow:hidden;
 	}
-	.categoryclass img {
-	width:200px;
-	height:200px;
-	}
+
 	.categoryclass2
 	{
+	display:block;
 	float:left;
-	margin:0;
+	margin:0 auto;
+
+	}
+    .newcategoryclass
+	{
+	
+
+	float:left;
+	margin-right:3px;
+	margin-left:3px;
+	margin-top:8px;
 	overflow:hidden;
+	font-size:15px;
+	}
+	.newcategoryclass img{
+	max-width:100%;
 	}
 	.showingclass1
 	{
@@ -806,8 +819,8 @@ font-family: 'Open Sans', sans-serif;
 
 .mblProgressBar {
   height: 20px!important;
-  background-image: none!important;
-  background-color:#a5a6a5;
+
+  background-color:blue!important;
 
 }
 .mblProgressBarProgress {
@@ -820,7 +833,7 @@ font-family: 'Open Sans', sans-serif;
 .mblProgressBarMsg {
 
   font-size: 15px!important;
-  top:-1px!important;
+  top:-20px!important;
 }
 
 
@@ -864,13 +877,12 @@ top:-3px;
 		position: relative;
 
 		padding: 0px 8px;
-		color: white;
 		font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
 		color: #00C7FF;
 		font-size:12px;
 		border-radius: 5px;
-		background-color: #28272D;
+		background-color: #28272D!important;
 		text-align: center;
 		left:30px;
 		margin-right:5px;
@@ -878,11 +890,25 @@ top:-3px;
 		height:20px;
 		line-height:20px;
 		vertical-align:middle;
-		
-		
-
 	}
 	
+.mybclass3 {
+		position: relative;
+
+
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 400;
+		color: #00C7FF;
+		font-size:12px;
+		border-radius: 5px;
+		background-color: #28272D!important;
+		text-align: center;
+		margin-bottom: 10px;
+		width:200px;
+		height:29px;
+		line-height:29px;
+		vertical-align:middle;
+	}	
 .vlclass {
 		position: relative;
 
@@ -915,3 +941,16 @@ top:-3px;
 		 -webkit-appearance: none;
 }
 
+.mblSimpleDialog
+{
+background-color:#28272D!important;
+border-radius:none;
+}
+
+.selectClass
+{
+
+		font-family: 'Open Sans', sans-serif;
+		font-weight: 400;
+		font-size:20px;
+}

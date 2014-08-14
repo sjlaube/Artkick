@@ -206,7 +206,7 @@ require(["jquery",
                 window.isAdmin = false;
                 window.gridsize = 100; /* how many images to load into gridview at a time */
                 window.moregridpages = false;
-                window.gettyEditoral = "Any";
+                window.gettyEditorial = "Any";
                 window.gettyEditorialTime = "Any";
                 window.gettyEditorialOrientation = "horizontal";
                 window.gettylastQuery = "";
@@ -218,6 +218,8 @@ require(["jquery",
                 window.dialMap = {};
                 window.firstupdateplayers = true;
 				window.dialLaunchSerial='none';
+				window.replacesearchID="";
+				window.searchtermindex='';
 			
 				window.blankview2up=false;
 
@@ -322,7 +324,7 @@ require(["jquery",
                                 if (result["Status"] == "success")
                                 {
                                     //  splash.style.display = "none";
-                                    //        alert("we are here");
+                                          //  alert("we are here");
                                     //        var currView = dijit.registry.byId("IntroA");
                                     //        var mycurrView = currView.getShowingView();
                                     window.email = email;
@@ -352,7 +354,7 @@ require(["jquery",
 									Iv.show();
                                     console.log("Iv show, calling afterLogin()");
                                     window.afterLogin();
-                                    //	alert("showing imageview"+Iv);
+                                    	//alert("showing imageview"+Iv);
                                     //  I0.performTransition("ImageView", 1, "slide", null);
                                     //   alert("transition done");
                                     //             var currView = registry.byId("IntroA");
@@ -381,6 +383,8 @@ require(["jquery",
                 {
                     //alert(fromView+' to '+toView);
                     hidemenu();
+					if(toView=="SearchView")
+					dijit.registry.byId('SearchBox').show();
                     if (fromView == "ImageView" || fromView == "PlaylistView" || fromView == "select_category")
                         window.lastView = fromView;
                     if (toView == "Slideshow")
@@ -480,7 +484,7 @@ require(["jquery",
                     window.contemporary_artists.fetch();
                 }
 
-                function loadImages(targImage, forward, numOfImg, include)
+                window.loadImages=function(targImage, forward, numOfImg, include)
                 {
                     var srcimage;
                     if (window.currList == null)
@@ -497,20 +501,12 @@ require(["jquery",
                     var str = '<img src="images/Arrows-Back-icon-blue.png" alt="" style="margin-top:5px;margin-left:5px"><span style="font-family:\'Open Sans\', sans-serif;font-weight: 400;position:relative;top:-7px;color:#00ABDE;">' + catname + "</span>"
                     console.log("cat str=" + str);
                     $("#viewlistbutton").html(str);
+					
                     var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + targImage + "&forward=" + forward + "&numOfImg=" + numOfImg + "&include=1" + "&token=" + window.token;
                     if (window.currCat != " Top Lists")
                         url += "&catName=" + window.currCat;
                     console.log("getViewlist5:" + url);
-                    // check if we are looking at a personal getty viewlist and add the refresh/change search buttons
-                    if (window.currList.toString().substr(0, 5) == "getty") // show getty refresh icon
-                    {
-                        dojo.style("resetsearch", "display", "block");
-                    }
-                    else
-                    {
-                        dojo.style("resetsearch", "display", "none");
-                    }
-                    if (window.shuffle)
+					if (window.shuffle)
                     {
                         url += "&shuffle=1";
                     }
@@ -518,6 +514,19 @@ require(["jquery",
                     {
                         url += "&shuffle=0";
                     }
+                    // check if we are looking at a personal getty viewlist and add the refresh/change search buttons
+                   if (window.currCat.substr(0, 5) == "Getty"||currCat=="My Searches") // show getty refresh icon
+                    {
+                        dojo.style("resetsearch", "display", "block");
+						dojo.style("imagesearch", "display", "none");
+			
+                    }
+                    else
+                    {
+                        dojo.style("resetsearch", "display", "none");
+						dojo.style("imagesearch", "display", "block");
+                    }
+
                     dojo.io.script.get(
                     {
                         url: url,
@@ -734,6 +743,8 @@ require(["jquery",
                     {
                         console.log("guest");
                         window.switchView = true;
+						dojo.style("gettyad", "display", "block");
+						window.AdInterval = setInterval(changeAd, 5000);
                         dijit.registry.byId('shuffletab').set('label', "Shuffle");
                         gotoView("IntroA", "blankview");
                         loadImages(targImage, 1, 15, 1);
@@ -915,8 +926,16 @@ require(["jquery",
                     }
                     else
                     {
-                        //  alert('load images target:'+targImage);
-                        loadImages(targImage, 1, 15, 1);
+						if(currCat.substr(0,5)=="Getty" && targImage==-1)
+						{
+							usermessage("Getting latest images");
+							//reset the search term, call the right search to refresh the viewlist and then call loadImages itself
+							updatecurrentsearch(lists[searchtermindex],targImage);
+							// now wait for the search to complete
+							//  alert('load images target:'+targImage);
+						}
+						else
+							loadImages(targImage, 1, 15, 1);
                     }
                 }
 
@@ -1073,7 +1092,9 @@ require(["jquery",
                     window.foundIndex = true;
                     window.justLogin = false;
                     window.currentView = "PlaylistView";
-                    if (window.currCat.length < 30)
+					if (window.currCat=="Getty Entertainment")
+						dijit.registry.byId("PlaylistHeader").set("label", "Entertainment");
+                    else if (window.currCat.length < 30)
                         dijit.registry.byId("PlaylistHeader").set("label", window.currCat);
                     else
                         dijit.registry.byId("PlaylistHeader").set("label", window.currCat.substring(0, 27) + "...");
@@ -1106,7 +1127,7 @@ require(["jquery",
                     }
                     window.loadcatview = true;
                     window.currentView = "select_category";
-                    catList.destroyRecursive(true);
+                  //  catList.destroyRecursive(true);
                     $("#catList").html('');
                     x = dojo.window.getBox();
                     dojo.io.script.get(
@@ -1180,31 +1201,26 @@ require(["jquery",
                                         updateImages(-1);
                                     },
                                     margin: "0px"
+									
                                 }, newdiv2);
                                 var newtxt = dojo.create("div",
                                 {
                                     innerHTML: title
                                 }, newdiv2);
+								imgsize=Math.min((x.w / 3)-5,275);
                                 domAttr.set(newtxt, "class", "imagetxt");
-                                domStyle.set(newimg2, "width", x.w / 3 + 'px');
+                                domStyle.set(newimg2, "width", imgsize + 'px');
                                 //  domStyle.set(newdiv2, "width", x.w/3 + 'px');
-                                domStyle.set(newimg2, "height", x.w / 3 + 'px');
+                                domStyle.set(newimg2, "height", imgsize + 'px');
+								domStyle.set(newimg2, "margin-left", '2px');
+								domStyle.set(newimg2, "margin-right",'2px');
                             }
                         }
                     });
                 }
                 window.updateLists = function(catName)
                 {
-                    /*     if (catName == "Artists")
-				{
-					updateArtistLists();
-					return;
-				}
-				if (catName == "Museums")
-				{
-					updateMuseumLists();
-					return;
-				}*/
+
                     var colnumber, w, x;
                     colnumber = 2; // default number of columns
                     x = dojo.window.getBox();
@@ -1215,11 +1231,21 @@ require(["jquery",
                     imagewidth = Math.floor((x.w - 30) / colnumber); //width of the image box leaving a 5 px margin on each side and 2 px inbetween
                     console.log("size=" + imagewidth + " dojo=" + x.w);
                     imageheight = imagewidth;
+
                     if (catName == "My Viewlists")
                     {
                         //dojo.byId('showeditmyviewlists').show();
                         url = base + "user/getMyViewlists?email=" + window.email + "&token=" + window.token;
                     }
+					else if (catName.substr(0,5)=="Getty")
+					{
+						window.gettydomain=catName.substr(6).toLowerCase();
+						url = base + "user/getMyViewlists?email=" + window.email + "&token=" + window.token + "&category=" +gettydomain;
+					}
+					else if (catName =="My Searches")
+					{
+						url = base + "user/getMyViewlists?email=" + window.email + "&token=" + window.token + "&category=artkick";
+					}
                     else
                     {
                         url = base + "content/getViewlistsByCategory2?catName=" + catName + "&featured=true";
@@ -1228,6 +1254,7 @@ require(["jquery",
                     //	alert("catname="+catName);
                     //     listList.destroyRecursive(true);
                     //   $("#listList").html('');
+				
                     listList2.destroyRecursive(true);
                     $("#listList2").html('');
                     window.MyViewlist.destroyDescendants();
@@ -1254,7 +1281,7 @@ require(["jquery",
                         },
                         load: function(result)
                         {
-                            var lists = result["viewlists"];
+                            window.lists = result["viewlists"];
                             //  put user's tops lists first in the list
                             if (catName == "My Viewlists")
                             {
@@ -1291,7 +1318,7 @@ require(["jquery",
                                 domStyle.set(newimg2, "height", imageheight + 'px');
                                 domStyle.set(newdiv2, "height", imageheight + 45 + 'px');
                             }
-                            else if (catName == "My Searches")
+                            else if (catName == "My Searchesxxx")
                             {
                                 console.log("getty images viewlists");
                                 /* get the name of last getty search */
@@ -1393,7 +1420,8 @@ require(["jquery",
 
                                 
                             }
-                            else
+
+                            else if(catName!="My Searches" && catName.substr(0,5)!="Getty")
                             { /* for all other categories we manually add a Most Popular list */
                                 //alert("Top Lists");
                                 // add Top Liked to every Category manually
@@ -1435,6 +1463,7 @@ require(["jquery",
                             for (var i in lists)
                             {
                                 //alert(lists[i]["coverImage"]);
+							//	window.searchterm=lists[i]["searchTerm"];
                                 var listcoverimage = "images/ARTKICKlogoFULLCOLOR-APP_50x50.png";
                                 if (lists[i]["coverImage"])
                                     listcoverimage = lists[i]["coverImage"];
@@ -1491,6 +1520,7 @@ require(["jquery",
                                 var newimg2 = dojo.create("img",
                                 {
                                     id: lists[i]["id"],
+									alt: i,
                                     src: listcoverimage,
                                     onclick: function()
                                     {
@@ -1500,6 +1530,7 @@ require(["jquery",
                                         var currView2 = currView.getShowingView();
                                         //	alert("currView2="+currView2);
                                         //currView2.performTransition("blankview", 1, "", null);
+										window.searchtermindex=this.alt;
                                         gotoView('PlaylistView', 'blankview');
                                         window.currList = this.id;
                                         window.switchView = true;
@@ -1518,12 +1549,10 @@ require(["jquery",
                                 domStyle.set(newimg2, "height", imageheight + 'px');
                                 domStyle.set(newdiv2, "height", imageheight + 45 + 'px');
                                 // check if this is a photos.com or gettyimages viewlista and add the right overlay
-                                if (lists[i]["searchTerm"])
+                                if (lists[i]["searchTerm"]&&lists[i]["searchTerm"]["EditorialSegments"])
                                 {
-                                    if (lists[i]["searchTerm"]["getty_db"] == "photos")
-                                        overlay = "images/Photoscom.png";
-                                    else
-                                        overlay = "images/GettyImages.png";
+                                   
+                                    overlay = "images/GettyImages.png";
                                     var newimg3 = dojo.create("img",
                                     {
                                         src: overlay
@@ -2251,7 +2280,7 @@ require(["jquery",
                         obj.id = "myshuffle";
                     }
                     $(".categoryclass").css("margin", "-2px");
-                    $(".categoryclass2").css("margin", "-2px");
+             //       $(".categoryclass2").css("margin", "-2px");
                     $('.mblToolBarButton').css('background-color', 'transparent');
                     $('.mblToolBarButton').css('background-image', 'none');
                     $('.mblToolBarButton').css('border-width', '0px');
@@ -2549,6 +2578,7 @@ require(["jquery",
                 on(MylistViewEdit, "beforeTransitionIn",
                     function()
                     {
+						window.lastView=window.currentView;
                         window.currentView = "MylistViewEdit";
                         //	alert("showmyviewlists called");
                         editmyviewlists();
@@ -2656,7 +2686,7 @@ require(["jquery",
                         window.currGridPage = window.currGridPage - 1;
                     }
                     //       var url = base + "client/getViewlist5?id=" + window.currList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg=20" + "&include=" + include + "&token=" + window.token;
-                    var url = base + "client/getViewlist6?id=" + window.currList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg=" + window.gridsize + "&include=" + include + "&token=" + window.token;
+                    var url = base + "client/getViewlist6?id=" + currentList + "&email=" + window.email + "&tarImage=" + window.targImageGrid + "&forward=" + forward + "&numOfImg=" + window.gridsize + "&include=" + include + "&token=" + window.token;
                     if (window.currCat != " Top Lists")
                         url += "&catName=" + window.currCat;
                     if (window.shuffle)
@@ -3237,19 +3267,18 @@ function showmenu()
     }
     if (window.currentView == "select_category")
         menuname = "wipemenu3";
-    else if (window.currentView == "PlaylistView" && window.currCat == "My Viewlists")
-        menuname = "wipemenu2a";
+
     else if (window.currentView == "PlaylistView")
-        menuname = "wipemenu2";
+        menuname = "wipemenu2a";
     else
         menuname = "wipemenu";
-    if (window.currCat == "My Viewlists" && window.currList > 10000000000)
+    if ((window.currCat == "My Viewlists"||window.currCat.substr(0,5)=="Getty" ||window.currCat=="My Searches"))
     {
-        dojo.style("showeditmyviewlists", "display", "block");
+        dojo.style("editmyviewlists", "display", "block");
         console.log("show edit my viewlists");
     }
     else
-        dojo.style("showeditmyviewlists", "display", "none");
+        dojo.style("editmyviewlists", "display", "none");
     //console.log("1");	
     dojo.style(menuname, "left", $(window).width() - 225 + "px");
 	dojo.style(menuname, "top", "50px");
@@ -3301,6 +3330,8 @@ function hidemenu()
         dojo.style("Sharemenu2", "display", "none");
     }
     //	alert("sharemenu2="+dojo.style("Sharemenu2"));
+	dijit.registry.byId('SearchBox').hide();
+	window.searchboxshow = false;
     window.sharemenushow = false;
     window.systemmenushow = false;
     window.viewmenushow = false;
@@ -3342,6 +3373,12 @@ function callEditmyListView()
     {
         showmenu();
     }
+	if (currCat=="My Searches")
+		window.editmylistdomain="artkick";
+	if (currCat=="My Viewlists")
+		window.editmylistdomain="personal";
+	if (currCat.substr(0,5)=="Getty")
+		window.editmylistdomain=currCat.substr(6).toLowerCase();
     var curview = dijit.registry.byId(window.currentView);
     curview.performTransition('MylistViewEdit', 1, 'none', null);
 }
@@ -3404,6 +3441,7 @@ function refreshView()
     //mycurrView.performTransition("blankview", 1, "fade", null);
 //	if (!gettysubscribe)
 //	{
+		window.adnumber = 0;
 		dojo.style("gettyad", "display", "block");
 		window.AdInterval = setInterval(changeAd, 5000);
 //	}
@@ -3667,17 +3705,17 @@ function adjustSize()
     $("#ImageViewHeader").addClass("mblHeadingCenterTitle");
     if ($(window).width() > 700)
     {
-        $(".categoryclass").css("width", "25%");
-        $(".categoryclass2").css("width", "33.3%");
+        $(".newcategoryclass").css("width", ($(window).width()/4)-7);
+      //  $(".categoryclass2").css("width", "33.3%");
     }
     else if ($(window).width() > 500)
     {
-        $(".categoryclass").css("width", "33.3%");
-        $(".categoryclass2").css("width", "33.3%");
+        $(".newcategoryclass").css("width", ($(window).width()/3)-7);
+     //   $(".categoryclass2").css("width", "33.3%");
     }
     else
     {
-        $(".categoryclass").css("width", "50%");
+        $(".newcategoryclass").css("width", ($(window).width()/2)-7);
         $(".categoryclass2").css("width", "33.3%");
     }
     //calculate size for grid view

@@ -200,6 +200,7 @@ function createUser()
                 dojo.byId("regUserName").value = "";
                 dojo.byId("regUserEmail").value = "";
                 $("#MyViewlists").show();
+				$("#MySearchlists").show();
                 $("#searchbox").show();
                 //				$("#searchbutton").show();
                 window.currentView = "quickhint";
@@ -317,6 +318,7 @@ function login()
                  //   dojo.byId('browse-search').innerHTML = "Browse/Search";
                     //for security, we need to make sure other possible showing view gone!!
                     $("#MyViewlists").show();
+					$("#MySearchlists").show();
                     $("#searchbox").show();
                     //				$("#searchbutton").show();
                     window.afterLogin();
@@ -457,6 +459,7 @@ function GuestLogin()
   //  dojo.byId("browse-search").innerHTML = "Browse";
     dojo.style("searchmenu", "display", "none");
     $("#MyViewlists").hide();
+	$("#MySearchlists").hide();
     $("#searchbox").hide();
     //$("#searchbutton").hide();
     var currView = dijit.registry.byId("Login");

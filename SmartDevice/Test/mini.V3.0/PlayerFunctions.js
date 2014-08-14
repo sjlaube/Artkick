@@ -295,7 +295,38 @@ function setAuto2(interval,id)
 	window.currentplayer = window.playerlist[id.substr(2)];
 	setAuto(interval);
 }
+function setOrientation(position)
+{
+console.log ("set orientation to:"+position);
+key = window.currentplayer["account"];
+    dojo.io.script.get(
+    {
+        url: base + "client/setOrientation?email=" + window.email + "&snumber=" + key + "&orientation=" + position + "&token=" + window.token,
+        callbackParamName: "callback",
+        timeout: 8000,
+        trytimes: 5,
+        error: function(error)
+        {
+            console.log("timeout!setAuto" + url);
+            this.trytimes--;
+            if (this.trytimes > 0)
+            {
+                dojo.io.script.get(this);
+            }
+            else
+            {
+                alert("Network problem22a. Please check your connection and restart the app.");
+            }
+        },
+        load: function(result)
+        {
+            usermessage("Orientation set");
+                     
+        }
+    });
 
+
+}
 function setAuto(interval)
 {
     key = window.currentplayer["account"];
@@ -355,12 +386,10 @@ function setAuto(interval)
                     timing = "12 Hours";
                     break;
             }
-            //	dijit.registry.byId('s'+currentplayer['account']).set("label",
-            //	currentplayer["nickname"] +"<br><small>&nbsp;&nbsp;&nbsp;Slideshow: "+timing+"</small>");
+           
         }
     });
-    //    }
-    //  }
+
 }
 
 function fillswitch()
@@ -444,11 +473,18 @@ function playerDetail(id)
         currentplayer["autoInterval"] = 0;
     if (!currentplayer['stretch'])
         currentplayer["stretch"] = 'false';
+	if (!currentplayer['orientation'])
+        currentplayer["orientation"] = 'horizontal';
     $("#slideshowvalue").val(currentplayer["autoInterval"]);
     $("#fillswitch3").val(currentplayer["stretch"]);
+	 $("#orientationValue2").val(currentplayer["orientation"]);
     //document.getElementById("detailshowing").setAttribute("src", player["curr_image"]["icon"]);
     //dijit.registry.byId("detailheading").set("label", currentplayer["nickname"]+" Details");
     dojo.byId("playerDetailsName").innerHTML = 'Details for: ' + currentplayer["nickname"];
+	if (currentplayer["account"].substr(0,10)=="chromecast")
+		dojo.style("Orientation", "display", "block");
+	else
+		dojo.style("Orientation", "display", "none");
     gotoView(currentView, "TVDetail");
 }
 window.countplayers = function()

@@ -184,7 +184,7 @@ window.backbutton = function()
                 gotoView("show_comments", lastView);
                 break;
             case "MylistViewEdit":
-                updateLists("My Viewlists");
+                updateLists(currCat);
                 dijit.registry.byId('DeleteViewlist').hide();
                 dijit.registry.byId('RenameViewlist').hide();
 
@@ -214,8 +214,15 @@ window.backbutton = function()
                 dojo.byId("searchbox2").value = "";
                 dojo.byId("gettysearchbox").value = '';
                 dijit.registry.byId('SearchBox').hide();
+				window.searchboxshow = false;
                 dijit.registry.byId('IVGettySearchBox').hide();
-                gotoView("SearchView", window.lastView);
+				if (lastView=='select_category')
+				{
+					gotoView("SearchView", window.lastView);
+					break;
+				}
+				updateLists(currCat);
+             //   gotoView("SearchView", window.lastView);
                 break;
             default:
                 break;

@@ -104,7 +104,7 @@ function showmyviewlists()
                     }, liz);
                     dojo.create("div",
                     {
-                        innerHTML: lists[i]['images'].length + " images",
+                        innerHTML: lists[i]['imageNum'] + " images",
                         className: 'pvlTitle2'
                     }, liz);
                    
@@ -208,13 +208,14 @@ window.editmyviewlists = function()
     window.MyViewlistEdit.destroyDescendants();
     standby2.startup();
     standby2.show();
+	                
     //	 window.listList.destroyRecursive(true);
-    $("#listList").html('');
+    $("#MyViewListsEdit").html('');
     //   window.MyViewlist.destroyRecursive(true);
     //     $("#MyViewList").html('');
     dojo.io.script.get(
     {
-        url: base + "user/getMyViewlists?email=" + window.email + "&token=" + window.token,
+        url: base + "user/getMyViewlists?email=" + window.email + "&token=" + window.token+"&category="+editmylistdomain,
         callbackParamName: "callback",
         timeout: 8000,
         trytimes: 5,
@@ -268,7 +269,7 @@ window.editmyviewlists = function()
                             ShowdeleteMyViewlist(this.id);
                         }
                     }, icons);
-                    if (lists[i]["private_user"] == window.email) // you can only rename/edit your own viewlists
+                    if (lists[i]["private_user"] == window.email&& currCat=="My Viewlists") // you can only rename/edit your own viewlists
                     {
                         dojo.create("span",
                         {
