@@ -92,9 +92,9 @@ require(["jquery",
         ready(
             function()
             {
-                window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-                // window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
-                //window.base = "http://hidden-taiga-7701.herokuapp.com/api/v1.1/";
+              //  window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
+                 window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+
                 var selectListView = registry.byId("PlaylistView");
                 var selectArtistListView = registry.byId("ArtistlistView");
                 var selectMuseumListView = registry.byId("MuseumlistView");
@@ -749,8 +749,8 @@ require(["jquery",
                     {
                         console.log("guest");
                         window.switchView = true;
-						dojo.style("gettyad", "display", "block");
-						window.AdInterval = setInterval(changeAd, 5000);
+					/*	dojo.style("gettyad", "display", "block");
+						window.AdInterval = setInterval(changeAd, 5000);*/
                         dijit.registry.byId('shuffletab').set('label', "Shuffle");
                         gotoView("IntroA", "blankview");
                         loadImages(targImage, 1, 15, 1);
@@ -798,8 +798,8 @@ require(["jquery",
 								//	if (!gettysubscribe)
 								//	{
 										
-										dojo.style("gettyad", "display", "block");
-										window.AdInterval = setInterval(changeAd, 5000);
+								//		dojo.style("gettyad", "display", "block");
+								//		window.AdInterval = setInterval(changeAd, 5000);
 								//	}
 								//	else
 								//		dojo.style("gettyad", "display", "none");
@@ -2739,8 +2739,19 @@ require(["jquery",
                     var pagesequence = "";
                     /*if (window.gridPages>1)
 						pagesequence = "<br>Page " + window.currGridPage + "/" + window.gridPages;*/
-                 
-                        dojo.byId("GridViewHeader").innerHTML=window.currViewList;
+					var listname = window.currViewList;
+                    if (listname == "Most liked")
+                    {
+                        listname = "Most Popular";
+                        if (window.currCat == " Top Lists")
+                            listname = "Most Popular Across Artkick";
+                        else
+                            listname = "Most Popular in " + window.currCat;
+                    }
+                    else
+                    if (listname == "My Top Rated")
+                        listname = "My Likes"
+                        dojo.byId("GridViewHeader").innerHTML=listname;
                   
                     //check number of pages if only 1 turn off the forward back buttons, otherwise check for first/last and show as appropriate
                     dijit.registry.byId("gridshowing").set('selected', true);
@@ -2801,8 +2812,14 @@ require(["jquery",
                         },
                         load: function(viewlist)
                         {
+							if (viewlist["imageSet"].length==0)
+							{
+								standby4.hide();
+								return;
+							}
                             for (var i in viewlist["imageSet"])
                             {
+
                                 //console.log("id="+viewlist["imageSet"][i]["id"]);
                                 icon = viewlist["imageSet"][i]["thumbnail"];
                                 if (viewlist["imageSet"][i]["icon"])

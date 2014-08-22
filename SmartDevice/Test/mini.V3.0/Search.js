@@ -335,11 +335,15 @@ function usersearch()
     }
 	//window.searchdomain='artkick'; // we will change this to 'both' in future to include photos.com
 	//window.searchdomain='both';
+	var sdomain=window.searchdomain;
+	if (window.searchdomain=="photography")
+		sdomain="photography-production";
+
     var url = "http://gentle-crag-2965.herokuapp.com/joint/search?" 
 		+ "email=" + window.email 
 		+ "&keyword=" + searchstring 
 		+ "&token=" + window.token
-		+"&domain="+window.searchdomain;
+		+"&domain="+sdomain;
     v = 0;
 	if (replacesearchID&&window.replacesearchID!="") // replace this search
 		url += "&listId="+window.replacesearchID;
