@@ -6,6 +6,7 @@ Copyright 2013,2014 Zwamy, Inc.  All Rights Reserved
 window.backbutton = function()
     // handles the hardware backbutton on android devices
     {
+	//alert("backbutton currentView="+currentView);
         if (window.sharemenushow)
         {
             hidemenu();
@@ -34,6 +35,12 @@ window.backbutton = function()
             window.showAddComment = false;
             return;
         }
+		if (window.searchboxshow)
+		{
+			dijit.registry.byId('SearchBox').hide();
+			window.searchboxshow=false;
+			return;
+		}
         switch (window.currentView)
         {
             case "Intro1":
@@ -144,6 +151,7 @@ window.backbutton = function()
                 gotoView("Options", "OptionsList");
                 break;
             case "GridView":
+				dijit.registry.byId("tabnowshowing").set('selected', true);
                 gotoView("GridView", "ImageView");
                 break;
             case "TalkToArt":
@@ -168,6 +176,7 @@ window.backbutton = function()
                 break;
             case "select_player2":
                 rememberSelectPlayers(false);
+				updatePlayers();
                 gotoView("select_player2", lastView);
                 break;
             case "registernewroku2":

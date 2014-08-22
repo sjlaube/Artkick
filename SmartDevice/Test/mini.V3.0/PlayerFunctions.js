@@ -353,6 +353,7 @@ function setAuto(interval)
         {
             usermessage("Slideshow set");
             var timing = "never";
+			currentplayer["autoInterval"]=interval;
             switch (interval)
             {
                 case "0":

@@ -41773,26 +41773,33 @@ define([
                 var table = dojo.create("table", { className: "socialTable"}, socialChildNode);
                 
                 var tr1 =  dojo.create("tr", {}, table);
-                var imgHtml = "<img id=\"img"+alt+"\"class=\"likeImg\"src=\"images/like.png\" alt=\"\"><span id=\"likeWord"+alt+"\"class=\"likeSpan\">Like</span>";
+                
+                var imgHtml = "<img class=\"shareImg\" src=\"images/share.png\" alt=\"\"><span class=\"shareSpan\">Share</span>";
+                dojo.create("td", {innerHTML:imgHtml, onClick:"share()"},tr1);
+                
+                
+                var imgHtml = "<img class=\"addImg\" src=\"images/add.png\" alt=\"\"><span class=\"addSpan\">Add to Viewlist</span>";
+                dojo.create("td", {innerHTML:imgHtml, onClick:"callmyListView()"},tr1);
+                
+                
+                
+                imgHtml = "<img id=\"img"+alt+"\"class=\"likeImg\"src=\"images/like.png\" alt=\"\"><span id=\"likeWord"+alt+"\"class=\"likeSpan\">Like</span>";
                 
                 
                 if(imageMap[alt]["like"]){
                 	var imgHtml = "<img id=\"img"+alt+"\"class=\"likeImg\"src=\"images/like white.png\" alt=\"\"><span id=\"likeWord"+alt+"\"class=\"likeSpan selfLike\">Liked</span>";
                 }
-                dojo.create("td", {innerHTML:imgHtml, style:{width:"95px"}, onClick:"like(this.id)", id:alt}, tr1);
+                dojo.create("td", {innerHTML:imgHtml, onClick:"like(this.id)", id:alt}, tr1);
                 
                 
-                imgHtml = "<img class=\"shareImg\" src=\"images/share.png\" alt=\"\"><span class=\"shareSpan\">Share</span>";
-                dojo.create("td", {innerHTML:imgHtml, style:{width:"95px"}, onClick:"share()"},tr1);
+
                 
-                imgHtml = "<img class=\"commentImg\" src=\"images/Comment.png\" alt=\"\"><span class=\"commentSpan\">Comment</span>";
-                dojo.create("td", {innerHTML:imgHtml, style:{width:"110px"}, onClick:"comment(this.id)"}, tr1); 
-                
-                
+
+                           
                 var tr2 = domConstruct.create("tr", {className:"numbersTr"}, table);
-                dojo.create("td", {innerHTML:imageMap[alt]["likeNum"]+" likes", className:"numberlikes", id:"likeNum"+alt}, tr2);
                 dojo.create("td", {}, tr2);
-                dojo.create("td", {innerHTML:imageMap[alt]["commentNum"]+" comments", className:"numbercomments", id:"commentNum"+alt}, tr2);
+                dojo.create("td", {}, tr2);
+                dojo.create("td", {innerHTML:imageMap[alt]["likeNum"]+" likes", className:"numberlikes", id:"likeNum"+alt}, tr2);
                 
                 
                  
@@ -41907,7 +41914,7 @@ define([
 					  // create button for each viewlist
 					  vcount += 1;
 					  if(vcount==1){
-					  	dojo.create("label", {className:"metaText", innerHTML:'<br>Also in those viewlists:<br>'}, this.metaNode);
+					  	dojo.create("label", {className:"metaText", innerHTML:'<br>Also in those Viewlists:<br>'}, this.metaNode);
 					  }
 					  
 				  //   alert("create new button" + vlname + "number" +vlnumber);

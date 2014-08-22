@@ -10,10 +10,12 @@ window.dialsearch = function(str)
 	//alert("dialsearch");
     // this function calls the dial search to locate devices
     if (!str)
-        jsonStr = '[{\"uuid\":\"a43a14a5-2d6c-4f6c-8602-ce9f8aeb3206\",\"friendlyName":\"Vizio DTV\",\"modelName\":\"Vizio_M401i-A3\",\"state\":\"unkown\",\"serialNumber\":\"unknown\",\"IpAddress\":\"192.168.2.154\"},{\"uuid\":\"ce6aa0c9-73a9-4022-8490-b90ba9759cf3\",\"friendlyName":\"Roku 1GH31T024031\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"running\",\"serialNumber\":\"1GH31T024031\",\"IpAddress\":\"192.168.2.159\"},{\"uuid\":\"4d558c9d-9d44-4ac5-b4a2-b709e786bd68\",\"friendlyName":\"Roku 1GG34N047746\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"unknown\",\"serialNumber\":\"1GG34N047746\",\"IpAddress\":\"192.168.2.207\"},{\"uuid\":\"9bd584db-96b1-47db-8b0d-711434e3d385\",\"friendlyName":\"[TV]Samsung LED75\",\"modelName\":\"UN75F6400\",\"state\":\"stopped\",\"serialNumber\":\"20090804RCR\",\"IpAddress\":\"192.168.2.125\"},{\"uuid\":\"bbd2e2a5-a3e5-4753-b04f-f2f533b34c9f\",\"friendlyName":\"Artkick Chromecast1\",\"modelName\":\"Eureka Dongle\",\"state\":\"unkown\",\"serialNumber\":\"02125bb118ebbb8ecd43f46255b0fa0c\",\"IpAddress\":\"192.168.2.242\"},{\"uuid\":\"9724528b-4bb6-4965-8883-abc25339367d\",\"friendlyName":\"Roku 13C1CW090566\",\"modelName\":\"Roku Streaming Player 3100X\",\"state\":\"running\",\"serialNumber\":\"13C1CW090566\",\"IpAddress\":\"192.168.2.142\"},{\"uuid\":\"3a63c902-3f22-4cd9-aa83-b641e3a6ca3e\",\"friendlyName":\"Chromecast EO\",\"modelName\":\"Eureka Dongle\",\"state\":\"running\",\"serialNumber\":\"af2249bb907e7e33e9cab2789f721cb6\",\"IpAddress\":\"192.168.2.226\"},{\"uuid\":\"ff7f0629-a40b-4e59-95f1-19b1bc59463d\",\"friendlyName":\"BRAVIA KDL-32W650A\",\"modelName\":\"KDL-32W650A\",\"state\":\"unkown\",\"serialNumber\":\"unkown\",\"IpAddress\":\"192.168.2.200\"},{\"uuid\":\"8c94fc0e-4407-4abc-b9ad-47d84bd17141\",\"friendlyName":\"Roku 1XC396073971\",\"modelName\":\"Roku Streaming Player 2710X\",\"state\":\"running\",\"serialNumber\":\"1XC396073971\",\"IpAddress\":\"192.168.2.244\"},{\"uuid\":\"bc8f7dcb-5989-4cd9-b14b-d35a54ec0c69\",\"friendlyName":\"Apple TV\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.110\"},{\"uuid\":\"e7c837a0-81fa-4c2f-81be-af9484581908\",\"friendlyName":\"Sheldon\'s Fire TV\",\"modelName\":\"FireTV\",\"state\":\"running\",\"serialNumber\":\"unkown\",\"IpAddress\":\"192.168.2.188\"}]';
-    else
+        jsonStr = '[{\"uuid\":\"506d8c5c-bf74-4f54-b423-643c45a00e6b\",\"friendlyName":\"Sheldon\'s Fire TV\",\"modelName\":\"FireTV\",\"state\":\"unknown\",\"serialNumber\":\"Sheldon\'s Fire TV\",\"IpAddress\":\"192.168.2.188\"},{\"uuid\":\"adb4f3a0-fd3f-4544-b88f-b03e9c32c774\",\"friendlyName":\"Vizio DTV\",\"modelName\":\"Vizio_M401i-A3\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.155\"},{\"uuid\":\"2ac717bc-dc01-438d-991f-90eaee88bb57\",\"friendlyName":\"Roku 13C1CW090566\",\"modelName\":\"Roku Streaming Player 3100X\",\"state\":\"running\",\"serialNumber\":\"13C1CW090566\",\"IpAddress\":\"192.168.2.142\"},{\"uuid\":\"1121a9e8-332e-4044-8db3-6a9f10a0d4b1\",\"friendlyName":\"BRAVIA KDL-32W650A\",\"modelName\":\"KDL-32W650A\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.201\"},{\"uuid\":\"7dd7e038-0334-4e4d-b3c9-92e51da70147\",\"friendlyName":\"Roku 1XC396073971\",\"modelName\":\"Roku Streaming Player 2710X\",\"state\":\"running\",\"serialNumber\":\"1XC396073971\",\"IpAddress\":\"192.168.2.244\"},{\"uuid\":\"8aab6078-fdb0-41f0-b904-3a979e08f667\",\"friendlyName":\"Roku 1GH31T024031\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"running\",\"serialNumber\":\"1GH31T024031\",\"IpAddress\":\"192.168.2.159\"},{\"uuid\":\"208c3bd9-af94-48b3-b07a-1e03e56f982d\",\"friendlyName":\"Chromecast EO\",\"modelName\":\"Eureka Dongle\",\"state\":\"running\",\"serialNumber\":\"af2249bb907e7e33e9cab2789f721cb6\",\"IpAddress\":\"192.168.2.226\"},{\"uuid\":\"e662cc06-6f26-4e63-881e-6c731d70b9c3\",\"friendlyName":\"Roku 1GG34N047746\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"stopped\",\"serialNumber\":\"1GG34N047746\",\"IpAddress\":\"192.168.2.207\"},{\"uuid\":\"b129315a-150f-455e-a3c3-bdbcbf85d5d5\",\"friendlyName":\"Artkick Chromecast1\",\"modelName\":\"Chromecast\",\"state\":\"running\",\"serialNumber\":\"02125bb118ebbb8ecd43f46255b0fa0c\",\"IpAddress\":\"192.168.2.242\"},{\"uuid\":\"d8c540da-0d11-4c84-830e-2b4006bfbfdf\",\"friendlyName":\"Apple TV\",\"IpAddress\":\"192.168.2.110\"}]';
+		else
         jsonStr = str;
     window.dialMap = JSON.parse(jsonStr);
+	clearInterval(showingScanNetwork);
+	window.ScanNetworkComplete=true;
 
     //	alert("dialmap length="+dialMap.length);
     for (var i in dialMap)
@@ -38,7 +40,7 @@ window.dialsearch = function(str)
         }
         if (dialMap[i]["modelName"])
         {
-            if (dialMap[i]["modelName"].toLowerCase().indexOf("fireTV") > -1)
+            if (dialMap[i]["modelName"].toLowerCase().indexOf("firetv") > -1)
                 dialMap[i]["manufacturer"] = "Amazon";
             if (dialMap[i]["modelName"].toLowerCase().indexOf("eureka") > -1)
                 dialMap[i]["manufacturer"] = "Google";
@@ -66,14 +68,15 @@ window.dialsearch = function(str)
     }
 	
 	// are we doing a dial launch before this if so we need to select the player and sync the image
-	if (window.dialLaunchSerial!='none')
+/*	if (window.dialLaunchSerial!='none')
 	{
-	      selectedPlayers[dialLaunchSerial] = 1;
-            rememberSelectPlayers(false);
+	     // selectedPlayers[dialLaunchSerial] = 1;
+         //   rememberSelectPlayers(false);
 			syncImage();
 			window.dialLaunchSerial='none';
-	}
+	}*/
     dijit.registry.byId("ScanNetwork").hide();
+	//usermessage("callingupdate from dial search");
 	updatePlayers();
 }
 
@@ -111,9 +114,19 @@ function playerInstall(id)
     {
         case "Amazon":
             console.log("Amazon");
-            dojo.byId("helpcontents").innerHTML =
-                "Goto amazon.com and search for 'Artkick for FireTV'.<br>Click the 'Install/deliver' button which will install Artkick on your FireTV.<br>Click on Artkick using your FireTV remote control and a registration code will appear on your TV.";
-            gotoView(currentView, 'RegCodeInstall');
+			if (dialMap[nid]['modelName']=="FireTV" && dialMap[nid]["state"]=="unknown")
+			{
+			
+				myalert(
+                'Goto Amazon.com with a browser on a PC or Mac and search for "Artkick for FireTV" and click the "Deliver" button, then restart Artkick on your phone or tablet');
+            
+			}
+			else
+			{
+            window.dialLaunchSerial='Fire' + serialnumber;
+            dialLaunch(dialMap[nid]['uuid'],dialMap[nid]['friendlyName']);
+			}
+               
             break;
         case "Vizio":
             console.log("Vizio");
@@ -179,6 +192,8 @@ window.checkDial = function(id)
 		return false;
     for (var i in playerlist)
     {
+		if (playerlist[i]['account'].substr(0,6)=="Amazon")
+			playerlist[i]['uuid']=playerlist[i]['nickname'];
         //Since there is no uuid for rokus in playerlist then lets put it in
         if (playerlist[i]['uuid'])
         {
@@ -207,7 +222,7 @@ window.checkDial = function(id)
 }
 window.dialReady = function()
 {
-    //alert("dial ready");
+   // alert("dial ready");
     dijit.registry.byId("ScanNetwork").hide();
     window.firstupdateplayers = false;
     if (window.email)
@@ -238,20 +253,7 @@ function dialLaunch(uuid,devicename)
     {};
 	dojo.byId("scanid").innerHTML="Installing "+devicename+", Please wait";
 	dijit.registry.byId("ScanNetwork").show();
-	// app will call do a dialupdate to update status of players and then callback dialsearch when complete
-    //set this as a selected player
- /*	
-    setTimeout(function()
-    {
-		dijit.registry.byId("ScanNetwork").show();
-        dialUpdate();
-    }, 8000);
-   setTimeout(function()
-    {
-	//	alert("syncing image");
-     //   syncImage();
-        updatePlayers();
-    }, 10000);*/
+
 }
 
 function dialUpdate()
@@ -270,7 +272,7 @@ function dialUpdate()
 
 function dialDeletePlayer(uuid)
 {
-	console.log("dial delete UUID="+uuid);
+	alert("dial delete UUID="+uuid);
 	calliOSFunction("deletechrome", [uuid], "onSuccess", "onError");
     try
     {

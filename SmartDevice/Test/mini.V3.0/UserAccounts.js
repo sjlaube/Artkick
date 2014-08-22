@@ -203,9 +203,9 @@ function createUser()
 				$("#MySearchlists").show();
                 $("#searchbox").show();
                 //				$("#searchbutton").show();
-                window.currentView = "quickhint";
-                window.firstimageview = true;
-                dijit.registry.byId("registeruser").performTransition("quickhint", 1, "", null);
+                window.currentView = "registeruser";
+                window.firstimageview = false;;
+                 gotoView("registeruser", "select_category");
             }
             else
             {

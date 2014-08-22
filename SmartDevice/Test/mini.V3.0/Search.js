@@ -405,41 +405,13 @@ function usersearch()
                     //console.log("searchgrid-"+Searchgrid);
                     var newdiv = dojo.create("div",
                     {}, searchGrid);
-                    /*dojo.create("img",{
-				src:"images/Photos_logo200x62.png",
-				className: "logoclass",
-				width: "100px",
-				height: "32px"		
-				},newdiv);
-				var numresults="<p>"+result["listIds"][0]["imageNum"]+' images found</p>';
-				dojo.create("div",{
-					innerHTML: numresults,
-					className:"logoclass"
-					},newdiv);*/
+                    
                     if (result["listId"]["imageNum"] > 0)
                     {
                         loadGrid(0, searchGrid, result["listId"]["id"]);
                     }
-                    /*		else // no images from photos.com 
-					$("#searchGrid2").css("height","500px")
-				window.currList=result["listIds"][1]["id"];
-				window.currGridList=-1;
-				window.moregridpages = true;
-				
-					var newdiv2=dojo.create("div",{},searchGrid2);
-					dojo.create("img",{
-					src:"images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png",
-					className: "logoclass",
-					width: "100px",
-					height:"32px"
-					
-					},newdiv2);
-				var numresults="<p>"+result["listIds"][1]["imageNum"]+' images found</p>';
-				dojo.create("div",{
-					innerHTML: numresults,
-					className:"logoclass"
-					
-					},newdiv2);*/
+
+                   
                    
                 
             }
@@ -468,6 +440,10 @@ function usersearch()
 					myalert(result["Message"]);
                 dojo.byId("searchbox2").value = "";
             }
+					if (currentView=="ImageView")
+						dojo.style("SearchBox","top","60px");
+					else
+						dojo.style("SearchBox","top","50px");
 			updateUserStatus();
         }
     });
@@ -503,7 +479,7 @@ function showsearch(domain)
 	else if (window.currCat.substr(0,5)=="Getty"&&(currentView=="PlaylistView"||currentView=="ImageView"))
 		isGetty=true;
 
-	
+
 	
 	if (isGetty)
 	{
@@ -556,6 +532,11 @@ function showsearch(domain)
 			window.searchdomain=domain.toLowerCase();
 			$("#searchSelectValue3").val(domain);
 		}
+		else if (currCat=="Photography")
+		{
+			window.searchdomain="photography";
+			$("#searchSelectValue3").val("Photography");
+		}
 		else
 		{
 			window.searchdomain="fine art";
@@ -563,11 +544,16 @@ function showsearch(domain)
 		}
 		$("#gettybuttons").hide();
 		dijit.registry.byId('SearchBox').show();
+
 		window.searchboxshow = true;
 
 	}	
 
 	window.replacesearchID='';
+	if (currentView=="ImageView")
+		dojo.style("SearchBox","top","60px");
+	else
+		dojo.style("SearchBox","top","50px");
     window.searchboxshow = true;
 }
 

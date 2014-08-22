@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_pl",{"dijit/form/nls/validate":{rangeMessage:"Ta warto\u015b\u0107 jest spoza zakresu.",invalidMessage:"Wprowadzona warto\u015b\u0107 jest nieprawid\u0142owa.",missingMessage:"Ta warto\u015b\u0107 jest wymagana."},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"Niepoprawne has\u0142o.",nomatchMessage:"Has\u0142a nie s\u0105 zgodne."},"dijit/form/nls/ComboBox":{previousMessage:"Poprzednie wybory",nextMessage:"Wi\u0119cej wybor\u00f3w"}});
+//@ sourceMappingURL=dojo_pl.js.map

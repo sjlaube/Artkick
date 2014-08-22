@@ -87,7 +87,9 @@ function EditMyViewlistImages(id)
     window.itemstodelete = 0;
     window.editlist = true;
     window.currList = id.substr(3);
-    loadGrid(0, Picturegrid2);
+	dojo.byId('DeleteItemNumber').innerHTML = "No items to delete";
+	dijit.registry.byId('EditListViewHeader').set('label', "Tap to Delete Image");
+    loadGrid(0, Picturegrid2,window.currList);
     gotoView("MylistViewEdit", "EditListView");
 }
 

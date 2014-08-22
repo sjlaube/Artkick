@@ -114,7 +114,7 @@ function showmyviewlists()
             if (listcount == 0 && window.shownoviewlist == false)
             {
                 window.shownoviewlist = true
-                alert("Use the '+' button to create personal viewlists");
+                myalert("Tap '+ Create New Viewlist' to create personal viewlists");
             }
             standby3.hide();
         }
@@ -181,7 +181,7 @@ function AddImageToViewlist(toviewlist, toviewlistname)
             if (result["Status"] == "success")
             {
                 // alert("added image:"+imageMap[currImage]["Title"]+" to viewlist:"+toviewlistname);  
-                usermessage(imageMap[currImage]["Title"] + " added to viewlist:" + toviewlistname);
+                usermessage(imageMap[currImage]["Title"] + " added to viewlist: " + toviewlistname);
             }
             else
             {
@@ -423,6 +423,7 @@ function RenameMyViewlist(id)
     			playersDom.childNodes[i].childNodes[1].innerHTML=newname;
     		}
     		*/
+			// check if we still have a<small in the name of viewlists for editing>
     lastchar = dojo.byId(newid).innerHTML.indexOf('<');
     dojo.byId(newid).innerHTML = newname + dojo.byId(newid).innerHTML.substr(lastchar);
     var url = base + "user/renameMyViewlist?" + "email=" + window.email + "&listId=" + newid.substr(2) + "&token=" + window.token + "&newname=" + newname;

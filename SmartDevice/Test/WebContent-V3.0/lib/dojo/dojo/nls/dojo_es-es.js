@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_es-es",{"dijit/form/nls/validate":{rangeMessage:"Este valor est\u00e1 fuera del intervalo.",invalidMessage:"El valor especificado no es v\u00e1lido.",missingMessage:"Este valor es necesario."},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"Contrase\u00f1a no v\u00e1lida.",nomatchMessage:"Las contrase\u00f1as no coinciden."},"dijit/form/nls/ComboBox":{previousMessage:"Opciones anteriores",nextMessage:"M\u00e1s opciones"}});
+//@ sourceMappingURL=dojo_es-es.js.map

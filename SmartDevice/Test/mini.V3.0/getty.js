@@ -173,6 +173,7 @@ function loadgettysearch(id)
                 if (result["imageNum"] > 0)
                 {
                     loadGrid(0, searchGrid, result["listId"]);
+
                 }
                 //	gettyload();
                 //	previousgettysearch.push( {query:searchstring, EditorialSegments:window.EditorialSegments, orientation:window.gettyEditorialOrientation, date:window.gettyEditorialTime});
@@ -194,6 +195,10 @@ function loadgettysearch(id)
                 clearTimeout(timer);
                 myalert(result["Message"]);
             }
+					if (currentView=="ImageView")
+						dojo.style("SearchBox","top","60px");
+					else
+						dojo.style("SearchBox","top","50px");
         }
     });
 }
@@ -259,7 +264,7 @@ function gettyload()
     //dojo.byId("gettynumberdelete").innerHTML="Tap image to remove&nbsp&nbsp";
     //dojo.style("gettynumberdelete","display","block");
     //editviewlist();
-    loadGrid(0, Gettygrid);
+    loadGrid(0, Gettygrid,window.currList);
 }
 
 function gettyuserrefresh(newlist)
@@ -333,6 +338,10 @@ function gettyuserrefresh(newlist)
 	
 	}
 	dojo.empty(searchGrid);
+	if (currentView=="ImageView")
+				dojo.style("SearchBox","top","60px");
+			else
+				dojo.style("SearchBox","top","50px");
 	window.replacesearchID=window.currList; // setting this means replace this id on the search
 	//gotoView(window.currentView, "SearchView");
 					dojo.style('searchresults',"display","none");
