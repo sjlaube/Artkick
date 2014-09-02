@@ -278,7 +278,7 @@ function dialUpdate()
 
 function dialDeletePlayer(uuid)
 {
-	alert("dial delete UUID="+uuid);
+//	alert("dial delete UUID="+uuid);
 	calliOSFunction("deletechrome", [uuid], "onSuccess", "onError");
     try
     {
