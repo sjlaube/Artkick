@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_zh-cn",{"dijit/form/nls/validate":{rangeMessage:"\u6b64\u503c\u8d85\u51fa\u8303\u56f4\u3002",invalidMessage:"\u8f93\u5165\u7684\u503c\u65e0\u6548\u3002",missingMessage:"\u8be5\u503c\u662f\u5fc5\u9700\u7684\u3002"},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"\u5bc6\u7801\u65e0\u6548\u3002",nomatchMessage:"\u5bc6\u7801\u4e0d\u5339\u914d\u3002"},"dijit/form/nls/ComboBox":{previousMessage:"\u5148\u524d\u9009\u9879",nextMessage:"\u66f4\u591a\u9009\u9879"}});
+//@ sourceMappingURL=dojo_zh-cn.js.map

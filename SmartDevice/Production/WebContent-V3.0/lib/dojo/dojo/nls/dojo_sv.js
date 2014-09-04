@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_sv",{"dijit/form/nls/validate":{rangeMessage:"V\u00e4rdet ligger utanf\u00f6r intervallet.",invalidMessage:"Angivet v\u00e4rde \u00e4r inte giltigt.",missingMessage:"V\u00e4rdet kr\u00e4vs."},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"Ogiltigt l\u00f6senord.",nomatchMessage:"L\u00f6senorden \u00f6verensst\u00e4mmer inte."},"dijit/form/nls/ComboBox":{previousMessage:"Tidigare val",nextMessage:"Fler val"}});
+//@ sourceMappingURL=dojo_sv.js.map
