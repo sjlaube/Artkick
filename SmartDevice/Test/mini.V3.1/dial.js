@@ -10,7 +10,7 @@ window.dialsearch = function(str)
 	//alert("dialsearch");
     // this function calls the dial search to locate devices
     if (!str)
-        jsonStr = '[{\"uuid\":\"506d8c5c-bf74-4f54-b423-643c45a00e6b\",\"friendlyName":\"Sheldon\'s Fire TV\",\"modelName\":\"FireTV\",\"state\":\"unknown\",\"serialNumber\":\"Sheldon\'s Fire TV\",\"IpAddress\":\"192.168.2.188\"},{\"uuid\":\"adb4f3a0-fd3f-4544-b88f-b03e9c32c774\",\"friendlyName":\"Vizio DTV\",\"modelName\":\"Vizio_M401i-A3\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.155\"},{\"uuid\":\"2ac717bc-dc01-438d-991f-90eaee88bb57\",\"friendlyName":\"Roku 13C1CW090566\",\"modelName\":\"Roku Streaming Player 3100X\",\"state\":\"running\",\"serialNumber\":\"13C1CW090566\",\"IpAddress\":\"192.168.2.142\"},{\"uuid\":\"1121a9e8-332e-4044-8db3-6a9f10a0d4b1\",\"friendlyName":\"BRAVIA KDL-32W650A\",\"modelName\":\"KDL-32W650A\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.201\"},{\"uuid\":\"7dd7e038-0334-4e4d-b3c9-92e51da70147\",\"friendlyName":\"Roku 1XC396073971\",\"modelName\":\"Roku Streaming Player 2710X\",\"state\":\"running\",\"serialNumber\":\"1XC396073971\",\"IpAddress\":\"192.168.2.244\"},{\"uuid\":\"8aab6078-fdb0-41f0-b904-3a979e08f667\",\"friendlyName":\"Roku 1GH31T024031\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"running\",\"serialNumber\":\"1GH31T024031\",\"IpAddress\":\"192.168.2.159\"},{\"uuid\":\"208c3bd9-af94-48b3-b07a-1e03e56f982d\",\"friendlyName":\"Chromecast EO\",\"modelName\":\"Eureka Dongle\",\"state\":\"running\",\"serialNumber\":\"af2249bb907e7e33e9cab2789f721cb6\",\"IpAddress\":\"192.168.2.226\"},{\"uuid\":\"e662cc06-6f26-4e63-881e-6c731d70b9c3\",\"friendlyName":\"Roku 1GG34N047746\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"stopped\",\"serialNumber\":\"1GG34N047746\",\"IpAddress\":\"192.168.2.207\"},{\"uuid\":\"b129315a-150f-455e-a3c3-bdbcbf85d5d5\",\"friendlyName":\"Artkick Chromecast1\",\"modelName\":\"Chromecast\",\"state\":\"running\",\"serialNumber\":\"02125bb118ebbb8ecd43f46255b0fa0c\",\"IpAddress\":\"192.168.2.242\"},{\"uuid\":\"d8c540da-0d11-4c84-830e-2b4006bfbfdf\",\"friendlyName":\"Apple TV\",\"IpAddress\":\"192.168.2.110\"}]';
+        jsonStr = '[{\"uuid\":\"506d8c5c-bf74-4f54-b423-643c45a00e6b\",\"friendlyName":\"Sheldon\'s Fire TV\",\"modelName\":\"FireTV\",\"state\":\"unknown\",\"serialNumber\":\"Sheldon\'s Fire TV\",\"IpAddress\":\"192.168.2.188\"},{\"uuid\":\"adb4f3a0-fd3f-4544-b88f-b03e9c32c774\",\"friendlyName":\"Vizio DTV\",\"modelName\":\"Vizio_M401i-A3\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.155\"},{\"uuid\":\"2ac717bc-dc01-438d-991f-90eaee88bb57\",\"friendlyName":\"Roku 13C1CW090566\",\"modelName\":\"Roku Streaming Player 3100X\",\"state\":\"running\",\"serialNumber\":\"13C1CW090566\",\"IpAddress\":\"192.168.2.142\"},{\"uuid\":\"1121a9e8-332e-4044-8db3-6a9f10a0d4b1\",\"friendlyName":\"BRAVIA KDL-32W650A\",\"modelName\":\"KDL-32W650A\",\"state\":\"unknown\",\"IpAddress\":\"192.168.2.201\"},{\"uuid\":\"7dd7e038-0334-4e4d-b3c9-92e51da70147\",\"friendlyName":\"Roku 1XC396073971\",\"modelName\":\"Roku Streaming Player 2710X\",\"state\":\"running\",\"serialNumber\":\"1XC396073971\",\"IpAddress\":\"192.168.2.244\"},{\"uuid\":\"8aab6078-fdb0-41f0-b904-3a979e08f667\",\"friendlyName":\"Roku 1GH31T024031\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"stopped\",\"serialNumber\":\"1GH31T024031\",\"IpAddress\":\"192.168.2.159\"},{\"uuid\":\"208c3bd9-af94-48b3-b07a-1e03e56f982d\",\"friendlyName":\"Chromecast EO\",\"modelName\":\"Eureka Dongle\",\"state\":\"running\",\"serialNumber\":\"af2249bb907e7e33e9cab2789f721cb6\",\"IpAddress\":\"192.168.2.226\"},{\"uuid\":\"e662cc06-6f26-4e63-881e-6c731d70b9c3\",\"friendlyName":\"Roku 1GG34N047746\",\"modelName\":\"Roku Streaming Player 4200X\",\"state\":\"stopped\",\"serialNumber\":\"1GG34N047746\",\"IpAddress\":\"192.168.2.207\"},{\"uuid\":\"b129315a-150f-455e-a3c3-bdbcbf85d5d5\",\"friendlyName":\"Artkick Chromecast1\",\"modelName\":\"Chromecast\",\"state\":\"running\",\"serialNumber\":\"02125bb118ebbb8ecd43f46255b0fa0c\",\"IpAddress\":\"192.168.2.242\"},{\"uuid\":\"d8c540da-0d11-4c84-830e-2b4006bfbfdf\",\"friendlyName":\"Apple TV\",\"IpAddress\":\"192.168.2.110\"}]';
 		else
         jsonStr = str;
     window.dialMap = JSON.parse(jsonStr);
@@ -67,14 +67,7 @@ window.dialsearch = function(str)
         }
     }
 	
-	// are we doing a dial launch before this if so we need to select the player and sync the image
-/*	if (window.dialLaunchSerial!='none')
-	{
-	     // selectedPlayers[dialLaunchSerial] = 1;
-         //   rememberSelectPlayers(false);
-			syncImage();
-			window.dialLaunchSerial='none';
-	}*/
+
     dijit.registry.byId("ScanNetwork").hide();
 	//usermessage("callingupdate from dial search");
 	updatePlayers();
@@ -107,7 +100,7 @@ function playerInstall(id)
     else
     {
         swid = id;
-        dijit.byId("tvinstallheading").set("label", "Connect Display");
+        dojo.byId("tvinstallheading").innerHTML="Connect Display";
         dojo.byId('regPlayerName2').value = "";
     }
     switch (swid)
@@ -247,16 +240,18 @@ function dialLaunch(uuid,devicename)
             dialMap[i]['state'] = "running";
     }
 	
-	
+	if(runInWebview)
+	{
 
-    calliOSFunction("launchApp", [uuid], "onSuccess", "onError");
-    try
-    {
-	
-        Android.launchApp(uuid);
-    }
-    catch (err)
-    {};
+		calliOSFunction("launchApp", [uuid], "onSuccess", "onError");
+		try
+		{
+		
+			Android.launchApp(uuid);
+		}
+		catch (err)
+		{};
+	}
 	dojo.byId("scanid").innerHTML="Installing "+devicename+", Please wait";
 	dijit.registry.byId("ScanNetwork").show();
 

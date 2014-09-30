@@ -1,5 +1,3 @@
-<?php
 
-echo "Hello World!";
+<?php include_once("home.html"); ?>
 
-?>

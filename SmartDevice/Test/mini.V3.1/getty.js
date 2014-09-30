@@ -88,6 +88,11 @@ function loadgettysearch(id)
 	gettyEditorial=gettydomain;
     //dijit.registry.byId('SearchBox').hide();
   //  $("#IVGettySearchBox").css("top", "41px");
+	if (window.gettyBestOf =="Bestof")
+	{	
+		if (searchstring.indexOf("bestof")<0) //only add bestof if it is not there
+			searchstring +=" bestof";
+	}
     var url = "http://salty-chamber-1299.herokuapp.com/getty/search2?" + "email=" + window.email 
 		+ "&query=" + searchstring 
 		+ "&token=" + window.token 
@@ -148,7 +153,7 @@ function loadgettysearch(id)
                // dijit.registry.byId('IVGettySearchBox').hide();
                // dijit.registry.byId('SearchBox').hide();
 				gotoView(window.currentView, "SearchView");
-           //     $("#searchGrid").css("top", "200px");
+               $("#searchGrid").css("top", "210px");
                 window.IVsearchboxshow = false;
                 //	swapview(result["listId"]);
          //       window.gname = result['viewlist']['name'];
@@ -234,14 +239,27 @@ function setEditorialOrientation(etype)
     console.log("Editorial search domain: " + etype);
     window.gettyEditorialOrientation = etype;
 }
+function setBestOf(etype)
+{
+	if (etype=="Bestof")
+		console.log ("Bestof set");
+	else
+		console.log("Recent set");
+	window.gettyBestOf = etype;
+
+}
 window.gettyReset = function()
 {
     $("#editorialValue").val("Any");
     $("#dateValue").val("Any");
     $("#orientationValue").val("horizontal");
+	$("#BestOfVAlue").val("Bestof");
+	window.bestofflag=false;
+	bestofswitch();
     window.gettyEditorial = "Any";
     window.gettyEditorialTime = "Any";
     window.gettyEditorialOrientation = "horizontal";
+	window.gettyBestOf = "Bestof";
     dojo.empty(Gettygrid);
     dojo.byId("gettysearchbox").value = "";
     gettyView.scrollTo(
@@ -270,13 +288,14 @@ function gettyload()
 function gettyuserrefresh(newlist)
 {
     console.log("getty user refresh hit, newlist:" + newlist);
-    hidemenu();
+
 	if(window.searchboxshow)
 	{
-		dijit.registry.byId('SearchBox').hide();
-		window.searchboxshow=false;
+		hidemenu();
 		return;
 	}
+	if (window.wipemenu)
+		showmenu();
 	
 
 	// check if this is an existing search and prefill in stuff
@@ -293,7 +312,22 @@ function gettyuserrefresh(newlist)
 				//$("#editorialValue").val(searchterm["EditorialSegments"]);
 				$("#dateValue").val(searchterm["date"]);
 				$("#orientationValue").val(searchterm['orientation']);
-				dojo.byId("searchbox2").value = searchterm["query"];
+				mybest=searchterm["query"].indexOf("bestof")>-1;
+				var hrsw = dijit.registry.byId("bestof-switch");
+				if (mybest)
+				{
+					window.bestofflag = true;
+					hrsw.set('label', "On");
+					window.gettyBestOf = "Bestof";
+				}
+				else
+				{
+				    hrsw.set('label', "Off");
+					window.bestofflag = false;
+					window.gettyBestOf = "";
+				}
+				dojo.byId("searchbox2").value = searchterm["query"].replace("bestof","");
+				
 				$("#searchSelectValue3").val(currCat);
 			}
 			else
@@ -325,6 +359,7 @@ function gettyuserrefresh(newlist)
 	
 		progressBar2.set("value", 0);
 		progressBar2.set("label", "0%");
+		dojo.style("SearchBox","height","240px");
 		dijit.registry.byId('SearchBox').show();
 		window.searchboxshow = true;
 	}
@@ -354,6 +389,10 @@ function gettyclearsearch()
     window.gettyEditorial = 'Any';
     window.gettyEditorialTime = 'Any';
     window.gettyEditorialOrientation = 'Any';
+	window.bestofflag=false;
+	bestofswitch();
+	window.gettyBestOf = 'Bestof';
+	$("#BestOfValue").val(gettyBestOf);
     $("#editorialValue").val(gettyEditorial);
     $("#dateValue").val(gettyEditorialTime);
     $("#orientationValue").val(gettyEditorialOrientation);
@@ -388,6 +427,8 @@ showsearch();
 function updatecurrentsearch(viewlist,startimage)
 {
 	var thissearch=viewlist['searchTerm'];
+	if (	window.gettyBestOf =="Bestof" && thissearch['query'].indexOf('bestof')<0)
+		thissearch['query'] +=" bestof";
 	var url = "http://salty-chamber-1299.herokuapp.com/getty/search2?" + "email=" + window.email 
 		+ "&query=" + thissearch['query']
 		+ "&token=" + window.token 
@@ -429,4 +470,76 @@ function updatecurrentsearch(viewlist,startimage)
 			}
 		}
 		})
+}
+
+window.bestofswitch=function()
+{
+    var hrsw = dijit.registry.byId("bestof-switch");
+    if (window.bestofflag)
+    {
+        hrsw.set('label', "Off");
+        window.bestofflag = false;
+		window.gettyBestOf = "";
+    }
+    else
+    {
+        window.bestofflag = true;
+        hrsw.set('label', "On");
+		window.gettyBestOf = "Bestof";
+    }
+}
+
+function gettysubs(which,idx)
+{
+	console.log("subscribing to: "+which);
+	for (i=1;i<5;i++)
+	{
+		var id='g'+i+'b';
+		var itemidb=dojo.byId(id);
+		id='g'+i+'c';
+		var itemidc=dojo.byId(id);
+		id='g'+i+'a';
+		var itemida=dojo.byId(id);
+		if (i==idx)
+		{ // this one is selected
+		//	console.log(which+ " is selected");
+			dojo.style(itemidb,"color",'#00C7FF');
+			dojo.style(itemidc,"color",'#00C7FF');
+			document.getElementById(id).setAttribute("src", "images/button_on.png");
+			window.newgettysubscription=which;
+		}
+		else
+		{  // this one not selected
+			dojo.style(itemidb,"color",'white');
+			dojo.style(itemidc,"color",'white');
+			document.getElementById(id).setAttribute("src", "images/button_off.png");
+			
+		}
+	}
+
+}
+
+function gettySubscribeBoxClick()
+{  // user click subscribe button when they saw too many sample images check if on computer or webview
+dijit.registry.byId('GettySubscribeBox').hide();
+
+if (runInWebview)
+{
+	if (window.guest)
+	{
+		myalert("Please log into Artkick and then click menu/subscribe");
+		return;
+	}
+
+
+	DoSubscribe();
+
+}
+else
+{ //running in browser, redirect them to artkick.com/subscribe
+	open("http://www.artkick.com","_blank");
+
+}
+
+
 }

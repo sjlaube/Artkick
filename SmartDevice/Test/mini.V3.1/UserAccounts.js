@@ -181,17 +181,21 @@ function createUser()
                 //    currView.performTransition("ImageView", 1, "slide", null);
                 window.userName = dojo.byId("regUserName").value;
                 window.email = dojo.byId("regUserEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
-                try
+				if (runInWebview)
+				{
+                calliOSFunction("setemail", [window.email], "onSuccess", "onError");
+				try
                 {
                     Android.setEmail(window.email);
                 }
                 catch (err)
                 {}
+				}
                 window.token = result['token'];
                 window.userID = result['id'];
                 setCookie("email", window.email, 365);
                 setCookie("token", result['token'], 365);
-                calliOSFunction("setemail", [window.email], "onSuccess", "onError");
+                
                 //currView.performTransition("ImageView", 1, "slide", null);
                 //for security, we need to make sure other possible showing view gone!!
                 //alert(window.email);
@@ -221,13 +225,16 @@ function dologout()
     window.currentView = "LogOff";
     var currView = dijit.registry.byId("LogOff");
     window.email = null;
-    try
-    {
-        Android.clearCookie();
-    }
-    catch (err)
-    {};
-    calliOSFunction("clearCookie", [], "onSuccess", "onError");
+	if (runInWebview)
+	{
+		try
+		{
+			Android.clearCookie();
+		}
+		catch (err)
+		{};
+		calliOSFunction("clearCookie", [], "onSuccess", "onError");
+	}
     // code to delete cookie and log out user goes here
     setCookie("email", null, 1);
     setCookie("token", null, 1);
@@ -298,13 +305,16 @@ function login()
                     window.shuffle = false;
                     //dijit.registry.byId("shufflebutton").set('icon', 'images/media-shuffle2.png');
                     window.email = dojo.byId("loginEmail").value.replace(/^\s\s*/, '').replace(/\s\s*$/, '').toLowerCase();
-                    try
+                    if (runInWebview)
+					{
+					try
                     {
                         Android.setEmail(window.email);
                     }
                     catch (err)
                     {}
                     calliOSFunction("setemail", [window.email], "onSuccess", "onError");
+					}
                     window.token = result['token'];
                     window.userName = userObj["name"];
                     window.userID = result.userObj.id;
@@ -312,6 +322,7 @@ function login()
                     //alert(window.email);
                     setCookie("email", window.email, 365);
                     setCookie("token", result['token'], 365);
+
                     //currView.performTransition("ImageView", 1, "slide", null);
                     dojo.byId("loginEmail").value = "";
                     dojo.byId("loginPassword").value = "";
@@ -320,6 +331,8 @@ function login()
                     $("#MyViewlists").show();
 					$("#MySearchlists").show();
                     $("#searchbox").show();
+				//	dojo.style(dojo.byId('catfooter'),"display","block");
+			//		dojo.style(dojo.byId('playlistfooter'),"display","block");
                     //				$("#searchbutton").show();
                     window.afterLogin();
                 }
@@ -450,18 +463,23 @@ function Guest3()
     GuestLogin();
 }
 
-function GuestLogin()
+window.GuestLogin=function()
 {
     window.guest = true;
     window.email = "guest@guest.guest";
     window.token = "guest";
     window.activeplayer = 'No TV Selected';
+	window.subscriptions='';
+
+	window.newgettysubscription='Getty_All2';
   //  dojo.byId("browse-search").innerHTML = "Browse";
     dojo.style("searchmenu", "display", "none");
     $("#MyViewlists").hide();
 	$("#MySearchlists").hide();
     $("#searchbox").hide();
     //$("#searchbutton").hide();
+	//dojo.style(dojo.byId('catfooter'),"display","none");
+	//dojo.style(dojo.byId('playlistfooter'),"display","none");
     var currView = dijit.registry.byId("Login");
     dojo.io.script.get(
     {
@@ -497,9 +515,21 @@ function GuestLogin()
                 // setCookie("email", window.email, 365);
                 // setCookie("token",result['token'], 365);
                 //currView.performTransition("ImageView", 1, "slide", null);
+				 if (runInWebview)
+					{
+					try
+                    {
+                        Android.setEmail(window.email);
+                    }
+                    catch (err)
+                    {}
+                    calliOSFunction("setemail", [window.email], "onSuccess", "onError");
+					}
                 dojo.byId("loginEmail").value = "";
                 dojo.byId("loginPassword").value = "";
                 window.tarImage = -1;
+				dojo.style("gettyad", "display", "block");
+				window.AdInterval = setInterval(changeAd, 5000);
                 //for security, we need to make sure other possible showing view gone!!
                 window.afterLogin();
             }

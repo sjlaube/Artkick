@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_hu",{"dijit/form/nls/validate":{rangeMessage:"Az \u00e9rt\u00e9k k\u00edv\u00fcl van a megengedett tartom\u00e1nyon.",invalidMessage:"A megadott \u00e9rt\u00e9k \u00e9rv\u00e9nytelen.",missingMessage:"Meg kell adni egy \u00e9rt\u00e9ket."},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"\u00c9rv\u00e9nytelen jelsz\u00f3.",nomatchMessage:"A jelszavak nem egyeznek."},"dijit/form/nls/ComboBox":{previousMessage:"El\u0151z\u0151 men\u00fcpontok",nextMessage:"Tov\u00e1bbi men\u00fcpontok"}});
+//@ sourceMappingURL=dojo_hu.js.map

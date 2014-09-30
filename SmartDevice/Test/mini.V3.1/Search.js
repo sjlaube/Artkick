@@ -389,6 +389,7 @@ function usersearch()
 					dojo.style('searchresults',"display","block");
 					// add into place of progressdiv the results of search...
 					gotoView(window.currentView, "SearchView");
+					               $("#searchGrid").css("top", "160px");
                   //  usermessage(numimages + ' images found and saved in "My Searches"');
                     window.currCat = "My Searches";
                    // dijit.registry.byId('SearchBox').hide();
@@ -447,7 +448,7 @@ function usersearch()
 					if (currentView=="ImageView")
 						dojo.style("SearchBox","top","60px");
 					else
-						dojo.style("SearchBox","top","50px");
+						dojo.style("SearchBox","top","46px");
 			updateUserStatus();
         }
     });
@@ -463,6 +464,7 @@ function showsearch(domain)
     }
 
     hidemenu();
+
 	window.gettydomain="";
     dojo.empty(searchGrid);
 	dojo.style('searchresults',"display","none");
@@ -494,9 +496,15 @@ function showsearch(domain)
 			window.gettydomain=currCat.substr(6).toLowerCase();
 			   $("#searchSelectValue3").val(currCat);
 		}	
+		
+		dojo.style("SearchBox","height","240px");
 		$("#gettybuttons").show();
 		$("#dateValue").val('Any');
 		$("#orientationValue").val('Any');
+		$("#BestOfValue").val("Bestof");
+		window.gettyBestOf='Bestof';
+		window.bestofflag=false;
+		bestofswitch();
 		switch(gettydomain)
 		{
 			case "news":
@@ -528,6 +536,7 @@ function showsearch(domain)
 	{	
 		//dojo.byId('searchtitle').innerHTML="Search Artkick";
 //		$("#SearchBox").css("top", "41px");
+		dojo.style("SearchBox","height","180px");
 		window.gettyEditorial="";
 		dojo.byId('searchbox2').placeholder="Artist Name, Genre, Museum";
 
@@ -557,7 +566,7 @@ function showsearch(domain)
 	if (currentView=="ImageView")
 		dojo.style("SearchBox","top","60px");
 	else
-		dojo.style("SearchBox","top","50px");
+		dojo.style("SearchBox","top","46px");
     window.searchboxshow = true;
 }
 
@@ -644,3 +653,4 @@ else
 }
 
 }
+

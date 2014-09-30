@@ -1,0 +1,3 @@
+//>>built
+define("dojo/nls/dojo_sl",{"dijit/form/nls/validate":{rangeMessage:"Ta vrednost je izven obmo\u010dja.",invalidMessage:"Vnesena vrednost ni veljavna.",missingMessage:"Ta vrednost je zahtevana."},"dojox/form/nls/PasswordValidator":{badPasswordMessage:"Neveljavno geslo.",nomatchMessage:"Gesli se ne ujemata."},"dijit/form/nls/ComboBox":{previousMessage:"Prej\u0161nje izbire",nextMessage:"Dodatne izbire"}});
+//@ sourceMappingURL=dojo_sl.js.map

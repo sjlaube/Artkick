@@ -58,13 +58,19 @@ function showmyviewlists()
             var liz = dojo.create("div",
             {
                 className: 'mblListItem2',
-                innerHTML: "<big><big><big>&nbsp;&nbsp;+&nbsp;&nbsp;</big></big></big>",
-                onclick: function()
+                              onclick: function()
                 {
                     //AddImageToViewlist (this.id,this.label);
                     CreateUserList();
                 }
             }, 'MyViewLists');
+			dojo.create("img",
+			{
+				src: "images/add.png",
+				width:"20px",
+				style: 'position:relative;top:-6px'
+				
+			},liz);
             dojo.create("span",
             {
                 innerHTML: "Create New Viewlist",
@@ -76,7 +82,8 @@ function showmyviewlists()
             for (var i in lists)
             {
                 //	alert(lists[i]["id"]+" Myviewlist="+window.MyViewlist+" name:"+lists[i]["name"] );
-                if (lists[i]["name"] != "Last Search") // user can't manually add to Last Search viewlist
+				
+                if (lists[i]["name"] != "Last Search" && lists[i]["private_user"] == window.email) // user can't manually add to Last Search viewlist
                 {
                     listcount += 1;
                     window.shownoviewlist = true;
@@ -275,7 +282,7 @@ window.editmyviewlists = function()
                         {
                             id: 'my3' + lists[i]["id"],
                             innerHTML: "Rename",
-                            className: 'mybuttonclass',
+                            className: 'mybclass2',
                             onclick: function()
                             {
                                 ShowRenameMyViewlist(this.id);
@@ -285,7 +292,7 @@ window.editmyviewlists = function()
                         {
                             id: 'my4' + lists[i]["id"],
                             innerHTML: "Images",
-                            className: 'mybuttonclass',
+                            className: 'mybclass2',
                             onclick: function()
                             {
                                 EditMyViewlistImages(this.id);
@@ -429,8 +436,8 @@ function RenameMyViewlist(id)
     		}
     		*/
 			// check if we still have a<small in the name of viewlists for editing>
-    lastchar = dojo.byId(newid).innerHTML.indexOf('<');
-    dojo.byId(newid).innerHTML = newname + dojo.byId(newid).innerHTML.substr(lastchar);
+    lastchar = dojo.byId(newid).innerHTML.indexOf('</span>');
+    dojo.byId(newid).innerHTML = '<span>' + newname +  dojo.byId(newid).innerHTML.substr(lastchar);
     var url = base + "user/renameMyViewlist?" + "email=" + window.email + "&listId=" + newid.substr(2) + "&token=" + window.token + "&newname=" + newname;
     dojo.io.script.get(
     {

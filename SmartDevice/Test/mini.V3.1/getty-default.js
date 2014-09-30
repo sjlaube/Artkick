@@ -45,9 +45,9 @@ window.gettyDefault = function(domain)
 				window.doneid=dojo.create("img",
 				{
 					src: "images/check.png",
-					className: 'gettyDefaultClass2'
+					className: 'gettyDefaultClass2a'
 				},newgitem);
-				dojo.style(doneid,"display", "none");
+				//dojo.style(doneid,"display", "none");
 				var newtxt = dojo.create("div",
 				{
 					innerHTML: title,

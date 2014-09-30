@@ -7,6 +7,8 @@ function callstore()
 {
     hidemenu();
     console.log("loadStore");
+	if (runInWebview)
+	{
     calliOSFunction("loadStore", [], "onSuccess", "onError");
     try
     {
@@ -14,27 +16,83 @@ function callstore()
     }
     catch (err)
     {}
+	}
 }
 
 function editstore()
 {
     hidemenu();
     console.log("editStore");
+	if (runInWebview)
+	{
     calliOSFunction("editStore", [], "onSuccess", "onError");
     try
     {
-        Android.share('Check out this great image and thousands more at Artkick', short_url, imageMap[currImage]["thumbnail"], 'Artkick rocks');
+        Android.editStore();
     }
     catch (err)
     {}
+	}
 }
 
-function completeTransaction(id)
+function completeTransaction(id,initial,storeEmail,storeToken)
 {
-
+	if(id=="Getty_Upgrade")
+		standby6.hide();
+	else
+		standby5.hide();
+	
  //   usermessage("you are now subscribed to "+id);
-	gettyDefault(id);
-	window.waitingid=id;
+
+ if (!initial&& storeEmail.indexOf("apple.store")<0)
+ {
+	usermessage("Successfully renewed "+id);
+	return;
+ }
+ 
+ if (window.guest&&storeEmail&&storeToken)
+ {
+ // user was not logged in when they did the subscription, create cookie
+                window.token = storeToken;
+                window.userID = storeEmail;
+				window.email=storeEmail;
+                setCookie("email", storeEmail, 365);
+                setCookie("token", storeToken, 365);
+				subscriptions=[];
+ }
+ if (id=="Getty_All2"||id=="Getty_All3")
+	id="Getty_All";
+ mysub=id.split('_');
+	//$("#gettydefault").html("");
+	newsub=mysub[1];
+	if (newsub=="Upgrade")
+	{
+				console.log("upgrading getty subs");
+		if (subscriptions[0]!="Getty_Entertainment")
+			gettyDefault('Entertainment');
+		if (subscriptions[0]!="Getty_News")
+			gettyDefault('News');
+		if (subscriptions[0]!="Getty_Sports")
+			gettyDefault('Sports');
+		id="Getty_All";
+	}
+	else if (newsub=="All")
+	{
+		gettyDefault('Entertainment');
+		gettyDefault('News');
+		gettyDefault('Sports');
+		window.waitingid=['Getty','Sports'];
+
+	}
+	else
+	{
+		gettyDefault(newsub);
+		window.waitingid=mysub;
+	}
+	subscriptions[0]=id;
+	subscription_categories();
+	//gettyDefault(id);
+
 	// now wait for the last viewlist to load
 	waitfordone();
 }
@@ -49,6 +107,7 @@ function waitfordone()
 	}
 	console.log("finished");
 	delete window.doneid;
+	window.restart=false;
 	var divs=dojo.byId("gettydefault").getElementsByTagName('div');
 	for (var i=0;i<divs.length; i+=1)
 	{
@@ -71,6 +130,7 @@ function waitfordone()
 				{
 					window.currCat="Getty "+this.id.substr(8);
 					dojo.style(dojo.byId("GettyLoadDefault"), "display", "none");
+					window.restart=false;
 					gotoCategory(window.currCat);
 				
 				}
@@ -114,21 +174,24 @@ function createoption(segment)
 		value:'Getty '+segment,
 		label:'Search Getty '+segment
 	},'searchSelectValue3');
-
+	window.searchoptionexist += segment;
 }
 
 function subscription_categories()
 {
 // this function hides and unhides category tiles according to what is subscribed 
 // and adds the appropriate options to the search button
-if (window.subscriptions.length==0) // no subscriptions, show the samples only
-{
+$("#gettydefault").html('');
+
 	dojo.style('GettyEntertainment-Sample',"display","block");
 	dojo.style('GettyNews-Sample',"display","block");	
 	dojo.style('GettySports-Sample',"display","block");
 	dojo.style('GettyEntertainment',"display","none");
 	dojo.style('GettyNews',"display","none");	
 	dojo.style('GettySports',"display","none");
+if (window.subscriptions.length==0) // no subscriptions, show the samples only
+{
+
 	return;
 }
 if (window.subscriptions.indexOf("Getty_All")>-1)
@@ -136,12 +199,17 @@ if (window.subscriptions.indexOf("Getty_All")>-1)
 	dojo.style('GettyEntertainment-Sample',"display","none");
 	dojo.style('GettyNews-Sample',"display","none");	
 	dojo.style('GettySports-Sample',"display","none");	
+	
 	dojo.style('GettyEntertainment',"display","block");
-	createoption("Entertainment");
-	dojo.style('GettyNews',"display","block");	
-	createoption("News");
+	if (window.searchoptionexist.indexOf("Entertainment")<0)
+		createoption("Entertainment");
+	dojo.style('GettyNews',"display","block");
+
+	if (window.searchoptionexist.indexOf("News")<0)
+		createoption("News");
 	dojo.style('GettySports',"display","block");
-	createoption("Sports");
+	if (window.searchoptionexist.indexOf("Sports")<0)
+		createoption("Sports");
 	return;
 }
 
@@ -152,7 +220,9 @@ for (i in subscriptions)
 	{
 		dojo.style('Getty'+mysub[1],'display','block');
 		dojo.style('Getty'+mysub[1]+'-Sample','display','none');
-		createoption(mysub[1]);
+		if (searchoptionexist!=mysub[1])
+			createoption(mysub[1]);
+		window.searchoptionexist=mysub[1];
 	}
 
 }
@@ -167,16 +237,92 @@ function setmysubs(val)
 	dojo.style('GettyEntertainment',"display","none");
 	dojo.style('GettyNews',"display","none");	
 	dojo.style('GettySports',"display","none");
-/*window.subscriptions=[];
-var radioval=document.querySelector('input[name="setsubs"]:checked').value;
-console.log("setmysubs="+radioval);
-window.subscriptions=[radioval];*/
-subscription_categories();
-if(val)  // if true then initialize the default viewlists
+
+
+
+if(val)  // if true then initialize then call IOS to do the subscription
 {
-	mysub=radioval.split('_');
-	window.subscriptionsNew=mysub[1];
+	console.log("Inapp subscribing to: "+window.newgettysubscription);
+		InAppSubscribe(window.newgettysubscription);
 
 }
-refreshView();
+else // this is an upgrade
+{
+	InAppSubscribe('Getty_Upgrade');
+	console.log("upgrade subscription");
+}
+
+}
+
+function InAppSubscribe(which)
+{
+	console.log ("doing an inapp subscription to "+which);
+	if (runInWebview)
+	{
+	if(which=='Getty_Upgrade')
+	{
+		standby6.show();
+	}
+	else
+		standby5.show();
+		if (window.platform == "IOS")
+			usermessage("Waiting for the iTunes Store");
+		else if (window.platform == "Android")
+			usermessage("Waiting for the Google Play Store");
+	calliOSFunction("gettysubscribe", [which], "onSuccess", "onError");
+        try
+        {
+            Android.gettysubscribe(which);
+        }
+        catch (err)
+        {}
+	}
+	else
+	{
+	// running in browser so goto website
+		open("http://www.artkick.com","_blank");
+	}
+}
+
+window.failTransaction=function()
+{
+	if (currentView=="InAppSubscribe")
+	{
+		standby5.hide();
+		myalert("Subscription failed");
+	}
+	else 	if (currentView=="InAppSubscribe2")
+	{
+		standby6.hide();
+		myalert("Subscription upgrade failed");
+	}
+	else
+	{	
+	//	refreshView();
+
+	}
+	
+}
+
+
+function DoSubscribe()
+{
+	console.log ("do subscribe called");
+	hasgetty=false;
+	for (var i in subscriptions)
+	{
+		console.log("current subscription "+subscriptions[i]);
+		if (subscriptions[i].substr(0,5).toLowerCase()=="getty")
+		{
+			hasgetty=true;
+			subname=subscriptions[i].replace('_',' ');
+			dojo.byId("currentGettySub").innerHTML=subname;
+		}
+	}
+	console.log("hasgetty "+hasgetty);
+	if(hasgetty)
+		gotoView(window.currentView,'InAppSubscribe2');
+	else
+		gotoView(window.currentView,'InAppSubscribe');
+
 }

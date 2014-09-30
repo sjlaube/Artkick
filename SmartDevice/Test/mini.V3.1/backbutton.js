@@ -7,6 +7,7 @@ window.backbutton = function()
     // handles the hardware backbutton on android devices
     {
 	//alert("backbutton currentView="+currentView);
+	adjustSize();
         if (window.sharemenushow)
         {
             hidemenu();
@@ -223,6 +224,12 @@ window.backbutton = function()
                 break;
             case "GettyLoadDefault":
                 gotoView("GettyLoadDefault", "select_category");
+                break;
+            case "InAppSubscribe":
+                gotoView(currentView, "select_category");
+                break;
+            case "InAppSubscribe2":
+                gotoView(currentView, "select_category");
                 break;
             case "SearchView":
                 dojo.style(dojo.byId("SearchView"), "display", "none");

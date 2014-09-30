@@ -82,7 +82,7 @@ float:left;margin-right:2px}
 	position:relative;
 
 	float:right;
-//	margin-right:15px;
+	margin-right:15px;
 
 	}
 .iconclass2 {
@@ -94,7 +94,7 @@ float:left;margin-right:2px}
 	position:relative;
 	top:7px;
 	float:right;
-//	margin-right:15px;
+	margin-right:15px;
 
 	}
 	
@@ -296,7 +296,7 @@ margin-right:5px
 	}
 	.mblButton{
 		background-image: none !important;
-		<!--background-color: #7b90ab !important; -->
+
 		border-style:none!important;
 		border-color:yellow;
 	  -webkit-tap-highlight-color: none;
@@ -357,6 +357,8 @@ margin-right:5px
         background-position: center;
         background-repeat: no-repeat;
     	background-size: contain;
+
+		
 	}
 	.mblTabBarSegmentedControl .mblTabBarButton {
 		background-image: none;
@@ -373,7 +375,7 @@ margin-right:5px
 }
 	.mblTabBar{
 		text-shadow: none;
-		height: 30px !important;
+
 		border-top: none;
 		border-bottom: none;
 		background-color:black;
@@ -405,7 +407,7 @@ margin-right:5px
   
  .dj_tablet .mblTabBar{
 		text-shadow: none;
-		height: 30px !important;
+
 		border-top: none;
 		border-bottom: none;
 	}
@@ -514,12 +516,16 @@ margin-right:5px
     }
 	.mblToggleButton {
 	background-image:none;
+	border-width:0;
+	background-color: white;
+	color: black!important;
 	}
 	.mblToggleButtonSelected {
 	background-image:none!important;
 	}
 	.mblToggleButtonChecked {
 	background-image:none!important;
+	background-color: #00C7FF;
 	}
 	
 	.imageclass{
@@ -554,7 +560,7 @@ margin-right:5px
 	color:white;
 	position:relative;
 	text-indent:15px;
-	width:225px;
+	width:230px;
 
 	
 	}
@@ -705,7 +711,7 @@ left:90px;
 
 }
 .mobile body {
-    color :gray;
+    color :black;
 	font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
 }
@@ -779,7 +785,7 @@ font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
 		font-size: 15px;
 		text-align:center;
-		color:black;
+		color:#A5A5A5;
 
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
 		-webkit-tap-highlight-color: transparent!important;
@@ -795,7 +801,24 @@ font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
 		font-size: 15px;
 		text-align:center;
-		color:black;
+		color:#A5A5A5;
+
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
+		-webkit-tap-highlight-color: transparent!important;
+		-webkit-user-select: none;
+		border-bottom: 2px solid black;
+		height:25px;
+		clear:both;
+
+		
+}
+.wificlass3{
+background-color: rgba(39,39,39,.8);
+font-family: 'Open Sans', sans-serif;
+		font-weight: 400;
+		font-size: 15px;
+		text-align:center;
+		color:#808080;
 
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
 		-webkit-tap-highlight-color: transparent!important;
@@ -890,7 +913,7 @@ margin-left: 10px;
 		color: white;
 		font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
-		color: #blue;
+		color: #00C7FF;
 
 		border-radius: 5px;
 		background-color: #28272D;
@@ -909,12 +932,11 @@ margin-left: 10px;
 		border-radius: 5px;
 		background-color: #28272D!important;
 		text-align: center;
-		left:30px;
+
 		margin-right:5px;
-		width:'190px';
-		height:20px;
-		line-height:20px;
-		vertical-align:middle;
+
+
+		float:right;
 	}
 	
 .mybclass3 {
@@ -951,7 +973,7 @@ margin-left: 10px;
 	}
 .myselect {
 	position:relative;
-	left:10px;
+	float:left;
 	display:block;
 
 
@@ -963,14 +985,15 @@ margin-left: 10px;
 		background-color: #28272D;
 		text-align: center;
 		border-color: #28272D;
-		margin-left:20px;
+		margin-left:32px;
 		 -webkit-appearance: none;
+		 padding-right:30px;
 }
 .chooserclass {
 position:relative;
 
-top:-23px;
-left:135px;
+top:3px;
+left:-30px;
 
 
 }
@@ -1030,6 +1053,14 @@ vertical-align:middle;
 width:25px;
 float:left;
 
+margin-left:15px;
+}
+.gettyDefaultClass2a{
+position:relative;
+vertical-align:middle;	
+width:25px;
+float:left;
+display:none;
 margin-left:15px;
 }
 .gettyDefaultClass3{
@@ -1112,3 +1143,34 @@ font-family: 'Open Sans', sans-serif;
 
 		
 }
+
+.mmmmblCarouselHeaderBar{
+height:40px;
+margin-botton:10px;
+}
+
+.mblCarouselBtnContainer{
+float:none;
+background-color: #181818;
+width: 100%;
+height: 40px;
+}
+
+.prevButton{
+width:25px;
+float:left;
+margin-left:35px;
+position:relative;
+top:7px;
+opacity:.5;
+}
+
+.nextButton{
+width:25px;
+float:right;
+margin-right:40px;
+position:relative;
+top:7px;
+opacity:.5;
+}
+

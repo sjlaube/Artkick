@@ -21,9 +21,9 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 
     <title>Artkick</title>
     <link rel="apple-touch-icon-precomposed" href="images/ARTKICKlogoFULLCOLOR-APP_120.png" />
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700,600' rel='stylesheet' type='text/css'>
 
-    <script type="text/javascript" src="WebContent-V3.0/lib/dojo/dojo/dojo.js?V1.3" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
+    <script type="text/javascript" src="WebContent-V3.1/lib/dojo/dojo/dojo.js?V1.3" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
 [{'name': 'jquery', 'location': 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1', 'main': 'jquery'},
 {'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},
 {'name':'maqettaSamples','location':'../../../samples'},{'name':'maqetta','location':'../../maqetta'},
@@ -104,6 +104,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
             "dojox/mobile/Accordion",
             "dojox/widget/Standby",
 			"dojo/window"
+
        ]);
     </script>
     <style>
@@ -135,8 +136,25 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 </head>
 
 <body data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" class="claro" data-maq-ws="collapse" data-maq-orientation="portrait" id="myapp" data-maq-appstates="{}">
-
-    <div id="splash" style=" position: fixed!important;text-align:left; overflow:hidden; background-color:black;z-index:1500; width:100%; height:100%">
+<div id="gettyoverlayback" style="height:100%;width:100%;background-color: rgba(39,39,39,.8);display:none;position:absolute;top:0px;left:0px;z-index:999">
+<div id="gettycomputerad" style=";margin:0 auto;position:relative;top:145px;text-align:center;">
+<div style="position:relative">
+<img id="gettyPopUpAd" src="images/GettyAds/browser/entertainment.png" style="width:600px">
+<span id="gettyPopUpSubscribe" style="color:#00C7FF;position:absolute;border: 2px solid #00C7FF;display:block;font-size:20px" onclick='dojo.style("gettyoverlayback","display","none");gettySubscribeBoxClick()'>&nbsp;&nbsp;&nbsp;&nbsp;SUBSCRIBE NOW&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span id="gettyPopUpNothanks" style="height:25px;color:#00C7FF;position:absolute;text-decoration:underline;display:block;font-size:15px" onclick='dojo.style("gettyoverlayback","display","none");gotoView(currentView,"select_category")'>No Thanks</span>
+</div>
+</div>
+</div>
+<div id="Firefoxgo" style="height:100%;width:100%;background-color: rgba(39,39,39,.8);display:none;position:absolute;top:0px;left:0px;z-index:999">
+<div  style="width:699px;height:500px;margin:0 auto;background-color:rgba(255,255,255,.8);position:relative;top:50px;text-align:center">
+<br><br><br><br><p> Unfortunately Artkick does not work with Firefox </p>
+<p>Please use IE, Chrome or Safari</p>
+<br><br><br>
+<p> Or download the Artkick app from Google Play or the App Store</p>
+</div>
+</div>
+<div id="realcontent" style="margin:0 auto;height:100%">
+    <div id="splash" style=" position: fixed!important;text-align:left; overflow:hidden; background-color:black;z-index:1500;width:100%; height:100%">
         <img src="images/ArtkickStartupScreen640x1136.jpg" alt="" style="height:100%;margin:auto;display:block">
 
     </div>
@@ -493,14 +511,14 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
         </div>
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddUserList" data-dojo-props='modal:true,top:"61px"' style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddUserList" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         Create new Viewlist
-        <input data-dojo-type="dojox/mobile/TextBox" type="text" id="NewListName" style='width:300px' placeHolder="&nbsp;&nbsp;Viewlist Name">
+        <input data-dojo-type="dojox/mobile/TextBox" type="text" id="NewListName" style='width:300px;margin-top:10px;' placeHolder="&nbsp;&nbsp;Viewlist Name">
         <br>
         </input>
 
-        <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="CreateNewViewlist('Cancel')">Cancel</button>
-        <button data-dojo-type="dojox/mobile/Button" style="width:60px;background-color: #00C7FF !important;color:black" onclick="CreateNewViewlist('OK')">OK</button>   
+        <button data-dojo-type="dojox/mobile/Button" style="margin-top:10px;margin-right:10px;background-color: white !important;color:black" onclick="CreateNewViewlist('Cancel')">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-left:10px;width:60px;background-color: #00C7FF !important;color:black" onclick="CreateNewViewlist('OK')">OK</button>   
    </div>
 
     <div data-dojo-type="dojox/mobile/ScrollableView" id="select_player">
@@ -734,7 +752,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:false,top:"21px"' style="border:0px!important;outline:none!important;height:70px;width:200px;background-image:none!important;position:absolute">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:false,top:"21px"' style="z-index:999;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;;width:200px;position:absolute">
 
         <ul data-dojo-type="dojox/mobile/IconMenu" id="shareiconmenu" data-dojo-props='cols:3' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
             <li data-dojo-type="dojox/mobile/IconMenuItem" id="facebookshare" onclick="facebook()" style="border:none!important" data-dojo-props='closeOnAction:true,label:"Facebook",icon:"images/FB-f-Logo__blue_50.png"'></li>
@@ -745,12 +763,12 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Swipehint" data-dojo-props='modal:false,top:"120px"' style="border:0px!important;outline:none!important;background-image:none!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Swipehint" data-dojo-props='modal:false' style="background-color:rgba(0,0,0,.55)!important;top:50%;border:0px!important;outline:none!important;background-image:none!important">
         Swipe left or right
         <br>to change image
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="UserMessage" data-dojo-props='modal:false,top:"61px"' style="border:0px!important;background-color:rgba(0,0,0,.85)!important;outline:none!important;background-image:none!important;z-index=999">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="UserMessage" data-dojo-props='modal:false,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;background-image:none!important">
         Content
     </div>
 
@@ -778,7 +796,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
    </div>
 
     <div data-dojo-type="dojox/mobile/SimpleDialog" id="SearchBox" data-dojo-props='modal:false' 
-		style="position:absolute!important;width:100%;border-radius:0px!important;border-right:none;border-left:none;border-top-color:#28272D!important;border-bottom-color:#28272D!important;outline:none!important;background-image:none!important;background-color:rgba(0,0,0,.85)!important;height:200px">
+		style="z-index:903;width:90%;border-radius:0px!important;border-right:none;border-left:none;border-top-color:#28272D!important;border-bottom-color:#28272D!important;outline:none!important;background-image:none!important;background-color:rgba(0,0,0,.85)!important;height:200px">
 
 	 <div id="searchSelect" style="margin-top:5px;white-space:nowrap;">
      <select style="text-size:16px;border-radius:5!important" id="searchSelectValue3" onchange="setSearchSelection(this.value)">
@@ -791,13 +809,20 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 	 </div>
         <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="&nbsp;&nbsp;Artist Name, Genre, Museum" id="searchbox2" style="width:80%;height:25px;font-size:15px;border-radius:5px;margin-top:10px" data-dojo-props='ignoreCase: true, incremental:false,onSearch:usersearch'></input>
         
-		<div style='width:100%' id="gettybuttons">
+		<div  id="gettybuttons" style="margin-top:10px">
+	 <span id="bestoftoggle" style="white-space:nowrap;">
+	        <label style="vertical-align: middle; text-align: left; ;color:white;font-size:15px">Best Of</label>
+            <button data-dojo-type="dojox/mobile/ToggleButton" checked="true" id="bestof-switch" onchange="bestofswitch()" style="color:white;height:25px;top:2px" data-dojo-props='label:"On"' ></button>
+		</span>
+		
+		<br>
+		
 		  <span id="EditorialTime" style="white-space:nowrap;margin-top:15px;margin-right:10px;">
 
-     <select style=";text-size:16px;" id="dateValue" onchange="setEditorialTime(this.value)">
+     <select style="text-size:16px;" id="dateValue" onchange="setEditorialTime(this.value)">
        <option value='Any' selected="selected" >
          Any date</option>
-       <option value='24H'>
+       <option value='1D'>
          Last 24 Hours</option>
 	   <option value='7D' >
          Last 7 days</option>
@@ -809,6 +834,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 
      </select>
 	 </span>
+
         <span id="EditorialOrientation" style="white-space:nowrap;">
      <select style="text-size:16px;margin-top:15px;margin-right:10px;" id="orientationValue" onchange="setEditorialOrientation(this.value)">
        <option value='Any' >
@@ -835,7 +861,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
    
 
 
-    <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index=901">
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index:901">
         <div id="ImageViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="font-size:14px; color:white; line-height:150%;height:60px">
 			<span id="imageListName" style="margin-right:auto;margin-left:auto" >Viewlist Name Goes Here</span>
             <span data-dojo-type="dojox/mobile/ToolBarButton" id="viewlistbutton" class="clearbutton"  onclick="gotoCategory('0')" style="position:absolute;left:5px;height:45px;top:6px;">GoToCategory</span>
@@ -846,7 +872,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 	 </div>
 
 
-        <div data-dojo-type="dojox/mobile/DataCarousel" id="ImageList" data-dojo-props='height:"850px",numVisible:1,pageIndicator:false,selectable:false,navButton:false' onclick="hidemenu()"></div>
+        <div data-dojo-type="dojox/mobile/DataCarousel" id="ImageList" data-dojo-props='height:"850px",numVisible:1,pageIndicator:false,selectable:false,navButton:true' onclick="hidemenu()"></div>
 
         <table class="hidden" onclick="hidemenu()" style="color:white!important;text-color:white;border-collapse: collapse; table-layout: fixed; border:0;height: auto; position: relative; left: 1em; top:-5em;width: 90%;">
             <colgroup>
@@ -1085,26 +1111,230 @@ Save your favorite images in personal viewlists and share them with your friends
         <br>
         <br>
     </div>
-	<div data-dojo-type="dojox/mobile/ScrollableView" id="TestingSettings" style="height: 100%;z-index:950;background-color: black;">
-        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Testing Settings",fixed:"top"'>
+	
+	<div data-dojo-type="dojox/mobile/ScrollableView" id="InAppSubscribe" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
+		<span style="margin-right:12%">Getty Subscription</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Home</span>
+            </div>
+
+        </div>
+		<div style="width:100%;text-align: center;">
+			<img src="images/Artkick_GI_logolockups.png" style="width:150px">
+		</div>
+		<div style="width:90%;margin-left:5%;margin-top:10px">
+
+
+			<div style="width:100%;text-align: center;">
+				<span style="color:white;margin-left:10px">7-Day FREE Trial&mdash;then just</span>
+				<span style="color:#00C7FF;font-size:20px;font-weight:bold">$4.99</span>
+				<span style="color:#00C7FF;font-size:15px;margin-left:-4px">/mo</span><br>
+				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;margin-top:20px;width: 130px" onclick="setmysubs(true)">Subscribe</button>   
+				<br>
+				<div style="color:white;font-size:20px;font-weight:bold;margin-top:15px">The World in Photos On Your TV</div>
+			</div>
+		<div style="width:90%;margin-left:5%">
+			<p style="text-align:left;font-size:15px;color:white;line-height:120%">
+			Add millions of timely, up-to-the-minute photos from Getty Images to your Artkick experience, 
+			shot by world-class photographers with state-of-the-art gear and access to global events
+			</p>
+			<p style="text-align:left;font-size:15px;color:white;line-height:120%">
+			Create your own custom viewlists that follow your favorite celebrities, teams and topics.
+			</p>
+			<p style="text-align:left;font-size:15px;color:white;line-height:120%">
+			Thousands of new images every day&mdash;all the celebrity intrigue, 
+			all the action from the latest games, all the breaking news, plus all the timeless, iconic images you could ever want.
+			</p>
+			<p style="text-align:left;font-size:15px;font-weight:bold;color:white;line-height:120%">
+			Includes:
+			</p>
+		</div>
+		</div>
+		<div style="width:90%;margin-top:20px;margin-left:5%;">
+		<div style="height:25px;width:25px;background-color:#a431b2;margin-right:10px">
+			<img src="images/getty_g_solid.png" style="margin:auto;height:19px;width:19px;position:relative;top:3px;left:3px">
+
+		</div>
+		<span style="font-size:18px;color:white;font-weight: 700;position: relative;top: -25px;left: 40px;">Getty Entertainment</span>
+		<span style="text-align:left;font-size:15px;color:white;line-height:120%;margin-left:20px;float:left;margin-top: -10px;">Your backstage pass to thousands of images from celebrity events worldwide. 
+			Includes award ceremonies, fashion shows, concerts, movie previeres, celebrity parties, and more.
+		</span>
+
+		</div>
+		<br><br>
+		<div style="width:90%;margin-top:40px;margin-left:5%;">
+		<div style="height:25px;width:25px;background-color:#47c16a;margin-right:10px">
+			<img src="images/getty_g_solid.png" style="margin:auto;height:19px;width:19px;position:relative;top:3px;left:3px">
+
+		</div>
+		<span style="font-size:18px;color:white;font-weight: 700;position: relative;top: -25px;left: 40px;">Getty Sports</span>
+		<span style="text-align:left;font-size:15px;color:white;line-height:120%;margin-left:20px;float:left;margin-top: -10px;">From your favorite sporting moments to the latest big game&mdash;your sideline pass to images from thousands of sporting events. Includes NFL, MLB, NBA, NHL, NASCAR and more.
+		</span>
+		</div>
+		<br><br>
+		<div style="width:90%;margin-top:40px;margin-left:5%;">
+		<div style="height:25px;width:25px;background-color:#f2ac3d;margin-right:10px">
+			<img src="images/getty_g_solid.png" style="margin:auto;height:19px;width:19px;position:relative;top:3px;left:3px">
+
+		</div>
+		<span style="font-size:18px;color:white;font-weight: 700;position: relative;top: -25px;left: 40px;">Getty News</span>
+		<span style="text-align:left;font-size:15px;color:white;line-height:120%;margin-left:20px;float:left;margin-top: -10px;">Stay up-to-date on the latest happenings from around
+		the world&mdash;your press pass to thousands of images from worldwide new events, including national and international coverage.
+		</span>
+		</div>
+		<div style="width:100%">
+			<img src="images/subscribe-image1.jpg" style="width:32%">
+			<img src="images/subscribe-image2.jpg" style="width:33%">
+			<img src="images/subscribe-image3.jpg" style="width:33%">
+		</div>
+		<div style="width:90%;margin-top:20px;margin-left:5%;">
+		<span style="text-align:left;font-size:17px;color:white;line-height:120%;margin-left:20px;float:left;margin-top: -10px;margin-bottom:15px">Get the hottest, the latest, the greatest in entertainment, sports & news from Getty Images&mdash;your All
+		Access Pass to timely, compelling photos.
+		</span>
+		</div>
+		<div style="width:100%;text-align: center;margin-top:10px;">
+				<br><span style="color:#00C7FF;font-size:24px;font-weight:bold">$4.99</span>
+				<span style="color:#00C7FF;font-size:15px;margin-left:-4px">/mo</span>
+				<p style="color:white;font-size:15px;margin-top: -3px;">after 7-Day FREE Trial</p>
+
+				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;width: 130px" onclick="setmysubs(true)">Subscribe</button>   
+
+		</div>
+	</div>
+	<div data-dojo-type="dojox/mobile/ScrollableView" id="InAppSubscribe-old" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
+		<span style="margin-right:12%">Getty Subscription</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Home</span>
+            </div>
+
+        </div>
+		<div style="width:100%;text-align: center;">
+			<img src="images/Artkick_GI_logolockups.png" style="width:150px">
+		</div>
+		<div style="width:90%;margin-left:5%">
+			<div style="position:relative;margin-bottom: 5px;"onclick="gettysubs('Getty_Entertainment',1)">
+			<img id="g1a" src="images/button_off.png" style="height:18px;position:relative;top:3px">
+			<span id="g1b"style="color:white;margin-left:10px">Getty Entertainment</span>
+			<span id="g1c" style="float:right;color:white">$4.99/mo</span>
+			</div>
+			<div style="position:relative;margin-bottom: 5px;" onclick="gettysubs('Getty_Sports',2)">
+			<img id="g2a" src="images/button_off.png" style="height:18px;position:relative;top:3px">
+			<span id="g2b" style="color:white;margin-left:10px">Getty Sports</span>
+			<span id="g2c" style="float:right;color:white">$4.99/mo</span>
+			</div>
+			<div style="position:relative;margin-bottom: 5px;" onclick="gettysubs('Getty_News',3)">
+			<img id="g3a" src="images/button_off.png" style="height:18px;position:relative;top:3px">
+			<span id="g3b" style="color:white;margin-left:10px">Getty News</span>
+			<span id="g3c" style="float:right;color:white">$4.99/mo</span>
+			</div>
+			<div style="position:relative;margin-bottom: 5px;" onclick="gettysubs('Getty_All2',4)">
+			<img id="g4a" src="images/button_on.png" style="height:18px;position:relative;top:3px">
+			<span id="g4b" style="color:#00C7FF;margin-left:10px">Getty Bundle (all 3)</span>
+			<span id="g4c" style="float:right;color:#00C7FF">$7.99/mo</span>
+		</div>
+		<div style="width:100%;text-align: center;">
+			 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;margin-top:10px;width: 130px" onclick="setmysubs(true)">Subscribe</button>   
+		</div>
+		</div>
+		<div style="width:100%;text-align: center;margin-top:20px">
+		<div style="height:18px;background-color:#a431b2;">
+		<img src="images/getty_g_solid.png" style="margin:auto;height:18px">
+		</div>
+		<div style="font-size:18px;color:#00C7FF;font-weight: 700;margin-top:10px;margin-bottom:5px">The Details</div>
+		</div>
+		<div style="width:90%;margin-left:5%">
+		<p style="text-align:left;font-size:15px;color:white;line-height:120%">Looking for exclusive and timely photographs from entertainment, sports, and news events from around the world?
+		Subscribe to Artkick featuring Getty Images – the premier supplier of photographs to leading newspapers, magazines and websites globally – and get instant access to world-class images. </p>
+		
+		<span style="text-align:left;color:#a431b2;font-weight:700">Getty Entertainment images</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">Get instant access to thousands of images from celebrity events worldwide – including awards, 
+		music concerts, movie premieres, red carpet, fashion shows, celebrity parties, and more.
+		</div>
+		<br>
+		<span style="text-align:left;color:#47c16a;font-weight:700">Getty Sports photography</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">From your favorite sporting moments to the latest big game, don’t pass on global photo coverage of live action sporting events.
+		</div>
+		<br>
+		<span style="text-align:left;color:#f2ac3d;font-weight:700">Getty News imagery</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">Stay up-to-date on the latest happenings from around the world by exploring thousands of images from national and international events.
+		</div>
+		<br>
+		<span style="text-align:left;color:#00C7FF;font-weight:700">Getty Bundle</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($7.99/mo.)</span>
+
+		<br>
+		<span style="color:#a431b2;margin-right: 5px;">Entertainment</span><span style="color:white">+</span>
+		<span style="color:#47c16a;margin-right: 5px;">Sports</span><span style="color:white">+</span>
+		<span style="color:#f2ac3d">News</span>
+		
+		<div style="color:white;font-weight:400;font-size:15px;">Why settle for less when you can get an all-access pass to millions of images from worldwide entertainment, sports, and news events. Enjoy it all as a bundle and save 47%.
+		</div>
+		</div>
+		</div>
+
+	<div data-dojo-type="dojox/mobile/ScrollableView" id="InAppSubscribe2" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
+			<span style="margin-right:12%">Getty Subscription</span>
             <div data-dojo-type="dojox/mobile/ToolBarButton" onclick='backbutton()'>
                 <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
             </div>
             <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </div>
-        </div>
-        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
-           <form id='subradio' >
-		   <input type="radio" name="setsubs" value="Getty_News">Getty News<br>
-			<input type="radio" name="setsubs" value="Getty_Entertainment">Getty Entertainment<br>
-			<input type="radio" name="setsubs" value="Getty_Sports">Getty Sports<br>
-			<input type="radio" name="setsubs" value="Getty_All">Getty All<br>
-			</form>
-			<br>
-			<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="setmysubs(false)">Subscribe</button>
-			<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;background-color: #00C7FF !important;color:black" onclick="setmysubs(true)">Subscribe & initialize samples</button>
-       
-        </div>
+        </div>	
+		<div style="width:90%;margin-left:5%">
+		<p style="text-align:center;font-size:18px;color:#47c16a;font-weight: 700;">Don't miss out on all the great Getty Images</p>
+		
+		<p style="text-align:center;font-size;15px;color:white">You're already enjoying 
+		<span id="currentGettySub">Getty current Subscription</span>.<br> For just $2.99/month more,<br>you can have three times the fun.<br><br>
+		<span style="font-size;15px;color:#00C7FF">Get the Getty Bundle&nbsp;&nbsp+$2.99</span>
+		</p>
+		</div>	
+		<div style="text-align:center;font-size;15px;color:white;margin-top:15px">Includes all three premium Getty categories:</div>
+		
+		<div style="width:100%;text-align: center;font-weight: bold;">
+				<span style="color:#a431b2;margin-right: 5px;">Entertainment</span><span style="color:white">+</span>
+		<span style="color:#47c16a;margin-right: 5px;">Sports</span><span style="color:white">+</span>
+		<span style="color:#f2ac3d">News</span>
+		<br>
+			 <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:20px;margin-top:15px;width:125px;background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px" onclick="setmysubs(false)">Upgrade</button>   
+		</div>
+		<div style="width:100%;text-align: center;">
+		<div style="height:18px;background-color:#a431b2;">
+		<img src="images/getty_g_solid.png" style="margin:auto;height:18px">
+		</div>
+		<div style="font-size:18px;color:#00C7FF;font-weight: 700;margin-top:10px;margin-bottom:5px">The Details</div>
+		</div>		
+	<div style="width:90%;margin-left:5%">
+		<p style="text-align:left;font-size:15px;color:white;line-height:120%">Looking for exclusive and timely photographs from entertainment, sports, and news events from around the world? 
+		Subscribe to Artkick featuring Getty Images – the premiere supplier of photographs to leading newspapers, 
+		magazines and websites globally – and get instant access to world-class images. </p>
+		
+		<span style="text-align:left;color:#a431b2;font-weight:700">Getty Entertainment images</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">Get instant access to thousands of images from celebrity events worldwide – including awards, music concerts, 
+		movie premieres, red carpet, fashion shows, celebrity parties, and more.
+		</div>
+		<br>
+		<span style="text-align:left;color:#47c16a;font-weight:700">Getty Sports photography</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">From your favorite sporting moments to the latest big game, don’t pass on global photo coverage of live action sporting events.
+		</div>
+		<br>
+		<span style="text-align:left;color:#f2ac3d;font-weight:700">Getty News imagery</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">Stay up-to-date on the latest happenings from around the world by exploring thousands of images from national and international events.
+		</div>
+		<br>
+		<span style="text-align:left;color:#00C7FF;font-weight:700">Getty Bundle</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp(additional $2.99/mo.)</span>
+		<br>
+		<span style="color:#a431b2;margin-right: 5px;">Entertainment</span><span style="color:white">+</span>
+		<span style="color:#47c16a;margin-right: 5px;">Sports</span><span style="color:white">+</span>
+		<span style="color:#f2ac3d">News</span>
+		
+		<div style="color:white;font-weight:400;font-size:15px;">Why settle for less when you can get an all-access pass to millions of images from worldwide entertainment, sports, and news events. Enjoy it all as a bundle and save 47%.
+		</div>
+		
+	</div>
+
+
 	</div>
     <div data-dojo-type="dojox/mobile/ScrollableView" id="OptionsList" style="height: auto;">
         <div data-dojo-type="dojox/mobile/Heading" style="height:55px" data-dojo-props='fixed:"top",label:"Settings"'>
@@ -1188,13 +1418,13 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         <div data-dojo-type="dojox/mobile/ContentPane" id="Picturegrid2" style="z-index:900; position: relative; top:10px"></div>
 
     </div>
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteItems" data-dojo-props='modal:true,top:"61px"' style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteItems" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         Delete Viewlist Images
         <br>
         <a id='DeleteItemNumber'>No items to delete</a>
         <br>
-		<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="doneeditviewlist(false)">Cancel</button>
-        <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;background-color: #00C7FF !important;color:black;width:60px" onclick="doneeditviewlist(true)">Delete</button>
+		<button data-dojo-type="dojox/mobile/Button" style="margin-right:10px;background-color: white !important;color:black" onclick="doneeditviewlist(false)">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-left:10px;margin-bottom:10px;margin-top:10px;background-color: white !important;background-color: #00C7FF !important;color:black;width:60px" onclick="doneeditviewlist(true)">Delete</button>
        
     </div>
     <div data-dojo-type="dojox/mobile/View" id="TalkToArt">
@@ -1222,7 +1452,7 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         </div>
     </div>
    
-    <div id="wipemenu" style="position:absolute;top:35px;left:600px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)" >
+    <div id="wipemenu" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)" >
 
 
 
@@ -1245,7 +1475,7 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 		<img src="images/menu/help.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Help
         </div>
     </div>
-    <div id="wipemenu2" style="position:absolute;top:35px;left:600px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
+    <div id="wipemenu2" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
 
         <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
 		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
@@ -1265,7 +1495,7 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 		<img src="images/menu/help.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Help
         </div>
     </div>
-    <div id="wipemenu2a" style="position:absolute;top:35px;left:600px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
+    <div id="wipemenu2a" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
 
 
         <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
@@ -1290,7 +1520,7 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         </div>
     </div>
 
-    <div id="wipemenu3" style="position:absolute;top:35px;left:600px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
+    <div id="wipemenu3" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
 
 
 
@@ -1300,8 +1530,8 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         <div id="import4" class="wipestyle" onclick="gotoView(window.currentView,'Import')">
 		<img src="images/menu/import.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Import Personal Images
         </div>
-        <div class="wipestyle" style="display:block" onclick="callstore()">
-		<img src="images/menu/subscribe.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Subscribe
+        <div id="inappsubscribe"class="wipestyle" style="display:block" onclick="DoSubscribe()">
+		<img src="images/menu/subscribe.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Subscribe to Getty Images
         </div>
         <div class="wipestyle" style="display:block" onclick="editstore()">
 		<img src="images/menu/manage.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Manage Subscriptions
@@ -1309,9 +1539,7 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         <div class="wipestyle" onclick="gotoView(window.currentView,'AccountSettings')">
 		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
         </div>
-		<div class="wipestyle" onclick="gotoView(window.currentView,'TestingSettings')">
-		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Testing Settings
-        </div>
+
         <div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')">
 		<img src="images/menu/contact.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Send Feedback
         </div>
@@ -1332,8 +1560,8 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="GuestMessage" data-dojo-props='modal:true,top:"61px"' style="border:0px!important;outline:none!important;background-image:none!important;text-align:left;background-color:#404040!important">
-        <div>
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="GuestMessage" data-dojo-props='modal:true,top:"61px"' style="z-index:950;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        <div style="text-align:left;margin-left:10px">
             <p>Actions in this menu require you to log in to
                 <img style="position:relative;top:6px" src="images/Logo_75px.png" alt="">
             </p>
@@ -1353,25 +1581,26 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
             <br>
             <span class="msgstyle" style="top:-20px;font-size:80%">Facebook, Twitter & Email</span>
             <br>
-            <span class="msgstyle" style="top:-20px;">Search by:</span>
+            <span class="msgstyle" style="top:-20px;">Create & Save Searchs by:</span>
             <br>
             <span class="msgstyle" style="top:-25px;font-size:80%">Artist, Genre or Museum</span>
             <br>
 
         </div>
-        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;" onclick="gotoSignin()">Log in Now</button>
-        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;" onclick="dijit.registry.byId('GuestMessage').hide()">Maybe Later</button>
+
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;margin-right:10px;" onclick="dijit.registry.byId('GuestMessage').hide()">Maybe Later</button>
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;margin-left:10px;margin-bottom:10px;background-color:#00C7FF!important" onclick="gotoSignin()">Log in Now</button>
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="CopyrightMessage" data-dojo-props='modal:true,top:"61px"' style="border:0px!important;outline:none!important;background-image:none!important;text-align:center;background-color:#404040!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="CopyrightMessage" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         <div>
             <span>Copyright Information</span>
             <br>
             <br>
-            <span id="copyrightinformation">information</span>
+            <div id="copyrightinformation" style="text-align:left;margin-left:10px;margin-right:10px">information</div>
             <br>
-            <br>
-            <button data-dojo-type="dojox/mobile/Button" style="position:relative;" onclick="dijit.registry.byId('CopyrightMessage').hide()">OK</button>
+            
+            <button data-dojo-type="dojox/mobile/Button" style="width:50px;margin-bottom:10px;position:relative;background-color:#00C7FF!important" onclick="dijit.registry.byId('CopyrightMessage').hide()">OK</button>
         </div>
     </div>
 
@@ -1399,7 +1628,7 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         </div>
 		</div>
 
-        <img id="gettyad" src="images/GettyAds/GettyTrial_0.png" style="display:block;position:relative;top:5px;width:100%;margin-top:15px;" onclick="adclick()"></img>
+        <img id="gettyad" src="http://prod.artkick.net/images/GettyAds/GettyTrial_0.png" style="display:block;position:relative;top:5px;width:100%;margin-top:15px;" onclick="DoSubscribe()"></img>
 				
 		<div id="blueline" style="z-index:910;width:100%;height:5px;margin-bottom:5px;margin-top:5px;background-color:#00C7FF;float:left">		</div>
 <br>
@@ -1417,34 +1646,39 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
             <img src="images/NewCategories/cat_03_my_viewlists.jpg" alt=" " >
 			<div style="color:white" align="center">My Viewlists</div>
 		</div>
-		<div id="MySearchlists" class="newcategoryclass" onclick="gotoCategory('My Searches')">
-            <img  src="images/NewCategories/cat_04_my_searches.jpg" alt=" " >
-			<div style="color:white" align="center">My Searches</div>
-		</div>
+
 		<div id="GettyEntertainment" class="newcategoryclass" style="display:none" onclick="gotoCategory('Getty Entertainment')">
    			<img  src="images/NewCategories/cat_05_getty_entertainment.jpg" alt=" "  >
 			<div style="color:white" align="center">Getty Entertainment</div>
 		</div>
-		<div id="GettyNews" class="newcategoryclass" style="display:none" onclick="gotoCategory('Getty News')">
-   			<img  src="images/NewCategories/cat_05_getty_news.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty News</div>
+				<div id="GettyEntertainment-Sample" class="newcategoryclass" style="display:block" onclick="gotoCategory('Sample-Getty Entertainment')">
+   			<img  src="images/NewCategories/cat_05_getty_entertainment-sample.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty Entertainment</div>
 		</div>
 		<div id="GettySports" class="newcategoryclass" style="display:none"  onclick="gotoCategory('Getty Sports')">
    			<img  src="images/NewCategories/cat_05_getty_sports.jpg" alt=" "  >
 			<div style="color:white" align="center">Getty Sports</div>
 		</div> 
-		<div id="GettyEntertainment-Sample" class="newcategoryclass" style="display:block" onclick="gotoCategory('Sample-Getty Entertainment')">
-   			<img  src="images/NewCategories/cat_05_getty_entertainment-sample.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty Entertainment</div>
+		
+		<div id="GettySports-Sample" class="newcategoryclass" style="display:block"  onclick="gotoCategory('Sample-Getty Sports')">
+   			<img  src="images/NewCategories/cat_05_getty_sports-sample.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty Sports</div>
 		</div>
+		<div id="GettyNews" class="newcategoryclass" style="display:none" onclick="gotoCategory('Getty News')">
+   			<img  src="images/NewCategories/cat_05_getty_news.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty News</div>
+		</div>
+
+
 		<div id="GettyNews-Sample" class="newcategoryclass" style="display:block" onclick="gotoCategory('Sample-Getty News')">
    			<img  src="images/NewCategories/cat_05_getty_news-sample.jpg" alt=" "  >
 			<div style="color:white" align="center">Getty News</div>
 		</div>
-		<div id="GettySports-Sample" class="newcategoryclass" style="display:block"  onclick="gotoCategory('Sample-Getty Sports')">
-   			<img  src="images/NewCategories/cat_05_getty_sports-sample.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty Sports</div>
-		</div> 
+ 
+		<div id="MySearchlists" class="newcategoryclass" onclick="gotoCategory('My Searches')">
+            <img  src="images/NewCategories/cat_04_my_searches.jpg" alt=" " >
+			<div style="color:white" align="center">My Searches</div>
+		</div>
 		<div class="newcategoryclass" onclick="gotoCategory('Architecture')">
             <img  src="images/NewCategories/cat_architecture.jpg" alt=" " >
 			<div style="color:white" align="center">Architecture</div>
@@ -1502,7 +1736,7 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
             
 
 		</div>
-        <div data-dojo-type="dojox/mobile/Heading" onclick="gotoView('select_category','ImageView')" data-dojo-props='fixed:"bottom"'>
+        <div data-dojo-type="dojox/mobile/Heading" id="catfooter" onclick="gotoView('select_category','ImageView')" data-dojo-props='fixed:"bottom"'>
 
             <img class="showingclass1" src="images/tv-icon2.png" alt="">
             <img id="showingsrc" src="" alt=" " onclick="gotoView('select_category','ImageView')" class="showingclass">
@@ -1511,18 +1745,25 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 
         </div>
     </div>
+		  <div class="wificlass3" style="height:35px;position:absolute;top:45px;display:none;z-index:901" id="gettysearchhint" onclick="setSearchSelection()">
+		<div style="margin:auto;width:100%;position:relative;top:-4px" id="line1">To create a Getty Viewlist, tap 
+		<img src="images/search-icon-blue3.png" style="width:35px;position:relative;top:7px" alt="">
+		</div> 
+	  </div>
     <div data-dojo-type="dojox/mobile/ScrollableView" id="PlaylistView">
-        <div id="PlaylistHeader" data-dojo-type="dojox/mobile/Heading"  data-dojo-props="label:'Viewlists',fixed:'top'">
-            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left" data-dojo-props="moveTo:'select_category',transition:'none'">
-                <img src="images/Arrows-Back-icon-blue.png" alt=''style="margin-left:5px"><span class="backstyle">Home&nbsp;&nbsp;&nbsp;</span>
+        <div id="PlaylistHeader" data-dojo-type="dojox/mobile/Heading"  style="height:45px" data-dojo-props="fixed:'top'">
+		<span id="PlaylistHeaderName">Viewlists</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left" ">
+                <img src="images/Arrows-Back-icon-blue.png" alt=''style="margin-left:5px"><span class="backstyle" onclick='backbutton()'>Home&nbsp;&nbsp;&nbsp;</span>
             </div>
             <div data-dojo-type="dojox/mobile/ToolBarButton" id="playlinemenu" data-dojo-props='icon:"images/3lineicon_menu-blue3.png"' style="float: right;top:-4px;height:45px" onclick="showmenu()"></div>
 			 <div data-dojo-type="dojox/mobile/ToolBarButton" id="playsearch" data-dojo-props='icon:"images/search-icon-blue3.png"' style="float: right;top:-4px;height:45px" onclick="setSearchSelection()"></div>
-      
+
 	  </div>
-        <ul data-dojo-type="dojox/mobile/ContentPane" id="listList2" style="position: relative; width:100%;left:-30px;margin-right:0px;top:-10px">
-        </ul>
-        <div data-dojo-type="dojox/mobile/Heading" onclick="gotoView('PlaylistView','ImageView')" data-dojo-props='fixed:"bottom"'>
+
+        <div id="listList2" style="position: relative; width:100%;left:10px;margin-right:0px;">
+        </div>
+        <div data-dojo-type="dojox/mobile/Heading" id="playlistfooter" onclick="gotoView('PlaylistView','ImageView')" data-dojo-props='fixed:"bottom"'>
 
             <img class="showingclass1" src="images/tv-icon2.png" alt="">
             <img id="showingsrc2" src="" alt=" " onclick="gotoView('PlaylistView','ImageView')" class="showingclass">
@@ -1533,9 +1774,9 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
     <div data-dojo-type="dojox/mobile/View" style="height:100%;background-color:black" id="quickhint">
         <img id="hinturl" src="images/blue.png" alt="" style="height:100%" onclick='doquickhint()'>
     </div>
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Myalert" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:0px!important;background-color:rgba(0,0,0,.85)!important;outline:none!important;background-image:none!important;">
-        <div id="myContent">mycontent</div>
-        <button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton" style="width:100px;background-color: #00C7FF!important" onclick="dijit.registry.byId('Myalert').hide()">OK</button>
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Myalert" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;background-image:none!important;">
+        <div id="myContent" style="word-wrap:break-word;text-align:left;margin-left:15px;margin-top:5px">mycontent</div>
+        <button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton" style="margin-top:10px;width:100px;background-color: #00C7FF!important;margin-bottom:10px" onclick="dijit.registry.byId('Myalert').hide()">OK</button>
     </div>
 
     <div data-dojo-type="dojox/mobile/ScrollableView" id="Import" style="height: auto;">
@@ -1601,27 +1842,27 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
        
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteViewlist" data-dojo-props='modal:true,top:"61px"' style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteViewlist" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         Delete Viewlist
         <a id='deleteVLname'>name of viewlist</a>
         <br>
-		<button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="dijit.registry.byId('DeleteViewlist').hide()">Cancel</button>
-        <button data-dojo-type="dojox/mobile/Button" style="width:60px;background-color: #00C7FF !important;color:black" onclick="deleteMyViewlist('OK')">OK</button>
+		<button data-dojo-type="dojox/mobile/Button" style="margin-top:10px;margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('DeleteViewlist').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-left:10px;width:60px;background-color: #00C7FF !important;color:black" onclick="deleteMyViewlist('OK')">OK</button>
        
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="RenameViewlist" data-dojo-props='modal:true,top:"61px"' style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="RenameViewlist" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         Rename Viewlist
         <br>
         <a id='RenameVLname'>name of viewlist</a>
         <br>
-        <input type="text" data-dojo-type="dojox/mobile/TextBox" id="newVLname" placeHolder="&nbsp;&nbsp;New name" style="left: 1em;width: 300px;">
+        <input type="text" data-dojo-type="dojox/mobile/TextBox" id="newVLname" placeHolder="&nbsp;&nbsp;New name" style="left: 1em;width: 300px;margin-top:10px">
         </input>
         <br>
         <br>
 
-        <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="dijit.registry.byId('RenameViewlist').hide()">Cancel</button>
-        <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important" onclick="RenameMyViewlist('OK')">Rename</button>   
+        <button data-dojo-type="dojox/mobile/Button" style="margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('RenameViewlist').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-right:10px;background-color: #00C7FF!important" onclick="RenameMyViewlist('OK')">Rename</button>   
    </div>
 
     <div id="SearchView" data-dojo-type="dojox/mobile/ScrollableView">
@@ -1633,7 +1874,7 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
             </div>
         </div>
 
-        <div data-dojo-type="dojox/mobile/ContentPane" id="searchGrid" style="z-index:900; position: relative; top:170px;">
+        <div data-dojo-type="dojox/mobile/ContentPane" id="searchGrid" style="z-index:900; position: relative; top:210px;">
         </div>
 
     </div>
@@ -1695,16 +1936,15 @@ Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 	 </span>
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Copyright" data-dojo-props='modal:true,top:"61px"' style="border:0px!important;outline:none!important;background-image:none!important;text-align:left;background-color:#404040!important">
-        <div>
-            <p id="copyrightartist">All art by xxxxxx is under copyright!</p>
-            <span style="position:relative;top:-10px;">It is therefore not possible to display their works within Artkick.
-<br>
-We hope to license these works at some time in the future.</span>
-            <br>
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Copyright" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        <div style="text-align:left;margin-left:10px;margin-top:10px">
+            <div id="copyrightartist">All art by xxxxxx is under copyright!</div>
+            <div>It is therefore not possible to display their works within Artkick.</div>
+			<div>We hope to license these works at some time in the future.</div>
+         
 
         </div>
-        <button data-dojo-type="dojox/mobile/Button" style="display:block;margin-left:auto;margin-right:auto" onclick="dijit.registry.byId('Copyright').hide()">OK</button>
+        <button data-dojo-type="dojox/mobile/Button" style="display:block;margin-left:auto;margin-right:auto;background-color:#00C7FF!important;width:50px;margin-bottom:10px;margin-top:10px" onclick="dijit.registry.byId('Copyright').hide()">OK</button>
     </div>
 
     <div id="TVDetail" data-dojo-type="dojox/mobile/ScrollableView">
@@ -1794,30 +2034,30 @@ We hope to license these works at some time in the future.</span>
             Delete this Device</button>
 
     </div>
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="ConfirmTVDelete" data-dojo-props='modal:true,top:"61px"' style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="ConfirmTVDelete" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         Are you sure you want to delete this device?
 
         <br>
-        <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="dijit.registry.byId('ConfirmTVDelete').hide()">Cancel</button>
-        <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="removePlayer()">Delete</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-top:10px;margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('ConfirmTVDelete').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-left:10px;background-color: #00C7FF !important;color:black" onclick="removePlayer()">Delete</button>
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="SearchUser" data-dojo-props='modal:true,top:"61px"' style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="SearchUser" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         Search for User
-        <input data-dojo-type="dojox/mobile/TextBox" type="text" id="addPlayerEmail" style='width:300px' placeHolder="&nbsp;&nbsp;User Email">
+        <input data-dojo-type="dojox/mobile/TextBox" type="text" id="addPlayerEmail" style='width:300px;margin-top:10px' placeHolder="&nbsp;&nbsp;User Email">
         <br>
         </input>
 
-        <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="dijit.registry.byId('SearchUser').hide()">Cancel</button>
-        <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF !important;color:black" onclick="searchUser()">Search</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-top:10px;margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('SearchUser').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-left:10px;background-color: #00C7FF !important;color:black" onclick="searchUser()">Search</button>
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="ScanNetwork" data-dojo-props='modal:true,top:"61px"' style="90%;height:150px;border:0px!important;outline:none!important;background-image:none!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="ScanNetwork" data-dojo-props='modal:true,top:"61px"' style="height:130px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         <span id="scanid">Scanning Local Network</span>
 
         <div style="position:relative;top:60px; width:99%">
             <div data-dojo-type="dojox/mobile/ProgressIndicator" startspinning="true" size="30" id="scanprogress" style="top:-45px"></div>
-            <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black;top:-45px" onclick="{dijit.registry.byId('ScanNetwork').hide();	clearInterval(showingScanNetwork);
+            <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black;top:-45px;margin-bottom:10px" onclick="{dijit.registry.byId('ScanNetwork').hide();	clearInterval(showingScanNetwork);
 	window.ScanNetworkComplete=true;}">Cancel</button>
         </div>
 
@@ -1878,5 +2118,20 @@ We hope to license these works at some time in the future.</span>
    
 	</div>
 </div>
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="GettySubscribeBox" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:0px!important;outline:none!important;background-image:none!important;text-align:left;background-color:#303030!important">
+        <div style="width:100%;text-align: center;">
+            <img src="images/Artkick_GI_logolockups.png" style="width:100px;margin-top:10px">
+		<p style="text-align:left;font-size:15px;color:white;line-height:120%;width: 80%;
+margin-left: 10%;">Subscribe to exclusive and timely photographs inside Artkick featuring Getty Images--the premiere supplier of photographs to leading 
+		newspapers, magazines and websites globally. Get instant access to world-class images. Whether you want a backstage pass to celebrity events or 
+		to check out highlights from yesterday’s game, these are the world’s best 
+		images from the world’s best photographers.</p>
 
+        </div>
+
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;" onclick="dijit.registry.byId('GettySubscribeBox').hide();gotoView(currentView,'select_category')" >Maybe Later</button>
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;margin-left:30px;background-color:#00C7FF!important;margin-bottom:10px" onclick="gettySubscribeBoxClick()">Subscribe</button>
+    </div>
+</div>
+</body>
 </html>

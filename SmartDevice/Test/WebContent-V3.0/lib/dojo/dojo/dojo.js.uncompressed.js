@@ -41257,19 +41257,24 @@ define([
 				this.btnContainerNode = domConstruct.create("div", {
 					className: "mblCarouselBtnContainer"
 				}, this.headerNode);
-				domStyle.set(this.btnContainerNode, "float", "right"); // workaround for webkit rendering problem
-				this.prevBtnNode = domConstruct.create("button", {
-					className: "mblCarouselBtn",
-					title: "Previous",
-					innerHTML: "&lt;"
-				}, this.btnContainerNode);
-				this.nextBtnNode = domConstruct.create("button", {
-					className: "mblCarouselBtn",
-					title: "Next",
-					innerHTML: "&gt;"
-				}, this.btnContainerNode);
+				
+				this.prevBtnNode = domConstruct.create("img",{
+					src:"images/arrow_back.png",
+					alt:"prevButton",
+					className:'prevButton'
+				},this.btnContainerNode);
+				
+				
+			    this.nextBtnNode = domConstruct.create("img",{
+					src:"images/arrow_next.png",
+					alt:"nextButton",
+					className:'nextButton'
+				},this.btnContainerNode);
+				
 				this._prevHandle = this.connect(this.prevBtnNode, "onclick", "onPrevBtnClick");
 				this._nextHandle = this.connect(this.nextBtnNode, "onclick", "onNextBtnClick");
+				window.onPrevBtnClick = this.onPrevBtnClick;
+				window.onNextBtnClick = this.onNextBtnClick;
 			}
 
 			if(this.pageIndicator){
@@ -41518,7 +41523,13 @@ define([
 			// summary:
 			//		Called when the "previous" button is clicked.
 			if(this.currentView){
-				this.currentView.goTo(-1);
+				if(this.currentView.previousView(this.currentView.domNode)==null){
+					this.handleViewChanged(this.currentView);
+				}
+				else{
+				   this.currentView.goTo(-1);	
+				}
+				
 			}
 		},
 
@@ -41526,7 +41537,12 @@ define([
 			// summary:
 			//		Called when the "next" button is clicked.
 			if(this.currentView){
-				this.currentView.goTo(1);
+				if(this.currentView.nextView(this.currentView.domNode)==null){
+					this.handleViewChanged(this.currentView);
+				}
+				else{
+				   this.currentView.goTo(1);	
+				}
 			}
 		},
 
@@ -41600,16 +41616,19 @@ define([
 		},
 
 		handleViewChanged: function(view){
+			//alert("view changed!");
 			// summary:
 			//		Listens to "/dojox/mobile/viewChanged" events.
 			if(view.getParent() !== this){
 				 return; }
 			if(this.currentView.nextView(this.currentView.domNode) === view){
 				//alert(view.getChildren()[0]['alt']);
+				//alert("doNext "+view.getChildren()[0]['alt']);
 				window.doNext(view.getChildren()[0]['alt']);
 				this.instantiateView(view.nextView(view.domNode));
 			}else{
 				//alert(view.getChildren()[0]['alt']);
+				//alert("doPrev "+view.getChildren()[0]['alt']);
 				window.doPrev(view.getChildren()[0]['alt']);
 				this.instantiateView(view.previousView(view.domNode));
 			}

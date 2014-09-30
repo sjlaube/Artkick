@@ -273,3 +273,11 @@ function ShowDeleteComment(id)
     window.commentfordeleteid = id.substr(7);
     dijit.registry.byId('DeleteComment').show();
 }
+
+function SampleLink()
+{
+
+ var url = "http://prod.artkick.net/index-V3.1.html"
+    url = url + "?currList=" + encodeURIComponent(currList) + "&currImage=" + encodeURIComponent(currImage) + "&currCat=" + encodeURIComponent(currCat);
+ myalert(url);
+}
