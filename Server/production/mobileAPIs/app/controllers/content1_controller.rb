@@ -5,7 +5,7 @@ class Content1Controller < ApplicationController
   include Mongo
   
   @@userDbId = '63'
-  @@contentDbId = '53'
+  @@contentDbId = '47'
   @@privateRange = 10000000000
   @@dbMeta = {}
 
@@ -17,7 +17,7 @@ class Content1Controller < ApplicationController
   @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
     :password => 'zw12artistic'}
   
-  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
+  @@dbMeta['47'] = {:server => 'ds047539-a0.mongolab.com', :port => 47539, :db_name => 'heroku_app24219881',
     :username => 'artCoder', :password => 'zwamygogo' }
   
   @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
@@ -154,6 +154,24 @@ class Content1Controller < ApplicationController
       return
     end
    
+    if params[:catName]=='Spotlight'
+      listSet = @@contentDb['viewlists'].find({'spotlight'=>true},{:fields=>['id','name','coverImage','images']})
+      viewlists = [];
+      listSet.to_a.each do |listObj|
+        miniList = {}
+        miniList['id'] = listObj['id']
+        miniList['name'] = listObj['name']
+        miniList['coverImage']  = listObj['coverImage']
+        miniList['imageNum'] = listObj['images'].length
+        
+        viewlists.push(miniList)
+      end
+       
+      result = {"status"=>"success", "viewlists"=>viewlists}
+      render :json=>result, :callback => params[:callback]        
+      return
+     
+    end
 
     
     field = 'viewlists2'

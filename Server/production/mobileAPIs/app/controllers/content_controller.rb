@@ -4,30 +4,19 @@ class ContentController < ApplicationController
   require 'json'
   include Mongo
   
-  #@@server = 'ds031948.mongolab.com'
-  #@@port = 31948
-  #@@db_name = 'zwamy'
-  #@@username = 'leonzwamy'
-  #@@password = 'zw12artistic'
-  
-  #@@server = 'ds047478.mongolab.com'
-  #@@port = 47478
-  #@@db_name = 'heroku_app16778260'
-  #@@username = 'luckyleon'
-  #@@password = 'artkick123rocks'
 
-  #@@server = 'ds051518-a0.mongolab.com'
-  #@@port = 51518
-  #@@db_name = 'heroku_app16777800'
-  #@@username = 'artCoder'
-  #@@password = 'zwamygogo'
+  @@server = 'ds047539-a0.mongolab.com'
+  @@port = 47539
+  @@db_name = 'heroku_app24219881'
+  @@username = 'artCoder'
+  @@password = 'zwamygogo'
    
   #singleNode2
-  @@server = 'ds053468-a0.mongolab.com'
-  @@port = 53468
-  @@db_name = 'heroku_app16778260'
-  @@username = 'artCoder'
-  @@password = 'zwamygogo'    
+  #@@server = 'ds053468-a0.mongolab.com'
+  #@@port = 53468
+  #@@db_name = 'heroku_app16778260'
+  #@@username = 'artCoder'
+  #@@password = 'zwamygogo'
     
   def index
     

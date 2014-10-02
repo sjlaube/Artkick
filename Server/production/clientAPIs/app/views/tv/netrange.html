@@ -15,28 +15,17 @@
 	}
 	
 	
-    #regSection{      
-    	width:70%;
-    	height:50%;
-        position:absolute;
-        left:14%;
-        top:25%;
-    	text-align:center;
-    	font-size:30px;
-    	background-color:white;
-    	color:blue;
-        padding:1%;
-        z-index:900;
-    }
 
-	div#registration {		
+	div#registration {
 		background-color: white;
+		color:black;
 		position: absolute;
-		left:0;
 		top:0;
+		left:0;
 		height: 100%;
         width: 100%;
         display:none;
+       
 	}
 	
     div#screen {
@@ -103,8 +92,8 @@
  <script type="text/javascript">
   
   $(document).ready(function(){
-  	
-  	
+  
+    	
   	 window.displayImage = function(result) {
   	 	 $("#message").hide();
  
@@ -210,7 +199,7 @@
   	 			   clearInterval(morningChecker);
   	 			}
             		       		
-                goToWaitMode();
+                getRegCode();
   	 	    }
   	 			
   	 		else if(result['type']=='regPlayer'){
@@ -315,7 +304,7 @@
   	 			   	  clearInterval(morningChecker);
   	 			    }
             		       		
-            		goToWaitMode();
+            		getRegCode();
   	 			}
   	 			
   	 			else if(result['type']=='regPlayer'){
@@ -376,7 +365,11 @@
        	  	 
        	  	 success: function(result){
             	if(result["Status"]=="Failure"){
-            		            		
+            		
+            		if(polling!=undefined){
+            			clearTimeout(polling);
+            		}
+            		
             		$('div#screen').css('background-image','none');
             		
             	}
@@ -480,7 +473,7 @@
             		//$("#message").html("Device is not linked correctly!");
             		//$("#message").show();
             		
-            		goToWaitMode();
+            		getRegCode();
             		
             	}
             	
@@ -496,6 +489,95 @@
       }
   
        
+   
+   
+       
+       
+       
+       function getRegCode(){
+       	  var requestLink = regBase+"/getRegCode?deviceId="+uid+"&deviceMaker="+maker;
+       	  $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 
+       	  	 
+       	  	 error: function(xhr, status, error) {
+       	  	 	if(this.tryTimes > 0){
+       	  	 		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+       	  	 		this.tryTimes --;
+       	  	 		$.ajax(this);
+       	  	 	}
+       	  	 	
+       	  	 	else{
+       	  	 		$("#message").html("Unable to connect to ArtKick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}
+       	  	 	
+       	  	 },
+       	  	 
+       	  	 
+       	  	 success: function(result){
+       	  	 	if(result['Status']=='success'){
+       	  	 		regCode = result['RegCode'];
+       	  	 		$("#registration").show();
+       	  	 		$("#message").hide();
+       	  	 		//$("#message").html("Your regcode is "+result['RegCode']);
+       	  	 		//$("#message").show();
+       	  	 		$("#screen").hide();
+       	  	 		$("#logo").hide();
+       	  	 		$("#registration").show();
+       	  	 		$("#regCode").html(result['RegCode']);
+       	  	 		// dealing with expire
+       	  	 		var expireDur = 900;
+       	  	 		if (result['RetryDuration'] != undefined){
+       	  	 			expireDur = result['RetryDuration'];
+       	  	 		}
+       	  	 		
+       	  	 		regCodePolling = setTimeout(function(){
+       	  	 			$('#registration').hide();
+       	  	 			$("#message").html("Your regcode is expired, getting a new one...");
+       	  	 			$("#message").show();
+       	  	 			getRegCode();
+       	  	 		}, expireDur*1000);
+       	  	 		
+       	  	 	}
+       	  	 	
+       	  	 	else{
+       	  	 		// in case there are semantic errors at the server side, we need to retry
+       	  	 		$('#registration').hide();
+       	  	 		$("#message").html("Failed to get your regcode, will retry soon...");
+       	  	        $("#message").show();
+       	  	 		var retryInterval = 30;
+       	  	 		if (result['RetryInterval'] != undefined){
+       	  	 			retryInterval = result['RetryInterval'];
+       	  	 		}
+       	  	 		
+       	  	 		regCodePolling = setTimeout(function(){
+       	  	 			$("#message").html("Geting regcode...");
+       	  	 			$("#message").show();
+       	  	 			
+       	  	 			getRegCode();
+       	  	 		}, retryInterval*1000);
+       	  	 		
+       	  	 		
+       	  	 	}
+       	  	 }
+       	  	 
+       	  	 
+       	  	 
+       	  	 
+       	  });
+       	  
+       }
+       
+
     function generateUUID(){
         var d = new Date().getTime();
         var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -545,69 +627,7 @@
                     	
                     }
                     
-                }             
-   
-       
-     function goToWaitMode(){
-   	    $('#labelMessage').html("This TV is unlinked. To relink it, press the Cast Button again!");
-   	    $('#registration').show();
-     }
-
-
-      function getVal(string, name){
-          if(string.indexOf(name) == -1){
-          	return null;
-          }
-          
-          var startIndex = string.indexOf(name)+name.length+1;
-          var endIndex = startIndex;
-          while (endIndex < string.length) {
-          	endIndex++;
-          	if(string[endIndex]=='&'){
-          		break;
-          	}
-          	
-          }
-          
-          return string.substring(startIndex, endIndex);
-          
-          
-          
-      }
-
-
-   function regDevice(email,deviceId,nickname){
-   	    inReg = true;
-      	var link = "https://evening-garden-3648.herokuapp.com/reg/deviceReg?";
-      	link += "email="+email+"&deviceId="+deviceId+"&nickname="+nickname+"&deviceMaker="+maker;
-      	console.log(link);
-      	$.ajax({
-      		url:link,
-      		type: 'GET',
-      		dataType: 'jsonp',
-      		timeout:5000,
-      		error: function(xhr, status, error) {
-      			 //alert("error");
-      			 console.log('ajax error '+error);
-      			 $.ajax(this);
-      		},
-      		success: function(result) {
-      			if(result["Status"]=="success"){
-      				inReg = false;
-                    updateImage(imageRequest);
-      			}else{
-      				$('#labelMessage').html("It seems the registration is not successfull, please try again!");
-   	                $('#registration').show();
-      			}
-
-      		}
-      		
-      	});
-      	
-      }
-
-
-
+                }    
 
        window.nextImage = function(next){
        	   //$('div#screen').css('background-image','none');
@@ -641,12 +661,12 @@
        	  	 
        	  	 success: function(result){
             	if(result["Status"]=="Failure"){
-            		            		
+            		
             		$('div#screen').css('background-image','none');
             		//$("#message").html("Device is not linked correctly!");
             		//$("#message").show();
             		
-            		goToWaitMode();
+            		getRegCode();
             		
             	}
             	
@@ -676,36 +696,6 @@
   	   
        var requestURL = window.document.URL.toString(); 
        
-       var email = getVal(requestURL,'email');
-       if(email==null){
-       	   $("#message").html("user id is missing! please try again");
-           $("#message").show();
-           return;
-       }
-
-
-       var nickname = getVal(requestURL,'nickname');
-       if(nickname==null){
-       	   $("#message").html("TV nickname is missing! please try again");
-           $("#message").show();
-           return;
-       }     
-       
-       
-       var maker = 'Smart';
-       var currImageUrl = null;
-       var autoRunning = null;
-       var autoInterval = 0; 
-       var lastSignDay = -1;
-       var morningChecker = null;
-       
-        
-              
-       
-       var capShow = null;
-       var topOffset = 0;
-       var leftOffset = 0;
-       
        
        var uid = getCookie('uid');
        if(uid == null || uid == 'null' || uid == ''){
@@ -717,6 +707,29 @@
        console.log(uid);
        
        
+       var regCode = null;
+
+
+       var maker = 'Browser';
+       var currImageUrl = null;
+       var autoRunning = null;
+       var autoInterval = 0; 
+       var lastSignDay = -1;
+       var morningChecker = null;
+       
+       
+       if(uid==undefined||uid.trim().length==0){
+    	 console.log("uid not provided!");
+    	 $("#message").html("Error, the device id is not provided!");
+    	 $("#message").show();
+    	 return;
+       }  
+       
+       
+       var capShow = null;
+       var topOffset = 0;
+       var leftOffset = 0;
+       
        
        var imageRequest = imageBase+"deviceId="+uid+"&deviceMaker="+maker;
        var pollRequest = pollBase+"user="+maker+uid;
@@ -726,8 +739,14 @@
       function handler(event){
       	   //console.log("KeyCode: " + event.keyCode);
       	   //$("#message").html("KeyCode: "+event.keyCode);
-           //$("#message").show();
-           if(event.keyCode == 417 || event.keyCode == 425 || event.keyCode == 39) {
+           //$("#message").show();  
+           event.preventDefault();  
+        
+           if(event.keyCode == 405){
+               removePlayer();
+           }
+           
+           else if(event.keyCode == 417 || event.keyCode == 425 || event.keyCode == 39) {
            	   nextImage(1);
            }
            
@@ -735,22 +754,43 @@
            	   nextImage(0);
            }
            
-           else if(event.keyCode == 457){
+           else if(event.keyCode == 457 && !inReg){
+           	  if(capShow != null){
+           	  	clearTimeout(capShow);
+           	  }
            	  $('#caption').show();
         	  capShow = setTimeout(function(){
         		  $('#caption').hide();
               },5000);           	  
            	
            }
+           
        }
 
+
+       window.log = function(msg){
+       	  if(logs.length > 6){
+       	  	logs.shift();
+       	  }
+       	  
+       	  logs.push(msg+" "+new Date().getTime());
+       	  var msgStr ="";
+       	  for(var i in logs){
+       	  	msgStr+=logs[i];
+            msgStr+="<br>";
+       	  }
+       	  	
+       	  $("#message").html(msgStr);
+       	  $("#message").show();
+       }
        
-       regDevice(email,uid,nickname);
-           
+
+
+      
+       console.log(imageRequest);
+       updateImage(imageRequest);
        console.log(pollRequest);
        poll(pollRequest);
-       
-      
 
   });
     
@@ -766,6 +806,8 @@
   
   <title>ArtKick</title>
   <body>
+  	
+  	    
         <img id="logo" class="normal" src="/images/logo.png"> 
         
         
@@ -781,10 +823,60 @@
 		
 		<!--  registration -- displays only if device not registered -->
 		<div id="registration">
-			<div id="regSection">
-			   <img src="/images/ArtkickLogo.png"></img>
-			   <div id="labelMessage">Your TV is being registered...</div>
-			</div>
+			<table style="width: 100%; height: 100%;">
+				<tr align="center">
+					<td>
+						<img src="/images/ArtkickLogo.png"></img>
+					</td>
+				</tr>
+				<tr align="center" height="50">
+					<td>
+						<label id="registrationReason">Please connect your Smart TV to your account</label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<label>Artkick connects this TV to an IOS or Android phone or tablet.</label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<label>Install Artkick from the the App Store or Google Play.</label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>				
+						<label>Goto ConnectTV</label>		
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<label>and enter this code to activate:</label>
+					</td>
+				</tr>
+				<tr align="center" height="50">
+					<td>
+						<label id="regCode"></label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<label id="autoUpdateText">This screen will automatically update as soon as your activation completes</label>
+						<label id="timedOutText" style="display: none;color: red;">Request timed out. Unable to link to Artkick within time limit.</label>
+					</td>
+				</tr>
+				<tr align="center" >
+					<td>
+						<button id="btnRetry" onclick="register();" type="button" style="display:none;" class="ui-button ui-button-text-only ui-widget ui-corner-all">Retry</button>
+					</td>
+				</tr>
+				<tr align="center" height="100">
+					<td>
+						
+					</td>
+				</tr>
+			</table>
 		</div>
+   
   </body>
 </html>

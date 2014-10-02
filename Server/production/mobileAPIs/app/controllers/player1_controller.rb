@@ -6,9 +6,10 @@ class Player1Controller < ApplicationController
   require 'net/http'
   
   @@userDbId = '63'
-  @@contentDbId = '53'
+  @@contentDbId = '47'
   @@privateRange = 10000000000
   @@dbMeta = {}
+
 
   @@dbMeta['63'] = {:server => 'ds063698-a0.mongolab.com', :port => 63698, :db_name => 'heroku_app18544527', 
     :username => 'artCoder', :password => 'zwamygogo'}  
@@ -17,7 +18,7 @@ class Player1Controller < ApplicationController
   @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
     :password => 'zw12artistic'}
   
-  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
+  @@dbMeta['47'] = {:server => 'ds047539-a0.mongolab.com', :port => 47539, :db_name => 'heroku_app24219881',
     :username => 'artCoder', :password => 'zwamygogo' }
   
   @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
@@ -60,6 +61,12 @@ class Player1Controller < ApplicationController
      if @@contentDb == nil or @@userDb == nil
         connectDb()
      end
+     
+     if (not imageId.is_a? Numeric) and (imageId.include? 'getty')
+        return @@userDb['gettyImages'].find({'id'=>imageId})
+     end
+     
+     
      if imageId.to_i >= @@privateRange
         return @@userDb['privImages'].find({'id'=>imageId.to_i})
      end
@@ -184,7 +191,7 @@ class Player1Controller < ApplicationController
     end
     
     playerHash.keys.each do |playerAccount|
-      playerSet = @@userDb["clients"].find({"account"=>playerAccount},{:fields=>["account","nickname","last_visit","curr_image","curr_list","autoInterval","online","stretch","orientation","hide_caption"]})
+      playerSet = @@userDb["clients"].find({"account"=>playerAccount},{:fields=>["account","nickname","last_visit","curr_image","curr_list","autoInterval","orientation","online","stretch","orientation","uuid","hide_caption"]})
       if playerSet.count > 0
         players.push(playerSet.to_a[0])
       end
@@ -195,7 +202,7 @@ class Player1Controller < ApplicationController
     players.each do |player|
       player.delete('_id')
       if player['orientation'] == nil
-        player['orientation'] = 'H'
+        player['orientation'] = 'horizontal'
       end
       
       if player['hide_caption'] == nil
@@ -206,6 +213,16 @@ class Player1Controller < ApplicationController
       if player['stretch'] == nil
         player['stretch'] = false
       end
+      
+      if player['account'].include? 'chromecast'
+        player['uuid'] = player['account'][10..-1]
+      elsif player['account'].include? 'Roku'
+        player['uuid'] = player['account'][4..-1]
+      end
+      
+      
+      
+      
       
       if player['curr_image'] == -1
          player['curr_image'] = defaultObj["image"]       

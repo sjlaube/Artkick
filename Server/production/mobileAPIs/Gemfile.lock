@@ -65,6 +65,7 @@ GEM
       bson (~> 1.8.5)
     multi_json (1.7.7)
     multi_xml (0.5.5)
+    newrelic_rpm (3.7.2.195)
     pg (0.15.1)
     polyglot (0.3.3)
     rack (1.4.5)
@@ -122,6 +123,7 @@ DEPENDENCIES
   gibbon
   jquery-rails
   mongo
+  newrelic_rpm
   pg
   rails (= 3.2.13)
   sass-rails (~> 3.2.3)

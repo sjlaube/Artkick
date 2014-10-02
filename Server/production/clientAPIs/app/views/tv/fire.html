@@ -273,7 +273,7 @@
   	 		timeout: 29000,
   	 		error: function(xhr, status, error){
   	 			console.log("timeout error");
-  	 			setTimeout(function(){
+  	 			polling = setTimeout(function(){
   	 				poll(pollRequest);
   	 			},30);
   	 		},
@@ -323,7 +323,7 @@
   	 			   handleAuto(result);
   	 			}
   	 			
-  	 			setTimeout(function(){
+  	 			polling = setTimeout(function(){
   	 				poll(pollRequest);
   	 			},30);
   	 			
@@ -365,11 +365,7 @@
        	  	 
        	  	 success: function(result){
             	if(result["Status"]=="Failure"){
-            		
-            		if(polling!=undefined){
-            			clearTimeout(polling);
-            		}
-            		
+            		            		
             		$('div#screen').css('background-image','none');
             		
             	}
@@ -378,7 +374,7 @@
  
             		   displayImage(result);       		       
         		       if(autoInterval > 0){
-        		       	 setTimeout(function(){
+        		       	 autoRunning = setTimeout(function(){
         		       	 	autoPlay();
         		       	 },autoInterval);
         		       }
@@ -465,6 +461,13 @@
             },
             
             success: function(result) {
+            	if(polling==null){
+                   polling = setTimeout(function(){
+            		  poll(pollRequest);
+            	   },30);
+            	
+            	}
+
             	if(result["Status"]=="Failure"){
             		
             		$('div#screen').css('background-image','none');
@@ -492,7 +495,46 @@
    
    
        
-       
+       function regDevice(email, nickname, deviceMaker, uid){
+       	 var requestLink = "http://evening-garden-3648.herokuapp.com/reg/deviceReg?email="+email+"&nickname="+nickname+"&deviceMaker="+deviceMaker+"&deviceId="+uid;
+       	 $.ajax({
+       	  	 url: requestLink,
+       	  	 type: 'GET',
+       	  	 dataType:'jsonp',
+       	  	 timeout:10000,
+       	  	 tryTimes:5,
+       	  	 
+       	  	 
+       	  	 error: function(xhr, status, error) {
+       	  	 	if(this.tryTimes > 0){
+       	  	 		try{
+            			console.log('ajax error '+error);
+            		} catch(err){
+            			
+            		}
+       	  	 		this.tryTimes --;
+       	  	 		$.ajax(this);
+       	  	 	}
+       	  	 	
+       	  	 	else{
+       	  	 		$("#message").html("Unable to connect to Artkick Server, please try again later!");
+       	  	 		$("#message").show();
+       	  	 	}
+       	  	 	
+       	  	 },
+       	  	 
+       	  	 
+       	  	 success: function(result){
+       		    if(result['Status']=='success'){
+       		       updateImage(imageRequest);
+                   
+       		    }else{
+       		       console.log(result['Message']);
+       		    }
+       	  	 }
+       	 }); 	 	
+       	 
+       }
        
        function getRegCode(){
        	  var requestLink = regBase+"/getRegCode?deviceId="+uid+"&deviceMaker="+maker;
@@ -613,10 +655,6 @@
        	  	 success: function(result){
             	if(result["Status"]=="Failure"){
             		
-            		if(polling!=undefined){
-            			clearTimeout(polling);
-            		}
-            		
             		$('div#screen').css('background-image','none');
             		//$("#message").html("Device is not linked correctly!");
             		//$("#message").show();
@@ -639,6 +677,30 @@
        	  });
        }   
        
+       
+      function getVal(string, name){
+          if(string.indexOf(name) == -1){
+          	return null;
+          }
+          
+          var startIndex = string.indexOf(name)+name.length+1;
+          var endIndex = startIndex;
+          while (endIndex < string.length) {
+          	endIndex++;
+          	if(string[endIndex]=='&'){
+          		break;
+          	}
+          	
+          }
+          
+          return string.substring(startIndex, endIndex);
+          
+          
+          
+      }  
+       
+       
+       
        var logs = [];
        var polling = null;
   	   var url = "";
@@ -650,7 +712,7 @@
   	   
   	   
        var requestURL = window.document.URL.toString(); 
-       var uid = requestURL.split('uid=')[1];
+       var uid = getVal(requestURL,"uid");   
        var regCode = null;
        
 
@@ -694,7 +756,7 @@
            
            else if(event.keyCode == 457){
            	  $('#caption').show();
-        	  setTimeout(function(){
+        	  capShow = setTimeout(function(){
         		  $('#caption').hide();
               },5000);           	  
            	
@@ -722,11 +784,16 @@
 
       
        console.log(imageRequest);
-       updateImage(imageRequest);
        console.log(pollRequest);
-       poll(pollRequest);
-       //Android.startPolling(pollRequest);
        
+       var email = getVal(requestURL,"email");
+       var nickname = getVal(requestURL,"nickname");
+       if(email!=undefined&&nickname!=undefined){
+       	  regDevice(email, nickname, maker, uid);
+       }else{
+       	  updateImage(imageRequest);
+       }
+         
       
       
 

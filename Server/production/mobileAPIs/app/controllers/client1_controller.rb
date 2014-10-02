@@ -10,9 +10,10 @@ class Client1Controller < ApplicationController
   
   
   @@userDbId = '63'
-  @@contentDbId = '53'
+  @@contentDbId = '47'
   @@privateRange = 10000000000
   @@dbMeta = {}
+
 
   @@dbMeta['63'] = {:server => 'ds063698-a0.mongolab.com', :port => 63698, :db_name => 'heroku_app18544527', 
     :username => 'artCoder', :password => 'zwamygogo'}  
@@ -21,7 +22,7 @@ class Client1Controller < ApplicationController
   @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
     :password => 'zw12artistic'}
   
-  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
+  @@dbMeta['47'] = {:server => 'ds047539-a0.mongolab.com', :port => 47539, :db_name => 'heroku_app24219881',
     :username => 'artCoder', :password => 'zwamygogo' }
   
   @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
@@ -47,6 +48,11 @@ class Client1Controller < ApplicationController
   def utcMillis
     return (Time.new.to_f*1000).to_i
   end
+  
+  
+  def is_integer(str)
+    return str.to_i.to_s == str
+  end
     
   def getListSet(listId)
      if @@contentDb == nil or @@userDb == nil
@@ -55,6 +61,10 @@ class Client1Controller < ApplicationController
     
      if (not listId.is_a? Numeric) and (listId.include? 'top')
         return @@userDb['privLists'].find({'id'=>listId})
+     end
+     
+     if (not listId.is_a? Numeric) and (listId.include? 'getty')
+        return @@userDb['gettyLists'].find({'id'=>listId})
      end
      
      if listId.to_i >= @@privateRange
@@ -70,6 +80,11 @@ class Client1Controller < ApplicationController
      if @@contentDb == nil or @@userDb == nil
         connectDb()
      end
+     
+     if (not imageId.is_a? Numeric) and (imageId.include? 'getty')
+        return @@userDb['gettyImages'].find({'id'=>imageId},{:fields=>fields})
+     end     
+     
      if imageId.to_i >= @@privateRange
         return @@userDb['privImages'].find({'id'=>imageId.to_i},{:fields=>fields})
      end
@@ -84,6 +99,12 @@ class Client1Controller < ApplicationController
      if @@contentDb == nil or @@userDb == nil
         connectDb()
      end
+     
+     if (not imageId.is_a? Numeric) and (imageId.include? 'getty')
+        return @@userDb['gettyImages'].find({'id'=>imageId})
+     end
+     
+     
      if imageId.to_i >= @@privateRange
         return @@userDb['privImages'].find({'id'=>imageId.to_i})
      end
@@ -460,62 +481,187 @@ class Client1Controller < ApplicationController
       stretch = params[:stretch]
     end
     
-    
+    user = userSet.to_a[0]
+    list = nil
     listSet = getListSet(params[:list])
-        
-    list = {}    
-    if listSet != nil and listSet.count > 0 
+    if listSet.count > 0
        list = listSet.to_a[0]
-       if userSet.count >0 
-          user = userSet.to_a[0]
-          if user["curr_list_images"] != nil and user["curr_list"].to_s==params[:list].to_s
-             list["images"] = user["curr_list_images"]
-          end
-       end
-        
+    end
+    
+    
+    if list == nil
+      result = {'Status'=>'failure', 'Message'=>'The viewlist does not exist!'}
+      render :json=>result, :callback => params[:callback]  
+      return
+    end
+    
+    if user["curr_list_images"] != nil and user["curr_list"].to_s==params[:list].to_s
+      list["images"] = user["curr_list_images"]
+    end
+
+     
+    subs = []
+
+          
+    iosSubs = false
+    if user['iosExpireMs'] != nil and user['iosExpireMs'].to_i - utcMillis() > 0
+      iosSubs = true
+    end
+    
+    androidSubs = false
+    if user['androidSubs'] == true
+      androidSubs = true
+    end
+    
+    testSubs = false
+    if user['testSubs'] == true
+      testSubs = true
+    end
+    
+    subs = iosSubs or androidSubs    
        
-       currIndex = 0
-       while currIndex < list["images"].length
-          if list["images"][currIndex].to_i == params[:imageID].to_i
-             break
-          end
-             currIndex += 1
-          end
+    if testSubs == true
+      subs = true
+    end   
+    
+    
+    
+
+    
+    
+       
+    currIndex = 0
+    while currIndex < list["images"].length
+       if list["images"][currIndex].to_s == params[:imageID].to_s
+          break
+       end
+       currIndex += 1
+    end
+          
+    if currIndex >= list["images"].length
+      result = {'Status'=>'failure', 'Message'=>'The image does not exist!'}
+      render :json=>result, :callback => params[:callback]  
+      return       
+    end      
             
-   end
+
     
    if params[:players] == nil
       params[:players] = []
    end
-   
+    
+    imageObj = nil
     imageSet = getImageSet(params[:imageID])
     if imageSet.count > 0
       imageObj = imageSet.to_a[0]
-      message = {}
-      message['type'] = "image"
-      message['imageURL'] = imageObj['url']
-      message['title'] = URI.escape(imageObj['Title'])
-      message['stretch'] = stretch
-      message['nextPull'] = 0
-      if imageObj["Artist Last N"]==nil
-         message["caption"]=""
-      else
-         message["caption"]=URI.escape(imageObj["Artist First N"])+' '+URI.escape(imageObj["Artist Last N"])
-      end
-
-    end 
+    end
+ 
     
-
-   userPlayers = user['owned_clients']+user['playable_clients']
-   unIns = []
+    if imageObj == nil
+      result = {'Status'=>'failure', 'Message'=>'The image does not exist!'}
+      render :json=>result, :callback => params[:callback]  
+      return      
+    end
+    
+    
    
+    message = {}
+    message['type'] = "image"
+    message['imageURL'] = imageObj['url']
+    message['title'] = URI.escape(imageObj['Title'])
+    message['stretch'] = stretch
+    message['nextPull'] = 0
+    if imageObj["Artist Last N"]==nil
+       message["caption"]=""
+    else
+       message["caption"]=URI.escape(imageObj["Artist First N"])+' '+URI.escape(imageObj["Artist Last N"])
+    end
+    
+    if imageObj['id'].to_s.include?'getty'
+      #"Getty_Entertainment", "Getty_Sports", "Getty_News", "Getty_All"
+      userSubs = ''
+      
+      subs = []    
+      if user['test_subs']!=nil and user['test_subs'].length > 0
+         subs = [user['test_subs'][0]]
+      end
+      
+      if user['ios_subs']!=nil
+        user['ios_subs'].each do |prodName|
+          if prodName!=nil and user['ios_subs_detail'][prodName] > utcMillis
+            if prodName == 'Getty_All2'
+              subs = ['Getty_All']
+              break
+            end
+          
+            if not subs.include? prodName
+              subs.push(prodName)
+            end             
+          end
+
+        end
+      end
+      
+   android_subs = ['Getty_Sports','Getty_Entertainment','Getty_News','Getty_Upgrade', 'Getty_All2']
+   android_subs.each do |prodName|
+     if user['android_'+prodName.downcase+'_expire'] != nil and user['android_'+prodName.downcase+'_expire'] > utcMillis
+       
+       if prodName == 'Getty_All2'
+         subs = ['Getty_All']
+         break
+       end
+       
+       if not subs.include? prodName
+         subs.push(prodName)
+       end
+       
+     end
+   end      
+      
+      
+      if subs.length > 1
+        subs = ['Getty_All']
+      end
+      
+      if subs.length > 0
+        userSubs = subs[0]
+      end
+      
+      permitted = false
+      
+      if 'getty_'+imageObj['gettyDomain'].downcase == userSubs.downcase or userSubs == 'Getty_All'
+        permitted = true
+      end
+      
+      if imageObj['has_highres'] == true and permitted
+        message['imageURL'] = imageObj['artkick_url']
+      end
+      
+      if (not permitted) and imageObj['waterMark']!=nil
+        message['imageURL'] = imageObj['waterMark']
+      end 
+      
+      message['caption'] = URI.escape(imageObj['Copyright'])
+      
+    end
+    
+   message['imageURL'] = message['imageURL'].sub('https://','http://')
+   userPlayers = user['owned_clients']+user['playable_clients']
+   validClients = []
+
+
+   setImageId = params[:imageID]
+   if !setImageId.include?'getty'
+     setImageId = setImageId.to_i
+   end
+
    params[:players].each do |account|
        
        if not userPlayers.include? account
-         unIns.push(account)
          next
        end
       
+       validClients.push(account)
        playerSet = @@userDb['clients'].find({"account"=>account})
        if playerSet.count > 0
          player = playerSet.to_a[0]
@@ -523,20 +669,11 @@ class Client1Controller < ApplicationController
          if list["images"] != nil
            currListImages = list["images"]
          end
-         @@userDb['clients'].update({"account"=>player["account"]},"$set"=>{"curr_image"=>params[:imageID].to_i,"image_time_stamp"=>utcMillis(), "stretch"=>stretch,
+
+         @@userDb['clients'].update({"account"=>player["account"]},"$set"=>{"curr_image"=>setImageId,"image_time_stamp"=>utcMillis(), "stretch"=>stretch,
       "curr_list"=>params[:list], "curr_index"=>currIndex, "curr_list_images"=>currListImages, "curr_user"=>params[:email]})
       
-         if message != nil
-             base = 'http://shrouded-chamber-7349.herokuapp.com/push'
-             uri = URI(base)
-             message['receiver'] = player['account']
-             
-             begin
-                Net::HTTP.post_form(uri, message)
-             rescue
-               
-             end
-         end
+
           
           
           
@@ -544,15 +681,29 @@ class Client1Controller < ApplicationController
        
     end
     
+    
+    if message != nil
+        base = 'http://shrouded-chamber-7349.herokuapp.com/pushMulti'
+        uri = URI(base)
+        message['receivers'] = validClients
+             
+        begin
+           Net::HTTP.post_form(uri, message)
+        rescue
+               
+        end
+    end 
+    
+    
     currListId = params[:list]
-    if (not currListId.is_a? Fixnum) and (currListId.include? 'top')
+    if not currListId.is_a? Fixnum
       currListId = currListId.to_s
     else
       currListId = currListId.to_i
     end
     
     
-    @@userDb['users'].update({"email"=>params[:email]},"$set"=>{"curr_image"=>params[:imageID].to_i,"curr_list"=>currListId,"curr_cat"=>params[:cat], "fill"=>stretch,
+    @@userDb['users'].update({"email"=>params[:email]},"$set"=>{"curr_image"=>setImageId,"curr_list"=>currListId,"curr_cat"=>params[:cat], "fill"=>stretch,
       "curr_list_images"=>list["images"], "last_visit"=>utcMillis()})
       
       
@@ -560,9 +711,10 @@ class Client1Controller < ApplicationController
       
   
       
-    result = {"result"=>"success", "Message"=>"updated!", "players"=>userPlayers}   
+    result = {"result"=>"success", "Message"=>"updated!", "players"=>validClients}   
     render :json=>result, :callback => params[:callback]    
   end  
+
 
 
  def deleteComment
@@ -683,13 +835,19 @@ class Client1Controller < ApplicationController
     
     userObj = userSet.to_a[0]
     
+    if params[:imageId].to_i.to_s == params[:imageId].to_s
+      params[:imageId] = params[:imageId].to_i
+    end
+        
+    
+    
     
     cmt = {"user_id"=>userObj["id"].to_i, "user_name"=>userObj["name"], "text"=>params[:text], "time_stamp"=>utcMillis()}
     cmt['comment_id'] = getCommentId()
     
-    commentSet = @@userDb['imageComments'].find({"id"=>params[:imageId].to_i})
+    commentSet = @@userDb['imageComments'].find({"id"=>params[:imageId]})
     if commentSet.count == 0
-      commentObj = {"id"=>params[:imageId].to_i, "commentNum"=>1, "comments"=>[cmt]}
+      commentObj = {"id"=>params[:imageId], "commentNum"=>1, "comments"=>[cmt]}
       @@userDb["imageComments"].insert(commentObj)
     else
       commentObj = commentSet.to_a[0]
@@ -740,6 +898,13 @@ class Client1Controller < ApplicationController
     
     userObj = userSet.to_a[0]
     
+    #convert imageId to either integer or string
+    if params[:imageId].to_i.to_s == params[:imageId].to_s
+      params[:imageId] = params[:imageId].to_i
+    end
+    
+    
+    
     like = true
     if params[:like]=="0"
       like = false
@@ -749,24 +914,46 @@ class Client1Controller < ApplicationController
       userObj["likeImages"] = []
     end
     
-    if like and not userObj["likeImages"].include? params[:imageId].to_i
-      userObj["likeImages"].push(params[:imageId].to_i)
+    if like and not userObj["likeImages"].include? params[:imageId]
+      userObj["likeImages"].push(params[:imageId])
     end
     
     if not like
-      userObj["likeImages"].delete(params[:imageId].to_i)
+      userObj["likeImages"].delete(params[:imageId])
     end
     
     @@userDb["users"].update({"email"=>userObj["email"]},{"$set"=>{"likeImages"=>userObj["likeImages"]}})
     imageSet = getImageSet(params[:imageId])
     if imageSet.count > 0
       imageObj = imageSet.to_a[0]
+      if imageObj['id'].to_s.include? 'getty'
+       if like
+          if imageObj['refNum'] == nil
+            imageObj['refNum'] = 1
+          else
+            imageObj['refNum'] += 1
+          end
+        else
+          if imageObj['refNum'] == nil
+            imageObj['refNum'] = 0
+          else
+            imageObj['refNum'] -= 1
+          end
+        end
+        
+        if imageObj['refNum'] < 0
+          imageObj['refNum'] = 0
+        end
+        
+        @@userDb['gettyImages'].update({'id'=>imageObj['id']},{'$set'=>{'refNum'=>imageObj['refNum']}})
+              
+      end 
     end
     
-    imageLikeSet = @@userDb['imageLikes'].find({"id"=>params[:imageId].to_i})
+    imageLikeSet = @@userDb['imageLikes'].find({"id"=>params[:imageId]})
     if imageLikeSet.count == 0
        if like      
-          imageLikeObj = {"id"=> params[:imageId].to_i, "likeMap"=>{userObj["id"].to_s=>true}, "likeNum"=>1}
+          imageLikeObj = {"id"=> params[:imageId], "likeMap"=>{userObj["id"].to_s=>true}, "likeNum"=>1}
           if imageObj != nil and imageObj['categories']!= nil
             imageLikeObj['categories'] = imageObj['categories']
           end
@@ -787,13 +974,13 @@ class Client1Controller < ApplicationController
           if imageLikeObj["likeNum"]<0
             imageLikeObj["likeNum"] = 0
           end
-          @@userDb["imageLikes"].update({"id"=>imageLikeObj["id"].to_i},{"$set"=>{"likeMap"=>imageLikeObj["likeMap"], "likeNum"=>imageLikeObj["likeNum"]}})
+          @@userDb["imageLikes"].update({"id"=>imageLikeObj["id"]},{"$set"=>{"likeMap"=>imageLikeObj["likeMap"], "likeNum"=>imageLikeObj["likeNum"]}})
         end
       else       
         if like
           imageLikeObj["likeMap"][userObj["id"].to_s] = true
           imageLikeObj["likeNum"] += 1
-          @@userDb["imageLikes"].update({"id"=>imageLikeObj["id"].to_i},{"$set"=>{"likeMap"=>imageLikeObj["likeMap"], "likeNum"=>imageLikeObj["likeNum"]}})        
+          @@userDb["imageLikes"].update({"id"=>imageLikeObj["id"]},{"$set"=>{"likeMap"=>imageLikeObj["likeMap"], "likeNum"=>imageLikeObj["likeNum"]}})        
         else
           # do nothing
         end  
@@ -845,15 +1032,22 @@ class Client1Controller < ApplicationController
         return
     end 
     
-    if @@userDb["imageRatings"].find({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase}).count > 0
+    
+    if params[:imageId].to_i.to_s == params[:imageId].to_s
+      params[:imageId] = params[:imageId].to_i
+    end
+    
+    
+    
+    if @@userDb["imageRatings"].find({"img_id"=>params[:imageId], "user_email"=>params[:email].strip.downcase}).count > 0
       if params[:rating].to_i > 0
-        @@userDb["imageRatings"].update({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase},{"$set"=>{"rating"=>params[:rating].to_i}})
+        @@userDb["imageRatings"].update({"img_id"=>params[:imageId], "user_email"=>params[:email].strip.downcase},{"$set"=>{"rating"=>params[:rating].to_i}})
       else
-        @@userDb["imageRatings"].remove({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase})
+        @@userDb["imageRatings"].remove({"img_id"=>params[:imageId], "user_email"=>params[:email].strip.downcase})
       end
       
     else
-      @@userDb["imageRatings"].insert({"img_id"=>params[:imageId].to_i, "user_email"=>params[:email].strip.downcase, "rating"=>params[:rating].to_i})
+      @@userDb["imageRatings"].insert({"img_id"=>params[:imageId], "user_email"=>params[:email].strip.downcase, "rating"=>params[:rating].to_i})
     end
     result = {"result"=>"rating updated!"}
 
@@ -993,19 +1187,23 @@ class Client1Controller < ApplicationController
     @@userDb['login_records'].insert({'email'=>(params[:email].strip).downcase,'time_stamp'=>utcMillis, 'ip_address'=>request.remote_ip})
     
     user = userSet.to_a[0]
-    if(user["curr_image"]==nil or user["curr_image"]=='') or (getImageSet(user["curr_image"]).count==0)
-      result = {"Status"=>"failure", "Message"=>"No image!"}
-
-      render :json=>result, :callback => params[:callback]
-      return  
+    
+    defaultObj = @@contentDb['defaults'].find().to_a[0]
+    
+    fixDefault = false
+    if(user["curr_image"]==nil or user["curr_image"]=='') or (getImageSet(user["curr_image"]).count==0 and !user["curr_image"].to_s.include?'getty')
+       fixDefault = true
     end
     
-    if(user["curr_list"]==nil or user["curr_list"]=='') or getListSet(user["curr_list"]).count == 0
-      result = {"Status"=>"failure", "Message"=>"No list!"}
-
-      render :json=>result, :callback => params[:callback]
-      return  
+    if(user["curr_list"]==nil or user["curr_list"]=='') or (getListSet(user["curr_list"]).count == 0 and !user["curr_list"].to_s.include?'getty')
+       fixDefault = true
     end
+        
+    if fixDefault
+      user['curr_cat'] = defaultObj['category']
+      user['curr_image'] = defaultObj['image']
+      user['curr_list'] = defaultObj['viewlist']
+    end    
         
     
     shuffle = "false"
@@ -1022,10 +1220,203 @@ class Client1Controller < ApplicationController
     
     result = {"Status"=>"success", "curr_image"=>user["curr_image"], "curr_list"=>user["curr_list"],"curr_cat"=>user["curr_cat"],
       "fill"=>user["fill"], "autoInterval"=>user["autoInterval"], "shuffle"=>shuffle, "hires"=>hires}
+      
+   
+    if user['gettyLists']== nil
+      user['gettyLists'] = {}
+    end
+    
+    if user['gettyHistory'] == nil
+      result['gettyHistory'] = []
+    else
+      result['gettyHistory'] = user['gettyHistory']
+    end
+    
+    #get user getty lists
 
+    result['gettyLists'] = []
+    user['gettyLists'].each do |key, val|
+      result['gettyLists'].push(val)
+    end
+    
+    result['gettyLists'].reverse!
+    
+    # get search lists
+    if user['search_lists'] == nil
+      user['search_lists'] = []
+    end 
+    
+    searchLists = @@userDb['privLists'].find({'id'=>{'$in'=>user['search_lists']}},{:fields=>['name','id','imageNum','coverImage','domain']}).sort({'id'=>-1}).to_a
+    
+    result['searchLists'] = []
+    searchLists.each do |searchList|
+      searchList['id'] = searchList['id'].to_i
+      searchList.delete("_id")
+      result['searchLists'].push(searchList)
+    end
+    
+      
+    
+    subs = []    
+    if user['test_subs'] != nil
+      user['test_subs'].each do |prodName|
+        if not subs.include? prodName
+          subs.push(prodName)
+        end
+      end
+    end
+    
+    if user['ios_subs']!=nil
+      user['ios_subs'].each do |prodName|
+        if prodName!=nil and user['ios_subs_detail'][prodName] > utcMillis
+          if prodName == 'Getty_All2'
+            subs = ['Getty_All']
+            break
+          end
+          
+          if not subs.include? prodName
+            subs.push(prodName)
+          end
+          
+        end
+      end
+    end
+    
+   android_subs = ['Getty_Sports','Getty_Entertainment','Getty_News','Getty_Upgrade', 'Getty_All2']
+   android_subs.each do |prodName|
+     if user['android_'+prodName.downcase+'_expire'] != nil and user['android_'+prodName.downcase+'_expire'] > utcMillis
+       
+       if prodName == 'Getty_All2'
+         subs = ['Getty_All']
+         break
+       end
+       
+       if not subs.include? prodName
+         subs.push(prodName)
+       end
+       
+     end
+   end    
+    
+    
+    if subs.length > 1
+      subs = ['Getty_All']
+    end
+    
+    if subs.length == 1 and subs[0]=='Getty_Upgrade'
+      subs = []
+      
+      #warn the user to cancel the upgrade 
+      
+        base = 'http://mighty-sea-2736.herokuapp.com/subsWarn'
+        uri = URI(base)
+        message = {}
+        message['email'] = user['email']
+        message['name'] = user['name']
+             
+        begin
+           Net::HTTP.post_form(uri, message)
+        rescue
+          
+        end
+      
+    end
+    
+    new_subs = []
+    if user['new_subs'] != nil
+      user['new_subs'].each do |subs|
+        new_subs.push(subs)
+      end
+    end
+    
+    @@userDb['users'].update({'email'=>user['email']},{'$set'=>{'new_subs'=>[]}})
+    
+    result['subscriptions'] = subs
+    result['newSubscriptions'] = new_subs
+            
     render :json=>result, :callback => params[:callback]
     
   end
+  
+  
+  def setLogo
+    
+  end
+  
+  
+  def setOrientation
+    if(params[:snumber]==nil or params[:orientation]==nil or params[:snumber].strip=='' or params[:orientation].strip=='')
+        result = {"Status"=>"failure", "Message"=>"parameter(s) missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    validOts = ['vertical1', 'vertical2', 'horizontal']
+    if not validOts.include? params[:orientation]
+        result = {"Status"=>"failure", "Message"=>"invalid orientation value!"}
+        render :json=>result, :callback => params[:callback]
+        return 
+    end
+    
+
+    
+    
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    user = userSet.to_a[0]
+    
+    
+    playerSet = @@userDb['clients'].find({"account"=>params[:snumber].strip})
+    if playerSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"no player found!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    player=playerSet.to_a[0]
+    
+    #@@userDb['clients'].update({"account"=>{"$in"=>user['owned_clients']}},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i, "lastAutoAssign"=>-1,
+    #  "auto_user"=>autoUser}}, :multi=>true)
+      
+    @@userDb['clients'].update({"account"=>{"$in"=>[player['account']]}},{"$set"=>{"orientation"=>params[:orientation]}}, :multi=>true)      
+
+    result = {"Status"=>"success", "Message"=>"updated!"}   
+
+    render :json=>result, :callback => params[:callback]
+    
+    
+    message = {}
+    message['type'] = "orientation"
+    message['orientation'] = params[:orientation]
+    
+    if message != nil
+        base = 'http://shrouded-chamber-7349.herokuapp.com/pushMulti'
+        uri = URI(base)
+        #message['receivers'] = user['owned_clients']
+        message['receivers'] = [player['account']] 
+        
+         
+        begin
+           Net::HTTP.post_form(uri, message)
+        rescue
+               
+        end
+    end 
+ 
+  end    
+  
+  
   
   
   def setAuto
@@ -1080,8 +1471,11 @@ class Client1Controller < ApplicationController
       end
     end
    
-    @@userDb['clients'].update({"account"=>{"$in"=>user['owned_clients']}},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i, "lastAutoAssign"=>-1,
-      "auto_user"=>autoUser}}, {"multi"=>true})
+    #@@userDb['clients'].update({"account"=>{"$in"=>user['owned_clients']}},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i, "lastAutoAssign"=>-1,
+    #  "auto_user"=>autoUser}}, :multi=>true)
+      
+    @@userDb['clients'].update({"account"=>{"$in"=>[player['account']]}},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i, "lastAutoAssign"=>-1,
+      "auto_user"=>autoUser}}, :multi=>true)
       
     @@userDb['users'].update({"email"=>params[:email]},{"$set"=>{"autoInterval"=>params[:autoInterval].strip.to_i}})
 
@@ -1095,18 +1489,18 @@ class Client1Controller < ApplicationController
     message['autoInterval'] = params[:autoInterval].strip.to_i
     
     if message != nil
-      base = 'http://shrouded-chamber-7349.herokuapp.com/push'
-      user['owned_clients'].each do |client|
+        base = 'http://shrouded-chamber-7349.herokuapp.com/pushMulti'
         uri = URI(base)
-        message['receiver'] = client
+        #message['receivers'] = user['owned_clients']
+        message['receivers'] = [player['account']] 
         
+         
         begin
-          Net::HTTP.post_form(uri, message)
+           Net::HTTP.post_form(uri, message)
         rescue
-            
+               
         end
-      end
-    end    
+    end 
  
   end
   
@@ -1185,7 +1579,7 @@ def getViewlist4
       dynImages = @@userDb["imageRatings"].find({"user_email"=>params[:email].strip.downcase}).to_a
       
       #get startIndex
-      if params[:tarImage].to_i == -1 
+      if params[:tarImage].to_s == '-1'
         
         startIndex = 0
         dynImages.each do|image|
@@ -1196,7 +1590,7 @@ def getViewlist4
         startIndex = 0
         index = 0
         dynImages.each do|image|
-          if image["img_id"] == params[:tarImage].to_i
+          if image["img_id"].to_s == params[:tarImage].to_s
             startIndex = index
           end
           viewlist["images"].append(image["img_id"].to_i)
@@ -1299,7 +1693,7 @@ def getViewlist4
     
     viewlist = viewlistSet.to_a[0] 
     
-    if viewlist["id"].to_i == user["curr_list"].to_i and user["shuffle"] == params[:shuffle].to_i
+    if viewlist["id"].to_s == user["curr_list"].to_s and user["shuffle"] == params[:shuffle].to_i
       viewlist["images"] = user["curr_list_images"]
     else
       if params[:shuffle].to_i==1
@@ -1323,12 +1717,12 @@ def getViewlist4
     images = viewlist["images"]
 
       #get startIndex
-      if params[:tarImage].to_i == -1 
+      if params[:tarImage].to_s == '-1' 
         startIndex = 0
       else
         startIndex = 0
         images.each do|image|
-          if image == params[:tarImage].to_i
+          if image.to_s == params[:tarImage].to_s
             break
           end
           startIndex = startIndex+1
@@ -1622,6 +2016,7 @@ def getViewlist4
         return
     end 
     
+     
     
     @@userDb['viewlist_records'].insert({'email'=>(params[:email].strip).downcase, 'viewlist'=>params[:id], 'time_stamp'=>utcMillis,'ip_address'=>request.remote_ip})
     
@@ -1638,7 +2033,6 @@ def getViewlist4
        user["curr_list_images"]=[]
     end      
 
-
     if(params[:id][0..7]=='topLiked')
       viewlist = {"id"=>params[:id], "name"=>"Most liked"}
       viewlist["imageSet"]=[]
@@ -1646,16 +2040,16 @@ def getViewlist4
                 
       
       #get startIndex
-      if params[:tarImage].to_i == -1 or user['email'] == 'guest@guest.guest'
+      if params[:tarImage].to_s == '-1' or user['email'] == 'guest@guest.guest'
         if params[:catName]!=nil
-          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "categories"=>params[:catName], "id"=>{"$lt"=>@@privateRange}}).sort({"likeNum"=>-1}).limit(100)
+          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "categories"=>params[:catName]}).sort({"likeNum"=>-1}).limit(100)
         else
-          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "id"=>{"$lt"=>@@privateRange}}).sort({"likeNum"=>-1}).limit(100)
+          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}}).sort({"likeNum"=>-1}).limit(100)
         end
         
         dynImages = []
         likeSet.to_a.each do |likeObj|
-          dynImages.push(likeObj["id"].to_i)
+          dynImages.push(likeObj["id"])
         end
         
         if params[:shuffle].to_i==1
@@ -1667,7 +2061,7 @@ def getViewlist4
       
         
         dynImages.each do|image|
-          viewlist["images"].append(image.to_i)
+          viewlist["images"].append(image)
         end
         
       else
@@ -1677,10 +2071,10 @@ def getViewlist4
         startIndex = 0
         index = 0
         dynImages.each do|image|
-          if image.to_i == params[:tarImage].to_i
+          if image.to_s == params[:tarImage].to_s
             startIndex = index
           end
-          viewlist["images"].append(image.to_i)
+          viewlist["images"].append(image)
           index = index+1
         end
         
@@ -1735,11 +2129,11 @@ def getViewlist4
         imageSet = getImageSet(image)
         if imageSet.count > 0
            imageObj = imageSet.to_a[0]
-           likeSet = @@userDb["imageLikes"].find({"id"=>image.to_i})
+           likeSet = @@userDb["imageLikes"].find({"id"=>image})
            if likeSet.count > 0
              likeObj = likeSet.to_a[0]
            else
-             likeObj = {"id"=>imageObj["id"].to_i, "likeNum"=>0, "likeMap"=>{}}
+             likeObj = {"id"=>imageObj["id"], "likeNum"=>0, "likeMap"=>{}}
            end
            
            imageObj["likeNum"] = likeObj["likeNum"]
@@ -1751,15 +2145,20 @@ def getViewlist4
            viewlist["imageSet"].append(imageObj)
            
            
-           commentSet = @@userDb["imageComments"].find({"id"=>image.to_i})
+           commentSet = @@userDb["imageComments"].find({"id"=>image})
            if commentSet.count > 0
              commentObj = commentSet.to_a[0]
            else
-             commentObj = {"id"=>imageObj["id"].to_i, "commentNum"=>0,"comments"=>[]}
+             commentObj = {"id"=>imageObj["id"], "commentNum"=>0,"comments"=>[]}
            end
            imageObj["commentNum"] = commentObj["commentNum"]
            imageObj["comments"] = commentObj["comments"][0...10]     
-           
+           imageObj.delete("artkick_url") #protect high-res url
+        else
+           viewlist["imageNum"] = 0
+           viewlist.delete("images")
+           render :json=>viewlist, :callback => params[:callback]
+           return        
         end 
       
       end
@@ -1772,9 +2171,12 @@ def getViewlist4
       
 
       viewlist["imageNum"] = viewlist["images"].length
-      viewlist["startImage"] = viewlist["images"][0]
-      viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
-      viewlist.delete("images");
+      if viewlist["imageNum"] > 0
+          viewlist["startImage"] = viewlist["images"][0]
+          viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      end
+
+      viewlist.delete("images")
 
       render :json=>viewlist, :callback => params[:callback]
       return
@@ -1793,7 +2195,7 @@ def getViewlist4
           
       
       #get startIndex
-      if params[:tarImage].to_i == -1 
+      if params[:tarImage].to_s == '-1' 
         dynImages = user['likeImages']
         if params[:shuffle].to_i==1
            dynImages = dynImages.shuffle
@@ -1804,7 +2206,10 @@ def getViewlist4
       
         
         dynImages.each do|image|
-          viewlist["images"].append(image.to_i)
+          if image.to_i.to_s == image.to_s
+            image = image.to_i
+          end          
+          viewlist["images"].append(image)
         end
         
       else
@@ -1814,10 +2219,15 @@ def getViewlist4
         startIndex = 0
         index = 0
         dynImages.each do|image|
-          if image.to_i == params[:tarImage].to_i
+          if image.to_s == params[:tarImage].to_s
             startIndex = index
           end
-          viewlist["images"].append(image.to_i)
+          
+          if image.to_i.to_s == image.to_s
+            image = image.to_i
+          end   
+          
+          viewlist["images"].append(image)
           index = index+1
         end
         
@@ -1870,13 +2280,17 @@ def getViewlist4
       
       images.each do|image|      
         imageSet = getImageSet(image)
+        if image.to_i.to_s == image.to_s
+           image = image.to_i
+        end   
+        
         if imageSet.count > 0
            imageObj = imageSet.to_a[0]
-           likeSet = @@userDb["imageLikes"].find({"id"=>image.to_i})
+           likeSet = @@userDb["imageLikes"].find({"id"=>image})
            if likeSet.count > 0
              likeObj = likeSet.to_a[0]
            else
-             likeObj = {"id"=>imageObj["id"].to_i, "likeNum"=>1, "likeMap"=>{user["id"].to_s=>true}}
+             likeObj = {"id"=>imageObj["id"], "likeNum"=>1, "likeMap"=>{user["id"].to_s=>true}}
            end
            
            imageObj["likeNum"] = likeObj["likeNum"]
@@ -1884,15 +2298,20 @@ def getViewlist4
            viewlist["imageSet"].append(imageObj)
            
            
-           commentSet = @@userDb["imageComments"].find({"id"=>image.to_i})
+           commentSet = @@userDb["imageComments"].find({"id"=>image})
            if commentSet.count > 0
              commentObj = commentSet.to_a[0]
            else
-             commentObj = {"id"=>imageObj["id"].to_i, "commentNum"=>0,"comments"=>[]}
+             commentObj = {"id"=>imageObj["id"], "commentNum"=>0,"comments"=>[]}
            end
            imageObj["commentNum"] = commentObj["commentNum"]
            imageObj["comments"] = commentObj["comments"][0...10]     
-           
+        else
+           viewlist["imageNum"] = 0
+           viewlist.delete("images")
+           render :json=>viewlist, :callback => params[:callback]
+           return               
+             
         end 
       
       end
@@ -1905,8 +2324,10 @@ def getViewlist4
       
 
       viewlist["imageNum"] = viewlist["images"].length
-      viewlist["startImage"] = viewlist["images"][0]
-      viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      if viewlist["imageNum"] > 0
+          viewlist["startImage"] = viewlist["images"][0]
+          viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      end
       viewlist.delete("images");
 
       render :json=>viewlist, :callback => params[:callback]
@@ -1931,13 +2352,21 @@ def getViewlist4
     
     viewlist = viewlistSet.to_a[0] 
     
-    if params[:tarImage].to_i == -1
+    if params[:tarImage].to_s == '-1'
       #start over
       if params[:shuffle].to_i==1
          viewlist["images"] = viewlist["images"].shuffle
       end  
-      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"].to_i,
-      "shuffle"=>params[:shuffle].to_i}})         
+      
+      if viewlist["id"].is_a? Numeric
+        @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"].to_i,
+        "shuffle"=>params[:shuffle].to_i}})              
+      else
+        @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"],
+        "shuffle"=>params[:shuffle].to_i}})      
+      end
+      
+   
       
     else
       #continuation do not re-shuffle
@@ -1957,12 +2386,12 @@ def getViewlist4
     images = viewlist["images"]
 
       #get startIndex
-      if params[:tarImage].to_i == -1 
+      if params[:tarImage].to_s == '-1' 
         startIndex = 0
       else
         startIndex = 0
         images.each do|image|
-          if image == params[:tarImage].to_i
+          if image.to_s == params[:tarImage].to_s
             break
           end
           startIndex = startIndex+1
@@ -2019,18 +2448,22 @@ def getViewlist4
       
       
       if images == nil or images.length == 0
-        defaultObj = @@contentDb['defaults'].find().to_a[0]
-        listObj = @@contentDb['viewlists'].find({'id'=>defaultObj['viewlist'].to_i}).to_a[0]
-        images = listObj['images']
-        viewlist['images'] = listObj['images']
-        viewlist['forward'] = 1
-        viewlist['tarIndex'] = 1
-        @@userDb['users'].update({'email'=>user['email']},{'$set'=>{'curr_list'=>defaultObj['viewlist'].to_i,
-          'curr_image'=>defaultObj['image'].to_i, 'curr_cat'=>defaultObj['category']}})
-        
+        #defaultObj = @@contentDb['defaults'].find().to_a[0]
+        #listObj = @@contentDb['viewlists'].find({'id'=>defaultObj['viewlist'].to_i}).to_a[0]
+        #images = listObj['images']
+        #viewlist['images'] = listObj['images']
+        #viewlist['forward'] = 1
+        #viewlist['tarIndex'] = 1
+        #@@userDb['users'].update({'email'=>user['email']},{'$set'=>{'curr_list'=>defaultObj['viewlist'].to_i,
+        #  'curr_image'=>defaultObj['image'].to_i, 'curr_cat'=>defaultObj['category']}})
+        images = []
       end
     
     images.each do|image|
+      if image.to_i.to_s == image.to_s
+         image = image.to_i
+      end   
+      
       
       imageSet = getImageSet(image)
       if imageSet.count > 0
@@ -2039,7 +2472,7 @@ def getViewlist4
         imageObj = imageSet.to_a[0]
         if params[:email]!=nil
                       
-           likeSet = @@userDb["imageLikes"].find({"id"=>image.to_i})
+           likeSet = @@userDb["imageLikes"].find({"id"=>image})
            if likeSet.count > 0
              likeObj = likeSet.to_a[0]
              if likeObj["likeMap"][user["id"].to_s]!= nil
@@ -2054,11 +2487,15 @@ def getViewlist4
            end
            
            
-           commentSet = @@userDb["imageComments"].find({"id"=>image.to_i})
+          if imageObj['id'].to_i.to_s == imageObj['id'].to_s
+            imageObj['id'] = imageObj['id'].to_i
+          end   
+           
+           commentSet = @@userDb["imageComments"].find({"id"=>image})
            if commentSet.count > 0
              commentObj = commentSet.to_a[0]
            else
-             commentObj = {"id"=>imageObj["id"].to_i, "commentNum"=>0,"comments"=>[]}
+             commentObj = {"id"=>imageObj["id"], "commentNum"=>0,"comments"=>[]}
            end
            imageObj["commentNum"] = commentObj["commentNum"]
            imageObj["comments"] = commentObj["comments"][0...10]  
@@ -2067,13 +2504,20 @@ def getViewlist4
         end
         
         viewlist["imageSet"].append(imageObj)
+      else   
+         viewlist["imageNum"] = 0
+         viewlist.delete("images")
+         render :json=>viewlist, :callback => params[:callback]
+         return     
       end
     end
     
 
     viewlist["imageNum"] = viewlist["images"].length
-    viewlist["startImage"] = viewlist["images"][0]
-    viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      if viewlist["imageNum"] > 0
+          viewlist["startImage"] = viewlist["images"][0]
+          viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      end
     viewlist.delete("images");
     render :json=>viewlist, :callback => params[:callback]
  
@@ -2135,6 +2579,9 @@ def getViewlist4
     end      
 
 
+
+
+
     if(params[:id][0..7]=='topLiked')
       viewlist = {"id"=>params[:id], "name"=>"Most liked"}
       viewlist["imageSet"]=[]
@@ -2142,16 +2589,16 @@ def getViewlist4
                 
       
       #get startIndex
-      if params[:tarImage].to_i == -1 or user['email'] == 'guest@guest.guest'
+      if params[:tarImage].to_s == '-1' or user['email'] == 'guest@guest.guest'
         if params[:catName]!=nil
-          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "categories"=>params[:catName], "id"=>{"$lt"=>@@privateRange}}).sort({"likeNum"=>-1}).limit(100)
+          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "categories"=>params[:catName]}).sort({"likeNum"=>-1}).limit(100)
         else
-          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}, "id"=>{"$lt"=>@@privateRange}}).sort({"likeNum"=>-1}).limit(100)
+          likeSet = @@userDb["imageLikes"].find({"likeNum"=>{"$gt"=>0}}).sort({"likeNum"=>-1}).limit(100)
         end
         
         dynImages = []
         likeSet.to_a.each do |likeObj|
-          dynImages.push(likeObj["id"].to_i)
+          dynImages.push(likeObj["id"])
         end
         
         if params[:shuffle].to_i==1
@@ -2163,7 +2610,7 @@ def getViewlist4
       
         
         dynImages.each do|image|
-          viewlist["images"].append(image.to_i)
+          viewlist["images"].append(image)
         end
         
       else
@@ -2173,10 +2620,10 @@ def getViewlist4
         startIndex = 0
         index = 0
         dynImages.each do|image|
-          if image.to_i == params[:tarImage].to_i
+          if image.to_s == params[:tarImage].to_s
             startIndex = index
           end
-          viewlist["images"].append(image.to_i)
+          viewlist["images"].append(image)
           index = index+1
         end
         
@@ -2228,12 +2675,16 @@ def getViewlist4
       end
       
       images.each do|image|      
-        imageSet = getImageSet2(image,['id','icon','url'])
+        imageSet = getImageSet2(image,['id','icon','url', 'thumbnail','waterMark'])
         if imageSet.count > 0
            imageObj = imageSet.to_a[0]
  
            viewlist["imageSet"].append(imageObj)
-                      
+        else
+           viewlist["imageNum"] = 0
+           viewlist.delete("images")
+           render :json=>viewlist, :callback => params[:callback]
+           return                
         end 
       
       end
@@ -2246,8 +2697,10 @@ def getViewlist4
       
 
       viewlist["imageNum"] = viewlist["images"].length
-      viewlist["startImage"] = viewlist["images"][0]
-      viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      if viewlist["imageNum"] > 0
+          viewlist["startImage"] = viewlist["images"][0]
+          viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      end
       viewlist.delete("images");
 
       render :json=>viewlist, :callback => params[:callback]
@@ -2267,7 +2720,7 @@ def getViewlist4
           
       
       #get startIndex
-      if params[:tarImage].to_i == -1 
+      if params[:tarImage].to_s == '-1' 
         dynImages = user['likeImages']
         if params[:shuffle].to_i==1
            dynImages = dynImages.shuffle
@@ -2278,7 +2731,10 @@ def getViewlist4
       
         
         dynImages.each do|image|
-          viewlist["images"].append(image.to_i)
+          if image.to_i.to_s == image.to_s
+            image = image.to_i
+          end     
+          viewlist["images"].append(image)
         end
         
       else
@@ -2288,10 +2744,13 @@ def getViewlist4
         startIndex = 0
         index = 0
         dynImages.each do|image|
-          if image.to_i == params[:tarImage].to_i
+          if image.to_s == params[:tarImage].to_s
             startIndex = index
           end
-          viewlist["images"].append(image.to_i)
+          if image.to_i.to_s == image.to_s
+            image = image.to_i
+          end   
+          viewlist["images"].append(image)
           index = index+1
         end
         
@@ -2343,13 +2802,18 @@ def getViewlist4
       end
       
       images.each do|image|      
-        imageSet = getImageSet2(image,['id','icon','url'])
+        imageSet = getImageSet2(image,['id','icon','thumbnail','url','waterMark'])
         if imageSet.count > 0
            imageObj = imageSet.to_a[0]
 
            viewlist["imageSet"].append(imageObj)
             
-           
+        else
+           viewlist["imageNum"] = 0
+           viewlist.delete("images")
+           render :json=>viewlist, :callback => params[:callback]
+           return               
+             
         end 
       
       end
@@ -2362,8 +2826,10 @@ def getViewlist4
       
 
       viewlist["imageNum"] = viewlist["images"].length
-      viewlist["startImage"] = viewlist["images"][0]
-      viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      if viewlist["imageNum"] > 0
+          viewlist["startImage"] = viewlist["images"][0]
+          viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      end
       viewlist.delete("images");
 
       render :json=>viewlist, :callback => params[:callback]
@@ -2388,13 +2854,22 @@ def getViewlist4
     
     viewlist = viewlistSet.to_a[0] 
     
-    if params[:tarImage].to_i == -1
+    if params[:tarImage].to_s == '-1'
       #start over
       if params[:shuffle].to_i==1
          viewlist["images"] = viewlist["images"].shuffle
       end  
-      @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"].to_i,
-      "shuffle"=>params[:shuffle].to_i}})         
+      
+      
+      if viewlist["id"].is_a? Numeric
+          @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"].to_i,
+          "shuffle"=>params[:shuffle].to_i}})
+      else
+          @@userDb["users"].update({"email"=>user["email"]},{"$set"=>{"curr_list_images"=>viewlist["images"], "curr_list"=>viewlist["id"],
+          "shuffle"=>params[:shuffle].to_i}})       
+      end
+      
+         
       
     else
       #continuation do not re-shuffle
@@ -2414,12 +2889,12 @@ def getViewlist4
     images = viewlist["images"]
 
       #get startIndex
-      if params[:tarImage].to_i == -1 
+      if params[:tarImage].to_s == '-1'
         startIndex = 0
       else
         startIndex = 0
         images.each do|image|
-          if image == params[:tarImage].to_i
+          if image.to_s == params[:tarImage].to_s
             break
           end
           startIndex = startIndex+1
@@ -2489,20 +2964,27 @@ def getViewlist4
     
     images.each do|image|
       
-      imageSet = getImageSet2(image,['id','icon','url'])
+      imageSet = getImageSet2(image,['id','icon','url','thumbnail','waterMark'])
       if imageSet.count > 0
         
         
         imageObj = imageSet.to_a[0]
         
         viewlist["imageSet"].append(imageObj)
+      else
+        viewlist["imageNum"] = 0
+        viewlist.delete("images")
+        render :json=>viewlist, :callback => params[:callback]
+        return             
       end
     end
     
 
     viewlist["imageNum"] = viewlist["images"].length
-    viewlist["startImage"] = viewlist["images"][0]
-    viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      if viewlist["imageNum"] > 0
+          viewlist["startImage"] = viewlist["images"][0]
+          viewlist["endImage"] = viewlist["images"][viewlist["imageNum"]-1]
+      end
     viewlist.delete("images");
     render :json=>viewlist, :callback => params[:callback]
  
