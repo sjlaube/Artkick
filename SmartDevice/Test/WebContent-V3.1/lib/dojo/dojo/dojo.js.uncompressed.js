@@ -41944,7 +41944,12 @@ define([
 				
 			    
 			    if(imageMap[alt]['getty_caption']){
-                	dojo.create("label", {className:"metaText", innerHTML:imageMap[alt]['getty_caption']+"<br>"}, this.metaNode);
+                	var gettyCaption =  imageMap[alt]['getty_caption'];
+                	if(imageMap[alt]["photos"] || imageMap[alt]["gettyDomain"]=="photos"){
+                	  gettyCaption += (" (Photo by"+imageMap[alt]['Artist First N']+imageMap[alt]['Artist Last N']+"/Photos.com by Getty Images)");
+                    }
+                    gettyCaption += "<br>";
+                    dojo.create("label", {className:"metaText", innerHTML:gettyCaption}, this.metaNode);
                 }
 			    
 			    

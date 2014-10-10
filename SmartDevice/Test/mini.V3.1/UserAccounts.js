@@ -184,6 +184,7 @@ function createUser()
 				if (runInWebview)
 				{
                 calliOSFunction("setemail", [window.email], "onSuccess", "onError");
+		
 				try
                 {
                     Android.setEmail(window.email);
@@ -314,6 +315,7 @@ function login()
                     catch (err)
                     {}
                     calliOSFunction("setemail", [window.email], "onSuccess", "onError");
+				
 					}
                     window.token = result['token'];
                     window.userName = userObj["name"];
@@ -469,9 +471,9 @@ window.GuestLogin=function()
     window.email = "guest@guest.guest";
     window.token = "guest";
     window.activeplayer = 'No TV Selected';
-	window.subscriptions='';
+	window.subscriptions=[];
 
-	window.newgettysubscription='Getty_All2';
+	window.newgettysubscription='Getty_All4';
   //  dojo.byId("browse-search").innerHTML = "Browse";
     dojo.style("searchmenu", "display", "none");
     $("#MyViewlists").hide();
@@ -524,6 +526,7 @@ window.GuestLogin=function()
                     catch (err)
                     {}
                     calliOSFunction("setemail", [window.email], "onSuccess", "onError");
+
 					}
                 dojo.byId("loginEmail").value = "";
                 dojo.byId("loginPassword").value = "";

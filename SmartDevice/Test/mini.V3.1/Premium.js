@@ -47,9 +47,15 @@ function completeTransaction(id,initial,storeEmail,storeToken)
  if (!initial&& storeEmail.indexOf("apple.store")<0)
  {
 	usermessage("Successfully renewed "+id);
+	refreshView();
 	return;
  }
  
+ if (!initial && storeEmail.indexOf("apple.store")>-1&&!restoreTrans)
+ {
+	usermessage("Successfully renewed (as)" +id);
+ 
+ }
  if (window.guest&&storeEmail&&storeToken)
  {
  // user was not logged in when they did the subscription, create cookie
@@ -58,25 +64,23 @@ function completeTransaction(id,initial,storeEmail,storeToken)
 				window.email=storeEmail;
                 setCookie("email", storeEmail, 365);
                 setCookie("token", storeToken, 365);
-				subscriptions=[];
+				subscriptions[0]=id;
  }
- if (id=="Getty_All2"||id=="Getty_All3")
+ if (window.restoreTrans)
+ {
+
+	usermessage("Artkick subscriptions restored");
+	window.restoreTrans=false;
+	subscriptions[0]=id;
+	refreshView();
+	return;
+ }
+ if (id=="Getty_All2"||id=="Getty_All3"|| id == "Getty_All4")
 	id="Getty_All";
- mysub=id.split('_');
+	mysub=id.split('_');
 	//$("#gettydefault").html("");
 	newsub=mysub[1];
-	if (newsub=="Upgrade")
-	{
-				console.log("upgrading getty subs");
-		if (subscriptions[0]!="Getty_Entertainment")
-			gettyDefault('Entertainment');
-		if (subscriptions[0]!="Getty_News")
-			gettyDefault('News');
-		if (subscriptions[0]!="Getty_Sports")
-			gettyDefault('Sports');
-		id="Getty_All";
-	}
-	else if (newsub=="All")
+	if (newsub=="All"&&initial)
 	{
 		gettyDefault('Entertainment');
 		gettyDefault('News');
@@ -84,11 +88,7 @@ function completeTransaction(id,initial,storeEmail,storeToken)
 		window.waitingid=['Getty','Sports'];
 
 	}
-	else
-	{
-		gettyDefault(newsub);
-		window.waitingid=mysub;
-	}
+
 	subscriptions[0]=id;
 	subscription_categories();
 	//gettyDefault(id);
@@ -109,6 +109,8 @@ function waitfordone()
 	delete window.doneid;
 	window.restart=false;
 	var divs=dojo.byId("gettydefault").getElementsByTagName('div');
+	// make subscribe menu go away since they already subscribed
+	dojo.style("inappsubscribe","display","none");
 	for (var i=0;i<divs.length; i+=1)
 	{
 		console.log("class="+divs[i].className);
@@ -298,7 +300,16 @@ window.failTransaction=function()
 	}
 	else
 	{	
-	//	refreshView();
+		if(window.restoreTrans)
+		{
+			myalert("Restore purchase failed");
+			window.restoreTrans=false;
+		}
+		else
+		{
+			myalert("Subscription renewal failed");
+		}
+		refreshView();
 
 	}
 	
@@ -324,5 +335,16 @@ function DoSubscribe()
 		gotoView(window.currentView,'InAppSubscribe2');
 	else
 		gotoView(window.currentView,'InAppSubscribe');
+
+}
+
+function restoreTransaction()
+{
+	if (window.platform != "IOS")
+		return;
+	window.restoreTrans=true;	
+		gotoView(window.currentView, 'blankview');
+	usermessage("Contacting App Store to restore your subscription");
+	calliOSFunction("restoreTransaction", [], "onSuccess", "onError");
 
 }

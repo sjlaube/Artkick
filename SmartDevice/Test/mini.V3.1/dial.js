@@ -185,7 +185,7 @@ window.checkDial = function(id)
     state = dialMap[id]["state"];
     //console.log("checkdial for id="+id+" uuid:"+uuid+" state="+state);
     // check for appleTV if an Android phone make it go away
-    if (dialMap[id]["modelName"] == "Apple TV" && window.BrowserDetect.OS.substr(0, 6) != "iPhone")
+    if (dialMap[id]["modelName"] == "Apple TV" && window.platform != "IOS")
         return true;
 	if (uuid=='unknown')
 		return false;

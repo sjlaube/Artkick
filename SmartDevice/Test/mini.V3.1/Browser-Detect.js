@@ -110,6 +110,11 @@ window.BrowserDetect = {
         identity: "iPhone/iPod"
     },
     {
+        string: navigator.userAgent,
+        subString: "iPad",
+        identity: "iPhone/iPod"
+    },
+    {
         string: navigator.platform,
         subString: "Linux",
         identity: "Linux"

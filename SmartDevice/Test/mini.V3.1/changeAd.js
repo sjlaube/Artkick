@@ -70,7 +70,7 @@ function checkload()
 window.placeSubscribe=function()
 {
 			window.adlocation=dojo.byId("gettyPopUpAd").getBoundingClientRect();
-
+			adlocation.height=document.getElementById("gettyPopUpAd").offsetHeight;
 			if (window.computer)
 			{
 				dojo.style("gettyPopUpSubscribe","top",adlocation.height-100+"px");	

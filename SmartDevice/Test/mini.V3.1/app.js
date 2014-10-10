@@ -227,8 +227,9 @@ require(["jquery",
 				window.swipedGetty=0;
 				window.swipedGettySample=0;
 				window.searchoptionexist="";
-				window.newgettysubscription='Getty_All2';
-
+				window.newgettysubscription='Getty_All4';
+				window.restoreTrans=false;
+				window.scrollpos=0;
 
                 function getCookie(c_name)
                 {
@@ -336,13 +337,17 @@ require(["jquery",
                                     //        var mycurrView = currView.getShowingView();
                                     window.email = email;
 									if (window.email.indexOf("@apple.store")>-1)// this is an anonomous Itunes subscriber
+									{
 										window.guest=true;
-                                   
+										$("#MyViewlists").hide();
+										$("#MySearchlists").hide();
+                                   }
                                     window.userID = result.userObj.id;
                                     window.isAdmin = result.userObj.isAdmin;
 									if (runInWebview)
 									{
 										calliOSFunction("setemail", [window.email], "onSuccess", "onError");
+									
 										 
 										try
 										{
@@ -455,7 +460,7 @@ require(["jquery",
 							 window.firstdisplay = false;
 						}
 					}
-                    if (toView == "select_player2")
+                    if (toView == "select_player2" && runInWebview)
                     {
                         if (window.firstupdateplayers)
                         {
@@ -463,7 +468,7 @@ require(["jquery",
                         }
 						ScanNetworkComplete=false;
                         dialUpdate();
-							dojo.byId("scanid").innerHTML="Scanning Local Network";
+						dojo.byId("scanid").innerHTML="Scanning Local Network";
                         dijit.registry.byId("ScanNetwork").show();
 						
 						// after 10 seconds cancel the network search...
@@ -473,7 +478,7 @@ require(["jquery",
 							if (!ScanNetworkComplete)
 								myalert("Having trouble scanning your local network, please try again");
 							
-						}, 10000);
+						}, 30000);
                       //  updatePlayers();
                     }
                     window.currentView = toView;
@@ -900,6 +905,8 @@ require(["jquery",
 										dojo.style("gettyad", "display", "none");
 										if (subscriptions[0]=="Getty_All")  //if they already subscribe to everything don't show subscribe button
 											dojo.style("inappsubscribe","display","none");
+										else
+											dojo.style("inappsubscribe","display","block");
 									}
                                     window.temptarImage = result["curr_image"];
                                     // alert("tar"+window.tarImage);
@@ -2051,32 +2058,32 @@ require(["jquery",
 								dojo.create("option",
 								{
 									value:'30000',
-									label:'Every 30 Seconds'
+									label:'Every 30 Seconds for 1 Hr'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'60000',
-									label:'Every Minute'
+									label:'Every Minute for 1 Hr'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'120000',
-									label:'Every 2 Minutes'
+									label:'Every 2 Minutes for 1 Hr'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'300000',
-									label:'Every 5 Minutes'
+									label:'Every 5 Minutes for 1 Hr'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'600000',
-									label:'Every 10 Minutes'
+									label:'Every 10 Minutes for 1 Hr'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'1800000',
-									label:'Every 30 Minutes'
+									label:'Every 30 Minutes for 1 Hr'
 								},selectauto);
 								dojo.create("option",
 								{
@@ -2091,6 +2098,7 @@ require(["jquery",
 								$(selectauto).val(player["autoInterval"]);
 								
                             }
+							loadmetadata();
                             // now create entries for the dial discovered devices which are not already in players
                             var lix2 = dojo.create("div",
                             {
@@ -2296,11 +2304,15 @@ require(["jquery",
 				//here starts the mainline code of the app
                 window.BrowserDetect.init();
                 console.log("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
+			//	alert("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
+			//	 alert("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
+		//	alert("useragent:"+navigator.userAgent+" platform:"+navigator.platform+" appversion:"+navigator.appVersion);
 				if (window.BrowserDetect.browser=="Firefox")
 				{
 					//FirefoxError();
 				}
 				dojo.style("Intro0","display","none");
+
                 if (window.BrowserDetect.OS.substr(0, 6) != "iPhone")
                 {
                     window.platform = "Android";
@@ -2316,9 +2328,16 @@ require(["jquery",
                 else
                     window.platform = "IOS";
 				window.computer=false;
+				if(window.platform!="IOS")
+				{
+					dojo.style("restoreTransDiv","display","none");
+					dojo.style("subrestore","display","none");
+				}
+			if (window.platform=="IOS")					
+				calliOSFunction("setProducts", ["Getty_All4"], "onSuccess", "onError");
 			if (window.BrowserDetect.OS=="Windows" || window.BrowserDetect.OS == "Mac")	
 				window.computer=true;
-				if (window.computer)
+			if (window.computer)
 				{
 
 					dojo.style("splash","display","none");
@@ -2422,8 +2441,11 @@ require(["jquery",
 					dojo.style('import4', 'display', 'none');
 
                 }
+			//	alert("calling resize");
 				$(window).trigger('resize');
+			//	alert("calling getDefaults");
                 getDefaults();
+			//	alert("calling checkcookie");
                 checkCookie();
                 //      BrowserDetect.init();
                 $(".mblTabBarButtonLabel").each(function(i, obj)
@@ -2448,7 +2470,8 @@ require(["jquery",
                 })
                 dojo.byId("baseurlname").innerHTML = "DB:" + window.base.substring(7, 23);
                 console.log("database:" + window.base);
-                
+             //   alert("Database:"+window.base+" calling updateCats");
+
 					updateCats();
 									
 
@@ -2772,6 +2795,26 @@ require(["jquery",
                     });
                 //	no longer swiping of the grid view just scroll down
                
+			   	on(document, "mousewheel",function(evt)
+				{
+					//console.log("evt="+evt.wheelDelta);
+					if (evt.deltaY!=0)
+					{
+						if (evt.deltaY<0)
+							window.scrollpos=scrollpos+50;
+						else
+							window.scrollpos=scrollpos-50;
+						scrollScreen();
+					}
+					if (evt.deltaX!=0 && currentView=="ImageView")
+					{
+						if (evt.deltaX>0)
+							$('.nextButton').click();
+						else
+							$('.prevButton').click();
+					}
+				})
+			   
 				on(document, "keydown",function(evt)
 				{
 					//console.log("evt="+evt.keyIdentifier);
@@ -2794,25 +2837,37 @@ require(["jquery",
 						else if (evt.keyIdentifier=="Up")
 							window.scrollpos=scrollpos+50;
 						
+						scrollScreen();
 						
-						if (currentView=="PlaylistView")
-							realnode=dojo.byId("listList2").parentNode;
-						else if (currentView=="ImageView")
-							realnode=dojo.byId("ImageList");
-						else if (currentView=="GridView")
-							realnode=dojo.byId("Picturegrid");
-						else if (currentView=="SearchView")
-							realnode=dojo.byId("searchGrid").parentNode;
-						else if (currentView=="select_category")
-							realnode=dojo.byId("test1").parentNode;
-						else	
-							realnode=dojo.byId(currentView);
-						var last = -dojo.position(realnode).h+80;
-						if (scrollpos<=0&&scrollpos>last) //don't scroll past top or bottom
-							dijit.byId(currentView).scrollTo({y:scrollpos})
 					}
 					
 				})
+				
+
+
+
+				function scrollScreen()
+				{
+				if (currentView=="PlaylistView")
+					realnode=dojo.byId("listList2").parentNode;
+				else if (currentView=="IntroA"||currentView=="newLogin"||currentView=="registeruser"||currentView=="TalkToArt")
+					return;
+				else if (currentView=="ImageView")
+					realnode=dojo.byId("ImageList");
+				else if (currentView=="GridView")
+					realnode=dojo.byId("Picturegrid");
+				else if (currentView=="SearchView")
+					realnode=dojo.byId("searchGrid").parentNode;
+				else if (currentView=="select_category")
+					realnode=dojo.byId("test1").parentNode;
+				else	
+					realnode=dojo.byId(currentView);
+					var last = -dojo.position(realnode).h+80;
+					if (scrollpos<=0&&scrollpos>last) //don't scroll past top or bottom
+							dijit.byId(currentView).scrollTo({y:scrollpos})
+				
+				}
+				
 			   dojo.connect(Picturegrid, swipe.end,
                     function(e)
                     {
@@ -3197,7 +3252,7 @@ require(["jquery",
 							popGettyAd();
 							return;
 					}*/
-					if (imageMap[currImage]['gettyDomain']!= undefined && subscriptions[0] !="Getty_All")
+					if (imageMap[currImage]['gettyDomain']!= undefined && imageMap[currImage]['gettyDomain']!= "photos" && subscriptions[0] !="Getty_All")
 					{
 						// looking at a getty image, see if the user is subscribed to it and limit them to 5 unsubscribed images
 						if (subscriptions[0]== undefined)
@@ -3700,7 +3755,7 @@ function refreshView()
     {
         return;
     }
-	if (currentView=="InAppSubscribe"||currentView=="InAppSubscribe2")
+	if (currentView=="InAppSubscribe"||currentView=="InAppSubscribe2"||window.restoreTrans)
 		return;
     dijit.registry.byId('GuestMessage').hide();
     (function(i, s, o, g, r, a, m)
@@ -3808,6 +3863,7 @@ function cleanUp()
     window.spotlightlist = false;
     window.firstupdateplayers = true;
 	window.dialLaunchSerial='none';
+	window.restoreTrans=false;
 	subscriptions=[];
 	newsubscriptions=[];
 }

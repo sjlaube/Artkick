@@ -6,6 +6,8 @@ Copyright 2013,2014 Zwamy, Inc.  All Rights Reserved
 function removePlayerconfirm()
 {
     // pop up dialog to confirm that the user really wants to delete the device.....
+	$('#CancelremoveTVbutton').click(function(){return false;}) // stop click from propogating
+		$('#removeTVbutton').click(function(){return false;}) // stop click from propogating
     dijit.registry.byId("ConfirmTVDelete").show();
 }
 

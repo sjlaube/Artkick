@@ -288,7 +288,12 @@ function gettyload()
 function gettyuserrefresh(newlist)
 {
     console.log("getty user refresh hit, newlist:" + newlist);
-
+	if(window.guest)
+	{
+	    guestmessage();
+        window.guestmenu = true;
+        return;
+	}
 	if(window.searchboxshow)
 	{
 		hidemenu();
