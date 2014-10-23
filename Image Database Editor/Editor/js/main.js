@@ -1031,8 +1031,8 @@ function saveImageAttr()
 	var request = $.ajax({
 		url: baseCmdUrl + cmd,
 		type: 'POST',
-		data: imageData,
-		dataType: 'jsonp',	
+		data: imageData
+		//dataType: 'jsonp' - jsonp does not support post	
 	});
 
 	// callback handler that will be called on success
@@ -1397,18 +1397,22 @@ function handleImagesDropped(data)
 	var viewListId = data.r.attr('id');
 	
 	var cmd = "AddImagesToViewlist";
-	var params = 'listId=' + viewListId +
-				 '&' + buildSelectedImageList() +
-				 '&' + getAuthAPIParams();
 				 
-	//alert(baseCmdUrl + cmd + '?' + params);
+	var imageListData = {
+		listId: viewListId,
+		images: buildSelectedImageListPost(),
+		token: authToken,
+		email: authEmail
+	}
 	
 	var success = false;
 	$("#pendingTransactionDialog").dialog("open");
 	
 	var request = $.ajax({
-		url: baseCmdUrl + cmd + "?" + params,
-		dataType: 'jsonp',	
+		url: baseCmdUrl + cmd,
+		type: 'POST',
+		data: imageListData
+		//dataType: 'jsonp',	
 	});
 
 	// callback handler that will be called on success
@@ -1448,7 +1452,7 @@ function buildSelectedImageListPost()
 	//$(document).find('#divMainImages').html(strImages);
 	var imageArray = [];
 	$('#divMainImages').find('li.selected').each(function () {
-		imageArray.push(parseInt($(this).attr('id'), 10));
+		imageArray.push($(this).attr('id'));
 	});
 	return imageArray;
 }
@@ -1477,9 +1481,7 @@ function removeSelectedImagesFromViewlist()
 {
 	var viewListId = $('#thumbs').attr('viewListId');
 	var cmd = (viewListId == trashId) ? "clearImages" : "RemoveImagesFromViewlist";
-	//var params = 'listId=' + viewListId +
-	//			 '&' + buildSelectedImageList() +
-	//			 '&' + getAuthAPIParams();
+
 	var imageListData = {
 		listId: viewListId,
 		images: buildSelectedImageListPost(),
@@ -1492,8 +1494,8 @@ function removeSelectedImagesFromViewlist()
 	var request = $.ajax({
 		url: baseCmdUrl + cmd,
 		type: 'POST',
-		data: imageListData,
-		dataType: 'jsonp',
+		data: imageListData
+		//dataType: 'jsonp',
 	});
 
 	// callback handler that will be called on success
