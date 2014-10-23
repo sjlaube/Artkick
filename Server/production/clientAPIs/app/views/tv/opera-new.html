@@ -273,7 +273,7 @@
   	 		timeout: 29000,
   	 		error: function(xhr, status, error){
   	 			console.log("timeout error");
-  	 			setTimeout(function(){
+  	 			polling = setTimeout(function(){
   	 				poll(pollRequest);
   	 			},30);
   	 		},
@@ -323,7 +323,7 @@
   	 			   handleAuto(result);
   	 			}
   	 			
-  	 			setTimeout(function(){
+  	 			polling = setTimeout(function(){
   	 				poll(pollRequest);
   	 			},30);
   	 			
@@ -365,11 +365,7 @@
        	  	 
        	  	 success: function(result){
             	if(result["Status"]=="Failure"){
-            		
-            		if(polling!=undefined){
-            			clearTimeout(polling);
-            		}
-            		
+            		            		
             		$('div#screen').css('background-image','none');
             		
             	}
@@ -378,7 +374,7 @@
  
             		   displayImage(result);       		       
         		       if(autoInterval > 0){
-        		       	 setTimeout(function(){
+        		       	 autoRunning = setTimeout(function(){
         		       	 	autoPlay();
         		       	 },autoInterval);
         		       }
@@ -611,12 +607,7 @@
        	  	 },
        	  	 
        	  	 success: function(result){
-            	if(result["Status"]=="Failure"){
-            		
-            		if(polling!=undefined){
-            			clearTimeout(polling);
-            		}
-            		
+            	if(result["Status"]=="Failure"){            		
             		$('div#screen').css('background-image','none');
             		//$("#message").html("Device is not linked correctly!");
             		//$("#message").show();

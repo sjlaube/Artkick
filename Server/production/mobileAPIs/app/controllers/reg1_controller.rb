@@ -6,7 +6,7 @@ class Reg1Controller < ApplicationController
   require 'net/http'
   
   @@userDbId = '63'
-  @@contentDbId = '53'
+  @@contentDbId = '47'
   @@privateRange = 10000000000
   @@dbMeta = {}
 
@@ -18,8 +18,8 @@ class Reg1Controller < ApplicationController
   @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
     :password => 'zw12artistic'}
   
-  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
-    :username => 'artCoder', :password => 'zwamygogo' }
+  @@dbMeta['47'] = {:server => 'ds047539-a0.mongolab.com', :port => 47539, :db_name => 'heroku_app24219881',
+  :username => 'artCoder', :password => 'zwamygogo' }
   
   @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
     :username => 'artCoder', :password => 'zwamygogo'}
@@ -248,7 +248,7 @@ class Reg1Controller < ApplicationController
     user = userSet.to_a[0]
     player = {"account"=>tplayer["account"],"reg_code"=>tplayer["reg_code"],"owner"=>user["id"],"curr_play"=>-1,
       "curr_image"=>-1,"curr_list"=>-1, "nickname"=>params[:nickname],"last_visit"=>-1,"playable_users"=>[],"creation_time"=>currTime,
-      "reg_token"=>SecureRandom.hex, "autoInterval"=>60*1000, "curr_index"=>-1}  
+      "reg_token"=>SecureRandom.hex, "autoInterval"=>10*60*1000, "lastAutoAssign"=>-1, "auto_user"=>user['email'], "curr_index"=>-1}  
     
     # clean up
             
@@ -274,7 +274,7 @@ class Reg1Controller < ApplicationController
     
     
     @@userDb["users"].update({"email"=>params[:email].strip.downcase},{"$push"=>{"owned_clients"=>tplayer["account"]}}) 
-    @@userDb["users"].update({"email"=>params[:email].strip.downcase},{"$set"=>{"autoInterval"=>60*1000}})   
+    @@userDb["users"].update({"email"=>params[:email].strip.downcase},{"$set"=>{"autoInterval"=>10*60*1000}})   
     @@userDb["clients"].insert(player)
     @@userDb["tclients"].remove({"account"=>tplayer["account"]})
     

@@ -43,6 +43,94 @@ class Client2Controller < ApplicationController
     return (Time.new.to_f*1000).to_i
   end
     
+    
+    
+  def getGettyUrl(userEmail,imageObj)
+    if userEmail == nil
+      return imageObj['url']
+    end
+    
+    userSet = @@userDb['users'].find({'email'=>userEmail})
+    if userSet.count == 0
+      return imageObj['url']
+    end   
+    
+    user = userSet.to_a[0] 
+    
+    userSubs = ''
+
+
+      subs = []    
+      if user['test_subs']!=nil and user['test_subs'].length > 0
+         subs = [user['test_subs'][0]]
+      end
+      
+      if user['ios_subs']!=nil
+        user['ios_subs'].each do |prodName|
+          if prodName!=nil and user['ios_subs_detail'][prodName] > utcMillis
+            if prodName == 'Getty_All3'
+              subs = ['Getty_All']
+              break
+            end
+          
+            if not subs.include? prodName
+              subs.push(prodName)
+            end             
+          end
+
+        end
+      end
+   
+   
+   android_subs = ['Getty_Sports','Getty_Entertainment','Getty_News','Getty_Upgrade', 'Getty_All2']
+   android_subs.each do |prodName|
+     if user['android_'+prodName.downcase+'_expire'] != nil and user['android_'+prodName.downcase+'_expire'] > utcMillis
+       
+       if prodName == 'Getty_All2'
+         subs = ['Getty_All']
+         break
+       end
+       
+       if not subs.include? prodName
+         subs.push(prodName)
+       end
+       
+     end
+   end
+       
+   
+      
+      
+      if subs.length > 1
+        subs = ['Getty_All']
+      end
+      
+      if subs.length > 0
+        userSubs = subs[0]
+      end
+
+
+    permitted = false
+      
+    if 'getty_'+imageObj['gettyDomain'].downcase == userSubs.downcase or userSubs == 'Getty_All'
+      permitted = true
+    end
+
+      
+    if imageObj['has_highres'] == true and permitted
+       return imageObj['artkick_url']
+    end
+      
+    if (not permitted) and imageObj['waterMark']!=nil
+       return imageObj['waterMark']
+    end 
+      
+    return imageObj['url'] 
+    
+    
+  end      
+    
+    
 
   def isSubs(userEmail)
     if userEmail == nil
@@ -245,6 +333,7 @@ class Client2Controller < ApplicationController
     
     if params[:next].to_i == 1
        currIndex = (@player["curr_index"].to_i + images.length + 1)%images.length
+          emptyCount = 0
           while true
            currImageIndex = images[currIndex]
            
@@ -252,12 +341,20 @@ class Client2Controller < ApplicationController
              if imageSet.count > 0
                 currImage = imageSet.to_a[0]
                 break
-             end           
+             end   
+           emptyCount += 1
+           if emptyCount == 1
+             currListObj = getListSet(defaultObj['viewlist']).to_a[0]
+             currImage = getImageSet(defaultObj['image']).to_a[0]
+             images = currListObj['images']
+             break
+           end          
            
            currIndex = (currIndex+1)%images.length
          end
     else
        currIndex = (@player["curr_index"].to_i + images.length - 1)%images.length
+        emptyCount = 0
         while true
            currImageIndex = images[currIndex]
            
@@ -265,7 +362,16 @@ class Client2Controller < ApplicationController
              if imageSet.count > 0
                 currImage = imageSet.to_a[0]
                 break
-             end           
+             end 
+             
+           emptyCount += 1
+           if emptyCount == 1
+             currListObj = getListSet(defaultObj['viewlist']).to_a[0]
+             currImage = getImageSet(defaultObj['image']).to_a[0]
+             images = currListObj['images']
+             break
+           end  
+                       
            currIndex = (currIndex+images.length-1)%images.length
             
          end
@@ -290,12 +396,12 @@ class Client2Controller < ApplicationController
          
          
     if @player["curr_user"] != nil
-       @@userDb['users'].update({"email"=>@player["curr_user"]},"$set"=>{"curr_image"=>currImage["id"],"curr_list"=>@player["curr_list"],"curr_list_images"=>images})
+       @@userDb['users'].update({"email"=>@player["curr_user"]},"$set"=>{"curr_image"=>currImage["id"],"curr_list"=>currListObj['id'],"curr_list_images"=>images})
     end         
          
          
     @@userDb['clients'].update({'account'=>params[:deviceMaker]+params[:deviceId]},"$set"=>{'last_visit'=>utctime,
-    'curr_index'=>currIndex,'curr_image'=>currImage["id"]})
+    'curr_index'=>currIndex,'curr_image'=>currImage["id"], 'curr_list'=>currListObj['id'], 'curr_list_images'=>images})
   
                     
     result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"].sub('https://','http://'),"title"=>currImage["Title"],
@@ -309,14 +415,7 @@ class Client2Controller < ApplicationController
     
     if currImage['id'].to_s.include? 'getty'
       @@userDb['gettyImages'].update({'id'=>currImage['id']},{'$set'=>{'last_visit'=>utcMillis()}})
-      if currImage['has_highres'] == true
-       result['imageURL'] = currImage['artkick_url']
-      end
-      
-      if (!isSubs(@player["curr_user"])) and (currImage['waterMark']!=nil)
-        result['imageURL'] = currImage['waterMark']
-      end
-      
+      result['imageURL'] = getGettyUrl(@player["curr_user"], currImage).sub('https://','http://')
       result['caption'] = URI.escape(currImage['Copyright'])
     end  
     
@@ -427,6 +526,8 @@ class Client2Controller < ApplicationController
 
          
          currIndex = (@player["curr_index"].to_i + 1)%images.length
+         
+         emptyCount = 0
          while true
            currImageIndex = images[currIndex]
            
@@ -436,7 +537,14 @@ class Client2Controller < ApplicationController
                 break
              end           
            
-           currIndex = (currIndex+1)%images.length
+            emptyCount += 1
+            if emptyCount == 1
+              currListObj = getListSet(defaultObj['viewlist']).to_a[0]
+              currImage = getImageSet(defaultObj['image']).to_a[0]
+              images = currListObj['images']
+              break
+            end
+            currIndex = (currIndex+1)%images.length
             
          end
          
@@ -453,14 +561,18 @@ class Client2Controller < ApplicationController
          end
          
          @userDb['clients'].update({'account'=>params[:deviceMaker]+params[:deviceId]},"$set"=>{'last_visit'=>utctime,
-           'curr_index'=>currIndex, 'lastMorning'=>lastMorning,  'curr_image'=>currImage["id"]})
+           'curr_index'=>currIndex, 'lastMorning'=>lastMorning,  'curr_image'=>currImage["id"], 'curr_list'=>currListObj['id'], 'curr_list_images'=>images})
   
          if @player["auto_user"] != nil
-           @@userDb['users'].update({"email"=>@player["auto_user"]},"$set"=>{"curr_image"=>currImage["id"],"curr_list"=>@player["curr_list"],"curr_list_images"=>images})
+           @@userDb['users'].update({"email"=>@player["auto_user"]},"$set"=>{"curr_image"=>currImage["id"],"curr_list"=>currListObj['id'],"curr_list_images"=>images})
          end
                     
          result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"].sub('https://','http://'),"title"=>currImage["Title"],
             "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval, "autoInterval"=>@player["autoInterval"].to_i}
+        
+         if @player["orientation"]!=nil
+            result["orientation"] = @player["orientation"]
+         end            
             
          if currImage["Artist Last N"]==nil
             result["caption"]=""
@@ -471,15 +583,7 @@ class Client2Controller < ApplicationController
          
     if currImage['id'].to_s.include? 'getty'
       @@userDb['gettyImages'].update({'id'=>currImage['id']},{'$set'=>{'last_visit'=>utcMillis()}})
-      if currImage['has_highres'] == true
-       result['imageURL'] = currImage['artkick_url']
-      end
-
-
-      if (!isSubs(@player["curr_user"])) and (currImage['waterMark']!=nil)
-        result['imageURL'] = currImage['waterMark']
-      end
-      
+      result['imageURL'] = getGettyUrl(@player["curr_user"], currImage).sub('https://','http://')
       result['caption'] = URI.escape(currImage['Copyright'])
     end          
          
@@ -523,6 +627,7 @@ class Client2Controller < ApplicationController
 
          
          currIndex = (@player["curr_index"].to_i + 1)%images.length
+         emptyCount = 0
          while true
            currImageIndex = images[currIndex]
            
@@ -532,7 +637,13 @@ class Client2Controller < ApplicationController
                 break
              end
 
-           
+           emptyCount += 1
+           if emptyCount == 1
+             currListObj = getListSet(defaultObj['viewlist']).to_a[0]
+             currImage = getImageSet(defaultObj['image']).to_a[0]
+             images = currListObj['images']
+             break
+           end
            currIndex = (currIndex+1)%images.length
             
          end
@@ -545,14 +656,19 @@ class Client2Controller < ApplicationController
          end
          
          @@userDb['clients'].update({'account'=>params[:deviceMaker]+params[:deviceId]},"$set"=>{'last_visit'=>utctime,
-           'curr_index'=>currIndex, 'lastAutoAssign'=>lastAutoAssign,  'curr_image'=>currImage["id"]})
+           'curr_index'=>currIndex, 'lastAutoAssign'=>lastAutoAssign,  'curr_image'=>currImage["id"], 'curr_list'=>currListObj['id'], 'curr_list_images'=>images})
   
          if @player["auto_user"] != nil
-           @@userDb['users'].update({"email"=>@player["auto_user"]},"$set"=>{"curr_image"=>currImage["id"],"curr_list"=>@player["curr_list"],"curr_list_images"=>images})
+           @@userDb['users'].update({"email"=>@player["auto_user"]},"$set"=>{"curr_image"=>currImage["id"],"curr_list"=>currListObj['id'],"curr_list_images"=>images})
          end
                     
          result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"].sub('https://','http://'),"title"=>currImage["Title"],
             "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval, "autoInterval"=>@player["autoInterval"].to_i}
+            
+          
+         if @player["orientation"]!=nil
+            result["orientation"] = @player["orientation"]
+         end              
             
          if currImage["Artist Last N"]==nil
             result["caption"]=""
@@ -604,6 +720,11 @@ class Client2Controller < ApplicationController
     
     result = {"Status"=>"Success","StatusCode"=>100, "imageURL"=>currImage["url"].sub('https://','http://'),"title"=>currImage["Title"],
       "timeStamp"=>image_time_stamp, "stretch"=>stretch, "nextPull"=>pullInterval, "autoInterval"=>@player["autoInterval"].to_i}
+    
+    if @player["orientation"]!=nil
+      result["orientation"] = @player["orientation"]
+    end      
+      
     if currImage["Artist Last N"]==nil
       result["caption"]=""
     else
@@ -612,14 +733,7 @@ class Client2Controller < ApplicationController
     
     if currImage['id'].to_s.include? 'getty'
       @@userDb['gettyImages'].update({'id'=>currImage['id']},{'$set'=>{'last_visit'=>utcMillis()}})
-      if currImage['has_highres'] == true
-       result['imageURL'] = currImage['artkick_url']
-      end
-
-      if (!isSubs(@player["curr_user"])) and (currImage['waterMark']!=nil)
-        result['imageURL'] = currImage['waterMark']
-      end
-      
+      result['imageURL'] = getGettyUrl(@player["curr_user"], currImage).sub('https://','http://')
       result['caption'] = URI.escape(currImage['Copyright'])
     end      
     
@@ -646,10 +760,10 @@ class Client2Controller < ApplicationController
     end   
     
     userObj = userSet.to_a[0]
-    
+    @player = {"curr_user"=>userObj["email"]}
     currImageIndex = defaultObj["image"]
-    if userObj["curr_image"].to_i != -1
-      currImageIndex = userObj["curr_image"].to_i
+    if userObj["curr_image"].to_s != '-1'
+      currImageIndex = userObj["curr_image"]
     end
     
     imageSet =getImageSet(currImageIndex)
@@ -676,14 +790,7 @@ class Client2Controller < ApplicationController
     
     if currImage['id'].to_s.include? 'getty'
       @@userDb['gettyImages'].update({'id'=>currImage['id']},{'$set'=>{'last_visit'=>utcMillis()}})
-      if currImage['has_highres'] == true
-       result['imageURL'] = currImage['artkick_url']
-      end
-
-      if (!isSubs(@player["curr_user"])) and (currImage['waterMark']!=nil)
-        result['imageURL'] = currImage['waterMark']
-      end
-      
+      result['imageURL'] = getGettyUrl(@player["curr_user"], currImage).sub('https://','http://')
       result['caption'] = URI.escape(currImage['Copyright'])
     end      
     

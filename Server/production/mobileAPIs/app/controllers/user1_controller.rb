@@ -5,7 +5,7 @@ class User1Controller < ApplicationController
   require 'net/smtp'
 
   @@userDbId = '63'
-  @@contentDbId = '53'
+  @@contentDbId = '47'
   @@privateRange = 10000000000
   @@dbMeta = {}
 
@@ -17,7 +17,7 @@ class User1Controller < ApplicationController
   @@dbMeta['31'] = {:server => 'ds031948.mongolab.com', :port => 31948, :db_name => 'zwamy', :username => 'leonzwamy', 
     :password => 'zw12artistic'}
   
-  @@dbMeta['51'] = {:server => 'ds051518-a0.mongolab.com', :port => 51518, :db_name => 'heroku_app16777800',
+  @@dbMeta['47'] = {:server => 'ds047539-a0.mongolab.com', :port => 47539, :db_name => 'heroku_app24219881',
     :username => 'artCoder', :password => 'zwamygogo' }
   
   @@dbMeta['53'] = {:server => 'ds053468-a0.mongolab.com', :port => 53468, :db_name => 'heroku_app16778260', 
@@ -52,6 +52,10 @@ class User1Controller < ApplicationController
         return @@userDb['privLists'].find({'id'=>listId})
      end
      
+     if (not listId.is_a? Numeric) and (listId.include? 'getty')
+        return @@userDb['gettyLists'].find({'id'=>listId})
+     end
+     
      if listId.to_i >= @@privateRange
         return @@userDb['privLists'].find({'id'=>listId.to_i})
      end
@@ -65,6 +69,12 @@ class User1Controller < ApplicationController
      if @@contentDb == nil or @@userDb == nil
         connectDb()
      end
+     
+     if (not imageId.is_a? Numeric) and (imageId.include? 'getty')
+        return @@userDb['gettyImages'].find({'id'=>imageId})
+     end
+     
+     
      if imageId.to_i >= @@privateRange
         return @@userDb['privImages'].find({'id'=>imageId.to_i})
      end
@@ -117,7 +127,9 @@ class User1Controller < ApplicationController
     end
   end
   
-  
+ 
+ 
+
   
   def addImageToMyViewlist
    if params[:email]==nil or params[:email].length==0
@@ -177,6 +189,10 @@ class User1Controller < ApplicationController
   
     imageObj = imageSet.to_a[0]
     
+    if imageObj['id'].to_i.to_s == imageObj['id'].to_s
+      imageObj['id'] = imageObj['id'].to_i
+    end
+    
     listSet = getListSet(params[:listId])
     if listSet.count == 0
       result = {"Status"=>"failure", "Message"=>"error, viewlist doesn't exist!"}
@@ -192,13 +208,108 @@ class User1Controller < ApplicationController
        @@userDb['privLists'].update({'id'=>listObj['id'].to_i},{'$set'=>{'coverImage'=>imageObj['thumbnail']}})
     end
     
-    @@userDb['privLists'].update({'id'=>listObj['id'].to_i},{'$push'=>{'images'=>imageObj['id'].to_i}})
+    if not listObj['images'].include? imageObj['id']
+        @@userDb['privLists'].update({'id'=>listObj['id'].to_i},{'$push'=>{'images'=>imageObj['id']}})
     
+        @@userDb['gettyImages'].update({'id'=>imageObj['id']},{'$inc'=>{'refNum'=>1}})      
+    end
+
     result = {"Status"=>"success", "Message"=>"The image has been added to the viewlist!"}
 
     render :json=>result, :callback => params[:callback]
     
  end
+ 
+ def removeImagesFromList
+   if params[:email]==nil or params[:email].length==0
+      result = {"Status"=>"failure", "Message"=>"error, no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+   
+      
+   if params[:listId]==nil or params[:listId].length==0
+      result = {"Status"=>"failure", "Message"=>"error, no viewlist id!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+   
+   
+   if params[:imgIds]==nil or params[:imgIds].length==0
+      result = {"Status"=>"failure", "Message"=>"error, no image ids!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+   
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    
+
+    
+    
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]
+    
+    if not userObj['private_lists'].include? params[:listId].to_i
+      result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
+
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+        
+    listSet = getListSet(params[:listId])
+    if listSet.count == 0
+      result = {"Status"=>"failure", "Message"=>"error, viewlist doesn't exist!"}
+
+      render :json=>result, :callback => params[:callback]
+      return  
+      
+    end
+  
+    listObj = listSet.to_a[0]   
+    
+    
+    params[:imgIds].each do |imgId|
+      if imgId.to_i.to_s == imgId.to_s
+        imgId = imgId.to_i
+      end
+      listObj['images'].delete(imgId)
+    end
+    
+    # bulk update ref num for gettyImages
+    @@userDb['gettyImages'].update({'id'=>{'$in'=>params[:imgIds]}},{'$inc'=>{'refNum'=>-1}},:multi=>true)     
+    
+    
+    #fix thumbnail
+    if listObj['images'].length > 0
+      thumbImg = listObj['images'][0]
+      imageSet = getImageSet(thumbImg)
+      if imageSet.count > 0
+        listObj['coverImage'] = imageSet.to_a[0]['thumbnail']
+      end
+      
+    end
+        
+    @@userDb['privLists'].update({'id'=>listObj['id'].to_i},{'$set'=>{'images'=>listObj['images'], 'coverImage'=>listObj['coverImage']}})
+    result = {"Status"=>"success", "Message"=>"The images are removed from the viewlist!"}
+
+    render :json=>result, :callback => params[:callback]
+    
+ end   
+ 
+ 
  
  
  def removeImageFromMyViewlist
@@ -334,28 +445,52 @@ class User1Controller < ApplicationController
       userObj['private_lists'] = []
     end
     
-    
+     
     if userObj['saved_lists'].include? params[:listId].to_i
       @@userDb['users'].update({'email'=>userObj['email']},{'$pull'=>{'saved_lists'=>params[:listId].to_i}})
       result = {"Status"=>"successs", "Message"=>"the user unsuscribed the viewlist!"}
 
       render :json=>result, :callback => params[:callback]
+      
+      
+      #subscription number
+      @@userDb['viewlist_subs'].update({'id'=>params[:listId].to_i},{'inc'=>{'subsNum'=>-1}})
+      
+      
+      listSet = getListSet(params[:listId])
+      if listSet.count > 0
+        listObj = listSet.to_a[0]
+        # bulk update ref num for gettyImages
+        @@userDb['gettyImages'].update({'id'=>{'$in'=>listObj['images']}},{'$inc'=>{'refNum'=>-1}},:multi=>true)
+        
+      end
+          
       return
     end
     
     
-    if not userObj['private_lists'].include? params[:listId].to_i
-      result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
-
+    listSet = getListSet(params[:listId])
+    if listSet.count == 0
+      result = {"Status"=>"failure", "Message"=>"no viewlist found!"}
       render :json=>result, :callback => params[:callback]
-      return
+      return   
     end
+    
+    listObj = listSet.to_a[0]
+    if listObj['private_user']!= userObj['email']
+      result = {"Status"=>"failure", "Message"=>"error, the viewlist doesn't belong to the user!"}
+      render :json=>result, :callback => params[:callback]
+      return     
+    end
+    
+    # bulk update ref num for gettyImages
+    @@userDb['gettyImages'].update({'id'=>{'$in'=>listObj['images']}},{'$inc'=>{'refNum'=>-1}}, :multi=>true) 
     
     @@userDb['users'].update({'email'=>userObj['email']},{'$pull'=>{'private_lists'=>params[:listId].to_i}})
+    
     @@userDb['privLists'].remove({'id'=>params[:listId].to_i})
     
     result = {"Status"=>"success", "Message"=>"The viewlist has been removed!"}
-
     render :json=>result, :callback => params[:callback]
  end
  
@@ -445,6 +580,7 @@ class User1Controller < ApplicationController
       result =  {"Status"=>"failure","Message"=>"ID server not available!"}
 
       render :json=>result, :callback => params[:callback] 
+      return
     end
         
     listObj['name'] = 'Last Search'
@@ -470,6 +606,7 @@ class User1Controller < ApplicationController
  
  
  def saveAsMyViewlist
+   #subscribe
    if params[:email]==nil or params[:email].length==0
       result = {"Status"=>"failure", "Message"=>"error, no user email!"}
       render :json=>result, :callback => params[:callback]
@@ -520,6 +657,40 @@ class User1Controller < ApplicationController
       return      
     end
     
+    if fromListObj['id'].to_s.include?'getty'
+      currIndex = getIndex('privList')
+      if currIndex == -1
+        result =  {"Status"=>"failure","Message"=>"ID server not available!"}
+        render :json=>result, :callback => params[:callback] 
+        return
+      end
+    
+      copyListObj = {}
+      copyListObj['name'] = 'Saved: '+fromListObj['name']
+      copyListObj['id'] = currIndex
+      copyListObj['datetime_created']=Time.now.utc.to_s
+      copyListObj['private_user']=userObj['email']
+      copyListObj['images'] = fromListObj['images']
+      copyListObj['coverImage'] = fromListObj['coverImage'] 
+      
+      @@userDb['privLists'].insert(copyListObj)
+      if userObj['private_lists'] == nil
+         @@userDb['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[copyListObj['id']]}})
+      else
+         @@userDb['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>copyListObj['id']}})
+      end       
+      
+      # bulk update ref num for gettyImages
+      @@userDb['gettyImages'].update({'id'=>{'$in'=>copyListObj['images']}},{'$inc'=>{'refNum'=>1}},:multi=>true)
+      
+      result = {"Status"=>"success","Message"=>"Viewlist is saved", "listId"=>copyListObj['id'], "name"=>copyListObj['name']}
+      render :json=>result, :callback => params[:callback]       
+      return      
+    end
+
+    
+            
+    
 
     fromUserSet = @@userDb['users'].find({'email'=>fromListObj['private_user']})
     if fromUserSet.count > 0
@@ -533,18 +704,121 @@ class User1Controller < ApplicationController
       
     end
     
+    # subscribe don't update the ref number, because if the source is gone, everything is gone
     
-
+    subsInc = false
     if userObj['saved_lists'] == nil
       @@userDb['users'].update({'email'=>userObj['email']},{'$set'=>{'saved_lists'=>[fromListObj['id']]}})
+      subsInc = true
     else
-      @@userDb['users'].update({'email'=>userObj['email']},{'$push'=>{'saved_lists'=>fromListObj['id']}})
+      @@userDb['users'].update({'email'=>userObj['email']},{'$addToSet'=>{'saved_lists'=>fromListObj['id']}})  
+      if not userObj['saved_lists'].include? fromListObj['id']
+        subsInc  = true
+      end    
     end 
     
-    result = {"Status"=>"success","Message"=>"Viewlist is saved", "listId"=>fromListObj['id']}
+    if subsInc == true
+      subsSet = @@userDb['viewlist_subs'].find({'id'=>fromListObj['id']})
+      if subsSet.count == 0
+        @@userDb['viewlist_subs'].insert({'id'=>fromListObj['id'], 'subsNum'=>1})
+      else
+        @@userDb['viewlist_subs'].update({'id'=>fromListObj['id']},{'$inc'=>{'subsNum'=>1}})
+      end
+    end
+    
+    
+    
+    
+    
+    result = {"Status"=>"success","Message"=>"Viewlist is saved", "listId"=>fromListObj['id'], "name"=>fromListObj['name']}
 
     render :json=>result, :callback => params[:callback] 
  end 
+ 
+ 
+ def saveSearchList
+   #duplicate
+   
+   if params[:email]==nil or params[:email].length==0
+      result = {"Status"=>"failure", "Message"=>"error, no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+      
+
+   
+   if(params[:token]==nil or params[:token].strip=='')
+      result = {"Status"=>"failure", "Message"=>"token is missing!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+    
+    
+    
+
+    
+    
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]
+    
+    if userObj['search_list'] == nil
+      result = {"Status"=>"failure", "Message"=>"the user has no search list!"}
+      render :json=>result, :callback => params[:callback]
+      return      
+    end
+    
+    
+    
+    fromListSet = getListSet(userObj['search_list'])
+    if fromListSet.count == 0
+      result = {"Status"=>"failure", "Message"=>"error, list doesn't exist!"}
+
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+        
+    fromListObj = fromListSet.to_a[0]
+    
+    currIndex = getIndex('privList')
+    if currIndex == -1
+      result =  {"Status"=>"failure","Message"=>"ID server not available!"}
+      render :json=>result, :callback => params[:callback] 
+      return
+    end
+    
+    copyListObj = {}
+    copyListObj['name'] = 'Saved: Last Search'
+    copyListObj['id'] = currIndex
+    copyListObj['datetime_created']=Time.now.utc.to_s
+    copyListObj['private_user']=userObj['email']
+    copyListObj['images'] = fromListObj['images']
+    copyListObj['coverImage'] = fromListObj['coverImage'] 
+    
+    if params[:name] != nil
+      copyListObj['name'] = params[:name]
+    end
+    
+    
+    @@userDb['privLists'].insert(copyListObj)
+    
+    if userObj['private_lists'] == nil
+      @@userDb['users'].update({'email'=>userObj['email']},{'$set'=>{'private_lists'=>[copyListObj['id']]}})
+    else
+      @@userDb['users'].update({'email'=>userObj['email']},{'$push'=>{'private_lists'=>copyListObj['id']}})
+    end 
+    
+    result = {"Status"=>"success","Message"=>"Viewlist is saved", "listId"=>copyListObj['id']}
+
+    render :json=>result, :callback => params[:callback] 
+ end  
+ 
  
  
  
@@ -588,6 +862,7 @@ class User1Controller < ApplicationController
       result =  {"Status"=>"failure","Message"=>"ID server not available!"}
 
       render :json=>result, :callback => params[:callback] 
+      return
     end
         
     listObj = {'name'=>params[:listName], 'datetime_created'=>Time.now.utc.to_s,
@@ -658,6 +933,48 @@ class User1Controller < ApplicationController
     render :json=>result, :callback => params[:callback]
   end
  
+  def getMyGettyList
+   if params[:email]==nil or params[:email].length==0
+      result = {"Status"=>"failure", "Message"=>"error, no user email!"}
+      render :json=>result, :callback => params[:callback]
+      return
+   end
+   
+   
+    if(params[:token]==nil or params[:token].strip=='')
+        result = {"Status"=>"failure", "Message"=>"token is missing!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end
+    
+    
+    userSet = @@userDb['users'].find({"email"=>(params[:email].strip).downcase,'tokens'=>params[:token].strip})
+    if userSet.count == 0
+        result = {"Status"=>"failure", "Message"=>"the user cannot be authenticated!"}
+        render :json=>result, :callback => params[:callback]
+        return
+    end 
+    
+    userObj = userSet.to_a[0]
+ 
+    if userObj['gettyList']==nil
+      result = {"Status"=>"failure", "Message"=>"The user has no getty list!"}
+      render :json=>result, :callback => params[:callback]
+      return
+    end
+    
+    gettyList = {}
+    gettyList['id'] = userObj['gettyList']['id']
+    gettyList['name'] = userObj['gettyList']['name']
+    gettyList['imageNum'] = userObj['gettyList']['images'].length
+    gettyList['coverImage'] = userObj['gettyList']['coverImage']
+    gettyList['private_user'] = userObj['email'] 
+       
+    result = {"Status"=>"success", "viewlist"=>gettyList}
+    render :json=>result, :callback => params[:callback]         
+  end
+ 
+ 
   def getMyViewlists    
    if params[:email]==nil or params[:email].length==0
       result = {"Status"=>"failure", "Message"=>"error, no user email!"}
@@ -698,22 +1015,57 @@ class User1Controller < ApplicationController
       userObj['saved_lists'] = []
     end
     
-    if editable
-      compLists = userObj['private_lists']
-    else
-      compLists = userObj['private_lists']+userObj['saved_lists']
+    if userObj['search_lists'] == nil
+      userObj['search_lists'] = []
     end
     
-        
+    validCats = ['sports', 'news', 'entertainment']
+    if params[:category]!=nil and validCats.include? params[:category]
+      listSet = @@userDb['privLists'].find({'private_user'=>userObj['email'], 'tags'=>params[:category]}).sort({"id"=>-1})
+    elsif params[:category] == 'artkick'
+      listSet = @@userDb['privLists'].find({'id'=>{'$in'=>userObj['search_lists']}}).sort({"id"=>-1})
+    else
+      if editable
+        compLists = userObj['private_lists']
+      else
+        compLists = userObj['private_lists']+userObj['saved_lists']
+      end
+      listSet = @@userDb['privLists'].find({'id'=>{'$in'=>compLists}}).sort({"id"=>-1})
+    end
+    
     viewlists = []
-    compLists.each do |viewlistId|
-      viewlistSet = @@userDb['privLists'].find({'id'=>viewlistId.to_i})
-      if viewlistSet.count >0
-        viewlists.push(viewlistSet.to_a[0])
+    if listSet.count > 0
+      listSet.to_a.each do |listObj|
+        if listObj['private_user'] != userObj['email']
+          pUserSet = @@userDb['users'].find({'email'=>listObj['private_user']})
+          if pUserSet.count > 0
+            listObj['private_name'] = pUserSet.to_a[0]['name']
+          end
+        else
+          listObj['private_name'] = userObj['name']
+        end
+        miniList = {}
+        miniList['id'] = listObj['id']
+        miniList['name'] = listObj['name']
+        miniList['private_name'] = listObj['private_name']
+        miniList['private_user'] = listObj['private_user']
+        miniList['imageNum'] = listObj['images'].length
+        miniList['coverImage'] = listObj['coverImage']
+        
+        if listObj['tags'] != nil
+          miniList['categories'] = listObj['tags']
+        end
+         
+        if listObj['searchTerm'] != nil
+          miniList['searchTerm'] = listObj['searchTerm']
+        end
+        
+        viewlists.push(miniList)
       end
     end
-    
-    quickSort(viewlists,0,viewlists.length-1)
+     
+    #quickSort(viewlists,0,viewlists.length-1)
+        
     result = {"Status"=>"success", "viewlists"=>viewlists}
 
     render :json=>result, :callback => params[:callback]  

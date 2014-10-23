@@ -113,7 +113,7 @@
         		     	result["title"] = result["title"].substring(0,137)+"...";
         		     }
         		           
-        		     var caption = result["title"]+"<br>"+result["caption"];
+        		     var caption = decodeURI(result["title"])+"<br>"+decodeURI(result["caption"]);
 
         		       
         		     if(capShow!=null){

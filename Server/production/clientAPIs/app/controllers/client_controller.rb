@@ -5,18 +5,18 @@ class ClientController < ApplicationController
   require 'json'
   
   
-  #@@server = 'ds047539-a0.mongolab.com'
-  #@@port = 47539
-  #@@db_name = 'heroku_app24219881'
-  #@@username = 'artCoder'
-  #@@password = 'zwamygogo'
- 
-  #singleNode2
-  @@server = 'ds053468-a0.mongolab.com'
-  @@port = 53468
-  @@db_name = 'heroku_app16778260'
+  @@server = 'ds047539-a0.mongolab.com'
+  @@port = 47539
+  @@db_name = 'heroku_app24219881'
   @@username = 'artCoder'
   @@password = 'zwamygogo'
+ 
+  #singleNode2
+  #@@server = 'ds053468-a0.mongolab.com'
+  #@@port = 53468
+  #@@db_name = 'heroku_app16778260'
+  #@@username = 'artCoder'
+  #@@password = 'zwamygogo'
   
   
   def utcMillis

@@ -57,11 +57,12 @@ Userpages::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   match 'registration/v1.0/getRegCode'=> 'reg1#getRegCode'
   match 'registration/v1.0/getRegStatus'=> 'reg1#getRegStatus'
-  
+  match 'registration/v1.0/deviceReg'=> 'reg#deviceReg'
   
   match 'api/v1.1/client/getDefault' => 'client1#getDefault'
   match 'api/v1.1/client/getViewlist4' => 'client1#getViewlist4'
   match 'api/v1.1/client/getViewlist5' => 'client1#getViewlist5'
+  match 'api/v1.1/client/getViewlist6' => 'client1#getViewlist6'
   match 'api/v1.1/client/getUserStatus'=> 'client1#getUserStatus'
   match 'api/v1.1/client/selectPlayers' => 'client1#selectPlayers'
   match 'api/v1.1/client/getSelectedPlayers' => 'client1#getSelectedPlayers'
@@ -72,19 +73,26 @@ Userpages::Application.routes.draw do
   match 'api/v1.1/client/regUser' => 'client1#regUser'
   match 'api/v1.1/client/login' => 'client1#login'
   match 'api/v1.1/client/emailPassword' => 'client1#emailPassword'
+  match 'api/v1.1/client/setOrientation' => 'client1#setOrientation'
   match 'api/v1.1/client/setAuto' => 'client1#setAuto'
   match 'api/v1.1/client/verifyUser' => 'client1#verifyUser'
   match 'api/v1.1/client/removeUser' => 'client1#removeUser'
+  match 'api/v1.1/client/likeImage' => 'client1#likeImage'
+  match 'api/v1.1/client/commentImage' => 'client1#commentImage'
+  match 'api/v1.1/client/deleteComment' => 'client1#deleteComment'
   
   
+  match 'api/v1.1/user/removeImagesFromList' => 'user1#removeImagesFromList'
+  match 'api/v1.1/user/saveSearchList' => 'user1#saveSearchList'
   match 'api/v1.1/user/saveAsMyViewlist' => 'user1#saveAsMyViewlist'
   match 'api/v1.1/user/getMyViewlists' => 'user1#getMyViewlists'
+  match 'api/v1.1/user/getMyGettyList' => 'user1#getMyGettyList'
   match 'api/v1.1/user/removeMyViewlist' => 'user1#removeMyViewlist'
   match 'api/v1.1/user/createMyViewlist' => 'user1#createMyViewlist'
   match 'api/v1.1/user/addImageToMyViewlist' => 'user1#addImageToMyViewlist'
   match 'api/v1.1/user/search' => 'user1#search'
-  
-  
+  match 'api/v1.1/user/renameMyViewlist' => 'user1#renameMyViewlist'
+
   match 'api/v1.1/content/allCategories' =>  'content1#allCategories'
   match 'api/v1.1/content/allCategories2' =>  'content1#allCategories2'
   match 'api/v1.1/content/getViewlistsByCategory' => 'content1#getViewlistsByCategory'
@@ -97,8 +105,10 @@ Userpages::Application.routes.draw do
   match 'api/v1.1/player/addUserToPlayer' => 'player1#addUserToPlayer'
   match 'api/v1.1/player/removePlayer' => 'player1#removePlayer'
   
+  match 'api/v1.1/client/setresolution' => 'client1#setresolution'
   
   match 'api/v1.1/reg/userReg' => 'reg1#userReg'
+
   
   match ':controller(/:action(/:id))(.:format)'
 
