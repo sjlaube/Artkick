@@ -1,20 +1,20 @@
 {
 	"items": [
-		{"name":"Major league baseball, bestof, last 7 days, horizontal","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof Major league baseball"},
-		{"name":"Yankees , last 24 hours, horizontal","segment":"sports", "date":"1D",  "orientation":"horizontal", "query":"Yankees"},
-		{"name":"NCAA college football, bestof, last 7 days, horizontal","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof NCAA college football"},
-		{"name":"Florida State Seminoles, NCAA college football, last 7 days, horizontal","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"Florida State Seminoles NCAA college football"},		
-		{"name":"Superbowl Halftime Show, last 12 months, horizontal","segment":"sports", "date":"12M",  "orientation":"horizontal", "query":" Superbowl Halftime Show"},
-		{"name":"bestof NFL 7D horizontal","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof NFL"},
-		{"name":"Dallas Cowboys NFL last 7 days horizontal","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"Dallas cowboys NFL"},
-		{"name":"US PGA tour last 30 days horizontal bestof","segment":"sports", "date":"30D",  "orientation":"horizontal", "query":"bestof US PGA tour"},
-		{"name":"Extreme sports bestof last 12 months horizontal","segment":"sports", "date":"12M",  "orientation":"horizontal", "query":"bestof extreme sports"},
-		{"name":"Soccer, bestof, last 7 days, horizontal","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof soccer"},
-		{"name":"All Real Madrid, soccer, horizontal","segment":"sports", "date":"any",  "orientation":"horizontal", "query":"Real Madrid"},
-		{"name":"Stock car racing, horizontal, last 7 days","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"stock car racing"},
-		{"name":"Tennis, bestof, horizontal, last 7 days","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof tennis"},
-		{"name":"NBA, bestof, horizontal, last 12 months","segment":"sports", "date":"12M",  "orientation":"horizontal", "query":"bestof NBA"},
-		{"name":"Sports, bestof, horizontal, last 12 months","segment":"sports", "date":"12M",  "orientation":"horizontal", "query":"bestpix"},
-		{"name":"F1 motor sports, horizontal, last 30 days","segment":"sports", "date":"30D",  "orientation":"horizontal", "query":"F1 motor sports"}	
+		{"name":"Best of Major League Baseball","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof Major league baseball"},
+		{"name":"Yankees","segment":"sports", "date":"1D",  "orientation":"horizontal", "query":"Yankees"},
+		{"name":"Best of NCAA College Football","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof NCAA college football"},
+		{"name":"Florida State Seminoles","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"Florida State Seminoles NCAA college football"},		
+		{"name":"Superbowl Halftime Show","segment":"sports", "date":"12M",  "orientation":"horizontal", "query":" Superbowl Halftime Show"},
+		{"name":"Best of NFL","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof NFL"},
+		{"name":"Dallas Cowboys","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"Dallas cowboys NFL"},
+		{"name":"Best of US PGA Tour","segment":"sports", "date":"30D",  "orientation":"horizontal", "query":"bestof US PGA tour"},
+		{"name":"Best of Extreme Sports","segment":"sports", "date":"12M",  "orientation":"horizontal", "query":"bestof extreme sports"},
+		{"name":"Best of Soccer","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof soccer"},
+		{"name":"All Real Madrid","segment":"sports", "date":"any",  "orientation":"horizontal", "query":"Real Madrid"},
+		{"name":"Stock Car Racing","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"stock car racing"},
+		{"name":"Best of Tennis","segment":"sports", "date":"7D",  "orientation":"horizontal", "query":"bestof tennis"},
+		{"name":"Best of NBA","segment":"sports", "date":"12M",  "orientation":"horizontal", "query":"bestof NBA"},
+		{"name":"Best of Sports","segment":"sports", "date":"12M",  "orientation":"horizontal", "query":"bestpix"},
+		{"name":"F1 Motor Sports","segment":"sports", "date":"30D",  "orientation":"horizontal", "query":"F1 motor sports"}	
 	]
 }

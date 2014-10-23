@@ -639,7 +639,7 @@ function playerDetail(id)
 	if (!currentplayer['orientation'])
         currentplayer["orientation"] = 'horizontal';
     $("#slideshowvalue").val(currentplayer["autoInterval"]);
- 
+	dojo.byId("devicepencil").setAttribute("src","images/pencil2-gray.png");
 	window.fill=currentplayer["stretch"];
 	if (window.fill)
 		dojo.byId("fillswitch4").setAttribute("src","images/checkbox_off.png");
@@ -660,7 +660,7 @@ function playerDetail(id)
 	 $("#orientationValue2").val(currentplayer["orientation"]);
     //document.getElementById("detailshowing").setAttribute("src", player["curr_image"]["icon"]);
     //dijit.registry.byId("detailheading").set("label", currentplayer["nickname"]+" Details");
-    dojo.byId("playerDetailsName").innerHTML = 'Details for: ' + currentplayer["nickname"];
+    dojo.byId("playerDetailsName").value = currentplayer["nickname"];
 	if (currentplayer["account"].substr(0,10)=="chromecast")
 		dojo.style("Orientation", "display", "block");
 	else
@@ -821,4 +821,50 @@ window.playerClick = function(id, quiet)
 	rememberSelectPlayers(true);
 	//updatePlayers();
 	loadmetadata();
+}
+
+function devicenamechange()
+{
+
+	dojo.byId("devicepencil").setAttribute("src","images/pencil2.png");
+}
+
+function renameDevice()
+{
+	//myalert("renaming "+window.currentplayer['account']+" to "+dojo.byId("playerDetailsName").value);
+	
+
+    var key = window.currentplayer["account"];
+	var newname = dojo.byId("playerDetailsName").value;
+    dojo.io.script.get(
+    {
+        url: base + "client/renamePlayer?email=" + window.email + "&snumber=" + key + "&name=" + newname + "&token=" + window.token,
+        callbackParamName: "callback",
+        timeout: 8000,
+        trytimes: 5,
+        error: function(error)
+        {
+            console.log("timeout!setStretch" + url);
+            this.trytimes--;
+            if (this.trytimes > 0)
+            {
+                dojo.io.script.get(this);
+            }
+            else
+            {
+                alert("Network problem22d. Please check your connection and restart the app.");
+            }
+        },
+        load: function(result)
+        {
+            usermessage("Renamed '"+window.currentplayer['nickname']+"' to '"+ newname+"'");
+            playerlist[window.currentplayerID]["originalname"]=window.currentplayer['nickname'];
+			playerlist[window.currentplayerID]["nickname"]=newname;
+			dojo.byId("ptitle"+playerlist[window.currentplayerID]["account"]).innerHTML=newname;
+
+           
+           
+        }
+    });
+
 }

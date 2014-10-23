@@ -35,23 +35,23 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
 ['.*','',['WebContent-V3.0/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script>
     <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="mini.V3.11/app.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Browser-Detect.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/UserViewlists.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/PlayerFunctions.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/UserAccounts.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Feedback.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Search.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/backbutton.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/registrationhelp.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Photoimport.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/social.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/getty.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Premium.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Editviewlist.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/changeAd.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/dial.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.11/getty-default.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/app.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/Browser-Detect.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/UserViewlists.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/PlayerFunctions.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/UserAccounts.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/Feedback.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/Search.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/backbutton.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/registrationhelp.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/Photoimport.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/social.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/getty.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/Premium.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/Editviewlist.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/changeAd.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.1/dial.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.1/getty-default.js?V1.3"></script>
 
     <script type="text/javascript">
         require([
@@ -111,7 +111,7 @@ Copyright 2013, 2014 Zwamy, Inc.  All Rights Reserved
         @import "WebContent-V3.0/themes/claro/claro.css";
         @import "WebContent-V3.0/lib/shapes/shapes.css";
         @import "WebContent-V3.0/app.css";
-        @import "mini.V3.11/Artkick.css";
+        @import "mini.V3.1/Artkick.css";
     </style>
 
     <script>
@@ -1039,81 +1039,75 @@ Save your favorite images in personal viewlists and share them with your friends
             <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </div>
         </div>
-		<div style="text-align:center">
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
             <div id="useraccount" style="color:white">User: test@test.net
             </div>
-
-
-            <button data-dojo-type="dojox/mobile/Button" style="background-color:#00C7FF!important;color:white;width:100px;margin-top:15px;margin-bottom:15px" onclick="dologout">
-                Logoff</button>
-
-        </div>
-		<div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
-		<div style="text-align:center">
-            <div style="color:white;margin-top:15px;margin-bottom:20px">
-                High Resolution Images</div>
-
-			<img id="hires-switch" src="images/checkbox_off.png" class="checkboxclass"onclick="hiresswitch()">
-            <span style="color:white;position:relative;top:-7px">
-                Turn on Hi-Res Images</span>
-
-
-			
-			<br>
-            <br>
-            <a style="color:white">Enabling this option will use higher resolution images on your phone/tablet increasing data use and slowing image loading.</a>
-            <br>
-            <br>
-		</div>
         </div>
         <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
-				<div style="text-align:center">
-            <label style="color:white;">
+            <span data-dojo-type="shapes/Text" style="font-size: 14px; color:white;position: relative; top: 0em; left: 5px;">This will log you out of ArtKick.  You will have to login again when you want to use ArtKick.</span>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="background-color:#00C7FF!important;position: relative;  top:0em;left: 85px;width:100px" onclick="dologout">
+                Logoff</button>
+            <br>
+            <br>
+        </div>
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+            <label style="position: relative;color:white; left: 4em;">
                 Reset Password</label>
             <br>
             <br>
-            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeOldPW" placeHolder="&nbsp;&nbsp;Old Password" style=" width: 250px;"></input>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeOldPW" placeHolder="&nbsp;&nbsp;Old Password" style="position: relative; left: 1em; width: 250px;"></input>
             <br>
             <br>
-            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeNewPW1" placeHolder="&nbsp;&nbsp;New Password" style=" width: 250px;"></input>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeNewPW1" placeHolder="&nbsp;&nbsp;New Password" style="position: relative; left: 1em; width: 250px;"></input>
             <br>
             <br>
-            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeNewPW2" placeHolder="&nbsp;&nbsp;Verify New Password" style=" width: 250px;"></input>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeNewPW2" placeHolder="&nbsp;&nbsp;Verify New Password" style="position: relative; left: 1em; width: 250px;"></input>
             <br>
             <br>
-            <button data-dojo-type="dojox/mobile/Button" onclick="changePW()" style="background-color:#00C7FF!important;margin-bottom:10px">
+            <button data-dojo-type="dojox/mobile/Button" onclick="changePW()" style="background-color:#00C7FF!important;position: relative; left: 55px;">
                 Submit Password Change</button>
         </div>
-		</div>
 		     <div data-dojo-type="dojox/mobile/RoundRect" id="restoreTransDiv" style="background-color:black!important;border: 1px solid gray!important;">
-			 		<div style="text-align:center">
-            <span data-dojo-type="shapes/Text" style="font-size: 14px; color:white">Click here to restore your subscriptions</span>
+            <span data-dojo-type="shapes/Text" style="font-size: 14px; color:white;position: relative; top: 0em; left: 5px;">Click here to restore your subscriptions</span>
             <br>
             <br>
-            <button data-dojo-type="dojox/mobile/Button" style="background-color:#00C7FF!important;width:100px;margin-bottom:10px" onclick="restoreTransaction">
+            <button data-dojo-type="dojox/mobile/Button" style="background-color:#00C7FF!important;position: relative;  top:0em;left: 85px;width:100px" onclick="restoreTransaction">
                 Restore Subscriptions</button>
             <br>
             <br>
         </div>
-		</div>
-		<div style="text-align:center">
         <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
-            <label style="color:white">
+            <label style="position: relative; left: 4em;color:white">
                 Delete Account</label>
             <br>
             <br>
-            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="deleteAcctEmail" placeHolder="&nbsp;&nbsp;Email" style="width: 250px;"></input>
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="deleteAcctEmail" placeHolder="&nbsp;&nbsp;Email" style="width: 250px; position: relative; left: 1em;"></input>
             <br>
             <br>
-            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="deleteAcctPW" placeHolder="&nbsp;&nbsp;Password" style="width: 250px;"></input>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="deleteAcctPW" placeHolder="&nbsp;&nbsp;Password" style="width: 250px; position: relative; left: 1em;"></input>
             <br>
             <br>
-            <button data-dojo-type="dojox/mobile/Button" onclick="deleteAccount()" style="background-color:#00C7FF!important;margin-bottom:10px">
+            <button data-dojo-type="dojox/mobile/Button" onclick="deleteAccount()" style="background-color:#00C7FF!important;position: relative; left: 60px;">
                 Delete Artkick Account</button>
         </div>
-		</div>
 
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+            <label style="position: relative; left: 3em;color:white">
+                High Resolution Images</label>
+            <br>
+            <br>
+            <label style="vertical-align: middle; text-align: left; float: left;color:white">
+                Turn on Hi-Res Images</label>
+            <button data-dojo-type="dojox/mobile/ToggleButton" id="hires-switch" style="left: 1em;color:white" data-dojo-props='label:"Not Active"' onclick="hiresswitch()"></button>
+            <br>
+            <br>
+            <a style="color:white">Enabling this option will use higher resolution images on your phone/tablet increasing data use and slowing image loading.</a>
+            <br>
+            <br>
 
+        </div>
         <br>
         <br>
         <br>
@@ -1399,7 +1393,7 @@ Save your favorite images in personal viewlists and share them with your friends
         <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">
         <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
         <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: gray;">
-Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
+Artkick Version 3.1 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
   </span>
         <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: gray;">
             Server is
@@ -1458,7 +1452,7 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
                 <br>We look forward to hearing from you.
                 <br>
             </div>
-            <textarea data-dojo-type="dojox/mobile/TextArea" id="ArtTextx" placeHolder="&nbsp;&nbsp;Enter feedback here" style="width:250px;height:130px; left: 1em; position: relative;"></textarea>
+            <textarea data-dojo-type="dojox/mobile/TextArea" id="ArtText" placeHolder="&nbsp;&nbsp;Enter feedback here" style="width:250px;height:130px; left: 1em; position: relative;"></textarea>
             <br>
             <br>
             <button data-dojo-type="dojox/mobile/Button" style="width: 100px; position: relative; left: 2em;" onclick="SendToArt()">
@@ -1504,7 +1498,7 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
 		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
         </div>
 
-        <div class="wipestyle" onclick="hidemenu();dijit.registry.byId('newFeedback').show()">
+        <div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')">
 		<img src="images/menu/contact.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Send Feedback
         </div>
         <div class="wipestyle" onclick="callHelp()">
@@ -1528,7 +1522,7 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
         <div class="wipestyle" onclick="gotoView(window.currentView,'AccountSettings')">
 		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
         </div>
-        <div class="wipestyle" onclick="hidemenu();dijit.registry.byId('newFeedback').show()">
+        <div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')">
 		<img src="images/menu/contact.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Send Feedback
         </div>
         <div class="wipestyle" onclick="callHelp()">
@@ -1556,7 +1550,7 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
 		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
         </div>
 
-        <div class="wipestyle" onclick="hidemenu();dijit.registry.byId('newFeedback').show()">
+        <div class="wipestyle" onclick="gotoView(window.currentView,'TalkToArt')">
 		<img src="images/menu/contact.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Send Feedback
         </div>
 
@@ -1880,22 +1874,6 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
         <button data-dojo-type="dojox/mobile/Button" style="margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('RenameViewlist').hide()">Cancel</button>
         <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-right:10px;background-color: #00C7FF!important" onclick="RenameMyViewlist('OK')">Rename</button>   
    </div>
-   
-       <div data-dojo-type="dojox/mobile/SimpleDialog" id="newFeedback" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
-      
-		Send Feedback
-        <br>
-		Do you have questions or comments for us?
-		<br>
-		We'd love to hear from you!
-		<textarea data-dojo-type="dojox/mobile/TextArea" id="ArtText" placeHolder="&nbsp;&nbsp;Enter feedback here" style="width:85%;height:100px;margin-top:10px"></textarea>
-        <br>
-        <br>
-
-        <button data-dojo-type="dojox/mobile/Button" style="width:75px;margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('newFeedback').hide()">Cancel</button>
-        <button data-dojo-type="dojox/mobile/Button" style="width:75px;margin-bottom:10px;margin-left:10px;background-color: #00C7FF!important" onclick="SendToArt()">Send</button>   
-	
-   </div>
 
     <div id="SearchView" data-dojo-type="dojox/mobile/ScrollableView">
         <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="color:white;font-size: 14px; height:100px">Search Results&nbsp;&nbsp;&nbsp;
@@ -1988,18 +1966,14 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
             </div>
 
         </div>
-		<div class='wificlass' style="text-align:center">Settings</div>
-		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Device Name:</div>
-        <input type-"text" style="margin-top:10px;width:250px;background-color:white;position:relative;left:35px;text-size:14px;color:black" id="playerDetailsName" 
-		onkeydown="if (event.keyCode == 13) renameDevice()" onclick="devicenamechange()">
-            
-        </input>
-		<img src="images/pencil2-gray.png" id="devicepencil" class="checkboxclass" onclick="renameDevice()" style="margin-left:45px;height:22px;width:22px;top:5px">
+        <div style="position:relative;left:10px;text-size:14px;color:white" id="playerDetailsName">
+            Name of TV
+        </div>
 
-        <div id="AutoPlaySelect">
-            
-		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Slideshow Speed:</div>
-            <select style="position: relative; left:35px; text-size:10px;margin-top:10px;width:175px;border-style:none;background-color:#504E5B;color:#00C7FF;-webkit-appearance: none;" id="slideshowvalue" onchange="setAuto(this.value)">
+        <div id="AutoPlaySelect" style="position:relative;left:10px;top:15px;color:white">
+            <label>
+                Slideshow speed</label>
+            <select style="position: relative; left:5px; text-size:10px" id="slideshowvalue" onchange="setAuto(this.value)">
                 <option value=0 id="0">
                     Off</option>
                 <option value=-1 id="-1">
@@ -2021,11 +1995,11 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
                 <option value=43200000 id="43200000">
                     Every 12 Hours</option>
             </select>
-			<img src="images/chooser_arrow.png"  style="position:relative;width:12px;left:17px">
         </div>
-        <div id="Orientation" style="display:none;">
-		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Image Orientation</div>
-            <select <select style="position: relative; left:35px; text-size:10px;margin-top:10px;border-style:none;background-color:#504E5B;color:#00C7FF" id="orientationValue2" onchange="setOrientation(this.value)">
+        <div id="Orientation" style="display:none;color:white;position:relative;left:10px;top:25px">
+            <label>
+                Orientation</label>
+            <select style="position: relative; left:48px;text-size:10px" id="orientationValue2" onchange="setOrientation(this.value)">
                 <option value='horizontal' selected="selected">
                     Horizontal</option>
                 <option value='vertical1'>
@@ -2034,31 +2008,40 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
                     Vertical-90
             </select>
         </div>
-
-		<div style="text-align:left;margin-top:45px;margin-left:10px">
-           	<img id="fillswitch4" src="images/checkbox_off.png" class="checkboxclass"onclick="fillswitch()">
-            <span style="color:gray;position:relative;top:-7px">
-                Display original aspect ratio</span>
-		</div>
-		<div style="text-align:left;margin-top:30px;margin-left:10px">
-           	<img id="fillswitch5" src="images/checkbox_off.png" class="checkboxclass"onclick="showlogo()">
-            <span style="color:gray;position:relative;top:-7px">
-                Display Logo</span>
-		</div>
-		<div style="text-align:left;margin-top:30px;margin-left:10px">
-           	<img id="fillswitch6" src="images/checkbox_on.png" class="checkboxclass"onclick="showcaptions()">
-            <span style="color:gray;position:relative;top:-7px">
-                Display Captions</span>
-		</div>
-
-		
-		<div class='wificlass' style="height:7px;margin-top:20px"></div>
-		<div style="text-align:left;margin-top:30px;margin-left:10px">
-           	<img  src="images/Trash-red.png" class="checkboxclass" onclick="removePlayerconfirm()">
-            <span style="color:red;position:relative;top:-7px" onclick="removePlayerconfirm()">
-                Delete this Device</span>
-		</div>
-
+        <div id="stretch" style="color:white;position:relative;left:10px;top:35px">
+            <label >
+                Stretch</label>
+            <select style="position: relative; left:85px;text-size:10px" id="fillswitch3" onchange="fillswitch()">
+                <option value='false' selected="selected">
+                    Off</option>
+                <option value='true'>
+                    On
+            </select>
+        </div>
+        <div id="captions" style="display:none;color:white;position:relative;left:10px;top:45px">
+            <label>
+                Show Captions</label>
+            <select style="position: relative; left:23px;text-size:10px" id="captionswitch" onchange="showcaptions()">
+                <option value='Yes' selected="selected">
+                    Yes</option>
+                <option value='No'>
+                    No
+            </select>
+        </div>
+		<div id="showlogo" style="display:none;color:white;position:relative;left:10px;top:55px">
+            <label>
+                Show Logo</label>
+            <select style="position: relative;left:55px;text-size:10px" id="logoswitch" onchange="showcaptions()">
+                <option value='Yes' selected="selected">
+                    Yes</option>
+                <option value='No'>
+                    No
+            </select>
+        </div>
+        <button data-dojo-type="dojox/mobile/Button" style=";position: relative; left: 40px;top:75px;width:80%;background-color:gray !important;border-style:none!important;" onclick="adduserPlayer()">
+            Add user to this Device</button>
+        <button data-dojo-type="dojox/mobile/Button" style=";position: relative; left: 40px;top:105px;width:80%;background-color:red !important;border-style:none!important;" onclick="removePlayerconfirm()">
+            Delete this Device</button>
 
     </div>
     <div data-dojo-type="dojox/mobile/SimpleDialog" id="ConfirmTVDelete" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
