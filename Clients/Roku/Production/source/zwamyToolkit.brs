@@ -277,6 +277,755 @@ Sub DisplayWithScreen()
 	
 End Sub
 
+
+Sub displayRegScreen() As Object
+    regscreen = CreateObject("roCodeRegistrationScreen")
+    regscreen.SetMessagePort(CreateObject("roMessagePort"))
+
+    regscreen.SetTitle("")
+    regscreen.AddParagraph("Please link your Roku player to your account")
+    regscreen.AddFocalText(" ", "spacing-dense")
+    regscreen.AddFocalText("Artkick connects this TV to an IOS or Android phone or tablet.", "spacing-dense")
+    regscreen.AddFocalText("Install Artkick from the the App Store or Google Play.", "spacing-dense")
+    regscreen.AddFocalText("Goto Settings/Connect New TV/Connect New Roku", "spacing-dense")
+    regscreen.AddFocalText("and enter this code to activate:", "spacing-dense")
+    regscreen.SetRegistrationCode("retrieving code...")
+    regscreen.AddParagraph("This screen will automatically update as soon as your activation completes")
+    'regscreen.AddButton(0, "Get a new code")
+    'regscreen.AddButton(1, "Back")
+    regscreen.Show()
+    return regscreen
+End Sub
+
+
+Sub dialRegDevice()
+  dialUrl = "http://evening-garden-3648.herokuapp.com/registration/v1.0/deviceReg"
+  httpDial = NewHttp(dialUrl)
+  httpDial.AddParam("deviceId",m.sn)
+  httpDial.AddParam("deviceMaker",m.DeviceMaker)
+  httpDial.AddParam("email", m.dialemail)
+  httpDial.AddParam("nickname", m.dialnickname)
+  dialPort = httpDial.Http.GetPort()
+  httpDial.Http.AsyncGetToString()
+  startTime = CreateObject("roDateTime").asSeconds()
+  timeout = 15
+  tryTimes = 5
+  regSuccess = false
+  looping = true
+
+  while looping
+    currTime = CreateObject("roDateTime").asSeconds()
+    if currTime - startTime > timeout
+       print "time out"
+       if tryTimes > 0
+         startTime = currTime
+         httpDial.Http.AsyncCancel()
+         httpDial.Http.AsyncGetToString()
+         tryTimes = tryTimes - 1
+       else
+         looping = false
+       end if
+    end if
+    dialEvent = dialPort.GetMessage()
+    if dialEvent <> invalid
+       if type(dialEvent) = "roUrlEvent"
+          response = dialEvent.GetString()
+          print "dialReg | response: " + response  
+          result = ParseJSON(response)
+          if result = invalid
+             print "json invalid!"
+          else
+             if result.Status = "success"
+                regSuccess = true
+                looping = false
+             end if  
+          end if
+       end if
+    end if
+  end while
+
+  if regSuccess
+    poll(false)
+  end if
+End Sub
+
+Sub Poll(isSaver)
+  print "start polling"
+  m.pollBase =  "http://shrouded-chamber-7349.herokuapp.com/poll"
+  m.ImageUrlBase = "http://sleepy-scrubland-3038.herokuapp.com/client/v1.0"
+  m.UrlGetCurrentImage = m.ImageUrlBase + "/currentImage"
+  m.UrlGetNextImage = m.ImageUrlBase + "/nextImage"
+  m.UrlGetRegCode  = "http://evening-garden-3648.herokuapp.com/registration/v1.0/getRegCode"
+  m.inReg = false
+
+  capDuration = 6
+  regDuration = 900
+  autoInterval = 0
+  autoStamp = -1
+  magicStamp = -1
+  magicCount = 0
+  tickleStamp = -1
+  tickleInterval = 200
+ 
+  'init
+  'determine screen ratio
+  deviceInfo = CreateObject("roDeviceInfo")
+  screenSize = deviceInfo.GetDisplaySize()
+  screenRatio = screenSize.w / screenSize.h
+  print "Screen Ratio: " ; screenRatio
+  
+	
+  'set up screen
+  canvas = DisplaySetupCanvas(screenSize)
+	
+  httpImage = CreateObject("roUrlTransfer")      'an http client for image download
+  httpImage.SetPort(CreateObject("roMessagePort")) 'add a port for the http image client
+  httpPoll = NewHttp(m.pollBase)  'an http client for poll 
+  httpPoll.AddParam("user",  m.deviceMaker + m.sn) 'add identifier
+
+  httpCurr = NewHttp(m.UrlGetCurrentImage)
+  httpCurr.AddParam("deviceId",m.sn)
+  httpCurr.AddParam("deviceMaker",m.DeviceMaker)
+
+  httpPrev = NewHttp(m.UrlGetNextImage)
+  httpPrev.AddParam("deviceId",m.sn)
+  httpPrev.AddParam("deviceMaker",m.DeviceMaker)
+  httpPrev.AddParam("next", "0")
+
+
+  httpNext = NewHttp(m.UrlGetNextImage)
+  httpNext.AddParam("deviceId",m.sn)
+  httpNext.AddParam("deviceMaker",m.DeviceMaker)
+  httpNext.AddParam("next", "1")
+
+  httpReg = NewHttp(m.UrlGetRegCode)
+  httpReg.AddParam("deviceId",m.sn)
+  httpReg.AddParam("deviceMaker",m.DeviceMaker)
+
+
+  
+  tmpImageFileBase = "tmp:/myImage"
+  tmpImageFile = "tmp:/myImage1.jpg"
+  fileVersion = 0
+	
+  'set up fonts
+  m.fontReg = CreateObject("roFontRegistry")
+  m.defaultFont = m.fontReg.GetDefaultFont(24, false, false)
+
+  'initial state
+  m.showingInfo = false
+  m.advancePending = false 
+	
+  
+  messagePort = canvas.GetMessagePort()
+  pollPort = httpPoll.Http.GetPort()
+  imagePort = httpImage.GetPort()
+  currPort = httpCurr.Http.GetPort()
+  prevPort = httpPrev.Http.GetPort()
+  nextPort = httpNext.Http.GetPort()
+  regPort = httpReg.Http.GetPort()
+  regScreen = invalid
+  logoOn = true
+  hide_caption = false
+  currCanvasItems = invalid
+
+  
+  
+  currentDislayImageURL = ""
+  currImage = invalid
+  
+   
+  'set up a timer
+  CapShowStart = -1  'starting time of showing caption, initialized as -1
+  regCodeStamp = -1  'the timestamp of a regcode
+  
+  'get the current image and settings first
+  httpCurr.Http.AsyncGetToString()
+
+  'start first poll
+  httpPoll.Http.AsyncGetToString()
+  lastPoll = CreateObject("roDateTime").asSeconds()
+  pollTimeout = 29
+  magicTimeout = 3
+  currentTime = 0
+  currentHour = -1
+  
+  cancelImageDownload = false
+  
+  'this main loop is never blocked, we use asynchrous style
+  while true
+    'get currentTime in milliseconds
+    timeObj = CreateObject("roDateTime")
+    currentTime = timeObj.asSeconds()
+    timeObj.toLocalTime()
+    currentHour = timeObj.GetHours()
+
+    'check tickle
+    if isSaver = false and currentTime - tickleStamp >= tickleInterval
+      print "tickle the player..."
+      tickleStamp = currentTime
+      tickle()
+    end if
+
+    'check auto play
+    'print (currentTime - autoStamp).toStr()
+    if autoInterval > 0 and currentTime - autoStamp >= autoInterval
+      autoStamp = currentTime
+      print "do auto play"
+      httpNext.Http.AsyncCancel()
+      httpNext.Http.AsyncGetToString()
+    end if
+
+    if autoInterval = -1 and currentHour = 3 and currentTime - autoStamp > 3600
+      autoStamp = currentTime
+      print "do auto play"
+      httpNext.Http.AsyncCancel()
+      httpNext.Http.AsyncGetToString()
+    end if
+
+    
+
+    'check regCode response
+    regEvent = regPort.GetMessage()
+    if m.inReg and regEvent <> invalid
+       if type(regEvent) = "roUrlEvent"
+          response = regEvent.GetString()
+          print "regToken | response: " + response
+          result = ParseJSON(response)
+          if result = invalid
+             print "json invalid!"
+          else
+             if result.Status = "success" and regScreen <> invalid
+                 regscreen.SetRegistrationCode(result.RegCode)
+             end if
+          end if
+       end if
+    end if
+
+
+    'check if regcode is expired
+    if m.inReg and currentTime - regCodeStamp > regDuration
+       print "registration code expired!"
+       if regScreen <> invalid
+          regscreen.SetRegistrationCode("retrieving code...")             
+       end if
+       regCodeStamp = currentTime 
+       httpReg.Http.AsyncCancel()
+       httpReg.Http.AsyncGetToString()
+    end if
+
+
+    'check if caption needs to be hidden
+    if currentTime - CapShowStart > capDuration and m.inReg <> true
+       if m.showingInfo
+         print "hide caption"
+         m.showingInfo = false
+         hideCaptionImageCanvas(canvas)
+       end if
+    end if
+  
+    currEvent = currPort.GetMessage()
+    if currEvent <> invalid
+       if type(currEvent) = "roUrlEvent"
+          response = currEvent.GetString()
+          print "currImage | response: " + response  
+          result = ParseJSON(response)
+          if result = invalid
+             print "json invalid!"
+          else
+             urlTrans = CreateObject("roUrlTransfer")
+             if result.Status = "Success"
+                if result.autoInterval <> invalid
+                   autoInterval = int(result.autoInterval/1000)
+                   print "autoInterval set: "+autoInterval.tostr()
+                end if
+
+                if result.logoOn <> invalid and result.logoOn = "false"
+                   logoOn = false
+                else
+                   logoOn = true
+                end if
+
+                if result.hide_caption<> invalid and result.hide_caption = "true"
+                   hide_caption = true
+                else
+                   hide_caption = false
+                end if
+
+                autoStamp = -1
+                desc = urlTrans.unescape(result.caption)
+                rep = CreateObject("roRegex", "&copy", "")
+                desc = rep.ReplaceAll(desc, "copyright ")
+
+                currImage = {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                   URL:urlTrans.unescape(result.imageURL) + "?" + result.stretch+"=0"
+	           Title:urlTrans.unescape(result.title)
+                   Description:desc
+	           PollInterval:result.nextPull
+	           Stretch:result.stretch
+                }
+
+                'check autoplay status and others...
+              
+                'triger async downloader
+                if currImage.URL <> currentDislayImageURL
+                  httpImage.SetUrl(currImage.URL)
+                  print "get url is: "; httpImage.GetUrl()
+                  httpImage.AsyncGetToFile(tmpImageFile)                
+                
+                end if
+             else
+               print "the device is unlinked!"
+               m.inReg = true
+               regCodeStamp = currentTime
+               regScreen = displayRegScreen()
+               httpReg.Http.AsyncCancel()
+               httpReg.Http.AsyncGetToString()
+             end if
+          end if
+       end if
+    end if
+
+
+    prevEvent = prevPort.GetMessage()
+    if prevEvent <> invalid and m.inReg = false
+       if type(prevEvent) = "roUrlEvent"
+          response = prevEvent.GetString()
+          print "prevImage | response: " + response  
+          result = ParseJSON(response)
+          if result = invalid
+             print "json invalid!"
+          else
+             urlTrans = CreateObject("roUrlTransfer")
+             if result.Status = "Success"
+
+                desc = urlTrans.unescape(result.caption)
+                rep = CreateObject("roRegex", "&copy", "")
+                desc = rep.ReplaceAll(desc, "copyright ")
+
+                currImage = {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                   URL:urlTrans.unescape(result.imageURL) + "?" + result.stretch+"=0"
+	           Title:urlTrans.unescape(result.title)
+                   Description:desc
+	           PollInterval:result.nextPull
+	           Stretch:result.stretch
+                }
+
+                'check autoplay status and others...
+              
+                'triger async downloader
+                if currImage.URL <> currentDislayImageURL
+	         canvasItems = [
+		   { 
+		     Text:"Loading previous image…",
+		     TextAttrs:{Color:"#FFCCCCCC", Font: "Small",
+		     HAlign:"Center", VAlign:"Center",
+		     Direction:"LeftToRight"}
+	             TargetRect:{x: 50, y: screenSize.h - 60 , w:400, h:30}
+		   }
+	         ] 
+                 canvas.SetLayer(3, canvasItems)
+		 canvas.Show()
+                  httpImage.SetUrl(currImage.URL)
+                  print "get url is: "; httpImage.GetUrl()
+                  httpImage.AsyncGetToFile(tmpImageFile)                
+                
+                end if
+   
+             end if
+          end if
+       end if
+    end if
+
+
+    nextEvent = nextPort.GetMessage()
+    if nextEvent <> invalid and m.inReg = false
+       if type(nextEvent) = "roUrlEvent"
+          response = nextEvent.GetString()
+          print "nextImage | response: " + response  
+          result = ParseJSON(response)
+          if result = invalid
+             print "json invalid!"
+          else
+             urlTrans = CreateObject("roUrlTransfer")
+             if result.Status = "Success"
+
+                desc = urlTrans.unescape(result.caption)
+                rep = CreateObject("roRegex", "&copy", "")
+                desc = rep.ReplaceAll(desc, "copyright ")
+
+                currImage = {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                   URL:urlTrans.unescape(result.imageURL) + "?" + result.stretch+"=0"
+	           Title:urlTrans.unescape(result.title)
+                   Description:desc
+	           PollInterval:result.nextPull
+	           Stretch:result.stretch
+                }
+
+
+                'check autoplay status and others...
+              
+                'triger async downloader
+                if currImage.URL <> currentDislayImageURL
+	         canvasItems = [
+		   { 
+		     Text:"Loading next image…",
+		     TextAttrs:{Color:"#FFCCCCCC", Font: "Small",
+		     HAlign:"Center", VAlign:"Center",
+		     Direction:"LeftToRight"}
+	             TargetRect:{x: 50, y: screenSize.h - 60 , w:400, h:30}
+		   }
+	         ] 
+                 canvas.SetLayer(3, canvasItems)
+		 canvas.Show()
+                  httpImage.SetUrl(currImage.URL)
+                  print "get url is: "; httpImage.GetUrl()
+                  httpImage.AsyncGetToFile(tmpImageFile)                
+                
+                end if
+   
+             end if
+          end if
+       end if
+    end if
+   
+
+
+    pollEvent = pollPort.GetMessage()
+    if pollEvent <> invalid
+      
+      if type(pollEvent) = "roUrlEvent"
+         response = pollEvent.GetString()  
+         print "poll | response: " + response
+         result = ParseJSON(response)
+         if result = invalid
+            print "json invalid!"
+         else
+            urlTrans = CreateObject("roUrlTransfer")  'this is a utility for url escape and unescape
+            
+            if result.type = "image"
+              print "image event"
+              'cancelImageDownload = true
+              print urlTrans.unescape(result.imageURL)
+
+              desc = urlTrans.unescape(result.caption)
+              rep = CreateObject("roRegex", "&copy", "")
+              desc = rep.ReplaceAll(desc, "copyright ")
+
+              currImage = {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                 URL:urlTrans.unescape(result.imageURL) + "?" + result.stretch+"=0"
+	         Title:urlTrans.unescape(result.title)
+                 Description:desc
+	         PollInterval:result.nextPull
+	         Stretch:result.stretch
+              }
+
+
+              
+              'triger async downloader
+              if currImage.URL <> currentDislayImageURL
+
+	         canvasItems = [
+		   { 
+		     Text:"Loading...",
+		     TextAttrs:{Color:"#FFCCCCCC", Font: "Small",
+		     HAlign:"Center", VAlign:"Center",
+		     Direction:"LeftToRight"}
+	             TargetRect:{x: 50, y: screenSize.h - 60 , w:400, h:30}
+		   }
+	         ] 
+                 canvas.SetLayer(3, canvasItems)
+		 canvas.Show()
+                 httpImage.SetUrl(currImage.URL)
+                 print "get url is: "; httpImage.GetUrl()
+                 httpImage.AsyncGetToFile(tmpImageFile)                
+                
+              end if
+
+              
+            else if result.type = "regPlayer"
+              print "regPlayer event"
+              m.inReg = false
+              if regScreen <> invalid
+                regScreen.close()
+                httpCurr.Http.AsyncGetToString()
+              end if
+
+            else if result.type = "removePlayer" 
+              print "removePlayer event"
+              m.inReg = true
+              regScreen = displayRegScreen()
+              if regScreen <> invalid
+                 regscreen.SetRegistrationCode("retrieving code...")             
+              end if
+              regCodeStamp = currentTime
+              httpReg.Http.AsyncCancel()
+              httpReg.Http.AsyncGetToString()
+ 
+            else if result.type = "autoPlay"
+              print "autoPlay event"
+              if result.autoInterval <> invalid
+                 print type(result.autoInterval)
+                 autoInterval = int(result.autoInterval.toint()/1000)
+              end if
+              autoStamp = -1
+
+            else if result.type = "overlay"
+              print "logo event"
+              if result.logoOn = "true"
+                logoOn = true
+                if currCanvasItems <> invalid and currCanvasItems.count() = 1
+                   currCanvasItems.push({ 
+	              url: "pkg:/images/logo.png",
+	              TargetRect:{x: screensize.w - 140 , y: screensize.h - 50 ,w:100, h:31}
+	           })
+	           canvas.SetLayer(2, currCanvasItems)                 
+                end if     
+
+              else
+                logoOn = false
+                if currCanvasItems <> invalid and currCanvasItems.count() = 2  
+                   currCanvasItems.delete(1)
+                   canvas.SetLayer(2, currCanvasItems)
+                end if
+              end if 
+
+
+            else if result.type = "hideCaption"
+              print "hide_caption event"
+              if result.hide_caption = "true"
+                hide_caption = true
+                if currCanvasItems <> invalid and currCanvasItems.count() = 1
+                   currCanvasItems.push({ 
+	              url: "pkg:/images/logo.png",
+	              TargetRect:{x: screensize.w - 140 , y: screensize.h - 50 ,w:100, h:31}
+	           })
+	           canvas.SetLayer(2, currCanvasItems)                 
+                end if     
+
+              else
+                hide_caption = false
+                if currCanvasItems <> invalid and currCanvasItems.count() = 2  
+                   currCanvasItems.delete(1)
+                   canvas.SetLayer(2, currCanvasItems)
+                end if
+              end if
+
+
+            else if result.type = "orientation"
+              print "orientation event"
+            else
+              print "nothing to do"
+            end if
+            
+            
+            
+            
+         end if
+           
+      else
+         print "roUrlTransfer::AsyncGetToString(): unknown event"
+      endif
+      
+      
+      'make next poll
+      if(httpPoll.Http.AsyncGetToString())
+         lastPoll = currentTime
+      end if      
+      
+    else
+       'check if last poll is timed out
+       if currentTime - lastPoll > pollTimeout
+          print "poll timed out"
+          'cancel the previous call
+           httpPoll.Http.AsyncCancel()
+          'make next poll
+          if(httpPoll.Http.AsyncGetToString())
+             lastPoll = currentTime
+          end if
+       end if
+    end if
+    
+    imageEvent = imagePort.GetMessage() 
+    if imageEvent <> invalid and m.inReg = false
+       print "imageEvent "+type(imageEvent)
+       if type(imageEvent) = "roUrlEvent"
+          if cancelImageDownload
+             print "image is downloaded, but has expired!"
+             'since we got an new image from poll request, the one we just fetched asynchronously is expired, no need to display
+             httpImage.AsyncCancel()
+             cancelImageDownload = false
+          else
+             'display the just fetched image
+             print "image is downloaded, and let's display it!"
+             imageRoMetadata = CreateObject("roImageMetadata")
+	         imageRoMetadata.SetUrl(tmpImageFile)
+	         imageMetadata = imageRoMetadata.GetMetadata() 
+			
+	         if imageMetadata = invalid or imageMetadata.height = 0 then
+	            print "ooops! Could not get image size..."
+	         else
+	            currentDislayImageURL = currImage.URL+currImage.Stretch
+	            'figure out image scaling
+	            print "figuring out scaling..."
+	            imageRatio = imageMetadata.width / imageMetadata.height
+	            print "Image Ratio: " ; imageRatio
+
+                   if imageRatio <= screenRatio
+                       'this is a lean image
+                       if currImage.stretch = "true"
+                          'scale the width to meet the screen width
+                          scaledWidth = int(screenSize.w)
+                          scaledHeight = int(scaledWidth / imageRatio)
+                          
+                          'top left reference point
+                          x = 0
+                          y = 0
+
+                       else
+                          scaledHeight = int(screenSize.h)
+                          scaledWidth = int(scaledHeight * imageRatio)
+                           
+                          x = int((screenSize.w - scaledWidth)/2)
+                          y = 0
+                       end if
+                   else
+                        
+                       if currImage.stretch = "true"
+                          scaledHeight = int(screenSize.h)
+                          scaledWidth = int(scaledHeight * imageRatio)
+                          
+                          'top left reference point
+                          x = int((screenSize.w - scaledWidth)/2)
+                          y = 0
+
+                       else
+                          scaledWidth = int(screenSize.w)
+                          scaledHeight = int(scaledWidth / imageRatio)
+                          x = 0
+                          y = int((screenSize.h - scaledHeight)/2)
+                       end if                       
+
+             
+                   end if
+	            
+	            
+	            print "x: ";x; "y: ";y
+	            print "about to draw image..."
+	            'draw image
+	            currCanvasItems = [
+	               { 
+	                  url: currImage.URL,
+	                  TargetRect:{x:x ,y:y ,w:scaledWidth, h:scaledHeight}
+	               }
+	            ] 
+
+                    if logoOn = true
+                      currCanvasItems.push(	               { 
+	                  url: "pkg:/images/logo.png",
+	                  TargetRect:{x: screensize.w - 140 , y: screensize.h - 50 ,w:100, h:31}
+	               })
+                    end if
+
+	            print "setting layer 2..."
+	            canvas.SetLayer(2, currCanvasItems)
+	            print "clearing layer 3..."
+	            canvas.ClearLayer(1)
+	            canvas.ClearLayer(3)
+	            m.showingInfo = false
+	            canvas.Show()
+
+                   'show caption
+                   if hide_caption = false
+                   
+                      m.showingInfo = true
+                      CapShowStart = currentTime
+                      showCaptionImageCanvas(currImage.Title, currImage.Description, canvas, screenSize)
+	              print "showing caption now"
+                   end if
+	         endif
+		
+		 end if
+	  end if
+    end if 	   
+	    
+    messageEvent = messagePort.GetMessage()
+    if messageEvent <> invalid
+       print messageEvent
+       if type(messageEvent) = "roImageCanvasEvent"
+       
+          if (messageEvent.isRemoteKeyPressed()) 
+              buttonPressed = messageEvent.GetIndex()
+              print "key pressed: "; buttonPressed
+              
+              if buttonPressed = 4 and m.inReg = false
+                 magicCount = 0
+                 print "previous image"
+                 httpPrev.Http.AsyncCancel()
+                 httpPrev.Http.AsyncGetToString()
+              else if buttonPressed = 5 and m.inReg = false
+                 magicCount = 0
+                 print "next image"
+                 httpNext.Http.AsyncCancel()
+                 httpNext.Http.AsyncGetToString()
+              else if buttonPressed = 10 and m.inReg = false
+                 magicCount = 0
+                 print "show caption"
+                 if m.showingInfo = false
+                   m.showingInfo = true
+                   CapShowStart = currentTime
+                   showCaptionImageCanvas(currImage.Title, currImage.Description, canvas, screenSize)
+	           print "showing caption now"
+                 end if
+              else if buttonPressed = 2 
+                 if magicCount = 0
+                   magicCount = magicCount + 1
+                   magicStamp = currentTime
+                 else if currentTime - magicStamp > magicTimeout
+                   magicCount = 1
+                   magicStamp = currentTime
+                 else 
+                   magicCount = magicCount + 1
+                   if magicCount > 3
+                     print "clear magic button"
+                     magicCount = 0
+                   end if
+                 end if
+
+
+              else if buttonPressed = 3
+                 if currentTime - magicStamp > magicTimeout
+                   magicCount = 0
+                 else if magicCount = 3
+                   print "force reg!"
+                   magicCount = 0
+                   m.inReg = true
+                   regScreen = displayRegScreen()
+                   if regScreen <> invalid
+                     regscreen.SetRegistrationCode("retrieving code...")             
+                   end if
+                   regCodeStamp = currentTime
+                   httpReg.Http.AsyncCancel()
+                   httpReg.Http.AsyncGetToString()
+                   
+                 end if   
+              else
+                 magicCount = 0
+              end if
+              
+          end if
+       
+       end if
+       
+    end if
+    
+    
+
+    
+  end while 
+   
+end Sub   
+
 Sub Display()
 
 	m.DeviceMaker	  = "Roku"
@@ -719,7 +1468,9 @@ Sub RunScreenSaver()
    'and the idea is that the app will run a screen saver, which will be Artkick  
    
    print "RunScreenSaver called"
-   Display()
+   m.DeviceMaker = "Roku"
+   m.sn = GetDeviceESN()
+   poll(true)
     
 End Sub
 
@@ -750,4 +1501,10 @@ Sub displayScreenSaverSettingsScreen()
         endif
     end while
 
+End Sub
+
+Sub Tickle()
+   req = createObject("roUrlTransfer")
+   req.setUrl("http://localhost:8060/keypress/Lit_+")
+   req.postFromString("")
 End Sub

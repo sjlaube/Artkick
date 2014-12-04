@@ -13,6 +13,7 @@ Function doRegistration(doRegistrationText As String) As Integer
 	m.UrlBase         = "http://evening-garden-3648.herokuapp.com/registration/v1.0"
     m.UrlGetRegCode   = m.UrlBase + "/getRegCode"
     m.UrlGetRegResult = m.UrlBase + "/getRegStatus"
+	m.UrlGetDialResult = m.UrlBase + "/deviceReg"
     		
     m.RegToken = loadRegistrationToken()
     if isLinked() then
@@ -20,6 +21,8 @@ Function doRegistration(doRegistrationText As String) As Integer
         'return 0
     endif
 
+	
+	
     regscreen = displayRegistrationScreen(doRegistrationText)
 
     'main loop get a new registration code, display it and check to see if its been linked
@@ -94,6 +97,54 @@ Function doRegistration(doRegistrationText As String) As Integer
 	
 End Function
 
+function dialRegistration()
+	m.DeviceMaker	  = "Roku"
+	m.UrlBase         = "http://evening-garden-3648.herokuapp.com/registration/v1.0"
+    m.UrlGetRegCode   = m.UrlBase + "/getRegCode"
+    m.UrlGetRegResult = m.UrlBase + "/getRegStatus"
+	m.UrlGetDialResult = m.UrlBase + "/deviceReg"
+    		
+
+
+
+	
+	if m.dialemail<>invalid and m.dialemail <> "invalid" then
+			print "starting dial registration email="+m.dialemail
+			sn = GetDeviceESN() 
+			http = NewHttp(m.UrlGetDialResult)
+			http.AddParam("deviceId", sn)
+			http.AddParam("deviceMaker", m.DeviceMaker)
+			http.AddParam("email", m.dialemail)
+			http.AddParam("nickname", m.dialnickname)
+			
+			  print "checking dial registration status"
+
+				statusResponse = http.Http.GetToString()
+				print "GOT Status: " + statusResponse
+				print "Reason: " + http.Http.GetFailureReason()
+					
+				statusResponseJson = ParseJSON(statusResponse)
+				if statusResponseJson.Status <> "success" return 3
+				
+				token = statusResponseJson.RegToken
+
+				if token <> "" and token <> invalid then
+					print "obtained registration token: " + validstr(token)
+					saveRegistrationToken(token) 'commit it
+					m.RegistrationToken = token
+					ShowLoadingBackground()
+					'reset email address so we won't get into a loop if the user deletes the roku while it is running
+					m.dialemail="invalid"
+					return 0
+				else
+					return 3
+				end if
+							
+				
+	endif
+	print "starting dial registration for:"+m.dialemail
+
+End Function
 
 '********************************************************************
 '** display the registration screen in its initial state with the
@@ -195,8 +246,10 @@ Function checkRegistrationStatus(sn As String, regCode As String) As Integer
 		
 	statusResponseJson = ParseJSON(statusResponse)
 	
-	if statusResponseJson.Status <> "success"
-		return 3
+	if statusResponseJson.Status <> "success" then
+
+			return 3
+
 	End If
 	          
 	token = statusResponseJson.RegToken

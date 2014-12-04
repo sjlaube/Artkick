@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<!--
+
+/*
+
+Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
+
+*/
+
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"/> -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-itunes-app" content="app-id=711576101" />
+    <meta name="robots" content="noindex">
+
+    <title>Artkick</title>
+    <link rel="apple-touch-icon-precomposed" href="images/ARTKICKlogoFULLCOLOR-APP_120.png" />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700,600' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="WebContent-V3.1/lib/dojo/dojo/dojo.js?V1.3" data-dojo-config="'parseOnLoad':true,mblForceBookmarkable:false,'async':false,'packages':
+[{'name': 'jquery', 'location': 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1', 'main': 'jquery'},
+{'name':'gridx','location':'../gridx'},{'name':'clipart','location':'../../clipart'},
+{'name':'maqettaSamples','location':'../../../samples'},{'name':'maqetta','location':'../../maqetta'},
+{'name':'shapes','location':'../../shapes'},{'name':'zazl','location':'../../zazl'},{'name':'widgets','location':'../../custom'}],
+'themeMap':[['Android','',['WebContent-V3.0/themes/android/android.css']],
+['compatible','',['WebContent-V3.0/themes/windows/windows.css']],
+['BlackBerry','',['WebContent-V3.0/themes/blackberry/blackberry.css']],
+['iPad','',['WebContent-V3.0/themes/ipad/ipad.css']],['iPhone','',['WebContent-V3.0/themes/iphone/iphone.css']],
+['.*','',['WebContent-V3.0/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script>
+    <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="mini.V3.11/app.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/Browser-Detect.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/UserViewlists.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/PlayerFunctions.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/UserAccounts.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/Feedback.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/Search.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/backbutton.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/registrationhelp.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/Photoimport.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/social.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/getty.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/Premium.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/Editviewlist.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/changeAd.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.11/dial.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.11/getty-default.js?V1.3"></script>
+
+    <script type="text/javascript">
+        require([
+            "dijit/dijit",
+            "dojo/parser",
+            "dojo/ready",
+            "maqetta/space",
+            "maqetta/AppStates",
+            "dojox/mobile",
+            "dojox/mobile/parser",
+            "dojox/mobile/compat",
+            "dojox/mobile/deviceTheme",
+            "dojo/hash",
+            "dojox/mobile/TextBox",
+            "shapes/Text",
+            "dojox/mobile/ScrollableView",
+            "dojox/mobile/ContentPane",
+            "dojox/io/xhrScriptPlugin",
+            "dojo/data/ItemFileReadStore",
+            "dojo/data/ItemFileWriteStore",
+            "dojox/mobile/EdgeToEdgeDataList",
+            "dojox/mobile/SwapView",
+            "dojox/mobile/IconMenu",
+            "dojox/mobile/IconMenuItem",
+            "dojox/mobile/RoundRectDataList",
+            "dojox/mobile/Button",
+            "dojox/mobile/ScrollablePane",
+            "dojox/mobile/SimpleDialog",
+            "dojox/mobile/ToggleButton",
+            "dojox/mobile/Container",
+            "dojox/mobile/Pane",
+            "shapes/Line",
+            "clipart/Image",
+            "dojox/mobile/FixedSplitter",
+            "dojox/mobile/LongListMixin",
+            "dojox/mobile/FilteredListMixin",
+            "dojox/mobile/SpinWheel",
+            "dojox/mobile/ValuePicker",
+            "dojox/mobile/ValuePickerSlot",
+            "dojox/mobile/DataCarousel",
+            "dijit/form/DataList",
+            "dojox/mobile/ComboBox",
+            "dojox/mobile/ProgressIndicator",
+            "dojox/mobile/Carousel",
+            "dojox/mobile/TabBarButton",
+            "dojox/mobile/SearchBox",
+            "clipart/Facebook",
+            "dojo/dom",
+            "dojo/dom-class",
+            "dojox/mobile/Accordion",
+            "dojox/widget/Standby",
+			"dojo/window"
+
+       ]);
+    </script>
+    <style>
+        @import "WebContent-V3.0/themes/claro/claro.css";
+        @import "WebContent-V3.0/lib/shapes/shapes.css";
+        @import "WebContent-V3.0/app.css";
+        @import "mini.V3.11/Artkick.css";
+    </style>
+
+    <script>
+        (function(i, s, o, g, r, a, m)
+        {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function()
+            {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'http://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
+        ga('require', 'displayfeatures');
+        ga('send', 'pageview');
+    </script>
+
+</head>
+
+<body data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" class="claro" data-maq-ws="collapse" data-maq-orientation="portrait" id="myapp" data-maq-appstates="{}">
+<div id="gettyoverlayback" style="height:100%;width:100%;background-color: rgba(39,39,39,.8);display:none;position:absolute;top:0px;left:0px;z-index:999">
+<div id="gettycomputerad" style=";margin:0 auto;position:relative;top:145px;text-align:center;">
+<div style="position:relative">
+<img id="gettyPopUpAd" src="images/GettyAds/browser/entertainment.png" style="width:600px">
+<span id="gettyPopUpSubscribe" style="color:#00C7FF;position:absolute;border: 2px solid #00C7FF;display:block;font-size:20px" onclick='dojo.style("gettyoverlayback","display","none");DoSubscribe()'>&nbsp;&nbsp;&nbsp;&nbsp;SUBSCRIBE NOW&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span id="gettyPopUpNothanks" style="height:25px;color:#00C7FF;position:absolute;text-decoration:underline;display:block;font-size:15px" onclick='dojo.style("gettyoverlayback","display","none");gotoView(currentView,"select_category")'>No Thanks</span>
+</div>
+</div>
+</div>
+<div id="Firefoxgo" style="height:100%;width:100%;background-color: rgba(39,39,39,.8);display:none;position:absolute;top:0px;left:0px;z-index:999">
+<div  style="width:699px;height:500px;margin:0 auto;background-color:rgba(255,255,255,.8);position:relative;top:50px;text-align:center">
+<br><br><br><br><p> Unfortunately Artkick does not work with Firefox </p>
+<p>Please use IE, Chrome or Safari</p>
+<br><br><br>
+<p> Or download the Artkick app from Google Play or the App Store</p>
+</div>
+</div>
+<div id="realcontent" style="margin:0 auto;height:100%">
+    <div id="splash" style=" position: fixed!important;text-align:left; overflow:hidden; background-color:black;z-index:1500;width:100%; height:100%">
+        <img src="images/ArtkickStartupScreen640x1136.jpg" alt="" style="height:100%;margin:auto;display:block">
+
+    </div>
+    <div data-dojo-type="dojox/mobile/SwapView" data-dojo-props="selected:true" id="Intro0" style="height:100%;background-color: black;">
+        <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:63px;" onclick="goToLogin1()">
+            Sign in</div>
+        <div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:63px;" onclick="GuestLogin()">
+            Look around</div>
+
+        <img src="images/ARTKICKlogoFULLCOLOR_200x62.png" alt=" " style="position: absolute; z-index: 900; left: 65px; top: 170px;">
+        <span data-dojo-type="shapes/Text" style="font-size: 16px; position: absolute; z-index: 900; color: #c0c0c0; font-family: Verdana,Geneva,sans-serif; left: 70px; top: 240px;">Art for Free on your TV</span>
+        <span data-dojo-type="shapes/Text" style="font-size: 16px; position: absolute; z-index: 900; left: 236.5px; top: 374px; color: #7f7f7f;">Swipe Left</span>
+        <img src="images/place1a.png" alt=">" style="position: absolute; z-index: 900; left: 250px; top: 440px;">
+    </div>
+
+    <div data-dojo-type="dojox/mobile/View" id="Login" style="background-size:cover;height: 100%;background-image:url('images/email_background.jpg')">
+
+        <div onclick="gotoView('Login','newLogin')">
+            <img src="images/Arrows-Back-icon-white.png" alt='' style="position:absolute;top:7px;left:5px;"><span class="backstyle2" style="color:white!Important">Done</span>
+        </div>
+        <div>
+            <br>
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="loginEmailx" placeHolder="&nbsp;&nbsp;Email address" style="position: absolute; left: 1em; top:50px;width: 250px;">
+            </input>
+            <br>
+            <br>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="loginPasswordx" placeHolder="&nbsp;&nbsp;Password" style="position: relative; left: 1em; top:20px;width: 250px;">
+            </input>
+            <br>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="width:150px;position: relative;  left: 70px;background-color: rgba(192,192,192,.8) !important;" onclick="login()">
+                Sign in with Email</button>
+            <br>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="width:150px;position: relative; left: 70px;background-color: rgba(192,192,192,.8) !important" onclick="goToresetpassword()">
+                Forgot Password?</button>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="width:150px;position: relative; left: 70px;background-color: rgba(192,192,192,.8) !important" onclick="goToReg1()">
+                Register</button>
+
+        </div>
+
+    </div>
+    <div data-dojo-type="dojox/mobile/View" id="IntroA" style="background-color:black;height: 100%;">
+        <div style="min-width:300px">
+            <img src="images/ARTKICKlogoFULLCOLORdarkbackgroundTM.png" alt="" style="width:150px;display:block;position: relative;top:10px;margin-left:auto;margin-right:auto;">
+        </div>
+
+        <div align="center" style="color:white;position:relative;top:25px;font-size:14px">
+            Iconic Art
+        </div>
+        <div style="min-width:250px">
+
+            <img src="images/Starry_Night_Over_the_Rhone.jpg" alt="" style="width:65%;display:block;position: relative;top:24px;margin-left:auto;margin-right:auto;">
+        </div>
+        <div align="center" style="color:white;position:relative;top:35px;font-size:14px">
+            Contemporary Photography
+        </div>
+        <div style="min-width:250px">
+
+            <img src="images/TYR_DIVERS.jpg" alt="" style="width:65%;display:block;position: relative;top:34px;margin-left:auto;margin-right:auto;">
+        </div>
+        <div align="center" style="color:white;position:relative;top:35px;font-size:14px">
+            for FREE on your TV
+        </div>
+        <div onclick="gotoView('IntroA','newLogin')" style="position:absolute;bottom:25px;width:50%;background-color:white;height:40px">
+            <div align="center" style="position:relative;top:7px;color:black;font-size:16px;font-weight:bold;">
+                LOG IN
+            </div>
+        </div>
+        <div onclick="gotoView('IntroA','registeruser')" style="position:absolute;bottom:25px;left:50%;width:50%;background-color:#62A7DA;height:40px">
+            <div align="center" style="position:relative;top:7px;color:black;font-size:16px;font-weight:bold;">
+                SIGN UP
+            </div>
+        </div>
+        <div onclick="GuestLogin()" style="position:absolute;bottom:10px;width:100%">
+            <div align="center" style="position:relative;top:8px;color:white;font-size:16px;text-decoration:underline;">
+                Look Around without Signing In
+            </div>
+        </div>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/View" id="newLogin" style="background-color:black;height: 100%;">
+        <div style="width:100%" onclick="gotoView('newLogin','IntroA')">
+            <img src="images/Arrows-Back-icon-white.png" alt='' style="position:absolute;top:7px;left:15px;">
+            <div align="center" style="color:white;position:relative;top:5px">
+                LOG IN
+            </div>
+        </div>
+        <div id='otherlogins'>
+            <div onclick="FBlogin()" style="position:relative;top:30px;width:100%;height:40px;background-color:#3B579D">
+                <img src="images/FB-f-Logo__blue_50.png" alt="" style="position: relative;left:1px;height:40px">
+                <div align="center" style="color:white;position:relative;top:-37px">
+                    Log in with Facebook
+                </div>
+            </div>
+            <div align="center" style="color:white;position:relative;top:30px;font-size:14px;">
+                or
+            </div>
+            <div onclick="Googlelogin()" style="position:relative;top:35px;width:100%;height:40px;background-color:#C35539">
+                <img src="images/googlebutton.png" alt="" style="position: relative;left:6px;height:40px">
+                <div align="center" style="color:white;position:relative;top:-37px">
+                    Log in with Google
+                </div>
+            </div>
+            <div align="center" style="color:white;position:relative;top:35px;font-size:14px;">
+                or
+            </div>
+        </div>
+        <br>
+        <div style="position:relative;top:25px;width:100%;">
+            <div style="width:100%;height:40px;background-color:#504E5B">
+                <img src="images/Envelope_15x20.png" alt="" style="left:5px;top:2px;position: relative;">
+                <input type="text" data-dojo-type="dojox/mobile/TextBox" id="loginEmail" placeHolder="Email" style="position:relative;left:4%;color:white;width:85%;border-radius: 0px;background-color:#504E5B;border:none;height:35px!important">
+                </input>
+            </div>
+
+            <div style="position:relative;top:1px;width:100%;height:40px;background-color:#504E5B">
+                <img src="images/Padlock_15x20.png" alt="" style="position: relative;left:5px;top:2px">
+                <input type="password" onkeydown="if (event.keyCode == 13) login()" data-dojo-type="dojox/mobile/TextBox" id="loginPassword" placeHolder="Password" style="position:relative;left:4%;top:2px!important;color:white;width:85%;border-radius: 0px;background-color:#504E5B;border:none;height:33px!important">
+                </input>
+            </div>
+
+            <div onclick="login()" style="position:relative;top:20px;width:100%;height:40px;background-color:#3d3d3d">
+                <div align="center" style="color:white;position:relative;top:5px">
+                    Log in with Email
+                </div>
+            </div>
+            <div onclick="goToresetpassword()" style="position:relative;top:20px;width:100%">
+                <div align="center" style="position:relative;top:12px;color:gray;font-size:16px;text-decoration:underline;">
+                    Forgot your password?
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regUserNamex" placeHolder="&nbsp;&nbsp;Full Name" style="width: 250px; left: 1em; position: absolute;top:50px;"></input>
+   <br><br>
+   <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regUserEmailx" placeHolder="&nbsp;&nbsp;Email address" style="width: 250px; position: relative; left: 1em;top:40px"></input>
+   <br><br>
+   <input type="password" data-dojo-type="dojox/mobile/TextBox" id="regUserPWx" placeHolder="&nbsp;&nbsp;Password" style="width: 250px; position: relative; left: 1em;top:30px"></input>
+   <br><br>
+   <input type="password" data-dojo-type="dojox/mobile/TextBox" id="regUserPW2x" placeHolder="&nbsp;&nbsp;Re-enter password" style="width: 250px; position: relative; left: 1em;top:20px"></input>
+   <br><br><br>-->
+    <div data-dojo-type="dojox/mobile/View" id="registeruser" style="background-color:black;height: 100%;">
+        <div style="width:100%" onclick="gotoView('registeruser','IntroA')">
+            <img src="images/Arrows-Back-icon-white.png" alt='' style="position:absolute;top:7px;left:15px;">
+            <div align="center" style="color:white;position:relative;top:5px">
+                SIGN UP
+            </div>
+        </div>
+        <div id='othersignup'>
+            <div onclick="FBlogin()" style="position:relative;top:30px;width:100%;height:40px;background-color:#3B579D">
+                <img src="images/FB-f-Logo__blue_50.png" alt="" style="position: relative;left:1px;height:40px">
+                <div align="center" style="color:white;position:relative;top:-37px">
+                    Sign up with Facebook
+                </div>
+            </div>
+            <div align="center" style="color:white;position:relative;top:30px;font-size:14px;">
+                or
+            </div>
+            <div onclick="Googlelogin()" style="position:relative;top:35px;width:100%;height:40px;background-color:#C35539">
+                <img src="images/googlebutton.png" alt="" style="position: relative;left:6px;height:40px">
+                <div align="center" style="color:white;position:relative;top:-37px">
+                    Sign up with Google
+                </div>
+            </div>
+            <div align="center" style="color:white;position:relative;top:35px;font-size:14px;">
+                or
+            </div>
+        </div>
+        <br>
+        <div style="position:relative;top:25px;width:100%;">
+            <div style="width:100%;height:40px;background-color:#504E5B">
+                <img src="images/body_15x20.png" alt="" style="left:5px;top:2px;position: relative;">
+                <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regUserName" placeHolder="Your Name" style="position:relative;left:4%;color:white;width:85%;border-radius: 0px;background-color:#504E5B;border:none;height:35px">
+                </input>
+            </div>
+            <div style="position:relative;top:1px;width:100%;height:40px;background-color:#504E5B">
+                <img src="images/Envelope_15x20.png" alt="" style="left:5px;top:2px;position: relative;">
+                <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regUserEmail" placeHolder="Email" style="position:relative;left:4%;top:2px!important;color:white;width:85%;border-radius: 0px;background-color:#504E5B;border:none;height:33px">
+                </input>
+            </div>
+            <div style="position:relative;top:2px;width:100%;height:39px;background-color:#504E5B">
+                <img src="images/Padlock_15x20.png" alt="" style="position: relative;left:7px;top:2px">
+                <input type="password" data-dojo-type="dojox/mobile/TextBox" id="regUserPW" placeHolder="Password" style="position:relative;left:4%;top:2px;color:white;width:85%;border-radius: 0px;background-color:#504E5B;border:none;height:32px">
+                </input>
+            </div>
+            <div style="position:relative;top:3px;width:100%;height:40px;background-color:#504E5B">
+                <img src="images/Padlock_15x20.png" alt="" style="position: relative;left:7px;top:2px">
+                <input type="password" data-dojo-type="dojox/mobile/TextBox" id="regUserPW2" placeHolder="Retype Password" style="position:relative;left:4%;top:2px;color:white;width:85%;border-radius: 0px;background-color:#504E5B;border:none;height:31px">
+                </input>
+            </div>
+
+            <div onclick="createUser()" style="position:relative;top:20px;width:100%;height:40px;background-color:#3d3d3d">
+                <div align="center" style="color:white;position:relative;top:5px">
+                    Sign up with Email
+                </div>
+            </div>
+
+        </div>
+        <div style="width:100%;position:relative;top:70px">
+            <div align="center" style="color:white;font-size:10px">By signing up, you agree to Artkick's
+                <a onclick="showterms()" style="text-decoration:underline">Terms of Service</a> and
+                <a onclick="showprivacy()" style="text-decoration:underline">Privacy Policy</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/View" id="Slideshow" style="height: 100%;;background-color:black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Slideshow..."'>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" onclick="backbutton()">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+
+        </div>
+
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;height:140px">
+
+            <label style="position:relative;vertical-align: top; text-align: left; float: left; top: 20px;">
+                Burn In Saver</label>
+            <button data-dojo-type="dojox/mobile/ToggleButton" id="burninsaver" onclick="burninsaver()" data-dojo-props='label:"Not Active"' style="left: 43px;position:relative;top:20px;color:white"></button>
+            <br>
+            <div id="AutoPlayFixed" style="position: relative;top:20px;visibility:hidden">
+                Slideshow set to 1 hour
+            </div>
+
+        </div>
+
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+            <div style="color:white">Setting this option will expand the image to fill your TV. Some of the image will be cropped to fit the dimensions of the TV.
+            </div>
+            <br>
+            <label style="vertical-align: top; text-align: left; float: left;">
+                Fill Screen</label>
+            <button data-dojo-type="dojox/mobile/ToggleButton" id="fillswitch" style="left: 70px;color:white" data-dojo-props='label:"Not Active"' onclick="fillswitch()"></button>
+            <br>
+        </div>
+
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="add_user_player" style="background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Add User to Device",moveTo:"ImageView",fixed:"top"'>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="moveTo:'OptionsList',transition:'none', transitionDir:'-1'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Settings</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="addPlayerEmailx" style="position: relative; height: 26px; top: 3px; width: 179px;" placeHolder="&nbsp;&nbsp;User Email"></input>
+            <button data-dojo-type="dojox/mobile/Button" style="position: relative; font-size: 10pt; height: 24px; vertical-align: top; line-height: normal; top: 5px; width: 69px; left: 6px;" onclick="searchUser()">
+
+                Search</button>
+        </div>
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+            
+                <div style="color:white">Select which TV(s) to add user
+            </div>
+            <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_6" jsId="ItemFileReadStore_6"></span>
+            <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="ownedPlayerList" select="multiple" style="position: relative; top: 1em;" store="ItemFileReadStore_6" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="height: 34px; position: relative; width: 285px;" onclick="addUserToPlayers()">
+                Add User to TV(s)</button>
+        </div>
+    </div>
+    <div data-dojo-type="dojox/mobile/View" id="reset_password" style="height:100%">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Reset Password'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="moveTo:'newLogin',transition:'none', transitionDir:'-1'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" title="UserID" id="recoveryEmail" style="float: left; height: 21px; width: 250px; position: relative; left: 1em;" placeHolder="&nbsp;&nbsp;email address"></input>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="font-size: 10px; text-align: center; vertical-align: middle; height: 25px; line-height: normal; width: 250px; position: relative; left: 1em;" onclick="emailPW()">
+                Send recovery email</button>
+        </div>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="ArtistlistView">
+        <div id="PlaylistHeader2" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Artists',fixed:'top'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left" data-dojo-props="moveTo:'select_category',transition:'none',  transitionDir:'-1'">Categories</div>
+        </div>
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="ArtistList" data-dojo-mixins="dojox/mobile/LongListMixin">
+        </ul>
+        <ul data-dojo-type="dojox/mobile/TabBar" id="myTabBarArtistlistView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"' style="border-bottom:none">
+            <li data-dojo-type="dojox.mobile.TabBarButton" id="tabnowshowing5" data-dojo-props='moveTo:"ImageView"'><a style="color:white;font-size:11px">Now Showing</a>
+            </li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" data-dojo-props='moveTo:"GridView"'><a style="color:white;font-size:11px">Grid</a>
+            </li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" id="tabcategory5" data-dojo-props='moveTo:"select_category", selected:"true"'><a style="color:white;font-size:11px">Browse</a>
+            </li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" id="tabshare5" data-dojo-props='moveTo:"OptionsList"'><a style="color:white;font-size:11px">Settings</a>
+            </li>
+
+        </ul>
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="MuseumlistView">
+        <div id="PlaylistHeader3" data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Museums',fixed:'top'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left" data-dojo-props="moveTo:'select_category',transition:'none',  transitionDir:'-1'">Categrories</div>
+        </div>
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="MuseumList" data-dojo-mixins="dojox/mobile/LongListMixin">
+        </ul>
+        <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarMuseumlistView" data-dojo-props='fixed:"bottom",barType:"segmentedControl",fill:"always"' style="border-bottom:none">
+            <li data-dojo-type="dojox.mobile.TabBarButton" data-dojo-props='moveTo:"ImageView"'><a style="color:white;font-size:11px">Now Showing</a>
+            </li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" data-dojo-props='moveTo:"GridView"'><a style="color:white;font-size:11px">Grid</a>
+            </li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" id="tabcategory6" data-dojo-props='moveTo:"select_category", selected:"true"'><a style="color:white;font-size:11px">Browse</a>
+            </li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" data-dojo-props='moveTo:"OptionsList"'><a style="color:white;font-size:11px">Settings</a>
+            </li>
+
+        </ul>
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="MylistView">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="fixed:'top'">
+		<span style="margin-right:50px">Save to...</span>
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="DonePersonalViewlists()" style="float: left">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="CreateUserList()" style="float: right;">
+                <span class="tvstyle" style="font-size:15px;display:none">&nbsp;&nbsp;&nbsp;New Viewlist&nbsp;&nbsp;&nbsp;</span>
+            </div>
+
+        </div>
+        <div data-dojo-type="dojox/mobile/EdgeToEdgeList" id="MyViewLists" data-dojo-props='editable:true'>
+        </div>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="MylistViewEdit">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="fixed:'top'">
+		<span style="margin-right:40px">Edit Viewlists</span>
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="backbutton()" style="float: left">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right;">
+                <span class="editstyle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/ContentPane" id="MyViewListsEdit" data-dojo-props='select:"multiple"' style="position:relative;top:0px">
+        </div>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddUserList" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Create new Viewlist
+        <input data-dojo-type="dojox/mobile/TextBox" type="text" id="NewListName" style='width:300px;margin-top:10px;' placeHolder="&nbsp;&nbsp;Viewlist Name">
+        <br>
+        </input>
+
+        <button data-dojo-type="dojox/mobile/Button" style="margin-top:10px;margin-right:10px;background-color: white !important;color:black" onclick="CreateNewViewlist('Cancel')">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-left:10px;width:60px;background-color: #00C7FF !important;color:black" onclick="CreateNewViewlist('OK')">OK</button>   
+   </div>
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="select_player">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Select TVxxx',moveTo:'OptionsList', fixed:'top'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left" data-dojo-props="moveTo:'OptionsList',transition:'none',transitionDir:'-1'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Settings</span>
+            </div>
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="playerList" data-dojo-props='select:"multiple"' style="position:relative;top:0px"></ul>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="select_player2">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="moveTo:'OptionsList', fixed:'top'" >
+		<span style="margin-right:70px">Manage Devices</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" id="manageTVback" style="float: left" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done&nbsp;&nbsp;&nbsp;</span>
+            </div>
+
+        </div>
+
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="playerList2" data-dojo-props='select:"multiple"' style="position:relative;top:0px"></ul>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/View" id="registeruserx" style="background-size:cover;height: 100%;background-image:url('images/register_background.jpg')">
+        <div onclick="gotoView('registeruser','Login')">
+            <img src="images/Arrows-Back-icon-white.png" alt='' style="position:absolute;top:7px;left:5px;"><span class="backstyle2" style="color:white!Important">Done</span>
+        </div>
+
+        <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regUserNamex" placeHolder="&nbsp;&nbsp;Full Name" style="width: 250px; left: 1em; position: absolute;top:50px;"></input>
+        <br>
+        <br>
+        <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regUserEmailx" placeHolder="&nbsp;&nbsp;Email address" style="width: 250px; position: relative; left: 1em;top:40px"></input>
+        <br>
+        <br>
+        <input type="password" data-dojo-type="dojox/mobile/TextBox" id="regUserPWx" placeHolder="&nbsp;&nbsp;Password" style="width: 250px; position: relative; left: 1em;top:30px"></input>
+        <br>
+        <br>
+        <input type="password" data-dojo-type="dojox/mobile/TextBox" id="regUserPW2x" placeHolder="&nbsp;&nbsp;Re-enter password" style="width: 250px; position: relative; left: 1em;top:20px"></input>
+        <br>
+        <br>
+        <br>
+        <button data-dojo-type="dojox/mobile/Button" style="position: relative; left:75px;background-color: rgba(192,192,192,.8) !important;" onclick="createUser()">
+            Create Account</button>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/View" id="LogOff" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Logoff'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left" data-dojo-props='moveTo:"OptionsList",transition:"none", transitionDir:"-1"'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Settings</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/RoundRect" style="width: 271px;height:180px">
+            <span data-dojo-type="shapes/Text" style="color:black;font-size: 14px; position: relative; top: 3em; left: 5px;">This will log you out of ArtKick.  You will have to login again when you want to use ArtKick.</span>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="position: relative;  top:3em;left: 75px;width:100px" onclick="dologout">
+                Logoff</button>
+            <br>
+            <br>
+        </div>
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="registernewroku" style="height: 100%;background-color: black">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New Roku',fixed:'top'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="moveTo:'RegisterNew',transition:'none',transitionDir:'-1'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/RoundRect" style="width: 280px; position: relative;  top: 0em;">
+            <span data-dojo-type="shapes/Text" style="font-size: 14px; left: 19px; top: 0.5px;">Click this button to install the Artkick application on your Roku.  After the install completes return to this page.</span>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" onclick="installartkick()">
+                Install Artkick</button>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="left:1em" onclick="gotoView('registernewroku','registernewroku2')">
+                Click to Continue</button>
+        </div>
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="registernewroku2" style="height: 100%;background-color: black">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New Roku 2',fixed:'top'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" data-dojo-props="moveTo:'registernewroku',transition:'none',transitionDir:'-1'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+        </div>
+
+        <div data-dojo-type="dojox/mobile/RoundRect" style="width: 280px; height: auto; position: relative;shadow:false">
+            <span data-dojo-type="shapes/Text" style="font-size: 14px; left: 19px; top: 0.5px;">Click Settings/System Update on your Roku to install Artkick on your Roku.  Click the Artkick icon.</span>
+            <br>
+            <br>
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerName" style="width: 240px; position: relative; left: 1em;" placeHolder="&nbsp;&nbsp;Enter a name for this player"></input>
+            <br>
+            <br>
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerCode" placeHolder="&nbsp;&nbsp;Enter code displayed on screen" style="position: relative; left: 1em; width: 240px;"></input>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 187px;" onclick="createPlayer()">
+                Connect this Roku</button>
+        </div>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/View" id="registernewTV" style="height: 100%;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect Device',fixed:'top'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" onclick="backbutton()">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+
+        <div data-dojo-type="dojox/mobile/ContentPane" style="height: 100%;z-index:950;background-color: black;">
+
+            <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+
+                <div style="color:white">Do you see a registration code?
+                </div>
+                <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerCode2a" placeHolder="&nbsp;&nbsp;Registration Code" style="position: relative; left: 1em; top:5px;width: 140px;"></input>
+                <br>
+                <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerName2a" style="width: 140px; position: relative; left: 1em;top:5px;" placeHolder="&nbsp;&nbsp;Name this Device"></input>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left:1em;top:-12px" onclick="createPlayer2()">
+                    Connect Device</button>
+                <br>
+                <br>
+                <div style="color:white" style="position:relative">Need help?
+                </div>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;" onclick="reghelp('Roku')">
+                    Roku</button>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em;top:8px; width: 80px;" onclick="reghelp('Samsung')">
+                    Samsung</button>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;" onclick="reghelp('Sharp')">
+                    Sharp</button>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;" onclick="reghelp('Sony')">
+                    Sony</button>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;" onclick="reghelp('Browser')">
+                    PC/Mac</button>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; top:8px;width: 80px;" onclick="reghelp('LG')">
+                    LG</button>
+
+                <br>
+                <br>
+
+            </div>
+            <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+                <div style="color:black">
+
+                    <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em;size:15px;" onclick="reghelp('Chromecast')">
+                        Connect a Chromecast</button>
+                </div>
+            </div>
+            <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+                <div style="color:black">
+                    <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em;size:15px;" onclick="reghelp('AppleTV')">
+                        Connect an AppleTV</button>
+                    <br>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div data-dojo-type="dojox/mobile/View" id="registrationHelp" style="height: 100%;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Registration Code Help',fixed:'top'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float:left" onclick="backbutton()">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/ContentPane" style="height: 100%;z-index:950;background-color: black;">
+
+            <div data-dojo-type="dojox/mobile/RoundRect" style="top:15px;width: auto; height: auto; position: relative;shadow:false">
+                <br>What type of SmartTV do you have?
+                <br>
+                <br>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;" onclick="reghelp('Samsung')">
+                    Samsung</button>
+
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;" onclick="reghelp('Roku')">
+                    Roku</button>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;" onclick="reghelp('Browser')">
+                    Browser</button>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;color:gray" onclick="reghelp('Sony')">
+                    Sony</button>
+                <button data-dojo-type="dojox/mobile/Button" style="position: relative; left: 1em; width: 100px;color:gray" onclick="reghelp('Chromecast')">
+                    Chromecast</button>
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div data-dojo-type="dojox/mobile/View" id="registernewchromecast" style="height: 100%;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="label:'Connect New ChromeCast'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float:left;" data-dojo-props="transition:'none',transitionDir:'-1',moveTo:'select_player2'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/ContentPane" style="width: 100%; position: relative;top:2em;">
+            <div data-dojo-type="shapes/Text" style="text-align:center;font-size: 18px">
+                Click this button to select a ChromeCast to connect with Artkick</div>
+
+        </div>
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="removeplayer" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='moveTo:"select_player", label:"Remove TV"'>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="moveTo:'OptionsList',transition:'none',transitionDir:'-1'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Settings</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+
+            <div style="color:white">Check which TV(s) to remove
+            </div>
+            <span data-dojo-type="dojo/data/ItemFileReadStore" id="ItemFileReadStore_9" jsId="ItemFileReadStore_9"></span>
+            <ul data-dojo-type="dojox/mobile/EdgeToEdgeDataList" id="removePlayerList" data-dojo-props='select:"multiple"' style="position: relative; top: 1em;" store="ItemFileReadStore_9" query="{&quot;label&quot;:&quot;*&quot;}"></ul>
+
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="top: 1em;" onclick="removePlayersAction()">
+                Remove TV(s)</button>
+        </div>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:false,top:"21px"' style="z-index:999;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;;width:200px;position:absolute">
+
+        <ul data-dojo-type="dojox/mobile/IconMenu" id="shareiconmenu" data-dojo-props='cols:3' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
+            <li data-dojo-type="dojox/mobile/IconMenuItem" id="facebookshare" onclick="facebook()" style="border:none!important" data-dojo-props='closeOnAction:true,label:"Facebook",icon:"images/FB-f-Logo__blue_50.png"'></li>
+            <li data-dojo-type="dojox/mobile/IconMenuItem" id="twittershare" onclick="twitter()" style="border:none!important" data-dojo-props='closeOnAction:true, label:"Twitter", icon:"images/twitter-share.png"'></li>
+            <li data-dojo-type="dojox/mobile/IconMenuItem" id="emailShare" onclick="emailShare()" style="border:none!important" data-dojo-props='closeOnAction:true, label:"Mail", icon:"images/email-share.png"'></li>
+
+        </ul>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Swipehint" data-dojo-props='modal:false' style="background-color:rgba(0,0,0,.55)!important;top:50%;border:0px!important;outline:none!important;background-image:none!important">
+        Swipe left or right
+        <br>to change image
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="UserMessage" data-dojo-props='modal:false,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;background-image:none!important">
+        Content
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="IVGettySearchBox" data-dojo-props='modal:false,top:"30px"' style="width:100%;height:365px;border:0px!important;outline:none!important;background-image:none!important;background-color:rgba(0,0,0,.85)!important">
+        Search
+        <img src="images/getty_logo.png" alt='' style="height:20px;position:relative;top:7px">
+		<span id="gettysubdomain">Sports</span>
+        <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="&nbsp;&nbsp;Sports team, celebrity, event" id="gettysearchbox" style="width:99%;height:25px;font-size:15px;" data-dojo-props='ignoreCase: true, incremental:false,onSearch:gettyusersearch'></input>
+
+      
+
+        <div style="position:absolute;top:95px;width:99%">
+            <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="gettydonesearch()">Cancel</button>
+            <button data-dojo-type="dojox/mobile/Button" id="gettysearchbutton" style="background-color: white !important;color:black" onclick="gettyusersearch()">Search</button>
+
+        </div>
+        <span data-dojo-type="dojox/mobile/ProgressBar" data-dojo-props='value:"0%", label:"0/100"' id="gettyprogress" style="position:absolute;top:140px;width:95%;height:30px;left:5px"></span>
+		<div style="position:absolute;top:175px;left:10px">
+			<div id='gEntertainment'  class="mybclass3" onclick="Gsearch('Getty Entertainment')">Search Getty Entertainment</div>
+			<div id='gSports'  class="mybclass3"  onclick="Gsearch('Getty Sports')">Search Getty Sports</div>
+			<div id='gNews'  class="mybclass3" onclick="Gsearch('Getty News')">Search Getty News</div>
+			<div  class="mybclass3"  onclick="Gsearch('Artkick')">Search Artkick</div>
+		</div>   
+
+   </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="SearchBox" data-dojo-props='modal:false' 
+		style="z-index:903;width:90%;border-radius:0px!important;border-right:none;border-left:none;border-top-color:#28272D!important;border-bottom-color:#28272D!important;outline:none!important;background-image:none!important;background-color:rgba(0,0,0,.85)!important;height:200px">
+
+	 <div id="searchSelect" style="margin-top:5px;white-space:nowrap;">
+     <select style="text-size:16px;border-radius:5!important" id="searchSelectValue3" onchange="setSearchSelection(this.value)">
+       <option value='Fine Art' selected="selected">Search Fine Art</option>
+	   <option value='Photography' selected="selected">Search Photography</option>
+ <!--      <option value='Getty Entertainment' style="display:block" >Search Getty Entertaiment</option>
+       <option value='Getty Sports' style="display:block" >Search Getty Sports</option>
+       <option value='Getty News' style="display:block" >Search Getty News</option>	-->
+     </select>
+	 </div>
+        <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="&nbsp;&nbsp;Artist Name, Genre, Museum" id="searchbox2" style="width:80%;height:25px;font-size:15px;border-radius:5px;margin-top:10px" data-dojo-props='ignoreCase: true, incremental:false,onSearch:usersearch'></input>
+        
+		<div  id="gettybuttons" style="margin-top:10px">
+	 <span id="bestoftoggle" style="white-space:nowrap;">
+	        <label style="vertical-align: middle; text-align: left; ;color:white;font-size:15px">Best Of</label>
+            <button data-dojo-type="dojox/mobile/ToggleButton" checked="true" id="bestof-switch" onchange="bestofswitch()" style="color:white;height:25px;top:2px" data-dojo-props='label:"On"' ></button>
+		</span>
+		
+		<br>
+		
+		  <span id="EditorialTime" style="white-space:nowrap;margin-top:15px;margin-right:10px;">
+
+     <select style="text-size:16px;" id="dateValue" onchange="setEditorialTime(this.value)">
+       <option value='Any' selected="selected" >
+         Any date</option>
+       <option value='1D'>
+         Last 24 Hours</option>
+	   <option value='7D' >
+         Last 7 days</option>
+	   <option value='30D' >
+         Last 30 days</option>
+       <option value='12M' >
+         Last 12 months</option>
+
+
+     </select>
+	 </span>
+
+        <span id="EditorialOrientation" style="white-space:nowrap;">
+     <select style="text-size:16px;margin-top:15px;margin-right:10px;" id="orientationValue" onchange="setEditorialOrientation(this.value)">
+       <option value='Any' >
+         Any Orientation</option>
+       <option value='horizontal' selected="selected">
+         Horizontal</option>
+	   <option value='vertical' >
+         Vertical
+	 
+     </select>
+	 </span>
+		</div>
+		<div style="width:100%" id="searchbuttons">
+            <button data-dojo-type="dojox/mobile/Button" style="margin-top:25px;margin-right:10px;background-color: white !important;color:black" onclick="cancelsearch()">Cancel</button>
+            <button data-dojo-type="dojox/mobile/Button" style="margin-top:25px;margin-left:10px;background-color: #00C7FF !important;color:black" onclick="usersearch()">Search</button>
+        </div>
+   <div id='searchprogressdiv' style="display:none;z-index:955;">
+   <span data-dojo-type="dojox/mobile/ProgressBar" data-dojo-props='value:"0%", label:"0/100"' id="searchprogress" style="width:90%;top:20px"></span>
+
+   </div>
+       <div id="searchresults" style="position:relative;display:none;top:20px">Images Found</div>    
+
+   </div>
+   
+
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="ImageView" style="height: auto;z-index:901">
+        <div id="ImageViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="font-size:14px; color:white; line-height:150%;height:60px">
+			<span id="imageListName" style="margin-right:auto;margin-left:auto" >Viewlist Name Goes Here</span>
+            <span data-dojo-type="dojox/mobile/ToolBarButton" id="viewlistbutton" class="clearbutton"  onclick="gotoCategory('0')" style="position:absolute;left:5px;height:45px;top:6px;">GoToCategory</span>
+ 			
+			<span data-dojo-type="dojox/mobile/ToolBarButton" id="linemenu" data-dojo-props='icon:"images/3lineicon_menu-blue3.png"' style="position:absolute;top:5px;height:45px;right:0px;" onclick="showmenu()"></span>   
+			<span  data-dojo-type="dojox/mobile/ToolBarButton" id="resetsearch" data-dojo-props='icon:"images/search-icon-blue3.png"' style="position:absolute;top:5px;height:45px;right:40px" onclick="gettyuserrefresh(false)"></span>		
+			 <span data-dojo-type="dojox/mobile/ToolBarButton" id="imagesearch" data-dojo-props='icon:"images/search-icon-blue3.png"' style="position:absolute;top:5px;height:45px;right:40px" onclick="setSearchSelection()"></span>	 
+	 </div>
+
+
+        <div data-dojo-type="dojox/mobile/DataCarousel" id="ImageList" data-dojo-props='height:"850px",numVisible:1,pageIndicator:false,selectable:false,navButton:true' onclick="hidemenu()"></div>
+
+        <table class="hidden" onclick="hidemenu()" style="color:white!important;text-color:white;border-collapse: collapse; table-layout: fixed; border:0;height: auto; position: relative; left: 1em; top:-5em;width: 90%;">
+            <colgroup>
+                <col></col>
+            </colgroup>
+            <tbody style="color:white!important">
+                <tr>
+                    <td id="viewtableline1" style="font-weight: bold;color:white">
+                        <label id="WorkTitle" style="font-weight: bold;color:white">
+                            Please Wait While We Load Your Viewlist</label>
+                        <label id="WorkDate" style="position: relative;">
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="viewtableline2">
+                        <label id="WorkArtist">
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="viewtableline3" style="color:white!important">
+                        <label id="WorkMedium" style="color:white!important">
+                        </label>
+                        <label id="WorkSize">
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="viewtableline4">
+                        <label id="WorkLocation">
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="viewtableline5">
+                        <label>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="viewtableline5a">
+                        <label>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="viewtableline6">
+                        <label>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="viewtableline6a">
+                        <label>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="viewtableline7">
+                        <div id="viewtableline8">
+                        </div>
+                        <label>
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBar" data-dojo-props='fixed:"bottom",center:true' style="border-bottom:none">
+            <li data-dojo-type="dojox.mobile.TabBarButton" data-dojo-props='moveTo:"ImageView"' id="tabnowshowing" style="color:white;font-size:11px">Details</li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" data-dojo-props='moveTo:"GridView"' style="color:white;font-size:11px">Grid</li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" onclick="bigimage()" style="color:yellow;font-size:11px">FullScreen</li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" id="shuffletab" onclick="mediashuffle()">Shuffle On</li>
+
+        </ul>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SwapView" id="Intro1" style="background-color: black height: 100%;">
+        <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:1em;" onclick="goToLogin1()">
+            Sign in</div>
+        <div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:1em;" onclick="Guest1()">
+            Look around</div>
+
+        <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; color: #c0c0c0; font-family: Verdana,Geneva,sans-serif; float: none; font-size: 17px; left: 95px; top: 75px;">Discover it here</span>
+        <img src="images/Nighthawks1.png" alt=">" style="position: absolute; z-index: 900; left: 135PX; top: 110PX;"></img>
+        <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; text-align: center; width: 254px; color: #c0c0c0; font-size: 17px; left: 36.5px; top: 230px;">View it there</span>
+        <img src="images/Nighthawks2.png" alt=">" style="position: absolute; z-index: 900; left: 95PX; top: 265PX;"></img>
+        <img src="images/place2a.png" alt=">" style="position: absolute; z-index: 900; left: 250PX; top: 440PX;"></img>
+        <span data-dojo-type="shapes/Text" style="font-size: 16px; position: absolute; z-index: 900; top: 381px; left: 239px; color: #7f7f7f;">Swipe Left</span>
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="blankview">
+        <div align="center">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>Loading, Please wait
+            <br>
+            <br>
+            <img src="images/waitcircle.gif" alt="wait" align="center">
+        </div>
+    </div>
+	    <div data-dojo-type="dojox/mobile/ScrollableView" id="blankview2">
+        <div align="center">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>Logging In, Please wait
+            <br>
+            <br>
+            <img src="images/waitcircle.gif" alt="wait" align="center">
+        </div>
+    </div>
+    <div data-dojo-type="dojox/mobile/SwapView" id="Intro2" style="background-color: black">
+        <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:1em;" onclick="goToLogin1()">
+            Sign in</div>
+        <div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:1em;" onclick="Guest2()">
+            Look around</div>
+        <img src="images/spacewalk1.png" alt=">" style="position: absolute; z-index: 900; width: 194px; height: 98px; left: 62px; top: 77px;"></img>
+
+        <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; color: #c0c0c0; text-align: center; width: 254px; left: 34.5px; font-size: 14px; top: 200px;">
+   Use your smartphone or tablet as a remote to explore tens of thousands of images.</span>
+        <img src="images/place3a.png" alt=">" style="position: absolute; z-index: 900; left: 250PX; top: 440PX;"></img>
+        <span data-dojo-type="shapes/Text" style="font-size: 16px; position: absolute; z-index: 900; left: 239px; top: 381px; color: #7f7f7f;">Swipe Left</span>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SwapView" id="Intro3" style="background-color: black">
+        <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:1em;" onclick="goToLogin1()">
+            Sign in</div>
+        <div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:1em;" onclick="Guest3()">
+            Look around</div>
+        <img src="images/FB-f-Logo__blue_50.png" alt=">" style="position: absolute; z-index: 900; left: 135px; top: 6em;"></img>
+        <img src="images/twitter-share.png" alt=">" style="position: absolute; z-index: 900; left: 135px; top: 10em;"></img>
+        <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 900; font-family: Verdana,Geneva,sans-serif; color: #c0c0c0; text-align: center; width: 254px; left: 35px; font-size: 15px; top: 240px;">
+Save your favorite images in personal viewlists and share them with your friends on social media.</span>
+        <img src="images/place4a.png" alt=">" style="position: absolute; z-index: 900; left: 250PX; top: 440PX;"></img>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/View" id="iframeview" style="height: 100%;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" onclick="destroyiframe()">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+
+        </div>
+        <div data-dojo-type="dojox/mobile/ContentPane" id="displayiframe" style="position: absolute; z-index: 900; width:100%;top:40px;"></div>
+        <span data-dojo-type="shapes/Text" style="position: absolute; z-index: 800; left: 76px; top: 221px; font-size: 20px; font-weight: bold;">Loading web page</span>
+        <img style="position: absolute; z-index: 800; top: 16em; left: 9em;" alt=" " src="images/wait_animated-blue.gif"></img>
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="fullimageview" onclick="destroyfullimageview()" style="height:100%;background-color:#000000">
+
+        <img id="fullurl" style="width:100%;height:auto" src="images/blue.png" alt=" "></img>
+
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="AccountSettings" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='label:"Account Settings",fixed:"top"'>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+		<div style="text-align:center">
+            <div id="useraccount" style="color:white">User: test@test.net
+            </div>
+
+
+            <button data-dojo-type="dojox/mobile/Button" style="background-color:#00C7FF!important;color:white;width:100px;margin-top:15px;margin-bottom:15px" onclick="dologout">
+                Logoff</button>
+
+        </div>
+		<div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+		<div style="text-align:center">
+            <div style="color:white;margin-top:15px;margin-bottom:20px">
+                High Resolution Images</div>
+
+			<img id="hires-switch" src="images/checkbox_off.png" class="checkboxclass"onclick="hiresswitch()">
+            <span style="color:white;position:relative;top:-7px">
+                Turn on Hi-Res Images</span>
+
+
+			
+			<br>
+            <br>
+            <a style="color:white">Enabling this option will use higher resolution images on your phone/tablet increasing data use and slowing image loading.</a>
+            <br>
+            <br>
+		</div>
+        </div>
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+				<div style="text-align:center">
+            <label style="color:white;">
+                Reset Password</label>
+            <br>
+            <br>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeOldPW" placeHolder="&nbsp;&nbsp;Old Password" style=" width: 250px;"></input>
+            <br>
+            <br>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeNewPW1" placeHolder="&nbsp;&nbsp;New Password" style=" width: 250px;"></input>
+            <br>
+            <br>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="changeNewPW2" placeHolder="&nbsp;&nbsp;Verify New Password" style=" width: 250px;"></input>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" onclick="changePW()" style="background-color:#00C7FF!important;margin-bottom:10px">
+                Submit Password Change</button>
+        </div>
+		</div>
+		     <div data-dojo-type="dojox/mobile/RoundRect" id="restoreTransDiv" style="background-color:black!important;border: 1px solid gray!important;">
+			 		<div style="text-align:center">
+            <span data-dojo-type="shapes/Text" style="font-size: 14px; color:white">Click here to restore your subscriptions</span>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="background-color:#00C7FF!important;width:100px;margin-bottom:10px" onclick="restoreTransaction">
+                Restore Subscriptions</button>
+            <br>
+            <br>
+        </div>
+		</div>
+		<div style="text-align:center">
+        <div data-dojo-type="dojox/mobile/RoundRect" style="background-color:black!important;border: 1px solid gray!important;">
+            <label style="color:white">
+                Delete Account</label>
+            <br>
+            <br>
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="deleteAcctEmail" placeHolder="&nbsp;&nbsp;Email" style="width: 250px;"></input>
+            <br>
+            <br>
+            <input type="password" data-dojo-type="dojox/mobile/TextBox" id="deleteAcctPW" placeHolder="&nbsp;&nbsp;Password" style="width: 250px;"></input>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" onclick="deleteAccount()" style="background-color:#00C7FF!important;margin-bottom:10px">
+                Delete Artkick Account</button>
+        </div>
+		</div>
+
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+	
+	<div data-dojo-type="dojox/mobile/ScrollableView" id="InAppSubscribe" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
+		<span style="margin-right:12%">Getty Subscription</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Home</span>
+            </div>
+
+        </div>
+		<div style="width:100%;text-align: center;">
+			<img src="images/Artkick_GI_logolockups.png" style="width:150px">
+		</div>
+		<div style="width:90%;margin-left:5%;margin-top:10px">
+
+
+			<div style="width:100%;text-align: center;">
+				<span style="color:white;margin-left:10px">7-Day FREE Trial&mdash;then just</span>
+				<span style="color:#00C7FF;">$4.99</span>
+				<span style="color:#00C7FF;font-size:15px;margin-left:-4px">/mo</span><br>
+				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;margin-top:20px;width: 130px" onclick="setmysubs(true)">Subscribe</button>   
+				<br>
+				<div style="color:white;font-size:12px;margin-top:10px;text-decoration:underline" id="subrestore" onclick="restoreTransaction()">Restore subscription</div>
+				<div style="color:white;font-size:20px;font-weight:bold;margin-top:15px">The World in Photos On Your TV</div>
+			</div>
+		<div style="width:90%;margin-left:5%">
+			<p style="text-align:left;font-size:15px;color:white;line-height:120%">
+			Add millions of timely, up-to-the-minute photos from Getty Images to your Artkick experience, 
+			shot by world-class photographers with state-of-the-art gear and access to global events
+			</p>
+			<p style="text-align:left;font-size:15px;color:white;line-height:120%">
+			Create your own custom viewlists that follow your favorite celebrities, teams and topics.
+			</p>
+			<p style="text-align:left;font-size:15px;color:white;line-height:120%">
+			Thousands of new images every day&mdash;all the celebrity intrigue, 
+			all the action from the latest games, all the breaking news, plus all the timeless, iconic images you could ever want.
+			</p>
+			<p style="text-align:left;font-size:15px;font-weight:bold;color:white;line-height:120%">
+			Includes:
+			</p>
+		</div>
+		</div>
+		<div style="width:90%;margin-top:10px;margin-left:5%;display:inline-block">
+		<div style="height:25px;width:25px;background-color:#a431b2;margin-right:10px">
+			<img src="images/getty_g_solid.png" style="margin:auto;height:19px;width:19px;position:relative;top:3px;left:3px">
+
+		</div>
+		<span style="font-size:18px;color:white;font-weight: 700;position: relative;top: -25px;left: 40px;">Getty Entertainment</span>
+		<span style="text-align:left;font-size:15px;color:white;line-height:120%;margin-left:20px;float:left;margin-top: -10px;">Your backstage pass to thousands of images from celebrity events worldwide. 
+			Includes award ceremonies, fashion shows, concerts, movie previeres, celebrity parties, and more.
+		</span>
+
+		</div>
+		<div style="height:15px">  </div>
+		<div style="width:90%;margin-top:10px;margin-left:5%;display:inline-block">
+		<div style="height:25px;width:25px;background-color:#47c16a;margin-right:10px">
+			<img src="images/getty_g_solid.png" style="margin:auto;height:19px;width:19px;position:relative;top:3px;left:3px">
+
+		</div>
+		<span style="font-size:18px;color:white;font-weight: 700;position: relative;top: -25px;left: 40px;">Getty Sports</span>
+		<span style="text-align:left;font-size:15px;color:white;line-height:120%;margin-left:20px;float:left;margin-top: -10px;">From your favorite sporting moments to the latest big game&mdash;your sideline pass to images from thousands of sporting events. Includes NFL, MLB, NBA, NHL, NASCAR and more.
+		</span>
+		</div>
+	<div style="height:15px">  </div>
+		<div style="width:90%;margin-top:10px;margin-left:5%;display:inline-block">
+		<div style="height:25px;width:25px;background-color:#f2ac3d;margin-right:10px">
+			<img src="images/getty_g_solid.png" style="margin:auto;height:19px;width:19px;position:relative;top:3px;left:3px">
+
+		</div>
+		<span style="font-size:18px;color:white;font-weight: 700;position: relative;top: -25px;left: 40px;">Getty News</span>
+		<span style="text-align:left;font-size:15px;color:white;line-height:120%;margin-left:20px;float:left;margin-top: -10px;">Stay up-to-date on the latest happenings from around
+		the world&mdash;your press pass to thousands of images from worldwide new events, including national and international coverage.
+		</span>
+		</div>
+		<div style="width:100%;margin-left:4px;margin-top:10px">
+			<img src="images/subscribe-image1.jpg" style="width:32%">
+			<img src="images/subscribe-image2.jpg" style="width:32%">
+			<img src="images/subscribe-image3.jpg" style="width:32%">
+		</div>
+		<div style="width:90%;margin-top:20px;margin-left:5%;">
+		<span style="text-align:left;font-size:17px;color:white;line-height:120%;margin-left:20px;float:left;margin-top: -10px;margin-bottom:15px">Get the hottest, the latest, the greatest in entertainment, sports & news from Getty Images&mdash;your All
+		Access Pass to timely, compelling photos.
+		</span>
+		</div>
+		<div style="width:100%;text-align: center;margin-top:10px;">
+				<br><span style="color:#00C7FF;font-size:24px;font-weight:bold">$4.99</span>
+				<span style="color:#00C7FF;font-size:15px;margin-left:-4px">/mo</span>
+				<p style="color:white;font-size:15px;margin-top: -3px;">after 7-Day FREE Trial</p>
+
+				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;width: 130px" onclick="setmysubs(true)">Subscribe</button>   
+
+		</div>
+	</div>
+	<div data-dojo-type="dojox/mobile/ScrollableView" id="InAppSubscribe-old" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
+		<span style="margin-right:12%">Getty Subscription</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Home</span>
+            </div>
+
+        </div>
+		<div style="width:100%;text-align: center;">
+			<img src="images/Artkick_GI_logolockups.png" style="width:150px">
+		</div>
+		<div style="width:90%;margin-left:5%">
+			<div style="position:relative;margin-bottom: 5px;"onclick="gettysubs('Getty_Entertainment',1)">
+			<img id="g1a" src="images/button_off.png" style="height:18px;position:relative;top:3px">
+			<span id="g1b"style="color:white;margin-left:10px">Getty Entertainment</span>
+			<span id="g1c" style="float:right;color:white">$4.99/mo</span>
+			</div>
+			<div style="position:relative;margin-bottom: 5px;" onclick="gettysubs('Getty_Sports',2)">
+			<img id="g2a" src="images/button_off.png" style="height:18px;position:relative;top:3px">
+			<span id="g2b" style="color:white;margin-left:10px">Getty Sports</span>
+			<span id="g2c" style="float:right;color:white">$4.99/mo</span>
+			</div>
+			<div style="position:relative;margin-bottom: 5px;" onclick="gettysubs('Getty_News',3)">
+			<img id="g3a" src="images/button_off.png" style="height:18px;position:relative;top:3px">
+			<span id="g3b" style="color:white;margin-left:10px">Getty News</span>
+			<span id="g3c" style="float:right;color:white">$4.99/mo</span>
+			</div>
+			<div style="position:relative;margin-bottom: 5px;" onclick="gettysubs('Getty_All2',4)">
+			<img id="g4a" src="images/button_on.png" style="height:18px;position:relative;top:3px">
+			<span id="g4b" style="color:#00C7FF;margin-left:10px">Getty Bundle (all 3)</span>
+			<span id="g4c" style="float:right;color:#00C7FF">$7.99/mo</span>
+		</div>
+		<div style="width:100%;text-align: center;">
+			 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;margin-top:10px;width: 130px" onclick="setmysubs(true)">Subscribe</button>   
+		</div>
+		</div>
+		<div style="width:100%;text-align: center;margin-top:20px">
+		<div style="height:18px;background-color:#a431b2;">
+		<img src="images/getty_g_solid.png" style="margin:auto;height:18px">
+		</div>
+		<div style="font-size:18px;color:#00C7FF;font-weight: 700;margin-top:10px;margin-bottom:5px">The Details</div>
+		</div>
+		<div style="width:90%;margin-left:5%">
+		<p style="text-align:left;font-size:15px;color:white;line-height:120%">Looking for exclusive and timely photographs from entertainment, sports, and news events from around the world?
+		Subscribe to Artkick featuring Getty Images – the premier supplier of photographs to leading newspapers, magazines and websites globally – and get instant access to world-class images. </p>
+		
+		<span style="text-align:left;color:#a431b2;font-weight:700">Getty Entertainment images</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">Get instant access to thousands of images from celebrity events worldwide – including awards, 
+		music concerts, movie premieres, red carpet, fashion shows, celebrity parties, and more.
+		</div>
+		<br>
+		<span style="text-align:left;color:#47c16a;font-weight:700">Getty Sports photography</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">From your favorite sporting moments to the latest big game, don’t pass on global photo coverage of live action sporting events.
+		</div>
+		<br>
+		<span style="text-align:left;color:#f2ac3d;font-weight:700">Getty News imagery</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">Stay up-to-date on the latest happenings from around the world by exploring thousands of images from national and international events.
+		</div>
+		<br>
+		<span style="text-align:left;color:#00C7FF;font-weight:700">Getty Bundle</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($7.99/mo.)</span>
+
+		<br>
+		<span style="color:#a431b2;margin-right: 5px;">Entertainment</span><span style="color:white">+</span>
+		<span style="color:#47c16a;margin-right: 5px;">Sports</span><span style="color:white">+</span>
+		<span style="color:#f2ac3d">News</span>
+		
+		<div style="color:white;font-weight:400;font-size:15px;">Why settle for less when you can get an all-access pass to millions of images from worldwide entertainment, sports, and news events. Enjoy it all as a bundle and save 47%.
+		</div>
+		</div>
+		</div>
+
+	<div data-dojo-type="dojox/mobile/ScrollableView" id="InAppSubscribe2" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"'>
+			<span style="margin-right:12%">Getty Subscription</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>	
+		<div style="width:90%;margin-left:5%">
+		<p style="text-align:center;font-size:18px;color:#47c16a;font-weight: 700;">Don't miss out on all the great Getty Images</p>
+		
+		<p style="text-align:center;font-size;15px;color:white">You're already enjoying 
+		<span id="currentGettySub">Getty current Subscription</span>.<br> For just $2.99/month more,<br>you can have three times the fun.<br><br>
+		<span style="font-size;15px;color:#00C7FF">Get the Getty Bundle&nbsp;&nbsp+$2.99</span>
+		</p>
+		</div>	
+		<div style="text-align:center;font-size;15px;color:white;margin-top:15px">Includes all three premium Getty categories:</div>
+		
+		<div style="width:100%;text-align: center;font-weight: bold;">
+				<span style="color:#a431b2;margin-right: 5px;">Entertainment</span><span style="color:white">+</span>
+		<span style="color:#47c16a;margin-right: 5px;">Sports</span><span style="color:white">+</span>
+		<span style="color:#f2ac3d">News</span>
+		<br>
+			 <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:20px;margin-top:15px;width:125px;background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px" onclick="setmysubs(false)">Upgrade</button>   
+		</div>
+		<div style="width:100%;text-align: center;">
+		<div style="height:18px;background-color:#a431b2;">
+		<img src="images/getty_g_solid.png" style="margin:auto;height:18px">
+		</div>
+		<div style="font-size:18px;color:#00C7FF;font-weight: 700;margin-top:10px;margin-bottom:5px">The Details</div>
+		</div>		
+	<div style="width:90%;margin-left:5%">
+		<p style="text-align:left;font-size:15px;color:white;line-height:120%">Looking for exclusive and timely photographs from entertainment, sports, and news events from around the world? 
+		Subscribe to Artkick featuring Getty Images – the premiere supplier of photographs to leading newspapers, 
+		magazines and websites globally – and get instant access to world-class images. </p>
+		
+		<span style="text-align:left;color:#a431b2;font-weight:700">Getty Entertainment images</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">Get instant access to thousands of images from celebrity events worldwide – including awards, music concerts, 
+		movie premieres, red carpet, fashion shows, celebrity parties, and more.
+		</div>
+		<br>
+		<span style="text-align:left;color:#47c16a;font-weight:700">Getty Sports photography</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">From your favorite sporting moments to the latest big game, don’t pass on global photo coverage of live action sporting events.
+		</div>
+		<br>
+		<span style="text-align:left;color:#f2ac3d;font-weight:700">Getty News imagery</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp($4.99/mo.)</span>
+		<div style="color:white;font-weight:400;font-size:15px;line-height:120%">Stay up-to-date on the latest happenings from around the world by exploring thousands of images from national and international events.
+		</div>
+		<br>
+		<span style="text-align:left;color:#00C7FF;font-weight:700">Getty Bundle</span><span style="color:white;font-weight:400;font-size:15px;">&nbsp;&nbsp(additional $2.99/mo.)</span>
+		<br>
+		<span style="color:#a431b2;margin-right: 5px;">Entertainment</span><span style="color:white">+</span>
+		<span style="color:#47c16a;margin-right: 5px;">Sports</span><span style="color:white">+</span>
+		<span style="color:#f2ac3d">News</span>
+		
+		<div style="color:white;font-weight:400;font-size:15px;">Why settle for less when you can get an all-access pass to millions of images from worldwide entertainment, sports, and news events. Enjoy it all as a bundle and save 47%.
+		</div>
+		
+	</div>
+
+
+	</div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="OptionsList" style="height: auto;">
+        <div data-dojo-type="dojox/mobile/Heading" style="height:55px" data-dojo-props='fixed:"top",label:"Settings"'>
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" onclick="backbutton()">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <!--  <div  data-dojo-type="dojox/mobile/ToolBarButton"  style="float: right;" data-dojo-props="moveTo:'MylistView'">new viewlist</div> -->
+
+        </div>
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" style="position:relative;top:0px">
+
+            <li class="mblListItem2" onclick="gotoView(currentView,'AccountSettings')">Account</li>
+
+            <li class="mblListItem2" onclick="showquickhint()">Hint</li>
+
+        </ul>
+
+    </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="RegisterNew" style="height: auto;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Connect New TV"'>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" data-dojo-props="moveTo:'OptionsList',transition:'none',transitionDir:'-1'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Settings</span>
+            </div>
+
+        </div>
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" style="position:relative;top:20px">
+            <li data-dojo-type="dojox/mobile/ListItem" data-dojo-props='moveTo:"registernewroku"'>Connect New Roku</li>
+            <li data-dojo-type="dojox/mobile/ListItem" data-dojo-props='moveTo:"registernewchromecast"'>Connect New Chromecast</li>
+            <li data-dojo-type="dojox/mobile/ListItem" data-dojo-props='moveTo:"registernewTV"' onclick='gotoView("RegisterNew","registernewTV")'>Connect New SmartTV</li>
+
+        </ul>
+    </div>
+    <div id="About" data-dojo-type="dojox/mobile/View" style="height: 100%;z-index:950;background-color: black;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"About"'>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+        <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">
+        <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
+        <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: gray;">
+Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
+  </span>
+        <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: gray;">
+            Server is
+        </div>
+    </div>
+    <div id="GridView" data-dojo-type="dojox/mobile/ScrollableView">
+        <div  data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="color:white;font-size: 14px; line-height:150%">
+			<span id="GridViewHeader" style="position:relative;top:10px!important;margin-right:60px">Grid View</span>
+		   <div data-dojo-type="dojox/mobile/ToolBarButton" id="GridPrevious" onclick="backbutton()" style="float: left;">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+
+        </div>
+
+        <div data-dojo-type="dojox/mobile/ContentPane" id="Picturegrid" style="z-index:900; position: relative; top:10px"></div>
+        <ul data-dojo-type="dojox.mobile.TabBar" id="myTabBarGridView" data-dojo-props='fixed:"bottom",center:"true"' style="border-bottom:none">
+            <li data-dojo-type="dojox.mobile.TabBarButton" data-dojo-props='moveTo:"ImageView"' style="color:white;font-size:11px">Details</li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" id="gridshowing" data-dojo-props='moveTo:"GridView"' style="color:white;font-size:11px">Grid</li>
+            <li data-dojo-type="dojox.mobile.TabBarButton" onclick="bigimage()" style="color:white;font-size:11px">FullScreen</li>
+
+        </ul>
+
+    </div>
+    <div id="EditListView" data-dojo-type="dojox/mobile/ScrollableView">
+        <div id="EditListViewHeader" data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Tap to Delete Image"' style="color:white;font-size: 14px; line-height:150%">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="EditListViewDone()" style="float: left;">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"> <span class="backstyle">Done</span>
+            </div>
+
+        </div>
+
+        <div data-dojo-type="dojox/mobile/ContentPane" id="Picturegrid2" style="z-index:900; position: relative; top:10px"></div>
+
+    </div>
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteItems" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Delete Viewlist Images
+        <br>
+        <a id='DeleteItemNumber'>No items to delete</a>
+        <br>
+		<button data-dojo-type="dojox/mobile/Button" style="margin-right:10px;background-color: white !important;color:black" onclick="doneeditviewlist(false)">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-left:10px;margin-bottom:10px;margin-top:10px;background-color: white !important;background-color: #00C7FF !important;color:black;width:60px" onclick="doneeditviewlist(true)">Delete</button>
+       
+    </div>
+    <div data-dojo-type="dojox/mobile/View" id="TalkToArt">
+
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Talk to Artkick"'>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="backbutton()" style="float: left;">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+
+        <div data-dojo-type="dojox/mobile/RoundRect" style="width: auto; height: auto;">
+            <div style="font-size: 14px; margin-left: 15px; top: 1em;">Give us your feedback and comments.
+                <br>We look forward to hearing from you.
+                <br>
+            </div>
+            <textarea data-dojo-type="dojox/mobile/TextArea" id="ArtTextx" placeHolder="&nbsp;&nbsp;Enter feedback here" style="width:250px;height:130px; left: 1em; position: relative;"></textarea>
+            <br>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" style="width: 100px; position: relative; left: 2em;" onclick="SendToArt()">
+                Send</button>
+            <button data-dojo-type="dojox/mobile/Button" style="width: 100px; position: relative; left: 3em;" onclick="CancelToArt()">
+                Cancel</button>
+        </div>
+    </div>
+   
+    <div id="wipemenu" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)" >
+
+
+
+        <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
+		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
+        </div>
+
+
+        <div id="import1" class="wipestyle" onclick="gotoView('ImageView','Import')">
+		<img src="images/menu/import.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Import Personal Images
+        </div>
+
+        <div class="wipestyle" id="showeditmyviewlists" style="display:none" onclick="callEditmyListView()">
+		<img src="images/menu/edit.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Edit My Viewlists
+        </div>
+        <div class="wipestyle" onclick="gotoView(window.currentView,'AccountSettings')">
+		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
+        </div>
+        <div class="wipestyle" onclick="callHelp()">
+		<img src="images/menu/help.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Help
+        </div>
+    </div>
+    <div id="wipemenu2" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
+
+        <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
+		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
+        </div>
+
+        <div id="import2" class="wipestyle" onclick="gotoView(window.currentView,'Import')">
+		<img src="images/menu/import.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Import Personal Images
+        </div>
+        <div class="wipestyle" onclick="gotoView(window.currentView,'AccountSettings')">
+		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
+        </div>
+
+        <div class="wipestyle" onclick="hidemenu();dijit.registry.byId('newFeedback').show()">
+		<img src="images/menu/contact.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Send Feedback
+        </div>
+        <div class="wipestyle" onclick="callHelp()">
+		<img src="images/menu/help.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Help
+        </div>
+    </div>
+    <div id="wipemenu2a" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
+
+
+        <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
+		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
+        </div>
+
+        <div id="import3" class="wipestyle" onclick="gotoView(window.currentView,'Import')">
+		<img src="images/menu/import.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Import Personal Images
+        </div>
+
+        <div class="wipestyle" id="editmyviewlists" onclick="callEditmyListView('')">
+		<img src="images/menu/edit.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Edit My Viewlists
+        </div>
+        <div class="wipestyle" onclick="gotoView(window.currentView,'AccountSettings')">
+		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
+        </div>
+        <div class="wipestyle" onclick="hidemenu();dijit.registry.byId('newFeedback').show()">
+		<img src="images/menu/contact.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Send Feedback
+        </div>
+        <div class="wipestyle" onclick="callHelp()">
+		<img src="images/menu/help.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Help
+        </div>
+    </div>
+
+    <div id="wipemenu3" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
+
+
+
+        <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
+		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
+        </div>
+        <div id="import4" class="wipestyle" onclick="gotoView(window.currentView,'Import')">
+		<img src="images/menu/import.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Import Personal Images
+        </div>
+        <div id="inappsubscribe"class="wipestyle" style="display:block" onclick="DoSubscribe()">
+		<img src="images/menu/subscribe.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Subscribe to Getty Images
+        </div>
+        <div class="wipestyle" style="display:block" onclick="editstore()">
+		<img src="images/menu/manage.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Manage Subscriptions
+        </div>
+        <div class="wipestyle" onclick="gotoView(window.currentView,'AccountSettings')">
+		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
+        </div>
+
+        <div class="wipestyle" onclick="hidemenu();dijit.registry.byId('newFeedback').show()">
+		<img src="images/menu/contact.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Send Feedback
+        </div>
+
+        <div class="wipestyle" onclick="callHelp()"><img src="images/menu/help.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Help
+        </div>
+    </div>
+
+    <div id="newsharemenu" style="position:absolute;top:42px;left:200px;z-index:1000;display:none;background-color:#7b90ab">
+        <div class="wipestyle" onclick="facebook()">Share on Facebook&nbsp;&nbsp;
+        </div>
+        <div class="wipestyle" onclick="twitter()">Share on Twitter
+        </div>
+        <div class="wipestyle" onclick="emailShare()">Share with Email
+        </div>
+        <div class="wipestyle" onclick="callmyListView()">Add to viewlist
+        </div>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="GuestMessage" data-dojo-props='modal:true,top:"61px"' style="z-index:950;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        <div style="text-align:left;margin-left:10px">
+            <p>Actions in this menu require you to log in to
+                <img style="position:relative;top:6px" src="images/Logo_75px.png" alt="">
+            </p>
+            <span style="position:relative;top:-10px;">Then you can:</span>
+            <br>
+            <span class="msgstyle" style="top:-5px">Connect TVs</span>
+            <br>
+            <span class="msgstyle" style="top:-5px">Import Personal Images</span>
+            <br>
+            <span class="msgstyle" style="top:-10px;font-size:80%">(from Facebook,Flickr,Instagram,</span>
+            <br>
+            <span class="msgstyle" style="top:-15px;font-size:80%">Picasa,Dropbox&SmugMug)</span>
+            <br>
+            <span class="msgstyle" style="top:-15px;">Create personal viewlists</span>
+            <br>
+            <span class="msgstyle" style="top:-15px;">Share Viewlists via:</span>
+            <br>
+            <span class="msgstyle" style="top:-20px;font-size:80%">Facebook, Twitter & Email</span>
+            <br>
+            <span class="msgstyle" style="top:-20px;">Create & Save Searchs by:</span>
+            <br>
+            <span class="msgstyle" style="top:-25px;font-size:80%">Artist, Genre or Museum</span>
+            <br>
+
+        </div>
+
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;margin-right:10px;" onclick="dijit.registry.byId('GuestMessage').hide()">Maybe Later</button>
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;margin-left:10px;margin-bottom:10px;background-color:#00C7FF!important" onclick="gotoSignin()">Log in Now</button>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="CopyrightMessage" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        <div>
+            <span>Copyright Information</span>
+            <br>
+            <br>
+            <div id="copyrightinformation" style="text-align:left;margin-left:10px;margin-right:10px">information</div>
+            <br>
+            
+            <button data-dojo-type="dojox/mobile/Button" style="width:50px;margin-bottom:10px;position:relative;background-color:#00C7FF!important" onclick="dijit.registry.byId('CopyrightMessage').hide()">OK</button>
+        </div>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="select_category">
+        <div data-dojo-type="dojox/mobile/Heading"  data-dojo-props='fixed:"top"'>
+            <span id="browse-search" style="top:-10px;color:#ADADAD;font-weight:bold">
+   Home</span>
+           <img  src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" style="float: left;position:relative;margin-left:15px;top:8px;width:85px"  onClick="gotoView(currentView,'About')">
+            </img>
+        <img id="catlinemenu" src="images/3lineicon_menu-blue3.png" style="float: right;top:-1px;" onClick="showmenu()">
+            </img>
+        <img id="searchmenu" src="images/search-icon-blue3.png" style="float: right;top:0px;" onClick="setSearchSelection()">
+            </img>
+
+
+        </div>
+		<div id="test1" data-dojo-type="dojox/mobile/ContentPane">
+
+		<div style="width:100%;height:5px;background-color:#00C7FF;margin-bottom:5px">		</div>
+        <div align="center" style="color:#ADADAD;margin-bottom:5px;font-size:20px">
+            This Week's Featured Viewlists
+        </div>
+		<div style="float:right;position:relative;left:-50%">
+        <div id="catList" style="display:inline-block;z-index=910;position: relative; top:5px;left:50%">
+        </div>
+		</div>
+
+        <img id="gettyad" src="http://prod.artkick.net/images/GettyAds/GettyTrial_0.jpg" style="display:block;position:relative;top:5px;width:100%;margin-top:15px;" onclick="DoSubscribe()"></img>
+				
+		<div id="blueline" style="z-index:910;width:100%;height:5px;margin-bottom:5px;margin-top:5px;background-color:#00C7FF;float:left">		</div>
+<br>
+        <div align="center" style="color:#ADADAD;margin-top:2px;margin-botton:5px;clear:both;font-size:20px">Categories  </div>
+
+		<div class="newcategoryclass" onclick="gotoCategory('Highlights')">
+            <img src="images/NewCategories/cat_01_highlights.jpg" alt=" "  >
+			<div style="color:white" align="center"> Highlights</div>
+		</div>
+		<div class="newcategoryclass" onclick="gotoCategory(' Top Lists')">
+            <img src="images/NewCategories/cat_02_popular_viewlists.jpg" alt=" " >
+			<div style="color:white" align="center"> Top Lists</div>
+		</div>
+		<div class="newcategoryclass" id="MyViewlists" onclick="gotoCategory('My Viewlists')">
+            <img src="images/NewCategories/cat_03_my_viewlists.jpg" alt=" " >
+			<div style="color:white" align="center">My Viewlists</div>
+		</div>
+
+		<div id="GettyEntertainment" class="newcategoryclass" style="display:none" onclick="gotoCategory('Getty Entertainment')">
+   			<img  src="images/NewCategories/cat_05_getty_entertainment.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty Entertainment</div>
+		</div>
+				<div id="GettyEntertainment-Sample" class="newcategoryclass" style="display:block" onclick="gotoCategory('Sample-Getty Entertainment')">
+   			<img  src="images/NewCategories/cat_05_getty_entertainment-sample.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty Entertainment</div>
+		</div>
+		<div id="GettySports" class="newcategoryclass" style="display:none"  onclick="gotoCategory('Getty Sports')">
+   			<img  src="images/NewCategories/cat_05_getty_sports.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty Sports</div>
+		</div> 
+		
+		<div id="GettySports-Sample" class="newcategoryclass" style="display:block"  onclick="gotoCategory('Sample-Getty Sports')">
+   			<img  src="images/NewCategories/cat_05_getty_sports-sample.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty Sports</div>
+		</div>
+		<div id="GettyNews" class="newcategoryclass" style="display:none" onclick="gotoCategory('Getty News')">
+   			<img  src="images/NewCategories/cat_05_getty_news.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty News</div>
+		</div>
+
+
+		<div id="GettyNews-Sample" class="newcategoryclass" style="display:block" onclick="gotoCategory('Sample-Getty News')">
+   			<img  src="images/NewCategories/cat_05_getty_news-sample.jpg" alt=" "  >
+			<div style="color:white" align="center">Getty News</div>
+		</div>
+ 
+		<div id="MySearchlists" class="newcategoryclass" onclick="gotoCategory('My Searches')">
+            <img  src="images/NewCategories/cat_04_my_searches.jpg" alt=" " >
+			<div style="color:white" align="center">My Searches</div>
+		</div>
+		<div class="newcategoryclass" onclick="gotoCategory('Architecture')">
+            <img  src="images/NewCategories/cat_architecture.jpg" alt=" " >
+			<div style="color:white" align="center">Architecture</div>
+		</div>			
+		<div class="newcategoryclass" onclick="gotoCategory('Artists')">
+            <img  src="images/NewCategories/cat_artists.jpg" alt=" " >
+			<div style="color:white" align="center">Artists</div>
+		</div>		
+	
+
+		<div class="newcategoryclass" onclick="gotoCategory('Historical')">
+            <img  src="images/NewCategories/cat_historical.jpg" alt=" " >
+			<div style="color:white" align="center">Historical</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Kid Zone')">
+            <img src="images/NewCategories/cat_kidzone.jpg" alt=" " >
+			<div style="color:white" align="center">Kid Zone</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Landscapes')">
+            <img  src="images/NewCategories/cat_landscapes.jpg" alt=" " >
+			<div style="color:white" align="center">Landscapes</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Lifestyle')">
+            <img  src="images/NewCategories/cat_lifestyles.jpg" alt=" " >
+			<div style="color:white" align="center">Lifestyle</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Museums')">
+            <img  src="images/NewCategories/cat_museums.jpg" alt=" " >
+			<div style="color:white" align="center">Museums</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Nature')">
+            <img  src="images/NewCategories/cat_nature.jpg" alt=" " >
+			<div style="color:white" align="center">Nature</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Paintings')">
+            <img src="images/NewCategories/cat_paintings.jpg" alt=" " >
+			<div style="color:white" align="center">Paintings</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Photography')">
+            <img src="images/NewCategories/cat_photography.jpg" alt=" " >
+			<div style="color:white" align="center">Photography</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Sculptures')">
+            <img  src="images/NewCategories/cat_sculptures.jpg" alt=" " >
+			<div style="color:white" align="center">Sculptures</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Space Exploration')">
+            <img  src="images/NewCategories/cat_space.jpg" alt=" " >
+			<div style="color:white" align="center">Space</div>
+		</div>	
+		<div class="newcategoryclass" onclick="gotoCategory('Sports')">
+            <img  src="images/NewCategories/cat_sports.jpg" alt=" " >
+			<div style="color:white" align="center">Sports</div>
+		</div>	
+            
+
+		</div>
+        <div data-dojo-type="dojox/mobile/Heading" id="catfooter" onclick="gotoView('select_category','ImageView')" data-dojo-props='fixed:"bottom"'>
+
+            <img class="showingclass1" src="images/tv-icon2.png" alt="">
+            <img id="showingsrc" src="" alt=" " onclick="gotoView('select_category','ImageView')" class="showingclass">
+            <div id="showingtitle" class="showtitle">Testtitle
+            </div>
+
+        </div>
+    </div>
+		  <div class="wificlass3" style="height:35px;position:absolute;top:45px;display:none;z-index:901" id="gettysearchhint" onclick="setSearchSelection()">
+		<div style="margin:auto;width:100%;position:relative;top:-4px" id="line1">To create a Getty Viewlist, tap 
+		<img src="images/search-icon-blue3.png" style="width:35px;position:relative;top:7px" alt="">
+		</div> 
+	  </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="PlaylistView">
+        <div id="PlaylistHeader" data-dojo-type="dojox/mobile/Heading"  style="height:45px" data-dojo-props="fixed:'top'">
+		<span id="PlaylistHeaderName">Viewlists</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left" ">
+                <img src="images/Arrows-Back-icon-blue.png" alt=''style="margin-left:5px"><span class="backstyle" onclick='backbutton()'>Home&nbsp;&nbsp;&nbsp;</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" id="playlinemenu" data-dojo-props='icon:"images/3lineicon_menu-blue3.png"' style="float: right;top:-4px;height:45px" onclick="showmenu()"></div>
+			 <div data-dojo-type="dojox/mobile/ToolBarButton" id="playsearch" data-dojo-props='icon:"images/search-icon-blue3.png"' style="float: right;top:-4px;height:45px" onclick="setSearchSelection()"></div>
+
+	  </div>
+
+        <div id="listList2" style="position: relative; width:100%;left:10px;margin-right:0px;">
+        </div>
+        <div data-dojo-type="dojox/mobile/Heading" id="playlistfooter" onclick="gotoView('PlaylistView','ImageView')" data-dojo-props='fixed:"bottom"'>
+
+            <img class="showingclass1" src="images/tv-icon2.png" alt="">
+            <img id="showingsrc2" src="" alt=" " onclick="gotoView('PlaylistView','ImageView')" class="showingclass">
+            <div id="showingtitle2" class="showtitle">Testtitle
+            </div>
+        </div>
+    </div>
+    <div data-dojo-type="dojox/mobile/View" style="height:100%;background-color:black" id="quickhint">
+        <img id="hinturl" src="images/blue.png" alt="" style="height:100%" onclick='doquickhint()'>
+    </div>
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Myalert" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;background-image:none!important;">
+        <div id="myContent" style="word-wrap:break-word;text-align:left;margin-left:15px;margin-top:5px">mycontent</div>
+        <button data-dojo-type="dojox/mobile/Button" class="mblSimpleDialogButton" style="margin-top:10px;width:100px;background-color: #00C7FF!important;margin-bottom:10px" onclick="dijit.registry.byId('Myalert').hide()">OK</button>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="Import" style="height: auto;">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Import Personal Images..."'>
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left;" onclick="backbutton()">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+
+        </div>
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" style="position:relative;top:20px">
+            <li class="mblListItem2" onclick="photoimport('facebook')">
+                <img src="images/logo_facebook.png" style="width:25px;margin-right:10px">Import from Facebook</li>
+            <li class="mblListItem2" onclick="photoimport('flickr')">
+                <img src="images/logo_flickr.png" style="width:25px;margin-right:10px">Import from Flickr</li>
+            <li class="mblListItem2" onclick="photoimport('instagram')">
+                <img src="images/logo_instagram.png" style="width:25px;margin-right:10px">Import from Instagram</li>
+            <li class="mblListItem2" onclick="photoimport('picasa')">
+                <img src="images/logo_picasa.png" style="width:25px;margin-right:10px">Import from Picasa</li>
+            <li class="mblListItem2" onclick="photoimport('smugmug')">
+                <img src="images/logo_smugmug.png" style="width:25px;margin-right:10px">Import from SmugMug</li>
+            <li class="mblListItem2" onclick="photoimport('dropbox')">
+                <img src="images/logo_dropbox.png" style="width:25px;margin-right:10px">Import from Dropbox</li>
+
+        </ul>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="show_comments">
+        <div data-dojo-type="dojox/mobile/Heading"  data-dojo-props="fixed:'top'">
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: left" data-dojo-props="moveTo:'ImageView',transition:'none',transitionDir:'-1'">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" style="float: right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            </div>
+            <div>
+                <textarea data-dojo-type="dojox/mobile/TextArea" id="CommentText" style='left:0px;width:60%;height:30px;position:relative;top:9px' placeHolder="&nbsp;&nbsp;Add a comment..."></textarea>
+                <button data-dojo-type="dojox/mobile/Button" style="position:relative;top:-5px;height:30px;background-color: white !important;color:black" onclick="CreateComment('OK')">Post</button>
+            </div>
+        </div>
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="comment_list" data-dojo-props='select:"multiple"' style="position:relative;top:0px"></ul>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddComment" data-dojo-props='modal:true,top:"61px"' style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+        Create new Comment
+        <textarea data-dojo-type="dojox/mobile/TextArea" id="CommentText2" style='width:300px;height:50px' placeHolder="Add a comment..."></textarea>
+        <br>
+        <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="CreateComment('Cancel')">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="width:60px;background-color: #00C7FF !important;color:black" onclick="CreateComment('OK')">OK</button>
+
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteComment" data-dojo-props='modal:true,top:"61px"' style="width:320px;border:0px!important;outline:none!important;background-image:none!important">
+        Delete Comment
+        <br>
+		 <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black" onclick="dijit.registry.byId('DeleteComment').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="width:60px;background-color: #00C7FF !important;color:black" onclick="deletecomment('OK')">OK</button>
+       
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="DeleteViewlist" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Delete Viewlist
+        <a id='deleteVLname'>name of viewlist</a>
+        <br>
+		<button data-dojo-type="dojox/mobile/Button" style="margin-top:10px;margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('DeleteViewlist').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-left:10px;width:60px;background-color: #00C7FF !important;color:black" onclick="deleteMyViewlist('OK')">OK</button>
+       
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="RenameViewlist" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Rename Viewlist
+        <br>
+        <a id='RenameVLname'>name of viewlist</a>
+        <br>
+        <input type="text" data-dojo-type="dojox/mobile/TextBox" id="newVLname" placeHolder="&nbsp;&nbsp;New name" style="left: 1em;width: 300px;margin-top:10px">
+        </input>
+        <br>
+        <br>
+
+        <button data-dojo-type="dojox/mobile/Button" style="margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('RenameViewlist').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-right:10px;background-color: #00C7FF!important" onclick="RenameMyViewlist('OK')">Rename</button>   
+   </div>
+   
+       <div data-dojo-type="dojox/mobile/SimpleDialog" id="newFeedback" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+      
+		Send Feedback
+        <br>
+		Do you have questions or comments for us?
+		<br>
+		We'd love to hear from you!
+		<textarea data-dojo-type="dojox/mobile/TextArea" id="ArtText" placeHolder="&nbsp;&nbsp;Enter feedback here" style="width:85%;height:100px;margin-top:10px"></textarea>
+        <br>
+        <br>
+
+        <button data-dojo-type="dojox/mobile/Button" style="width:75px;margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('newFeedback').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="width:75px;margin-bottom:10px;margin-left:10px;background-color: #00C7FF!important" onclick="SendToArt()">Send</button>   
+	
+   </div>
+
+    <div id="SearchView" data-dojo-type="dojox/mobile/ScrollableView">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="color:white;font-size: 14px; height:100px">Search Results&nbsp;&nbsp;&nbsp;
+          
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="backbutton()" style="float: left;">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+        </div>
+
+        <div data-dojo-type="dojox/mobile/ContentPane" id="searchGrid" style="z-index:900; position: relative; top:210px;">
+        </div>
+
+    </div>
+    <div id="gettyadvanced1" style="color:white;text-color:white;position:absolute;top:100px;left:5px;z-index:1000;display:none;background-color:#404040;width:95%">
+        &nbsp;Search Options
+        <br>
+        <span>
+  <img src="images/getty-editorial1.jpg" alt="" style="width:49%" onclick='setEditorial("Any")'>
+  <a  onclick='setEditorial("Any")' style="position:absolute;top:20px;left:15%;color:white">Editorial </a>
+  <a  onclick='setEditorial("Any")' style="position:absolute;top:38px;left:15%;font-size:12px;color:white">Up-to-the-minute</a>
+  <a  onclick='setEditorial("Any")' style="position:absolute;top:50px;left:15%;font-size:12px;color:white">news, sports,</a>
+  <a  onclick='setEditorial("Any")' style="position:absolute;top:62px;left:15%;font-size:12px;color:white">fashion &</a>
+    <a  onclick='setEditorial("Any")' style="position:absolute;top:74px;left:15%;font-size:12px;color:white">celebrity photos</a>
+	    <a  id="editorialselected" style="position:absolute;top:94px;left:15%;font-size:16px;color:red"><b>Selected</b></a>
+
+    <img src="images/getty-creative1.jpg" alt="" style="width:49%" onclick='setEditorial("Creative")'>
+	  <a  onclick='setEditorial("Creative")' style="position:absolute;top:20px;left:52%;color:white">Creative </a>
+	    <a  onclick='setEditorial("Creative")' style="position:absolute;top:38px;left:52%;font-size:12px;color:white">Contemporary</a>
+  <a  onclick='setEditorial("Creative")' style="position:absolute;top:50px;left:52%;font-size:12px;color:white">creative images,</a>
+  <a  onclick='setEditorial("Creative")' style="position:absolute;top:62px;left:52%;font-size:12px;color:white">illustrations &</a>
+     <a  onclick='setEditorial("Creative")' style="position:absolute;top:74px;left:52%;font-size:12px;color:white">archival images</a>
+	 	    <a  id="creativeselected" style="position:absolute;top:94px;left:52%;font-size:16px;color:red"><b>Selected</b></a>
+  </span>
+
+        <span id="EditorialTime1" style="white-space:nowrap;">
+
+     <select style="position: relative; top: 10px;left:2%;text-size:16px;" id="dateValue2" onchange="setEditorialTime(this.value)">
+       <option value='Any' selected="selected" >
+         Any date</option>
+       <option value='24H'>
+         Last 24 Hours</option>
+	   <option value='7D' >
+         Last 7 days</option>
+	   <option value='30D' >
+         Last 30 days</option>
+       <option value='12M' >
+         Last 12 months</option>
+
+
+     </select><br>
+	 </span>
+        <span id="EditorialOrientation1" style="white-space:nowrap;">
+     <select style="position: relative;top:-16px; left:52%;text-size:16px" id="orientationValue3" onchange="setEditorialOrientation(this.value)">
+       <option value='Any' >
+         Any</option>
+       <option value='horizontal' selected="selected">
+         Horizontal</option>
+	   <option value='vertical' >
+         Vertical
+	 
+     </select>
+	 </span>
+        <br>
+        <br>
+        <span id="previousgetty">
+	 Previous Searches:
+	 <div id="prevGettySearches" >
+	 </div>
+	 </span>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="Copyright" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        <div style="text-align:left;margin-left:10px;margin-top:10px">
+            <div id="copyrightartist">All art by xxxxxx is under copyright!</div>
+            <div>It is therefore not possible to display their works within Artkick.</div>
+			<div>We hope to license these works at some time in the future.</div>
+         
+
+        </div>
+        <button data-dojo-type="dojox/mobile/Button" style="display:block;margin-left:auto;margin-right:auto;background-color:#00C7FF!important;width:50px;margin-bottom:10px;margin-top:10px" onclick="dijit.registry.byId('Copyright').hide()">OK</button>
+    </div>
+
+    <div id="TVDetail" data-dojo-type="dojox/mobile/ScrollableView">
+        <div data-dojo-type="dojox/mobile/Heading" id="detailheading" data-dojo-props='fixed:"top"' style="color:white;font-size: 14px">
+           <span style="margin-right:70px">Device Details</span>
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="backbutton()" style="float: left;">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"> <span class="backstyle">Done</span>
+            </div>
+
+        </div>
+		<div class='wificlass' style="text-align:center">Settings</div>
+		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Device Name:</div>
+        <input type-"text" style="margin-top:10px;width:200px;background-color:white;position:relative;left:35px;text-size:14px;color:black" id="playerDetailsName" 
+		onkeydown="if (event.keyCode == 13) renameDevice()" onclick="devicenamechange()">
+            
+        </input>
+		<img src="images/pencil2-gray.png" id="devicepencil" class="checkboxclass" onclick="renameDevice()" style="margin-left:45px;height:22px;width:22px;top:5px">
+		<div id="originalName" style="margin-top:5px;position:relative;left:35px;text-size:12px;color:gray;display:none">Original Name</div>
+        <div id="AutoPlaySelect">
+            
+		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Slideshow Speed:</div>
+            <select style="position: relative; left:35px;border-radius:3px; font-size:14px;margin-top:10px;width:190px;border-style:none;background-image:url('images/chooser_arrow_back2.png');background-color:#28272D;;color:#00C7FF;-webkit-appearance: none;" id="slideshowvalue" onchange="setAuto(this.value)">
+                <option value=0 id="0">
+                    Off</option>
+                <option value=-1 id="-1">
+                    Every Morning</option>
+                <option value=30000 id="30000">
+                    Every 30 Seconds for 1 Hr</option>
+                <option value=60000 id="60000">
+                    Every Minute for 1 Hr</option>
+                <option value=120000 id="120000">
+                    Every 2 Minutes for 1 Hr</option>
+                <option value=300000 id="300000">
+                    Every 5 Minutes for 1 Hr</option>
+                <option value=600000 id="600000">
+                    Every 10 Minutes for 1 Hr</option>
+                <option value=1800000 id="1800000">
+                    Every 30 Minutes for 1 Hr</option>
+                <option value=3600000 id="3600000">
+                    Every Hour</option>
+                <option value=43200000 id="43200000">
+                    Every 12 Hours</option>
+            </select>
+
+        </div>
+        <div id="Orientation" style="display:none;">
+		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Image Orientation</div>
+            <select <select style="position: relative; left:35px;border-radius:3px; width:95px;font-size:14px;margin-top:10px;border-style:none;background-image:url('images/chooser_arrow_back1.png');background-color:#28272D;color:#00C7FF;-webkit-appearance: none;" id="orientationValue2" onchange="setOrientation(this.value)">
+                <option value='horizontal' selected="selected">
+                    Horizontal</option>
+                <option value='vertical1'>
+                    Vertical+90
+			    <option value='vertical2'>
+                    Vertical-90
+            </select>
+
+        </div>
+
+		<div style="text-align:left;margin-top:45px;margin-left:10px">
+           	<img id="fillswitch4" src="images/checkbox_off.png" class="checkboxclass"onclick="fillswitch()">
+            <span style="color:gray;position:relative;top:-7px">
+                Display original aspect ratio</span>
+		</div>
+		<div style="text-align:left;margin-top:30px;margin-left:10px;display:none">
+           	<img id="fillswitch5" src="images/checkbox_off.png" class="checkboxclass"onclick="showlogo()">
+            <span style="color:gray;position:relative;top:-7px">
+                Display Logo</span>
+		</div>
+		<div style="text-align:left;margin-top:30px;margin-left:10px;display:none">
+           	<img id="fillswitch6" src="images/checkbox_on.png" class="checkboxclass"onclick="showcaptions()">
+            <span style="color:gray;position:relative;top:-7px">
+                Display Captions</span>
+		</div>
+
+		
+		<div class='wificlass' style="height:7px;margin-top:20px"></div>
+		<div style="text-align:left;margin-top:30px;margin-left:10px">
+           	<img  src="images/Trash-red.png" class="checkboxclass" onclick="removePlayerconfirm()">
+            <span style="color:red;position:relative;top:-7px" onclick="removePlayerconfirm()">
+                Delete this Device</span>
+		</div>
+
+
+    </div>
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="ConfirmTVDelete" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Are you sure you want to delete this device?
+
+        <br>
+        <button data-dojo-type="dojox/mobile/Button" id="CancelremoveTVbutton" style="margin-top:10px;margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('ConfirmTVDelete').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" id="removeTVbutton" style="margin-bottom:10px;margin-left:10px;background-color: #00C7FF !important;color:black" onclick="removePlayer()">Delete</button>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="SearchUser" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Search for User
+        <input data-dojo-type="dojox/mobile/TextBox" type="text" id="addPlayerEmail" style='width:300px;margin-top:10px' placeHolder="&nbsp;&nbsp;User Email">
+        <br>
+        </input>
+
+        <button data-dojo-type="dojox/mobile/Button" style="margin-top:10px;margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('SearchUser').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-left:10px;background-color: #00C7FF !important;color:black" onclick="searchUser()">Search</button>
+    </div>
+
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="ScanNetwork" data-dojo-props='modal:true,top:"61px"' style="height:130px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        <span id="scanid">Scanning Local Network</span>
+
+        <div style="position:relative;top:60px; width:99%">
+            <div data-dojo-type="dojox/mobile/ProgressIndicator" startspinning="true" size="30" id="scanprogress" style="top:-45px"></div>
+            <button data-dojo-type="dojox/mobile/Button" style="background-color: white !important;color:black;top:-45px;margin-bottom:10px" onclick="{dijit.registry.byId('ScanNetwork').hide();	clearInterval(showingScanNetwork);
+	window.ScanNetworkComplete=true;}">Cancel</button>
+        </div>
+
+    </div>
+    <div id="RegCodeInstall" data-dojo-type="dojox/mobile/ScrollableView">
+        <div data-dojo-type="dojox/mobile/Heading"  data-dojo-props='fixed:"top"' style="color:white;font-size: 14px">
+			<span id="tvinstallheading" style="margin-right:50px">Connect Device</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="backbutton()" style="float: left;">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+        </div>
+        <div style="color:white;position:relative;left:1em">Enter the registration code and optionally change the name
+            <br>
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerCode2" placeHolder="&nbsp;&nbsp;Registration Code" style="position: relative;top:5px;width: 85%;"></input>
+            <br>
+            <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerName2" style="width: 85%; position: relative; top:15px;" placeHolder="&nbsp;&nbsp;Name this Device"></input>
+            <br>
+            <button data-dojo-type="dojox/mobile/Button" align="center" style="position: relative; top:25px" onclick="createPlayer2()">
+                Connect Device</button>
+            <br>
+            <br>
+        </div>
+        <div data-dojo-type="dojox/mobile/ContentPane" id="registrationhelp" style="height: 100%;width:90%;z-index:950;background-color: black;">
+            <div align="center" style="color:white;position:relative; top:25px;">
+                Registration Code Help?
+            </div>
+            <span style="text-color:white;color:white;position:relative;top:30px;left:1em" id="helpcontents">
+   </span>
+
+        </div>
+    </div>
+    <div id="GettySubscribe" data-dojo-type="dojox/mobile/ScrollableView">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top",label:"Subscribe to Getty Images"' style="color:white;font-size: 14px">
+
+            <div data-dojo-type="dojox/mobile/ToolBarButton" onclick="backbutton()" style="float: left;">
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+            </div>
+        </div>
+
+        <div align="center">
+            <img src="images/begging.jpg" alt="">
+            <div style="font-size:20px;color:white">
+                Please subscribe to Getty NOW!!!!
+            </div>
+        </div>
+    </div>
+   <div id="GettyLoadDefault" data-dojo-type="dojox/mobile/ScrollableView">
+	<div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="color:white;font-size: 14px">
+	<span style="color:white;font-size: 14px;margin-right:75px">Confirmation</span>
+
+		<div data-dojo-type="dojox/mobile/ToolBarButton" onclick="backbutton()" style="float: left;">
+			<img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done</span>
+		</div>
+	</div>
+
+	<div id="gettydefault">
+
+   
+	</div>
+</div>
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="GettySubscribeBox" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:0px!important;outline:none!important;background-image:none!important;text-align:left;background-color:#303030!important">
+        <div style="width:100%;text-align: center;">
+            <img src="images/Artkick_GI_logolockups.png" style="width:100px;margin-top:10px">
+		<p style="text-align:left;font-size:15px;color:white;line-height:120%;width: 80%;
+margin-left: 10%;">Subscribe to exclusive and timely photographs inside Artkick featuring Getty Images--the premiere supplier of photographs to leading 
+		newspapers, magazines and websites globally. Get instant access to world-class images. Whether you want a backstage pass to celebrity events or 
+		to check out highlights from yesterday’s game, these are the world’s best 
+		images from the world’s best photographers.</p>
+
+        </div>
+
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;" onclick="dijit.registry.byId('GettySubscribeBox').hide();gotoView(currentView,'select_category')" >Maybe Later</button>
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;margin-left:30px;background-color:#00C7FF!important;margin-bottom:10px" onclick="gettySubscribeBoxClick()">Subscribe</button>
+    </div>
+</div>
+</body>
+</html>

@@ -35,24 +35,25 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
 ['.*','',['WebContent-V3.0/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script>
     <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="mini.V3.11/app.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Browser-Detect.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/UserViewlists.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/PlayerFunctions.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/UserAccounts.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Feedback.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Search.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/backbutton.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/registrationhelp.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Photoimport.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/social.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/getty.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Premium.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/Editviewlist.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/changeAd.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.11/dial.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.11/getty-default.js?V1.3"></script>
-
+    <script type="text/javascript" src="mini.V3.2/app.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/Browser-Detect.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/UserViewlists.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/PlayerFunctions.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/UserAccounts.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/Feedback.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/Search.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/backbutton.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/registrationhelp.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/Photoimport.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/social.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/getty.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/Premium.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/Editviewlist.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/changeAd.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.2/dial.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.2/getty-default.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.2/img-touch-canvas.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.2/utils.js?V1.3"></script>
     <script type="text/javascript">
         require([
             "dijit/dijit",
@@ -111,7 +112,7 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
         @import "WebContent-V3.0/themes/claro/claro.css";
         @import "WebContent-V3.0/lib/shapes/shapes.css";
         @import "WebContent-V3.0/app.css";
-        @import "mini.V3.11/Artkick.css";
+        @import "mini.V3.2/Artkick.css";
     </style>
 
     <script>
@@ -278,7 +279,7 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
 
             <div style="position:relative;top:1px;width:100%;height:40px;background-color:#504E5B">
                 <img src="images/Padlock_15x20.png" alt="" style="position: relative;left:5px;top:2px">
-                <input type="password" data-dojo-type="dojox/mobile/TextBox" id="loginPassword" placeHolder="Password" style="position:relative;left:4%;top:2px!important;color:white;width:85%;border-radius: 0px;background-color:#504E5B;border:none;height:33px!important">
+                <input type="password" onkeydown="if (event.keyCode == 13) login()" data-dojo-type="dojox/mobile/TextBox" id="loginPassword" placeHolder="Password" style="position:relative;left:4%;top:2px!important;color:white;width:85%;border-radius: 0px;background-color:#504E5B;border:none;height:33px!important">
                 </input>
             </div>
 
@@ -1145,7 +1146,8 @@ Save your favorite images in personal viewlists and share them with your friends
 				<span style="color:white;margin-left:10px">7-Day FREE Trial&mdash;then just</span>
 				<span style="color:#00C7FF;">$4.99</span>
 				<span style="color:#00C7FF;font-size:15px;margin-left:-4px">/mo</span><br>
-				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;margin-top:20px;width: 130px" onclick="setmysubs(true)">Subscribe</button>   
+				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;margin-top:20px" onclick="setmysubs(true)">
+				 <span id="GettySubscribeTitle">Subscribe</span></button>   
 				<br>
 				<div style="color:white;font-size:12px;margin-top:10px;text-decoration:underline" id="subrestore" onclick="restoreTransaction()">Restore subscription</div>
 				<div style="color:white;font-size:20px;font-weight:bold;margin-top:15px">The World in Photos On Your TV</div>
@@ -1214,7 +1216,8 @@ Save your favorite images in personal viewlists and share them with your friends
 				<span style="color:#00C7FF;font-size:15px;margin-left:-4px">/mo</span>
 				<p style="color:white;font-size:15px;margin-top: -3px;">after 7-Day FREE Trial</p>
 
-				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;width: 130px" onclick="setmysubs(true)">Subscribe</button>   
+				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px" onclick="setmysubs(true)">
+				 <span id="GettySubscribeTitle2">Subscribe</span></button>   
 
 		</div>
 	</div>
@@ -1399,7 +1402,7 @@ Save your favorite images in personal viewlists and share them with your friends
         <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">
         <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
         <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: gray;">
-Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
+Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
   </span>
         <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: gray;">
             Server is
@@ -1652,117 +1655,129 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
 
 		<div class="newcategoryclass" onclick="gotoCategory('Highlights')">
             <img src="images/NewCategories/cat_01_highlights.jpg" alt=" "  >
-			<div style="color:white" align="center"> Highlights</div>
+			<div class="newcategoryclasstitle" align="center"> Highlights</div>
 		</div>
 		<div class="newcategoryclass" onclick="gotoCategory(' Top Lists')">
             <img src="images/NewCategories/cat_02_popular_viewlists.jpg" alt=" " >
-			<div style="color:white" align="center"> Top Lists</div>
+			<div class="newcategoryclasstitle" align="center"> Top Lists</div>
 		</div>
 		<div class="newcategoryclass" id="MyViewlists" onclick="gotoCategory('My Viewlists')">
             <img src="images/NewCategories/cat_03_my_viewlists.jpg" alt=" " >
-			<div style="color:white" align="center">My Viewlists</div>
+			<div class="newcategoryclasstitle" align="center">My Viewlists</div>
 		</div>
 
 		<div id="GettyEntertainment" class="newcategoryclass" style="display:none" onclick="gotoCategory('Getty Entertainment')">
    			<img  src="images/NewCategories/cat_05_getty_entertainment.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty Entertainment</div>
+			<div class="newcategoryclasstitle" align="center">Getty Entertainment</div>
 		</div>
 				<div id="GettyEntertainment-Sample" class="newcategoryclass" style="display:block" onclick="gotoCategory('Sample-Getty Entertainment')">
-   			<img  src="images/NewCategories/cat_05_getty_entertainment-sample.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty Entertainment</div>
+   			<img  src="images/NewCategories/cat_05_getty_entertainment_sample.jpg" alt=" "  >
+			<div class="newcategoryclasstitle" align="center">Getty Entertainment</div>
 		</div>
 		<div id="GettySports" class="newcategoryclass" style="display:none"  onclick="gotoCategory('Getty Sports')">
    			<img  src="images/NewCategories/cat_05_getty_sports.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty Sports</div>
+			<div class="newcategoryclasstitle" align="center">Getty Sports</div>
 		</div> 
 		
 		<div id="GettySports-Sample" class="newcategoryclass" style="display:block"  onclick="gotoCategory('Sample-Getty Sports')">
-   			<img  src="images/NewCategories/cat_05_getty_sports-sample.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty Sports</div>
+   			<img  src="images/NewCategories/cat_05_getty_sports_sample.jpg" alt=" "  >
+			<div class="newcategoryclasstitle" align="center">Getty Sports</div>
 		</div>
 		<div id="GettyNews" class="newcategoryclass" style="display:none" onclick="gotoCategory('Getty News')">
    			<img  src="images/NewCategories/cat_05_getty_news.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty News</div>
+			<div class="newcategoryclasstitle" align="center">Getty News</div>
 		</div>
 
 
 		<div id="GettyNews-Sample" class="newcategoryclass" style="display:block" onclick="gotoCategory('Sample-Getty News')">
-   			<img  src="images/NewCategories/cat_05_getty_news-sample.jpg" alt=" "  >
-			<div style="color:white" align="center">Getty News</div>
+   			<img  src="images/NewCategories/cat_05_getty_news_sample.jpg" alt=" "  >
+			<div class="newcategoryclasstitle" align="center">Getty News</div>
 		</div>
  
 		<div id="MySearchlists" class="newcategoryclass" onclick="gotoCategory('My Searches')">
             <img  src="images/NewCategories/cat_04_my_searches.jpg" alt=" " >
-			<div style="color:white" align="center">My Searches</div>
+			<div class="newcategoryclasstitle" align="center">My Searches</div>
 		</div>
 		<div class="newcategoryclass" onclick="gotoCategory('Architecture')">
             <img  src="images/NewCategories/cat_architecture.jpg" alt=" " >
-			<div style="color:white" align="center">Architecture</div>
+			<div class="newcategoryclasstitle" align="center">Architecture</div>
 		</div>			
 		<div class="newcategoryclass" onclick="gotoCategory('Artists')">
             <img  src="images/NewCategories/cat_artists.jpg" alt=" " >
-			<div style="color:white" align="center">Artists</div>
+			<div class="newcategoryclasstitle" align="center">Artists</div>
 		</div>		
 	
 
 		<div class="newcategoryclass" onclick="gotoCategory('Historical')">
             <img  src="images/NewCategories/cat_historical.jpg" alt=" " >
-			<div style="color:white" align="center">Historical</div>
+			<div class="newcategoryclasstitle" align="center">Historical</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Kid Zone')">
             <img src="images/NewCategories/cat_kidzone.jpg" alt=" " >
-			<div style="color:white" align="center">Kid Zone</div>
+			<div class="newcategoryclasstitle" align="center">Kid Zone</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Landscapes')">
             <img  src="images/NewCategories/cat_landscapes.jpg" alt=" " >
-			<div style="color:white" align="center">Landscapes</div>
+			<div class="newcategoryclasstitle" align="center">Landscapes</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Lifestyle')">
             <img  src="images/NewCategories/cat_lifestyles.jpg" alt=" " >
-			<div style="color:white" align="center">Lifestyle</div>
+			<div class="newcategoryclasstitle" align="center">Lifestyle</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Museums')">
             <img  src="images/NewCategories/cat_museums.jpg" alt=" " >
-			<div style="color:white" align="center">Museums</div>
+			<div class="newcategoryclasstitle" align="center">Museums</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Nature')">
             <img  src="images/NewCategories/cat_nature.jpg" alt=" " >
-			<div style="color:white" align="center">Nature</div>
+			<div class="newcategoryclasstitle" align="center">Nature</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Paintings')">
             <img src="images/NewCategories/cat_paintings.jpg" alt=" " >
-			<div style="color:white" align="center">Paintings</div>
+			<div class="newcategoryclasstitle" align="center">Paintings</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Photography')">
             <img src="images/NewCategories/cat_photography.jpg" alt=" " >
-			<div style="color:white" align="center">Photography</div>
+			<div class="newcategoryclasstitle" align="center">Photography</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Sculptures')">
             <img  src="images/NewCategories/cat_sculptures.jpg" alt=" " >
-			<div style="color:white" align="center">Sculptures</div>
+			<div class="newcategoryclasstitle" align="center">Sculptures</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Space Exploration')">
             <img  src="images/NewCategories/cat_space.jpg" alt=" " >
-			<div style="color:white" align="center">Space</div>
+			<div class="newcategoryclasstitle" align="center">Space</div>
 		</div>	
 		<div class="newcategoryclass" onclick="gotoCategory('Sports')">
             <img  src="images/NewCategories/cat_sports.jpg" alt=" " >
-			<div style="color:white" align="center">Sports</div>
+			<div class="newcategoryclasstitle" align="center">Sports</div>
 		</div>	
-            
+       	<div class="newcategoryclass" onclick="gotoCategory('Travel')">
+            <img  src="images/NewCategories/cat_travel.jpg" alt=" " >
+			<div class="newcategoryclasstitle" align="center">Travel</div>
+		</div>	     
 
 		</div>
-        <div data-dojo-type="dojox/mobile/Heading" id="catfooter" onclick="gotoView('select_category','ImageView')" data-dojo-props='fixed:"bottom"'>
-
+        <div data-dojo-type="dojox/mobile/Heading" id="catfooter"  data-dojo-props='fixed:"bottom"'>
+			<div onClick="gotoView(currentView,'ImageView')">
             <img class="showingclass1" src="images/tv-icon2.png" alt="">
             <img id="showingsrc" src="" alt=" " onclick="gotoView('select_category','ImageView')" class="showingclass">
-            <div id="showingtitle" class="showtitle">Testtitle
-            </div>
+            <div id="showingtitle" class="showtitle">Testtitle</div>
+			</div>
+			<img id="castmenu" src="images/cast_off.png" onClick='gotoView(currentView,"select_player2")'
+		     style="float: right;top:0px;height:25px;margin-top:7px;margin-right:10px" >
+            </img>
+            
 
         </div>
     </div>
-		  <div class="wificlass3" style="height:35px;position:absolute;top:45px;display:none;z-index:901" id="gettysearchhint" onclick="setSearchSelection()">
-		<div style="margin:auto;width:100%;position:relative;top:-4px" id="line1">To create a Getty Viewlist, tap 
+	<div class="wificlass3" style="height:35px;position:absolute;top:45px;display:none;z-index:901" id="gettysearchhint" onclick="setSearchSelection()">
+		<div style="margin:auto;width:100%;position:relative;top:-4px" id="line1">To create a Getty Topical Viewlist, tap 
+		<img src="images/search-icon-blue3.png" style="width:35px;position:relative;top:7px" alt="">
+		</div> 
+	  </div>
+	  <div class="wificlass3" style="height:35px;position:absolute;top:45px;display:none;z-index:901" id="searchhint" onclick="setSearchSelection()">
+		<div style="margin:auto;width:100%;position:relative;top:-4px" id="line1">To find more art & photography, tap 
 		<img src="images/search-icon-blue3.png" style="width:35px;position:relative;top:7px" alt="">
 		</div> 
 	  </div>
@@ -1896,6 +1911,23 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
         <button data-dojo-type="dojox/mobile/Button" style="width:75px;margin-bottom:10px;margin-left:10px;background-color: #00C7FF!important" onclick="SendToArt()">Send</button>   
 	
    </div>
+      <div data-dojo-type="dojox/mobile/SimpleDialog" id="AskReview" data-dojo-props='modal:true,top:"61px"' style="width:250px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+      
+		<b>Rate Artkick</b>
+        <br>
+If you enjoy using Artkick, would you mind taking a moment to rate and review it?  It won't take more than a minute.  Thanks for your support!
+
+        <br>
+		<br>
+        <button data-dojo-type="dojox/mobile/Button" style="width:90%;background-color: #00C7FF!important" onclick="SendToReview()">Rate Artkick</button>   
+		<br>
+		<button data-dojo-type="dojox/mobile/Button" style="width:90%;margin-top:10px;background-color: white!important;color:black" onclick="dijit.registry.byId('AskReview').hide();dijit.registry.byId('newFeedback').show()">Send Feedback</button>   
+		<br>
+		<button data-dojo-type="dojox/mobile/Button" style="width:90%;margin-top:10px;background-color: white!important;color:black" onclick="dijit.registry.byId('AskReview').hide()">Remind Me Later</button>   
+        <br>
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:-2px;width:90%;margin-top:10px;margin-bottom:5px;background-color: white !important;color:black" onclick="ReviewNoThanks()">No, Thanks</button>
+   </div>
+   
 
     <div id="SearchView" data-dojo-type="dojox/mobile/ScrollableView">
         <div data-dojo-type="dojox/mobile/Heading" data-dojo-props='fixed:"top"' style="color:white;font-size: 14px; height:100px">Search Results&nbsp;&nbsp;&nbsp;
@@ -1990,16 +2022,16 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
         </div>
 		<div class='wificlass' style="text-align:center">Settings</div>
 		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Device Name:</div>
-        <input type-"text" style="margin-top:10px;width:250px;background-color:white;position:relative;left:35px;text-size:14px;color:black" id="playerDetailsName" 
+        <input type-"text" style="margin-top:10px;width:200px;background-color:white;position:relative;left:35px;text-size:14px;color:black" id="playerDetailsName" 
 		onkeydown="if (event.keyCode == 13) renameDevice()" onclick="devicenamechange()">
             
         </input>
 		<img src="images/pencil2-gray.png" id="devicepencil" class="checkboxclass" onclick="renameDevice()" style="margin-left:45px;height:22px;width:22px;top:5px">
-
+		<div id="originalName" style="margin-top:5px;position:relative;left:35px;text-size:12px;color:gray;display:none">Original Name</div>
         <div id="AutoPlaySelect">
             
 		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Slideshow Speed:</div>
-            <select style="position: relative; left:35px; text-size:10px;margin-top:10px;width:175px;border-style:none;background-color:#504E5B;color:#00C7FF;-webkit-appearance: none;" id="slideshowvalue" onchange="setAuto(this.value)">
+            <select style="position: relative; left:35px;border-radius:3px; font-size:14px;margin-top:10px;width:190px;border-style:none;background-image:url('images/chooser_arrow_back2.png');background-color:#28272D;;color:#00C7FF;-webkit-appearance: none;" id="slideshowvalue" onchange="setAuto(this.value)">
                 <option value=0 id="0">
                     Off</option>
                 <option value=-1 id="-1">
@@ -2021,11 +2053,11 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
                 <option value=43200000 id="43200000">
                     Every 12 Hours</option>
             </select>
-			<img src="images/chooser_arrow.png"  style="position:relative;width:12px;left:17px">
+
         </div>
         <div id="Orientation" style="display:none;">
 		<div style="margin-top:10px;position:relative;left:10px;text-size:14px;color:gray">Image Orientation</div>
-            <select <select style="position: relative; left:35px; text-size:10px;margin-top:10px;border-style:none;background-color:#504E5B;color:#00C7FF" id="orientationValue2" onchange="setOrientation(this.value)">
+            <select <select style="position: relative; left:35px;border-radius:3px; width:95px;font-size:14px;margin-top:10px;border-style:none;background-image:url('images/chooser_arrow_back1.png');background-color:#28272D;color:#00C7FF;-webkit-appearance: none;" id="orientationValue2" onchange="setOrientation(this.value)">
                 <option value='horizontal' selected="selected">
                     Horizontal</option>
                 <option value='vertical1'>
@@ -2033,6 +2065,7 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
 			    <option value='vertical2'>
                     Vertical-90
             </select>
+
         </div>
 
 		<div style="text-align:left;margin-top:45px;margin-left:10px">
@@ -2040,12 +2073,12 @@ Artkick Version 3.11 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserv
             <span style="color:gray;position:relative;top:-7px">
                 Display original aspect ratio</span>
 		</div>
-		<div style="text-align:left;margin-top:30px;margin-left:10px">
+		<div style="text-align:left;margin-top:30px;margin-left:10px;display:none">
            	<img id="fillswitch5" src="images/checkbox_off.png" class="checkboxclass"onclick="showlogo()">
             <span style="color:gray;position:relative;top:-7px">
                 Display Logo</span>
 		</div>
-		<div style="text-align:left;margin-top:30px;margin-left:10px">
+		<div style="text-align:left;margin-top:30px;margin-left:10px;display:none">
            	<img id="fillswitch6" src="images/checkbox_on.png" class="checkboxclass"onclick="showcaptions()">
             <span style="color:gray;position:relative;top:-7px">
                 Display Captions</span>
@@ -2159,6 +2192,16 @@ margin-left: 10%;">Subscribe to exclusive and timely photographs inside Artkick 
         <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;" onclick="dijit.registry.byId('GettySubscribeBox').hide();gotoView(currentView,'select_category')" >Maybe Later</button>
         <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;margin-left:30px;background-color:#00C7FF!important;margin-bottom:10px" onclick="gettySubscribeBoxClick()">Subscribe</button>
     </div>
+
+	<div id="pinchtest" >
+<div> pinchtest</div>
+
+	<canvas id="mycanvas" style="width: 350px; height:600px"></canvas>
+
+   
+	</div>
+
+</div>
 </div>
 </body>
 </html>

@@ -1,0 +1,8 @@
+
+1. Now handles save image if long title
+
+2. Now handles delete of many items at once
+
+3. Now handles drag/drop of many items at once
+
+TECH NOTE: Above was accomplished using POST instead of GET requests for these operations

@@ -1,0 +1,941 @@
+<!doctype html/>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Editor</title>
+	<link rel="stylesheet" href="Editor.css">
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"  type="text/javascript"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
+	<script src="jquery.jstree.js"></script>
+    <script src="jquery.bxslider.min.js"></script>
+	<link href="jquery.bxslider.css" rel="stylesheet" />
+	<script src="jPages-master/js/jPages.js"></script>
+    <script type="text/javascript" src="jPages-master/js/highlight.pack.js"></script>
+    <script type="text/javascript" src="jPages-master/js/tabifier.js"></script>
+    <script src="jPages-master/js/js.js"></script>
+    <script src="jPages-master/js/jPages.js"></script>
+	<script src="jPages-master/js/jquery.lazyload.js"></script>
+	
+	<link rel="stylesheet" href="jPages-master/css/style.css">
+    <link rel="stylesheet" href="jPages-master/css/jPages.css">
+    <link rel="stylesheet" href="jPages-master/css/animate.css">
+    <link rel="stylesheet" href="jPages-master/css/github.css">
+
+</head>
+<body>
+    <table id="outerTable" border="0">
+		<tr>
+		<td colspan="2" id="header">
+			<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
+			<a> Editor</a>
+		</td>
+		</tr>
+
+		<tr>
+		<td >
+			<div id="divNavTreeLoading" style="width: 300px;height: 500px;overflow: scroll;" >
+				<p>Loading...</p>
+			</div>
+			<div id="divNavTree2" style="width: 300px;height: 500px;overflow: scroll; display: none" >
+				
+			</div>
+		</td>
+		<td valign="top" style="height:200px">
+			
+			<table border="0">
+				<tr>
+					<td valign="top">
+						    <table border="0">
+								<tr>
+									<td > <div class="arrowPrev"></div> </td>			
+									<td valign="top"> <div class="holder" </div> </td>			
+									<td > <div class="arrowNext"></div> </td>
+								</tr>
+							</table>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<div id="divMain2" >
+							<p>Select ViewList from tree on the left to see images</p>
+						</div>
+					</td>	
+				</tr>
+				<tr>
+					<td valign="bottom" >
+						<div id="divMainImageDetail">
+							<table width="100%">
+								<tr>	
+									<td> <label>Title:</label> </td> <td colspan="5"> <input type="text" id="imgTitle" style="width:100%"/> </td>						
+								</tr>
+								<tr>								
+									<td> <label>Artist:</label> </td> <td> <input type="text" id="imgArtist"/> </td>
+									<td> <label>Birth:</label> </td> <td> <input type="text" id="imgBirth"/> </td>
+									<td> <label>Death:</label> </td> <td> <input type="text" id="imgDeath"/> </td>
+								</tr>
+								<tr>														
+									<td> <label>Artist Info:</label> </td> <td colSpan="5"> <input type="text" id="imgArtistInfo" style="width:100%"/> </td>
+								</tr>
+								<tr>	
+									<td> <label>Completed:</label> </td> <td> <input type="text" id="imgWorkDate"/> </td>
+									<td> <label>Location:</label> </td> <td colSpan="3"> <input type="text" id="imgLocation" style="width:100%"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Genre:</label> </td> <td> <input type="text" id="imgGenre"/> </td>
+									<td> <label>Genre Link:</label> </td> <td colSpan="3"> <input type="text" id="imgGenreLink" style="width:100%"/> </td>
+								</tr>
+								
+								<tr>								
+									<td> <label>Medium:</label> </td> <td> <input type="text" id="imgMedium"/> </td>
+									<td> <label>Medium Detail:</label> </td> <td colSpan="3"> <input type="text" id="imgMediumDetail" style="width:100%"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Aspect Ratio:</label> </td> <td> <input type="text" id="imgAspectRatio"/> </td>
+									<td> <label>Subject:</label> </td> <td> <input type="text" id="imgSubject"/> </td>
+									<td> <label>Credit:</label> </td> <td> <input type="text" id="imgCredit"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Height (pixels):</label> </td> <td> <input type="text" id="imgHeightPx"/> </td>
+									<td> <label>Height (cm):</label> </td> <td> <input type="text" id="imgHeightCm"/> </td>
+								</tr>
+								<tr>							
+									<td> <label>Source:</label> </td> <td> <input type="text" id="imgSource"/> </td>
+									<td> <label>Source Page Link:</label> </td> <td colSpan="3"> <input type="text" id="imgSourcePageLink" style="width:100%"/> </td>
+								</tr>
+								<tr>								
+									<td> <label>Copyright:</label> </td> <td> <input type="text" id="imgCopyright"/> </td>
+									<td> <label>Copyright Detail:</label> </td> <td colSpan="3"> <input type="text" id="imgCopyrightDetail" style="width:100%"/> </td>
+								</tr>
+								<tr>														
+									<td> <label>More Info:</label> </td> <td colSpan="5"> <input type="text" id="imgMoreInfoLink" style="width:100%"/> </td>
+								</tr>
+								<tr>
+									<td> <label>View Lists:</label> </td> <td colSpan="4"> <input type="text" id="imgViewLists" style="width:100%;border:0" readonly="true"/> </td>
+									<td> <button type="button" id="btnSave">Save</button></td>
+								</tr>
+								<tr>
+									<td> <input type="text" id="imgId" style="width:100%;display:none" readonly="true"/></td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</tr>
+
+		<tr>
+		<td colspan="2" id="footer" >
+			Copyright © ArtKick</td>
+		</tr>
+	</table>
+
+	<div id="renameDialog" title="Rename">
+		<label>Old Name:</label><input type="text" id="tbRenameOldName" style="border:0" readonly="true"></input>
+		</br>
+		<label>Enter New Name:</label><input type="text" id="tbRenameNewName"></input>
+		</br>
+		<input type="text" id="tbRenameId" style="border:0"></input>
+		<input type="text" id="tbRenameClass" style="border:0"></input>
+	</div>
+	
+	<div id="createDialog" title="Create">	
+		<label>Enter Name:</label><input type="text" id="tbCreateNewName"></input>
+		</br></br>
+		
+		<label id="tbCreateUnderCategory"></label>
+		<input type="text" id="tbCreateId" class="hidden"></input>
+		<input type="text" id="tbCreateClass" class="hidden"></input>
+		<input type="text" id="tbCreateConfirmed" class="hidden"></input>
+	</div>
+	
+	<div id="removeDialog" title="Remove">	
+		<label>Are you sure you want to remove the following item?</label>
+		</br></br>
+		<input type="text" id="tbRemoveItems" class="borderless" readonly="true"></input>
+		<input type="text" id="tbRemoveId" class="hidden"></input>
+		<input type="text" id="tbRemoveCat" class="hidden"></input>
+		<input type="text" id="tbRemoveClass" class="hidden"></input>
+		<input type="text" id="tbRemoveConfirmed" class="hidden"></input>
+	</div>
+	
+	<script type="text/javascript">
+	
+	var baseCmdUrl = 'http://fierce-basin-2977.herokuapp.com/client/';
+	var baseCmd2Url = 'http://evening-garden-3648.herokuapp.com/client/'; //TODO: why this?
+	var baseContentUrl = 'http://evening-garden-3648.herokuapp.com/content/';
+	var viewListType = "viewList";
+	var categoryType = "category";
+	var rootType = "root";
+	var imageType = "image";
+	
+	$(document).ready(function () {
+		jQuery(function($) {
+			
+		});
+		
+		//body_sizer();
+		//$(window).resize(body_sizer);
+		//$(window).resize(body_sizer);
+		
+		$('#btnSave').click(function () {
+			saveImageAttr();
+		});
+		
+		$( "#renameDialog" ).dialog({ 
+			autoOpen: false, modal: true, 
+			buttons: [ { text: "Ok", click: function() { $( this ).dialog( "close" ); } } ],
+			close: function ( event, ui ) {onRenameClosed(event, ui);} });
+		$( "#createDialog" ).dialog({ 
+			autoOpen: false, modal: true, 
+			buttons: [ { text: "Ok", click: function() { $('#tbCreateConfirmed').val('yes');$( this ).dialog( "close" ); } },
+					   { text: "Cancel", click: function() { $('#tbCreateConfirmed').val('');$( this ).dialog( "close" ); } }],
+			close: function ( event, ui ) {onCreateClosed(event, ui);} });
+		$( "#removeDialog" ).dialog({ 
+			autoOpen: false, modal: true, 
+			buttons: [ { text: "Ok", click: function() { $('#tbRemoveConfirmed').val('yes');$( this ).dialog( "close" ); } },
+					   { text: "Cancel", click: function() { $( this ).dialog( "close" ); } }],
+			close: function ( event, ui ) {onRemoveClosed(event, ui);} });
+	});
+	
+	var myArr = [];
+	var myCategories = [];
+	//<img src="images/ARTKICKlogo_500.png" width="75" height="18"</img>
+	$.ajax({
+			  url: baseContentUrl + 'allCategories',
+			  dataType: 'jsonp',
+			  async: false,
+			  
+			  success: function(data) {
+							myArr.push('<div id="container"> <ul> <li id="treetop" class="root" displayName="ArtKick"><a>ArtKick</a><ul>');
+							$.each(data, function(key, value) {
+								$(this).each(function(key, value) {
+									//var catViewList = getCatViewLists(value["name"]);
+								    myArr.push("<li " + "class=category id=" + convertNameToId(value["name"]) + ' displayName="' + value["name"] + '"' + "><a>" + value["name"] + "</a><ul><a>...</a></ul></li>" );
+									myCategories.push(value["name"]);
+								});
+							});
+							myArr.push('</ul></li></ul></div>');
+							$('#divNavTree2').html(myArr.join(''));
+							//$('#container').jstree();
+							for (var i = 0; i < myCategories.length; i++) {
+							   getCatViewLists(myCategories[i]);
+							}
+							
+						},
+				error: function(data) {
+							alert('Error: could not retreive json data for categories');
+						}
+			});
+			
+	function convertNameToId(name) {
+		//must not have spaces in Id
+		return name.replace(' ','__');
+	}
+	
+	function convertIdToName(id) {
+		return name.replace('__',' ');
+	}
+	
+	function getCatViewLists(cat) {
+		var viewLists = [];
+		var strViewLists = "";
+		var vlURL = encodeURI(baseContentUrl + 'getViewlistsByCategory?catName=' + cat);
+		$.ajax({
+			  url: vlURL,
+			  dataType: 'jsonp',
+			  async: false,
+			  
+			  success: function(data) {
+				$.each(data, function(key, value) {
+					if (key == 'viewlists') {
+						$(this).each(function(key, value) {
+							viewLists.push('<li class="viewList" id="' + value["id"] + '"' + ' displayName="' + value["name"] + '"' + '><a>' + value["name"] + "</a>" + "</li>");
+						//myCategories.push(value["name"], 
+						});
+				};
+				strViewLists = "<ul>" + viewLists.join('') + "</ul>";
+				});
+				$(document).find('#' + convertNameToId(cat)).children('ul').html(strViewLists);
+				$(document).find('#' + convertNameToId(cat)).find('li.viewList').each(function () {
+				$(this).click(function () {
+					//alert($(this).attr('id') + 'viewList clicked!');
+					clearViewListImages();
+					getViewListImages($(this).attr('id'));
+				});
+			});
+				if (cat == "Top Lists") { 
+				
+					$('#container').jstree({
+						
+						"plugins" : ["themes","html_data","ui","crrm","contextmenu"], 
+
+						"contextmenu": { 
+							items: { 
+								 
+								ccp: false, 
+								rename: { 
+									label: "Rename", 
+									action: function (obj) 
+										{ renameViewListOrCategory (obj) }, 
+									seperator_after : false, 
+									seperator_before : false 
+									}, 
+								create: { 
+									label: "Create New", 
+									action: function (obj) 
+										{ createViewListOrCategory (obj) }, 
+									seperator_after : false, 
+									seperator_before : false 
+									},
+								remove: { 
+									label: "Remove", 
+									action: function (obj) 
+										{ removeViewListOrCategory (obj) }, 
+									seperator_after : false, 
+									seperator_before : false 
+									},
+							} // end items 
+						}, 
+						"themes" : {
+							
+							"dots" : false,
+							"icons" : true
+						},
+						"core": {
+							"initially_open": ["treetop"]
+						
+						}
+						
+						}).bind("move_node.jstree rename_node.jstree create_node.jstree", function(event, data) {
+							var type = event.type;
+							//alert(type);
+							if (type === 'move_node') {
+								//handle move_node.jstree here
+							} else if (type === 'rename_node') {
+								var id = data.args[0][0].id;
+								var newName = data.args[1];
+								var objectClass = $('li#' + id).attr('class');
+								if (objectClass.indexOf('viewList') != -1)
+								{
+									renameViewList(id, newName);
+								}
+								else if (objectClass.indexOf('category') != -1)
+								{
+									renameCategory(id, newName);
+								}
+								
+							} else if (type === 'create_node') {
+								//handle create_node.jstree here
+							}
+
+						});
+						
+					$('#divNavTreeLoading').hide();
+					$('#divNavTree2').show();
+				}
+				
+			  }
+		});
+		
+		//return strViewLists;
+	}
+	
+	function getViewListImages(viewListId) {
+		var vlImages = [];
+		var strImages = "";
+
+		var vlImagesURL = encodeURI(baseCmd2Url + 'getViewlist?id=' + viewListId);
+		$.ajax({
+			   
+			  url: vlImagesURL,
+			  dataType: 'jsonp',
+			  async: true,
+			  beforeSend: function(x) {
+				  //if(x && x.overrideMimeType) {
+				  // x.overrideMimeType("application/javascript;charset=UTF-8");
+				  //}
+				  var y = x;
+				 },
+			  success: function(data) {
+				$.each(data, function(key, value) {
+					if (key == 'imageSet') {
+						$(this).each(function(key, value) {
+							vlImages.push('<li class="viewListImage" id="' + value["id"] + '" ' +
+								getImageAttributes(value) + 
+								'><img src="' + value["thumbnail"] + '" width="100" height="100"</img>' + '</li>');
+						});
+					};
+					strImages = '<ul id="thumbs" >' + vlImages.join('') + '</ul>';
+				});
+				$(document).find('#divMain2').html(strImages);
+				//$('#thumbs').bxSlider({ infiniteLoop: false, hideControlOnEnd: true, minSlides: 2, maxSlides: 2, slideWidth: 380, slideMargin: 10});
+				//$("#divMain2ImageNav").jPages({containerID : "thumbs"});
+				
+				$('ul li img').lazyload({
+					event: "turnpage",
+					effect: "fadeIn"
+				});
+				$("div.holder").jPages({
+				  containerID : "thumbs",
+				  perPage     : 27,
+				  previous    : "div.arrowPrev",
+				  next        : "div.arrowNext",
+				  direction   : "auto",
+				  animation   : "fadeInleft",
+				  callback    : lazyLoadImages
+				});
+				
+				
+				$(document).find('#divMain2').find('li.viewListImage').each(function () {
+				    $(this).click(function () {			    
+						fillImageAttrUI($(this));
+						$(this).addClass("selected")
+						  .siblings()
+						  .removeClass("selected");						
+				    });
+			    });
+			  },
+			  
+		});
+		
+		//return strViewLists;
+	}
+	
+	function getImageAttributes(value) {
+		var strAttrs =  
+			'title="' + value["Title"] + '" ' +
+			'artist="' + value["Artist First N"] + ' ' + value["Artist Last N"] + '" ' +
+			'workDate="' + value["Year"] + '" ' +
+			'birthDate="' + value["Birthdate"] + '" ' +
+			'deathDate="' + value["Died"] + '" ' +
+			'artistInfo="' + value["Artist Info"] + '" ' +
+			'genre="' + value["Genre"] + '" ' +
+			'genreLink="' + value["Genre Link"] + '" ' +
+			'source="' + value["Source"] + '" ' +
+			'sourcePageLink="' + value["Source Page Link"] + '" ' +
+			'medium="' + value["Type"] + '" ' +
+			'mediumDetail="' + value["Type Detail"] + '" ' +
+			'aspectRatio="' + value["Aspect Ratio"] + '" ' +
+			'subject="' + value["Subject"] + '" ' +
+			'credit="' + value["Credit"] + '" ' +
+			'copyright="' + value["Copyright"] + '" ' +
+			'copyrightDetail="' + value["Copyright Detail"] + '" ' +
+			'heightPx="' + value["Height Px"] + '" ' +
+			'heightCm="' + value["Height cm"] + '" ' +
+			'location="' + value["Location"] + '" ' +
+			'moreInfoLink="' + value["More Info Link"] + '" ' +
+			'viewLists="' + getImageViewListAttribute(value["viewlists2"]) + '" ';
+		return strAttrs;
+	}
+	
+	function getImageViewListAttribute(value) {
+		var viewLists = [];
+		var strViewLists = "";
+		$(value).each(function(key, value) {
+			$(this).each(function(key, value) {
+				if (key == "1")
+					viewLists.push(value);			
+			});
+		});
+		strViewLists = viewLists.join();
+		return strViewLists;
+	}
+	
+	function fillImageAttrUI(image)
+	{
+		$('#imgTitle').val(image.attr('title'));
+		$('#imgArtist').val(image.attr('artist'));
+		$('#imgWorkDate').val(image.attr('workDate'));
+		$('#imgBirth').val(image.attr('birthDate'));
+		$('#imgDeath').val(image.attr('deathDate'));
+		$('#imgArtistInfo').val(image.attr('artistInfo'));
+		$('#imgGenre').val(image.attr('genre'));
+		$('#imgGenreLink').val(image.attr('genreLink'));
+		$('#imgSource').val(image.attr('source'));
+		$('#imgSourcePageLink').val(image.attr('sourcePageLink'));
+		$('#imgMedium').val(image.attr('medium'));
+		$('#imgMediumDetail').val(image.attr('mediumDetail'));
+		$('#imgAspectRatio').val(image.attr('aspectRatio'));
+		$('#imgSubject').val(image.attr('subject'));
+		$('#imgCredit').val(image.attr('credit'));
+		$('#imgLocation').val(image.attr('location'));		
+		$('#imgCopyright').val(image.attr('copyright'));
+		$('#imgCopyrightDetail').val(image.attr('copyrightDetail'));
+		$('#imgHeightPx').val(image.attr('heightPx'));
+		$('#imgHeightCm').val(image.attr('heightCm'));
+		$('#imgMoreInfoLink').val(image.attr('moreInfoLink'));
+		$('#imgViewLists').val(image.attr('viewLists'));
+		$('#imgId').val(image.attr('id'));
+	}
+	
+	function refreshImageAttrUI(imageId)
+	{
+		var cmd = "getImage";
+		var params = "id=" + imageId;
+		// fire off the request to /form.php
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status == 'failure')
+				alert(response.Message);
+			else
+			{
+				$.each(response, function(key, value) {
+					if (key == 'Image')
+					{
+						var selector = "#" + imageId;
+						$(selector).attr('title', value["Title"]);
+						fillImageAttrUI($(selector));
+					}
+				});
+			}
+		});
+
+		// callback handler that will be called on failure
+		request.fail(function (jqXHR, textStatus, errorThrown){
+			// log the error to the console
+			alert(
+				"The following error occured: "+
+				textStatus, errorThrown
+			);
+		});
+
+		// callback handler that will be called regardless
+		// if the request failed or succeeded
+		request.always(function () {
+			// reenable the inputs
+			//$inputs.prop("disabled", false);
+		});
+		
+	}
+	
+	function clearViewListImages() {
+		$(document).find('#divMain2').html('<ul id="thumbs"><li id="loadingImage"><img src="jPages-master/img/preload.png"></img></li></ul>');
+				$("div.holder").jPages({
+				  containerID : "thumbs",
+				  perPage     : 50,
+				  previous    : "div.arrowPrev",
+				  next        : "div.arrowNext",
+				  direction   : "auto",
+				  animation   : "fadeInleft"
+				});
+		fillImageAttrUI($('#loadingImage img'));
+	}
+	
+	function saveImageAttr()
+	{
+	//note: imgId is a hidden field in the image attribute section
+		var cmd="SaveImgAttr"
+		var imageId = $('#imgId').val();
+		var params = 
+			'id=' + imageId + 
+			'&Title=' + encodeURI($('#imgTitle').val()) +
+			//'artist="' + value["Artist First N"] + ' ' + value["Artist Last N"] + '" ' +
+			
+			//'workDate="' + value["Year"] + '" ' +
+			'&Year=' + encodeURI($('#imgWorkDate').val()) +
+			//'birthDate="' + value["Birthdate"] + '" ' +
+			'&Birthdate=' + encodeURI($('#imgBirth').val()) +
+			//'deathDate="' + value["Died"] + '" ' +
+			'&Died=' + encodeURI($('#imgDeath').val()) +
+			//'artistInfo="' + value["Artist Info"] + '" ' +
+			'&Artist%20Info=' + encodeURI($('#imgArtistInfo').val()) +
+			//'genre="' + value["Genre"] + '" ' +
+			'&Genre=' + encodeURI($('#imgTitle').val()) +
+			//'genreLink="' + value["Genre Link"] + '" ' +
+			'&Genre%20Link=' + encodeURI($('#imgGenreLink').val()) +
+			//'source="' + value["Source"] + '" ' +
+			'&Source=' + encodeURI($('#imgSource').val()) +
+			//'sourcePageLink="' + value["Source Page Link"] + '" ' +
+			'&Source%20Page%20Link=' + encodeURI($('#imgSourcePageLink').val()) +
+			//'medium="' + value["Type"] + '" ' +
+			'&Type=' + encodeURI($('#imgMedium').val()) +
+			//'mediumDetail="' + value["Type Detail"] + '" ' +
+			'&Type%20Detail=' + encodeURI($('#imgMediumDetail').val()) +
+			//$('#imgAspectRatio').val(image.attr('aspectRatio'));
+			'&Aspect ratio=' + encodeURI($('#imgAspectRatio').val()) +
+			//$('#imgSubject').val(image.attr('subject'));
+			'&Subject=' + encodeURI($('#imgSubject').val()) +
+			//$('#imgCredit').val(image.attr('credit'));
+			'&Credit=' + encodeURI($('#imgCredit').val()) +
+			//'copyright="' + value["Copyright"] + '" ' +
+			'&Copyright=' + encodeURI($('#imgCopyright').val()) +
+			//'copyrightDetail="' + value["Copyright Detail"] + '" ' +
+			'&Copyright%20Detail=' + encodeURI($('#imgCopyrightDetail').val()) +
+			//'heightPx="' + value["Height Px"] + '" ' +
+			//'&Height Px=' + encodeURI($('#imgHeightPx').val()) +
+			//'heightCm="' + value["Height cm"] + '" ' +
+			//'&Height Cm=' + encodeURI($('#imgHeightCm').val()) +
+			//'location="' + value["Location"] + '" ' +
+			'&Location=' + encodeURI($('#imgLocation').val()) +
+			//$('#imgMoreInfoLink').val(image.attr('moreInfoLink'));
+			'&More%20Info%20Link=' + encodeURI($('#imgMoreInfoLink').val()) +
+			'';
+		
+		// setup some local variables
+		var $form = $('#divMainImageDetail');
+		// let's select and cache all the fields
+		var $inputs = $form.find("input, select, button, textarea");
+		// serialize the data in the form
+		//var serializedData = $inputs.serialize();
+
+		// let's disable the inputs for the duration of the ajax request
+		$inputs.prop("disabled", true);
+
+		// fire off the request to /form.php
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status == 'failure')
+				alert(response.Message);
+			else
+			{
+				alert("Changes have been saved.");
+				refreshImageAttrUI(imageId);
+			}
+		});
+
+		// callback handler that will be called on failure
+		request.fail(function (jqXHR, textStatus, errorThrown){
+			// log the error to the console
+			alert(
+				"The following error occured: "+
+				textStatus, errorThrown
+			);
+		});
+
+		// callback handler that will be called regardless
+		// if the request failed or succeeded
+		request.always(function () {
+			// reenable the inputs
+			$inputs.prop("disabled", false);
+		});
+		
+	}
+	
+	function lazyLoadImages (pages, items) 
+	{
+		//lazy load current
+		items.showing.find("img").trigger("turnpage");
+		//lazy load next page images
+		items.oncoming.find("img").trigger("turnpage");
+	}
+	
+	function body_sizer() {
+	  var bodyheight = $(window).height();
+	  //var bodyheight = $('#outerTable').height();
+	  var headerheight = $('#header').height();
+	  var footerheight =  $('#footer').height();
+	  $("#divNavTree2").height(bodyheight - headerheight - footerheight - 5);
+	}
+	
+	function renameViewListOrCategory (obj)
+	{
+		var objectId = obj[0].id;
+		var objectClass = $('#' + objectId).attr('class');
+		if (objectClass.indexOf('viewList') != -1)
+		{
+			$('#tbRenameId').val(objectId);
+			$('#tbRenameClass').val('viewList');
+			//$("#renameDialog").dialog("open");
+			$('#container').jstree("rename");
+		}
+		else if (objectClass.indexOf('category') != -1)
+		{
+			$('#tbRenameId').val(objectId);
+			$('#tbRenameClass').val('category');
+			//$("#renameDialog").dialog("open");
+			$('#container').jstree("rename");
+		}
+	}
+	
+	function renameViewList(id, newName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'RenameViewlist';
+		params = 
+			'id=' + id +
+			'&name=' + newName;
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//alert("Rename complete.");
+				//TODO: Should we verify changes?
+			}
+		});
+	}
+	
+	function renameCategory(id, newName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'RenameCategory';
+		params = 
+			'oldname=' + id +
+			'&newname=' + newName;
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				alert("Rename complete.");
+				//TODO: Should we verify changes?
+			}
+		});
+	}
+	
+	function onRenameClosed( event, ui ) 
+	{
+		//alert($('#tbRenameNewName').val() + $('#tbRenameId').val() + $('#tbRenameClass').val());
+		var id = $('#tbRenameId').val();
+		var newName = $('#tbRenameNewName').val();
+		var objClass = $('#tbRenameClass').val();
+		if (newName.length > 0)
+		{
+			if (objClass == 'viewList')
+			{
+				renameViewList(id, newName);
+			}
+			else
+			{
+				renameCategory(id, newName);
+			}
+			
+		}
+	}
+	
+	function createViewListOrCategory (obj)
+	{
+		var objectId = obj[0].id;
+		var objectClass = $('#' + objectId).attr('class');
+		var objectDisplayName = $('#' + objectId).attr('displayName');
+		//if on a category, create a view list
+		if (objectClass.indexOf('category') != -1)
+		{
+			$('#tbCreateUnderCategory').html('<a>Click Ok to create a new View List under ' + objectDisplayName + '</a>');
+			$('#tbCreateId').val(objectId);
+			$('#tbCreateClass').val('viewList');
+			$('#tbCreateConfirmed').val('');
+			$("#createDialog").dialog("open");	
+		}
+		else if (objectClass.indexOf('root') != -1)
+		{
+			$('#tbCreateUnderCategory').html('<a>Click Ok to create a new category under ArtKick</a>');
+			$('#tbCreateId').val(objectId);
+			$('#tbCreateClass').val('category');
+			$('#tbCreateConfirmed').val('');
+			$("#createDialog").dialog("open");	
+		}
+	}
+	
+	function createViewList(id, newName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'CreateViewlist';
+		params = 
+			'catName=' + id +
+			'&listName=' + newName;
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//alert("Rename complete.");
+				//TODO: Should we verify changes?
+				location.reload();
+			}
+		});
+	}
+	
+	function createCategory(id, newName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'CreateCategory';
+		params = 'name=' + newName;
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				alert("Rename complete.");
+				//TODO: Should we verify changes?
+				location.reload();
+			}
+		});
+	}
+	
+	function onCreateClosed( event, ui ) 
+	{
+		//alert($('#tbRenameNewName').val() + $('#tbRenameId').val() + $('#tbRenameClass').val());
+		var id = $('#tbCreateId').val();
+		var newName = $('#tbCreateNewName').val();
+		var objClass = $('#tbCreateClass').val();
+		var confirmation = $('#tbCreateConfirmed').val();
+		if (confirmation.length > 0 && newName.length > 0)
+		{
+			if (objClass == viewListType)
+			{
+				//alert('create viewlist ' + newName + id);
+				createViewList(id, newName);
+			}
+			else if (objClass == categoryType)
+			{
+				//alert('create category ' + newName + id);
+				createCategory(id, newName);
+			}
+			
+		}
+	}
+	
+	function removeViewListOrCategory (obj)
+	{
+		var objectId = obj[0].id;
+		var objectClass = $('#' + objectId).attr('class');
+		var objectDisplayName = $('#' + objectId).attr('displayName');
+		//if on a category, create a view list
+		if (objectClass.indexOf(viewListType) != -1)
+		{
+			$('#tbRemoveId').val(objectId);
+			$('#tbRemoveItems').val(objectDisplayName + ' View List');
+			$('#tbRemoveCat').val(obj[0].parentNode.parentNode.parentNode.id);
+			$('#tbRemoveClass').val('viewList');
+			$('#tbRemoveConfirmed').val('');
+			$("#removeDialog").dialog("open");	
+		}
+		else if (objectClass.indexOf(categoryType) != -1)
+		{
+			$('#tbRemoveId').val(objectId);
+			$('#tbRemoveItems').val(objectDisplayName + ' Category');
+			$('#tbRemoveClass').val('category');
+			$('#tbRemoveConfirmed').val('');
+			$("#removeDialog").dialog("open");	
+		}
+	}
+	
+	function removeViewListFromCat(id, catName)
+	{
+		var cmd = '';
+		var params = '';
+		
+		cmd = 'RemoveViewlistFromCategory';
+		params = 
+			'listId=' + id +
+			'&catName=' + catName;
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				$("#container").jstree("remove"); 
+			}
+		});
+	}
+	
+	function removeCategory(id)
+	{
+		var cmd = 'RemoveCategory';
+		var params = 
+			'name=' + id;
+		
+		var request = $.ajax({
+			url: baseCmdUrl + cmd + "?" + params,
+			dataType: 'jsonp',	
+		});
+
+		// callback handler that will be called on success
+		request.done(function (response, textStatus, jqXHR){
+			// log a message to the console
+			if (response.Status != 'success')
+				alert(response.Message);
+			else
+			{
+				//TODO: Should we verify changes?
+				$("#container").jstree("remove");
+			}
+		});
+	}
+	
+	function onRemoveClosed( event, ui ) 
+	{
+		var id = $('#tbRemoveId').val();
+		var confirmation = $('#tbRemoveConfirmed').val();
+		var objClass = $('#tbRemoveClass').val();
+		var objCat = $('#tbRemoveCat').val();
+		if (confirmation.length > 0)
+		{
+			if (objClass == viewListType)
+			{
+				removeViewListFromCat(id, objCat);
+			}
+			else if (objClass == categoryType)
+			{
+				removeCategory(id);
+			}	
+		}
+	}
+	
+	</script>
+	
+</body>
+</html>

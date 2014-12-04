@@ -17,6 +17,7 @@ var viewListFeaturedType = "viewListFeatured";
 var categoryType = "category";
 var rootType = "root";
 var imageType = "image";
+var imageFilter = "";
 
 var trashName = "Trash";
 var trashId = -99999;
@@ -53,7 +54,23 @@ $(document).ready(function () {
 	}
 	
 	$('#btnSave').click(function () {
-		saveImageAttr();
+		//TODO: move to own methods - like selectionCount and getSelection 
+		if ($('#divMainImages').find('li.selected').length == 1)
+		{
+			saveImageAttr();
+		}
+		else {
+			saveImageAttrMulti();
+		}
+	});
+	
+	$('#divMainImageDetail').find('input[type="text"], textarea').click(function () {
+		//alert('clicked!');
+		//$(this).prop('readonly', false);
+		if ($(this).hasClass('imageAttrMulti') && $(this).prop('readonly') !== true) {
+			$(this).removeClass('imageAttrMulti');
+			$(this).addClass('imageAttrMultiEdited');
+		}
 	});
 	
 	$( "#pendingTransactionDialog" ).dialog({ 
@@ -82,9 +99,10 @@ $(document).ready(function () {
 		if (e.ctrlKey) {
 			if (e.keyCode == 65 || e.keyCode == 97) { // 'A' or 'a'
 			  e.preventDefault();
-			  $('.viewListImage').addClass('selected');
-			  clearImageAttrUI();
-			  enableSaveImageAttr(false);
+			  $('.viewListImage:visible').addClass('selected');
+
+			  //update UI to reflect selection state
+			  handleSelectionChanged();
 			}
 		}
 		else if (e.keyCode == 39) //right arrow
@@ -112,11 +130,18 @@ $(document).ready(function () {
 		else alert('Not a valid url.');
 	});
 	
+	$('#inputFilter').on('input', function (e) {
+		updateImageFilter($(e.currentTarget).val());
+	});
+	
 	enableSaveImageAttr(false);
 	
 	//track any changes to the image attributes
 	$('#divMainImageDetail').find('input').keydown(function() {
-		imageAttrDirty = true;
+		//TODO: Better way to handle multi later
+		if ($('#divMainImages').find('li.selected').length === 1) {
+			imageAttrDirty = true;
+		}
 	});
 	
 	body_sizer();
@@ -693,7 +718,7 @@ function getViewListImages(viewListId) {
 						imageCount++;
 						vlImages.push('<li class="viewListImage" id="' + value["id"] + '" ' +
 							getImageAttributes(value) + 
-							'><img src="' + value["thumbnail"] + '" width="200" height="200"</img>' + '</li>');
+							'><img src="' + value["thumbnail"] + '"</img>' + '</li>');
 					});
 				};
 				strImages = '<ul id="thumbs" viewListId="' + viewListId + '">' + vlImages.join('') + '</ul>';
@@ -705,6 +730,7 @@ function getViewListImages(viewListId) {
 			
 			updateImageCount(viewListId, imageCount);
 			
+			/*
 			$('ul li img').lazyload({
 				event: "turnpage",
 				effect: "fadeIn"
@@ -718,7 +744,9 @@ function getViewListImages(viewListId) {
 			  animation   : "fadeInleft",
 			  callback    : lazyLoadImages
 			});
+			*/
 			
+			//TODO v3: No reason to do each...just use selector
 			$(document).find('#divMainImages').find('li.viewListImage').each(function () {
 				$(this).click(function () {
 					if (imageAttrDirty)
@@ -730,7 +758,7 @@ function getViewListImages(viewListId) {
 						return;
 					}
 					
-					handleClickSelectImage(event.ctrlKey, event.shiftKey, $(this));
+					handleClickSelectImage(event.ctrlKey || event.metaKey, event.shiftKey, $(this));
 					
 				});
 				
@@ -1481,16 +1509,17 @@ function removeSelectedImagesFromViewlist()
 {
 	var viewListId = $('#thumbs').attr('viewListId');
 	var cmd = (viewListId == trashId) ? "clearImages" : "RemoveImagesFromViewlist";
+	var selectedImages = buildSelectedImageListPost();
 
 	var imageListData = {
 		listId: viewListId,
-		images: buildSelectedImageListPost(),
+		images: selectedImages,
 		token: authToken,
 		email: authEmail
 	}
 	
 	//var imageListDataJSON = JSON.stringify(imageListData);
-				 
+	
 	var request = $.ajax({
 		url: baseCmdUrl + cmd,
 		type: 'POST',
@@ -1502,9 +1531,11 @@ function removeSelectedImagesFromViewlist()
 	request.done(function (response, textStatus, jqXHR){
 		if (verifyApiResponseSuccess(response)) {
 			//TODO: Should we verify changes?
-			//TODO: How to delete image? hide it?  reload images?
-			clearViewListImages();
-			getViewListImages(viewListId);
+			//remove the images from the list
+			for (var i = 0; i < selectedImages.length; i++) {
+				$('#divMainImages').find('#' + selectedImages[i]).remove();
+			}
+			handleSelectionChanged();
 		}
 	});
 }
@@ -1522,11 +1553,11 @@ function selectAdjacentImage(next)
 	var currentSelectedItem = next ? $('#divMainImages').find('li.selected:last') : $('#divMainImages').find('li.selected:first');
 	if (currentSelectedItem.length == 0)
 	{
-		$('#divMainImages').find('li:first').trigger("click");
+		$('#divMainImages').find('li:visible:first').trigger("click");
 		return;
 	}
 	
-	var nextprevImage = next ? currentSelectedItem.next() : currentSelectedItem.prev();
+	var nextprevImage = next ? currentSelectedItem.nextAll(':visible:first') : currentSelectedItem.prevAll(':visible:first');
 	if (nextprevImage.length != 0)
 	{
 		//currentSelectedItem.removeClass("selected");
@@ -1614,14 +1645,26 @@ function handleClickSelectImage(ctrlKey, shiftKey, targetImage)
 		}
 	}
 	
-	//currently we only support one selection for metadata section
-	if ($('#divMainImages').find('li.selected').length == 1)
+	//update UI based on new selection
+	handleSelectionChanged();
+}
+
+function handleSelectionChanged() {
+	if ($('#divMainImages').find('li.selected').length === 1)
 	{
+		//clear out multi UI
+		clearImageAttrMultiUI();
+		
 		fillImageAttrUI($('#divMainImages').find('li.selected'));
 		enableSaveImageAttr(true);
 	}
-	else
+	else if ($('#divMainImages').find('li.selected').length > 1)
 	{
+		fillMultiImageAttrUI($('#divMainImages').find('li.selected'));
+		enableSaveImageAttr(true);
+	}
+	else {
+		clearImageAttrMultiUI();
 		clearImageAttrUI();
 		enableSaveImageAttr(false);
 	}
@@ -1656,7 +1699,7 @@ function onUnsavedClosed()
 	}
 	else if (newImageId != '')
 	{
-		handleClickSelectImageId(event.ctrlKey, event.shiftKey, newImageId);
+		handleClickSelectImageId(event.ctrlKey || event.metaKey, event.shiftKey, newImageId);
 	}
 }
 
@@ -1769,4 +1812,196 @@ function setViewListFeatured(viewListId, isFeatured)
 	});
 	
 }
+
+function updateImageFilter(val)
+{
+	$('.viewListImage').removeClass('selected');
+	imageFilter = val.trim();
+	$('#thumbs').find('li').each(function() {
+		var html = $(this)[0].outerHTML;
+		if (imageFilter.trim().length === 0 || html.indexOf(imageFilter) >= 0) {
+			$(this).show();
+		}
+		else {
+			$(this).hide();
+		}
+	});
+}
+
+//TODO: Move this up and use throughout code as needed
+var imageAttributes = [
+		{selector: 'imgTitle', attributeName: 'title', apiName: 'Title', multiEnabled: true},
+		{selector: 'imgArtistLastName', attributeName: 'artistLN', apiName: 'Artist Last N', multiEnabled: true},
+		{selector: 'imgArtist', attributeName: 'artistFN', apiName: 'Artist First N', multiEnabled: true},
+		{selector: 'imgWorkDate', attributeName: 'workDate', apiName: 'Year', multiEnabled: true},
+		{selector: 'imgBirth', attributeName: 'birthDate', apiName: 'Birthdate', multiEnabled: true},
+		{selector: 'imgDeath', attributeName: 'deathDate', apiName: 'Died', multiEnabled: true},
+		{selector: 'imgArtistInfo', attributeName: 'artistInfo', apiName: 'Artist Info', multiEnabled: true},
+		{selector: 'imgGenre', attributeName: 'genre', apiName: 'Genre', multiEnabled: true},
+		{selector: 'imgGenreLink', attributeName: 'genreLink', apiName: 'Genre Link', multiEnabled: true},
+		{selector: 'imgSource', attributeName: 'source', apiName: 'Source', multiEnabled: true},
+		{selector: 'imgSourcePageLink', attributeName: 'sourcePageLink', apiName: 'Source Page Link', multiEnabled: true},
+		{selector: 'imgBuyNow', attributeName: 'buyNow', apiName: 'extra', multiEnabled: true},
+		{selector: 'imgBuyNowLink', attributeName: 'buyNowLink', apiName: 'extra link', multiEnabled: true},
+		{selector: 'imgMedium', attributeName: 'medium', apiName: 'Type', multiEnabled: true},
+		{selector: 'imgMediumDetail', attributeName: 'mediumDetail', apiName: 'Type  Detail', multiEnabled: true},
+		{selector: 'imgHeightCm', attributeName: 'heightCm', apiName: 'Height cm', multiEnabled: true},
+		{selector: 'imgWidthCm', attributeName: 'widthCm', apiName: 'Width cm', multiEnabled: true},
+		{selector: 'imgAspectRatio', attributeName: 'aspectRatio', apiName: 'Aspect Ratio', multiEnabled: true},
+		{selector: 'imgSubject', attributeName: 'subject', apiName: 'Subject', multiEnabled: true},
+		{selector: 'imgCredit', attributeName: 'credit', apiName: 'Credit', multiEnabled: true},
+		{selector: 'imgLocation', attributeName: 'location', apiName: 'Location', multiEnabled: true},
+		{selector: 'imgCopyright', attributeName: 'copyright', apiName: 'Copyright', multiEnabled: true},
+		{selector: 'imgCopyrightDetail', attributeName: 'copyrightDetail', apiName: 'Copyright Detail', multiEnabled: true},
+		{selector: 'imgMoreInfoLink', attributeName: 'moreInfoLink', apiName: 'More Info Link', multiEnabled: true},
+		{selector: 'imgVideo', attributeName: 'video', apiName: 'Video', multiEnabled: true},
+		{selector: 'imgThumbnail', attributeName: 'thumbnail', apiName: 'thumbnail', multiEnabled: true},
+		{selector: 'imgUrl', attributeName: 'url', apiName: 'url', multiEnabled: true},
+		{selector: 'imgUrl4K', attributeName: 'url4K', apiName: 'url4K', multiEnabled: true},
+		{selector: 'imgIcon', attributeName: 'icon', apiName: 'icon', multiEnabled: true}
+		//{selector: 'imgViewLists', attributeName: 'viewLists', apiName: 'Artist Last N', multiEnabled: true},
+		//{selector: 'imgId', attributeName: 'id', apiName: 'Artist First N', multiEnabled: true}
+	];
+
+function fillMultiImageAttrUI(images)
+{
+	var imgAttrMatchCount = 0;
+	imageAttrDirty = false;
+	//console.log(images);
+	clearImageAttrUI();
+	//We will display any common values for multiple images
+	//$('#imgArtistLastName').val(($('#divMainImages').find("li.selected[artistLN='" + $(images[0]).attr('artistLN') + "']").length === $(images).length) ?  $(images[0]).attr('artistLN') : '');
+	for (var i = 0; i < imageAttributes.length; i++) {
+		//console.log($(this).selector);
+		var attrName = imageAttributes[i].attributeName;
+		imgAttrMatchCount = $('#divMainImages').find("li.selected[" + attrName + "='" + $(images[0]).attr(attrName) + "']").length;
+		$('#' + imageAttributes[i].selector).val((imgAttrMatchCount === $(images).length) ?  $(images[0]).attr(attrName) : '');
+	};
 	
+	//make all readonly to start -- click will activate
+	var $form = $('#divMainImageDetail');
+	var $inputs = $form.find("input, select, button, textarea");
+	//show none of the fields as currently being edited (until click)
+	//$inputs.prop("readonly", true);
+	$inputs.addClass('imageAttrMulti');
+	//show multi-select edit text
+	$('#multiSelectInfo').show();
+}
+
+//completely resets UI from multi-edit to single
+function clearImageAttrMultiUI() {
+	var $form = $('#divMainImageDetail');
+	var $inputs = $form.find("input, select, button, textarea");
+	//$inputs.prop("readonly", false);
+	$inputs.removeClass('imageAttrMulti');
+	$inputs.removeClass('imageAttrMultiEdited');
+	//hide multi-select edit text
+	$('#multiSelectInfo').hide();
+}
+
+//TODO: Can use for single save as well
+function saveImageAttrMulti()
+{
+	var imageList = buildSelectedImageListPost();
+	var imageData = buildSaveImageJsonMulti();
+	
+	// setup some local variables
+	var $form = $('#divMainImageDetail');
+	var $inputs = $form.find("input, select, button, textarea");
+	// let's disable the inputs for the duration of the ajax request
+	$inputs.prop("disabled", true);
+
+	//temp to track saves
+	//console.log(baseCmdUrl + cmd + "?" + params);
+	
+	var success = false;
+	$("#pendingTransactionDialog").dialog("open");
+	
+	var requests = [];
+	for (var i = 0; i < imageList.length; i++) {
+		imageData.id = imageList[i];
+		requests.push(buildSaveImageAjaxMulti(imageData));
+	}
+	//console.log(requests);
+	
+	$.when.apply($, requests).done(function () {
+		var success = true;
+		var error = '';
+		var responses = arguments;
+		//console.log(responses);
+		for (var r = 0; r < responses.length; r++) {
+			if (!responses[r][0] || (responses[r][0].status !== 'success')) {
+				success = false;
+				if (responses[r][0] !== undefined) {
+					error = responses[r][0].status + ' - ' + responses[r][0].message;
+				}
+				break;
+			}
+		}
+		//close the pending transaction dialog
+		$inputs.prop("disabled", false);
+		$("#pendingTransactionDialog").dialog("close");
+		
+		if (success)
+		{
+			//alert("Changes have been saved.");
+			imageAttrDirty = false;
+			//reset to multi-select (since all will still be selected)
+			//$inputs.prop("readonly", true);
+			$inputs.addClass('imageAttrMulti');
+			$inputs.removeClass('imageAttrMultiEdited');
+			
+			//temporarily show dialog that shows that everything was saved
+			$("#transactionCompletedDialog").dialog("open");
+			setTimeout(function () { $("#transactionCompletedDialog").dialog("close"); }, 1000);
+			
+			//need to update all images to the new values
+			//refreshImageAttrUI(imageId);
+			for (var i = 0; i < imageList.length; i++) {
+				var targetImage = $(document).find('#divMainImages').find('li.viewListImage#' + imageList[i]);
+				//var selector = "li.viewListImage#" + imageId;
+				$.each(imageData, function (key, val) {
+					var imageAttr = _.findWhere(imageAttributes, {apiName: key});
+					if (imageAttr) {
+						targetImage.attr(imageAttr.attributeName, val);
+					}
+				});
+			}
+		}
+		else {
+			alert("The following error occurred: " + error);
+		}
+	});
+}
+
+//TODO: this can be shared code for single and multi
+function buildSaveImageAjaxMulti(imageData) {
+	var cmd="SaveImgAttr"
+    var request = $.ajax({
+		url: baseCmdUrl + cmd,
+		type: 'POST',
+		data: imageData
+		//dataType: 'jsonp' - jsonp does not support post	
+	});
+		
+	return request;
+}
+
+//TODO: this can be shared code for single and multi
+function buildSaveImageJsonMulti() {
+    var saveJson = {
+		'token': authToken,
+		'email': authEmail
+	};
+	console.log('Saving the following attributes: ');
+	for (var i = 0; i < imageAttributes.length; i++) {
+		var apiName = imageAttributes[i].apiName;
+		var imageAttr = $('#' + imageAttributes[i].selector);
+		if (imageAttr.hasClass('imageAttrMultiEdited') && (imageAttr.val().length > 0)) {
+			console.log(imageAttributes[i].selector + ':' + imageAttr.val());
+			saveJson[apiName] = imageAttr.val().trim();
+		}
+	};
+		
+	return saveJson;
+}

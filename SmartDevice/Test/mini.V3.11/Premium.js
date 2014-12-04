@@ -282,7 +282,7 @@ function InAppSubscribe(which)
 	else
 	{
 	// running in browser so goto website
-		open("http://www.artkick.com","_blank");
+		open("http://www.artkick.com/subscribe","_blank");
 	}
 }
 

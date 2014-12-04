@@ -209,7 +209,7 @@ require(["jquery",
                 window.moregridpages = false;
                 window.gettyEditorial = "Any";
                 window.gettyEditorialTime = "Any";
-                window.gettyEditorialOrientation = "horizontal";
+                window.gettyEditorialOrientation = "Any";
                 window.gettylastQuery = "";
                 window.gettysubscribe = false;
                 window.sharedlist = false;
@@ -230,6 +230,7 @@ require(["jquery",
 				window.newgettysubscription='Getty_All4';
 				window.restoreTrans=false;
 				window.scrollpos=0;
+				window.indialLaunch=false;
 
                 function getCookie(c_name)
                 {
@@ -460,6 +461,8 @@ require(["jquery",
 							 window.firstdisplay = false;
 						}
 					}
+					 if (toView == "select_player2")
+						updatePlayers2();
                     if (toView == "select_player2" && runInWebview)
                     {
                         if (window.firstupdateplayers)
@@ -1899,6 +1902,12 @@ require(["jquery",
                 window.updatePlayers2 = function()
                 {
                     console.log("update players2");
+					if (window.indialLaunch)
+					{
+						//usermessage("syncing");
+						window.indialLaunch=false;
+						syncImage(); //don't know why we are doing this here??? because if we just installed the player we need to set the image correctly
+					}
                     //	dialsearch(); //this is called from the IOS/android app
                     // first time through throw up window which says scanning network for connected displays
                     thisurl = base + "player/getPlayers?email=" + window.email + "&token=" + window.token;
@@ -1933,7 +1942,8 @@ require(["jquery",
                             window.numberplayers = result["players"].length;
                             for (var i in dialMap)
                                 checkDial(i);
-                            var lix = dojo.create("div",
+
+							var lix = dojo.create("div",
                             {
                                 innerHTML: result["players"].length + " Devices Connected to Artkick",
                                 className: 'wificlass',
@@ -2020,7 +2030,7 @@ require(["jquery",
                                     id: "icon" + player["account"],
                                     onclick: function()
                                     {
-                                        playerClick(this.id);
+                                        playerClick(this.id,false);
                                     }
                                 }, li);
                                 var nam = dojo.create("span",
@@ -2040,11 +2050,7 @@ require(["jquery",
 									className: 'myselect'
 							
 								},newspan);
-								dojo.create("img",
-								{
-									src:'images/chooser_arrow.png',
-									className: "chooserclass"
-								},newspan);
+
 								dojo.create("option",
 								{
 									value:'0',
@@ -2098,6 +2104,7 @@ require(["jquery",
 								$(selectauto).val(player["autoInterval"]);
 								
                             }
+
 						//	loadmetadata();
                             // now create entries for the dial discovered devices which are not already in players
                             var lix2 = dojo.create("div",
@@ -2113,10 +2120,10 @@ require(["jquery",
                             {
                                 //alert("checking dialMap with i="+i);
                                 //console.log("i= "+i);
-                                //console.log("TV: "+dialMap[i]["friendlyName"]);
+                                console.log("TV: "+dialMap[i]["friendlyName"]);
                                 //check if it is already registered
                                 var tvexist = checkDial(i);
-                                //console.log("checkDial for :"+i+" returned:"+tvexist);
+                                console.log("checkDial for :"+i+" returned:"+tvexist);
                                 if (!tvexist)
                                 {
                                     iconsrc = 'images/ConnectButton.png';
@@ -2167,6 +2174,13 @@ require(["jquery",
                                         className: 'playertitleclass2',
                                         innerHTML: dialMap[i]["friendlyName"],
                                     }, lix);
+									if (dialMap[i]["originalName"])
+										dojo.create("div",
+										{
+											id: "dialzz" + i,
+											className: 'playertitleclass3',
+											innerHTML: dialMap[i]["originalName"]
+										}, lix);
                                     newdevicecnt++;
                                 }
                                 //	}
@@ -2209,7 +2223,7 @@ require(["jquery",
                                 innerHTML: "Add Device",
                                 className: 'adddevice'
                             }, lix);
-                            //syncImage();
+
                             if (window.justLogin)
                             {
                                 window.justLogin = false;
@@ -2306,7 +2320,7 @@ require(["jquery",
                 console.log("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
 			//	alert("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
 			//	 alert("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
-		//	alert("useragent:"+navigator.userAgent+" platform:"+navigator.platform+" appversion:"+navigator.appVersion);
+			//alert("useragent:"+navigator.userAgent+" platform:"+navigator.platform+" appversion:"+navigator.appVersion);
 				if (window.BrowserDetect.browser=="Firefox")
 				{
 					//FirefoxError();
@@ -2356,26 +2370,27 @@ require(["jquery",
 				window.bodyheight=dojo.byId("realcontent").clientHeight;
 				$(".mblCarousel").css("height",bodyheight+'px');
 				$("#gettyPopUpAd").css('width','699px');
+				var curonce=false;
                 var curl = get('currList');
                 var curi = get('currImage');
                 var curc = get('currCat');
 				
 				
-                var curonce = get('once');
+                curonce = get('once');
 				window.ISgettyad=false;
 				window.Showgettyad = get('gettyad');
 				if (curl)
 					window.ISgettyad=true;
 			
-                //		alert("start, check currList="+curl+"image"+curi+"cat:"+curc);
+                		//alert("start, check currList="+curl+"image"+curi+"cat:"+curc);
                 if (curl && curi && curc && !curonce)
                 {
                     //	
                     var url = "artkick://?currList=" + curl + "&currImage=" + curi + "&currCat=" + curc + "&once=" + "true";
-                    //	alert("url:"+url);
+                    	//alert("url:"+url);
 					if (!window.computer)
 					{
-						//alert("trying to launch:"+url);
+					//	alert("trying to launch:"+url);
 						openCustomURLinIFrame(url);
 					}
                 }
@@ -2590,9 +2605,9 @@ require(["jquery",
 									}
                                     //alert(result["selectedPlayers"][i]);
                                 }
+
 								
-								syncImage();
-                                updatePlayers2();
+								updatePlayers2();
                             }
                         }
                     });

@@ -77,12 +77,13 @@ float:left;margin-right:2px}
 
 	border-style:none!important;
 	border-color:none;
-	height:60px;
-	width:60px;
+	height:45px;
+	width:45px;
 	position:relative;
 
 	float:right;
 	margin-right:15px;
+	margin-top:10px;
 
 	}
 .iconclass2 {
@@ -137,8 +138,17 @@ top:-7px
 position:relative;
 top:-10px;
 width:50%;
+font-size:12px;
 word-break:break-all;
 min-height:20px;
+}
+.playertitleclass3 {
+position:relative;
+width:50%;
+font-size:12px;
+word-break:break-all;
+margin-top:-10px;
+margin-left:10px;
 }
 .playerautoplayclass {
 
@@ -979,13 +989,14 @@ margin-left: 10px;
 
 		font-family: 'Open Sans', sans-serif;
 		font-weight: 400;
+		font-size:12px;
 		color: #00C7FF;
 
 		border-radius: 5px;
 		background-color: #28272D;
 		text-align: center;
 		border-color: #28272D;
-
+		background-image:url('../images/chooser_arrow_back3.png');
 		 -webkit-appearance: none;
 		 padding-right:30px;
 }
