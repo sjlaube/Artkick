@@ -241,7 +241,7 @@ function dologout()
     setCookie("token", null, 1);
     //currView.performTransition("Login", 1, "slide", null);
     cleanUp();
-    gotoView("AccountSettings", "newLogin");
+    gotoView("AccountSettings", "IntroA");
     /*   setTimeout(function(){
        	gotoView("blankview","Login");
        },1000);*/
@@ -274,6 +274,7 @@ function login()
 //	alert(navigator.userAgent);
  //   dojo.byId("browse-search").innerHTML = "Browse/Search";
     dojo.style("searchmenu", "display", "block");
+
     if (is_email(dojo.byId("loginEmail").value))
     {
         var currView = dijit.registry.byId("Login");

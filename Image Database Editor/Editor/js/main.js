@@ -33,8 +33,8 @@ $(document).ready(function () {
 		
 	});
 	
-	$('#productionServerLink').attr('href', baseEditorUrl + '&database=production');
-	$('#stagingServerLink').attr('href', baseEditorUrl + '&database=staging');
+	$('#productionServerLink').attr('href', baseEditorUrl + '?database=production');
+	$('#stagingServerLink').attr('href', baseEditorUrl + '?database=staging');
 	$('#stagingServerLink').click(function (e) {
 		window.location = $("#stagingServerLink").attr('href');
 		e.preventDefault();
@@ -230,14 +230,19 @@ var categoriesLoaded = 0;
 var imageAttrDirty = false;
 
 //point to request database (default is staging)
-//var databaseParam = $.url().param('database');
-//var baseEditorUrl = $.url().attr('protocol') + ':' + $.url().attr('path');
 var baseEditorUrl = window.document.URL.toString(); 
 var databaseParam = getVal(baseEditorUrl, 'database');
-
+/*
 if (databaseParam) {
 	baseEditorUrl = baseEditorUrl.replace(/&database=staging/, '');
 	baseEditorUrl = baseEditorUrl.replace(/&database=production/, '');
+}
+*/
+var editorParams = '';
+var editorParamsStart = baseEditorUrl.indexOf('?');
+if (editorParamsStart !== -1) {
+	editorParams = baseEditorUrl.substring(editorParamsStart);
+	baseEditorUrl = baseEditorUrl.substring(0, editorParamsStart);
 }
 
 if (databaseParam == "production")

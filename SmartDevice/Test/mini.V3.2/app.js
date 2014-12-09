@@ -163,7 +163,7 @@ require(["jquery",
                 {
                     numStars: 5
                 });
-                window.boucingTime = 3000;
+                window.boucingTime = 1000;
                 window.firstdisplay = true;
                 window.foundIndex = true;
                 window.selectedPlayers = {};
@@ -364,7 +364,7 @@ require(["jquery",
                                     //		alert("before iv show");
                                     window.firstdisplay = false;
                                     splash.style.display = "none";
-                                    splash.style.visibility = "hidden";
+                                  //  splash.style.visibility = "hidden";
 									window.activeplayer = 'No TV Selected';
 									if (window.blankview2up)
 									{
@@ -1057,6 +1057,7 @@ require(["jquery",
 										if (result['use_times']%5==0&&!result['didReview'])
 										{
 											// ask to review every 5 times
+											if (runInWebview) // only can review if in IOS or Android
 											dijit.registry.byId('AskReview').show();
 										
 										}
@@ -2479,8 +2480,8 @@ require(["jquery",
 
 				if (!runInWebview)
                 {
-                    dojo.style('otherlogins', 'display', 'none');
-                    dojo.style('othersignup', 'display', 'none');
+                   // dojo.style('otherlogins', 'display', 'none');
+                   // dojo.style('othersignup', 'display', 'none');
 					dojo.style('import1', 'display', 'none');
 					dojo.style('import2', 'display', 'none');
 					dojo.style('import3', 'display', 'none');

@@ -678,7 +678,7 @@ margin-right:5px
 	.showtitle
 	{
 		position:absolute;
-		width:70%;
+		width:66%;
 		top:3px;
 		left:55px;
 		font-size:12px;
@@ -1194,3 +1194,11 @@ top:7px;
 opacity:.5;
 }
 
+.loginbuttonclass
+{
+	width:115px;
+	font-size:16px;
+	border-style:none;
+	border-radius:5px;
+	color:black
+}
