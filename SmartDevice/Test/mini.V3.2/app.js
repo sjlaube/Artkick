@@ -37,7 +37,6 @@ require(["jquery",
         "dijit/form/Select",
         "dojox/form/Rating",
         "dojox/form/PasswordValidator",
-        "dojo/dom-attr",
         "dojox/mobile/Carousel",
         "dojox/mobile/LongListMixin",
         "dojox/mobile/ScrollableView",
@@ -75,7 +74,6 @@ require(["jquery",
         select,
         Rating,
         PasswordValidator,
-        domAttr,
         Carousel,
         LongListMixin,
         ScrollableView,
@@ -232,7 +230,7 @@ require(["jquery",
 				window.scrollpos=0;
 				window.indialLaunch=false;
 
-                function getCookie(c_name)
+                window.getCookie=function(c_name)
                 {
                     var c_value = document.cookie;
                     var c_start = c_value.indexOf(" " + c_name + "=");
@@ -266,7 +264,7 @@ require(["jquery",
                     return c_value;
                 }
 
-                function setCookie(c_name, value, exdays)
+                window.setCookie=function(c_name, value, exdays)
                 {
                     var exdate = new Date();
                     exdate.setDate(exdate.getDate() + exdays);
@@ -283,6 +281,7 @@ require(["jquery",
                 {
                     var email = getCookie("email");
                     var token = getCookie("token");
+
                     console.log("checkCookie " + email);
                     var I0 = registry.byId("IntroA");
                     //     alert ("Io= " + I0 + I0.selected);
@@ -689,7 +688,7 @@ require(["jquery",
                                     srcimage = viewlist["imageSet"][i]["url"];
                                 image = {
                                     "alt": viewlist["imageSet"][i]["id"],
-                                    "src": srcimage,
+                                    "src": srcimage
                                 };
                                 window.imageCurrStore.newItem(image);
                                 if (i == viewlist["imageSet"].length - 1)
@@ -799,7 +798,15 @@ require(["jquery",
                                     {
                                         window.restart = false;
 										window.justLogin=false;
+
                                         gotoView('blankview', 'select_category');
+										window.hint1=getCookie("hint1");
+										if (window.hint1=='false')
+										{
+											setCookie("hint1",true,365);
+											dojo.style("hint1","display","block");// for testing only
+										
+										}
                                     }
                                     else
                                     {
@@ -899,6 +906,7 @@ require(["jquery",
 								// check subscriptions status
 									window.subscriptions=result["subscriptions"];
 									window.newsubscriptions=result["newSubscriptions"];
+									window.subscriptionSource=result['subsSrc'];
 									//if (typeof window.subscriptions === 'undefined')
 									//	window.subscriptions=[];
 									if (subscriptions.length==0)
@@ -910,7 +918,7 @@ require(["jquery",
 									else
 									{
 										dojo.style("gettyad", "display", "none");
-										if (subscriptions[0]=="Getty_All"&&result['subsSrc']!='artkick-trial')  //if they already subscribe to everything don't show subscribe button
+										if (subscriptions[0]=="Getty_All"&&result['subsSrc']!='artkick-trial')  //if they already subscribe to everything don't show subscribe button but if they are in a trial do show it
 											dojo.style("inappsubscribe","display","none");
 										else
 											dojo.style("inappsubscribe","display","block");
@@ -958,25 +966,7 @@ require(["jquery",
                                         $("#myshuffle").removeClass("mblTabBarButtonLabel2");
              
                                     }
-                                    /*alert(window.fill) is now on a per device basis so we don't need any of this
-                                    var switchValue = "off";
-                                    if (window.fill)
-                                    {
-                                        switchValue = "on";
-                                    }
-                                    //dijit.byId("fillswitch").set("value", switchValue);               			
-                                    dijit.byId("fillswitch").set("checked", window.fill);
-                                    var fillsw = dijit.registry.byId("fillswitch");
-                                    if (window.fill)
-                                    {
-                                        dojo.byId("fillswitch4").setAttribute("src","images/checkbox_off.png");
-                                    }
-                                    else
-                                    {
-                                        dojo.byId("fillswitch4").setAttribute("src","images/checkbox_on.png");
-                                    }*/
-                                   // dijit.byId("hires-switch").set("checked", window.highresolution);
-                                  //  var hrsw = dijit.registry.byId("hires-switch");
+                                   
                                     if (window.highresolution)
                                     {
                                         dojo.byId("hires-switch").setAttribute("src","images/checkbox_on.png");
@@ -1062,14 +1052,14 @@ require(["jquery",
 										
 										}
 										window.freeTrialEligible=false;
-										if (result['freeTrialEligible'])
+									/*	if (result['freeTrialEligible'])
 										{
 											
 											dojo.byId("GettySubscribeTitle").innerHTML="Start Free Trial";
 											dojo.byId("GettySubscribeTitle2").innerHTML="Start Free Trial";
 											window.freeTrialEligible=true;
 											
-										}
+										}*/ // everyone starts out with a free trial now
 										if (result['artkick_all_expire'])
 										{
 										// calculate remaining time of trial
@@ -1077,6 +1067,12 @@ require(["jquery",
 											var remainingtime=result['artkick_all_expire']-timenow;
 											var remainingdays=Math.floor(remainingtime/(1000*60*60*24));
 											console.log("time remaining on sub="+remainingdays);
+											
+											if (remainingdays>2)
+												usermessage (remainingdays+" days left on your Getty trial subscription");
+											else
+												dijit.registry.byId('GettySubscribeRemind').show();
+												
 										}
 										if (newsubscriptions.length==0)
 											loadImages(window.tarImage, 1, 15, 1);
@@ -1167,15 +1163,7 @@ require(["jquery",
                             }
                             var currView = dijit.registry.byId("select_player");
                             var currView2 = currView.getShowingView();
-                            if (players.length == 0)
-                            {
-                                // myalert("You have no registered TVs");
-                                // removePlayerView.hide();
-                                //gotoView("removeplayer","OptionsList");
-                                // window.currentView = "OptionsList";
-                                //   currView2.performTransition("OptionsList", -1, "slide", null);
-                                //gotoView("blankview","OptionsList");
-                            }
+                           
                         }
                     });
                 }
@@ -2025,7 +2013,7 @@ require(["jquery",
 									player['autoInterval']=0;
                                 var li = dojo.create("div",
                                 {
-                                    id: "s" + player["account"],
+                                    id: "s" + player["account"]
                                 }, "playerList2");
                                 domAttr.set(li, "class", "mblListItem2");
                                 	dojo.style(li,"height","60px");
@@ -2042,7 +2030,7 @@ require(["jquery",
                                     onclick: function()
                                     {
                                         changeplayerstatus(this.id);
-                                    },
+                                    }
                                 }, xli);
                                 var ico = dojo.create("img",
                                 {
@@ -2069,7 +2057,7 @@ require(["jquery",
                                 {
                                     id: "ptitle" + player["account"],
                                     className: 'playertitleclass2',
-                                    innerHTML: player["nickname"],
+                                    innerHTML: player["nickname"]
                                 }, li);
 								newspan=dojo.create("div",{},li);
 								selectauto=dojo.create("select",
@@ -2204,7 +2192,7 @@ require(["jquery",
                                     {
                                         id: "dial" + i,
                                         className: 'playertitleclass2',
-                                        innerHTML: dialMap[i]["friendlyName"],
+                                        innerHTML: dialMap[i]["friendlyName"]
                                     }, lix);
 									if (dialMap[i]["originalName"])
 										dojo.create("div",
@@ -2349,15 +2337,16 @@ require(["jquery",
 				
 				//here starts the mainline code of the app
                 window.BrowserDetect.init();
-                console.log("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
+                console.log("OS is=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
+			console.log("place1");
 			//	alert("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
 			//	 alert("OS=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
 			//alert("useragent:"+navigator.userAgent+" platform:"+navigator.platform+" appversion:"+navigator.appVersion);
-				if (window.BrowserDetect.browser=="Firefox")
-				{
+			//	if (window.BrowserDetect.browser=="Firefox")
+			//	{
 					//FirefoxError();
-				}
-				dojo.style("Intro0","display","none");
+			//	}
+				//dojo.style("Intro0","display","none");
 
                 if (window.BrowserDetect.OS.substr(0, 6) != "iPhone")
                 {
@@ -2365,7 +2354,7 @@ require(["jquery",
                     // we are on android only show facebook and "other" share buttons
                     dojo.style("twittershare", "display", "none");
                     dojo.style("facebookshare", "margin-right", "30px");
-                    dojo.style("facebookshare", "margin-left", "20px");
+                    dojo.style("facebookshare", "margin-left", "20px");				
                     //	dojo.byId("emailShare").setAttribute("label","Other
                     //	domProp.set("emailShare","label","");
                     dojo.byId("emailShare").innerHTML =
@@ -2373,6 +2362,7 @@ require(["jquery",
                 }
                 else
                     window.platform = "IOS";
+
 				window.computer=false;
 				if(window.platform!="IOS")
 				{
@@ -2414,7 +2404,7 @@ require(["jquery",
 				if (curl)
 					window.ISgettyad=true;
 			
-                		//alert("start, check currList="+curl+"image"+curi+"cat:"+curc);
+                console.log("start, check currList="+curl+"image"+curi+"cat:"+curc);
                 if (curl && curi && curc && !curonce)
                 {
                     //	
@@ -3160,7 +3150,7 @@ require(["jquery",
                                         zindex: 950
                                     }, gridimage);
                                 }
-                                if (firstnode = "")
+                                if (firstnode == "")
                                     firstnode = pic;
                             }
                             /* check to see if there are more images to show in the grid, but only show up to 1000 images */
@@ -3818,7 +3808,7 @@ function refreshView()
         a.src = g;
         m.parentNode.insertBefore(a, m)
     })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-    ga('create', 'UA-44460273-1', 'artkick.net'); <!-- change this to -1 for production -->
+    ga('create', 'UA-44460273-1', 'artkick.net'); 
     ga('require', 'displayfeatures');
     ga('send', 'pageview');
     window.justRefresh = true;
@@ -4045,6 +4035,7 @@ function gotoCategory(where)
     if (window.currCat == "Home" && where == '0')
     {
         gotoView("ImageView", "select_category");
+
         return;
     }
     if (where != 0)

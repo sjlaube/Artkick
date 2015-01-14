@@ -35,6 +35,11 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
 ['.*','',['WebContent-V3.0/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script>
     <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	
+	
+ <!--   <script type="text/javascript" src="mini.V3.2/artkick.js?V1.3"></script> -->
+	
+<!-- for debugging remove these comments -->
     <script type="text/javascript" src="mini.V3.2/app.js?V1.3"></script>
     <script type="text/javascript" src="mini.V3.2/Browser-Detect.js?V1.3"></script>
     <script type="text/javascript" src="mini.V3.2/UserViewlists.js?V1.3"></script>
@@ -55,6 +60,10 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
 	<script type="text/javascript" src="mini.V3.2/img-touch-canvas.js?V1.3"></script>
 	<script type="text/javascript" src="mini.V3.2/utils.js?V1.3"></script>
 	<script type="text/javascript" src="mini.V3.2/login.js?V1.3"></script>
+
+
+	
+
     <script type="text/javascript">
         require([
             "dijit/dijit",
@@ -160,7 +169,7 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
         <img src="images/ArtkickStartupScreen640x1136.jpg" alt="" style="height:100%;margin:auto;display:block">
 
     </div>
-    <div data-dojo-type="dojox/mobile/SwapView" data-dojo-props="selected:true" id="Intro0" style="height:100%;background-color: black;">
+    <div data-dojo-type="dojox/mobile/SwapView" data-dojo-props="selected:true" id="Intro0" style="display:none;height:100%;background-color: black;">
         <div style="color:white;size:18px;position: absolute; z-index: 900; left: 60px; top:63px;" onclick="goToLogin1()">
             Sign in</div>
         <div style="color:white;size:18px;position: absolute; z-index: 900; left: 160px; top:63px;" onclick="GuestLogin()">
@@ -1132,7 +1141,7 @@ Save your favorite images in personal viewlists and share them with your friends
 
 
 			<div style="width:100%;text-align: center;">
-				<span style="color:white;margin-left:10px">7-Day FREE Trial&mdash;then just</span>
+				<span style="color:white;margin-left:10px">Just</span>
 				<span style="color:#00C7FF;">$4.99</span>
 				<span style="color:#00C7FF;font-size:15px;margin-left:-4px">/mo</span><br>
 				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px;margin-top:20px" onclick="setmysubs(true)">
@@ -1203,7 +1212,7 @@ Save your favorite images in personal viewlists and share them with your friends
 		<div style="width:100%;text-align: center;margin-top:10px;">
 				<br><span style="color:#00C7FF;font-size:24px;font-weight:bold">$4.99</span>
 				<span style="color:#00C7FF;font-size:15px;margin-left:-4px">/mo</span>
-				<p style="color:white;font-size:15px;margin-top: -3px;">after 7-Day FREE Trial</p>
+			
 
 				 <button data-dojo-type="dojox/mobile/Button" style="background-color: #00C7FF!important;color:black;font-weight:700;font-size:18px" onclick="setmysubs(true)">
 				 <span id="GettySubscribeTitle2">Subscribe</span></button>   
@@ -1611,7 +1620,13 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
             <button data-dojo-type="dojox/mobile/Button" style="width:50px;margin-bottom:10px;position:relative;background-color:#00C7FF!important" onclick="dijit.registry.byId('CopyrightMessage').hide()">OK</button>
         </div>
     </div>
+	<div  data-dojo-type="dojox/mobile/View" id="hint1" style="z-index:999;height:100%;position:absolute;top:0px;background-color:rgba(0,0,0,.4)!important">
+        <div  class="bubblebottom" style="position:absolute;bottom:55px;right:20px;">Tap to connect/manage TV</div>
+		<div  class="bubbleright" style="position:absolute;right:105px;top:5px;">Search for more art</div>
+		<div  class="bubbletop" style="position:absolute;right:10px;top:45px;">More options</div>
+	   <button    style="border:none;position:absolute;top:50%;left:40%;border-radius:10px;width:250px;height:50px;font-size:18px;background-color: #00C7FF!important;color:white" onclick='dojo.style("hint1","display","none")'>OK, Thanks</button>
 
+	</div>
     <div data-dojo-type="dojox/mobile/ScrollableView" id="select_category">
         <div data-dojo-type="dojox/mobile/Heading"  data-dojo-props='fixed:"top"'>
             <span id="browse-search" style="top:-10px;color:#ADADAD;font-weight:bold">
@@ -1625,6 +1640,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 
 
         </div>
+
 		<div id="test1" data-dojo-type="dojox/mobile/ContentPane">
 
 		<div style="width:100%;height:5px;background-color:#00C7FF;margin-bottom:5px">		</div>
@@ -2167,20 +2183,24 @@ If you enjoy using Artkick, would you mind taking a moment to rate and review it
    
 	</div>
 </div>
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="GettySubscribeBox" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:0px!important;outline:none!important;background-image:none!important;text-align:left;background-color:#303030!important">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="GettySubscribeRemind" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;background-image:none!important">
         <div style="width:100%;text-align: center;">
             <img src="images/Artkick_GI_logolockups.png" style="width:100px;margin-top:10px">
-		<p style="text-align:left;font-size:15px;color:white;line-height:120%;width: 80%;
-margin-left: 10%;">Subscribe to exclusive and timely photographs inside Artkick featuring Getty Images--the premiere supplier of photographs to leading 
-		newspapers, magazines and websites globally. Get instant access to world-class images. Whether you want a backstage pass to celebrity events or 
+		<p style="text-align:left;font-size:15px;color:white;line-height:120%;width: 80%;margin-top: -4px;
+margin-left: 10%;">Your trial subscription to Getty Images will expire in a few days.<br><br> Whether you want a backstage pass to celebrity events or 
 		to check out highlights from yesterday’s game, these are the world’s best 
-		images from the world’s best photographers.</p>
+		images from the world’s best photographers.<br><br>
+		Click the Subscribe button to maintain your access for only $5/month</p>
 
         </div>
 
-        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;" onclick="dijit.registry.byId('GettySubscribeBox').hide();gotoView(currentView,'select_category')" >Maybe Later</button>
-        <button data-dojo-type="dojox/mobile/Button" style="position:relative;left:20px;margin-left:30px;background-color:#00C7FF!important;margin-bottom:10px" onclick="gettySubscribeBoxClick()">Subscribe</button>
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;" onclick="dijit.registry.byId('GettySubscribeRemind').hide()" >Maybe Later</button>
+        <button data-dojo-type="dojox/mobile/Button" style="position:relative;margin-left:30px;background-color:#00C7FF!important;margin-bottom:10px" onclick="dijit.registry.byId('GettySubscribeRemind').hide();DoSubscribe()">Subscribe</button>
     </div>
+
+
+
+
 <!--	<div id="pinchtest" style="display:none">
 <div> pinchtest</div>
 

@@ -117,7 +117,7 @@ function comment()
                     id: 'comment' + commentid,
                     label: username + "<br>" + comm,
                     variableHeight: true,
-                    checked: false,
+                    checked: false
                 });
             }
             commentList.addChild(li);
@@ -220,8 +220,8 @@ function CreateComment(stat)
                     user_name: window.userName,
                     user_id: window.userID,
                     comment_id: commentid,
-                    time_stamp: new Date().getTime(),
-                    delete: false
+                    time_stamp: new Date().getTime()
+                    
                 });
                 dojo.byId("CommentText").value = "";
                 // set view to bottom so you can see you comment

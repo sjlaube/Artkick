@@ -327,11 +327,12 @@ function usersearch()
     if (artlist3.indexOf(searchstring.toLowerCase()) > 0)
     {
         var mess = "Artworks by " + searchstring + " are under copyright.";
+		 console.log("artist: " + searchstring + " is under copyright");
         dojo.byId("copyrightartist").innerHTML = mess;
         dijit.registry.byId('Copyright').show();
         dojo.byId("searchbox2").value = "";
         return;
-        console.log("artist: " + searchstring + " is under copyright");
+       
     }
 	//window.searchdomain='artkick'; // we will change this to 'both' in future to include photos.com
 	//window.searchdomain='both';

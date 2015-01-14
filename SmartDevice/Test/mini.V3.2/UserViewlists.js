@@ -102,7 +102,7 @@ function showmyviewlists()
                     dojo.create("img",
                     {
                         src: lists[i]['coverImage'],
-                        className: 'pvlIcon',
+                        className: 'pvlIcon'
                     }, liz);
                     var lizz = dojo.create("span",
                     {
@@ -257,7 +257,7 @@ window.editmyviewlists = function()
                     newline = dojo.create("div",
                     {
                         id: 'my' + lists[i]["id"],
-                        className: 'mblListItem3',
+                        className: 'mblListItem3'
                         //	innerHTML:vtitle
                     }, 'MyViewListsEdit');
                     dojo.create("span",
