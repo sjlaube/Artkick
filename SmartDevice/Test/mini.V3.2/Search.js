@@ -138,7 +138,6 @@ function usersearch()
         "LeRoy Neiman",
         "André Lhote",
         "Irving Penn",
-        "Gustav Klimt",
         "Donald Baechler",
         "Franz Gertsch",
         "Marc Quinn",

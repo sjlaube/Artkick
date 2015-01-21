@@ -61,8 +61,17 @@ function SendToReview()
 	MarkAsReviewed();
 	if (window.platform=="IOS")	
 		showiframe("http://itunes.apple.com/app/id711576101");
-	else if (window.platform=="Android")	
-		showiframe("https://play.google.com/store/apps/details?id=com.artkick.artkick&reviewId=0");
+	else if (window.platform=="Android")
+	{
+		//window.location.href("market://details?id=com.artkick.artkick&reviewId=0");
+		//showiframe("market://?id=com.artkick.artkick&reviewId=0");
+		  try
+			{
+				Android.editStore();
+			}
+			catch (err)
+			{}
+	}
 
 }
 

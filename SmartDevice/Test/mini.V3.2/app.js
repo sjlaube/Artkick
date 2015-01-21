@@ -1044,14 +1044,9 @@ require(["jquery",
                                     }
                                     else // did a restart, now so the subscription stuff
 									{
-										if (result['use_times']%5==0&&!result['didReview'])
-										{
-											// ask to review every 5 times
-											if (runInWebview) // only can review if in IOS or Android
-											dijit.registry.byId('AskReview').show();
 										
-										}
 										window.freeTrialEligible=false;
+										window.showfewdays=false;
 									/*	if (result['freeTrialEligible'])
 										{
 											
@@ -1068,11 +1063,26 @@ require(["jquery",
 											var remainingdays=Math.floor(remainingtime/(1000*60*60*24));
 											console.log("time remaining on sub="+remainingdays);
 											
-											if (remainingdays>2)
+											if (remainingdays>1)
 												usermessage (remainingdays+" days left on your Getty trial subscription");
-											else
+											else if (remainingdays>=0)
+											{
+												if (remainingdays==0)
+													dojo.byId("gettydaysremaining").innerHTML="today.";
+												else
+													dojo.byId("gettydaysremaining").innerHTML="tomorrow.";
 												dijit.registry.byId('GettySubscribeRemind').show();
+												showfewdays=true;
+											}
 												
+										}
+										console.log ("user times"+result['use_times']);
+										if (result['use_times']%5==0&&!result['didReview']&&showfewdays==false)
+										{
+											// ask to review every 5 times
+											if (runInWebview) // only can review if in IOS or Android
+												dijit.registry.byId('AskReview').show();
+										
 										}
 										if (newsubscriptions.length==0)
 											loadImages(window.tarImage, 1, 15, 1);
@@ -2336,6 +2346,16 @@ require(["jquery",
                 }
 				
 				//here starts the mainline code of the app
+				window.production=true;
+				if (window.base.indexOf("ancient")>0)// testing
+				{
+					window.production=false;
+				
+					dojo.byId("gettyad").setAttribute("src","http://stage.artkick.net/images/GettyAds/GettyTrial_0.jpg");
+				}
+				window.adURL="http://stage.artkick.net/images/GettyAds";
+				if (window.production)
+					window.adURL="http://prod.artkick.net/images/GettyAds";
                 window.BrowserDetect.init();
                 console.log("OS is=" + window.BrowserDetect.OS + " browser=" + window.BrowserDetect.browser + " version=" + window.BrowserDetect.version);
 			console.log("place1");

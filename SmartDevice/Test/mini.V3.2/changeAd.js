@@ -5,7 +5,7 @@ Copyright 2013,2014 Zwamy, Inc.  All Rights Reserved
 */
 function changeAd()
 {
-    adbase = "http://prod.artkick.net/images/GettyAds/GettyTrial_";
+    adbase = adURL+"/GettyTrial_";
     window.adnumber++;
     //console.log("changing ad to "+window.adnumber);
     if (window.adnumber > 3)
@@ -29,7 +29,7 @@ function popGettyAd()
 	if (idx>-1)
 	{//we are in a getty sample, figure out which one and pop right ad
 		gettycat=currCat.substr(13).toLowerCase();
-		url="http://prod.artkick.net/images/GettyAds/browser/"+gettycat;
+		url=adURL+"/browser/"+gettycat;
 		dojo.byId("gettyPopUpAd").setAttribute("src", url + ".png");
 	
 	}
@@ -37,12 +37,12 @@ function popGettyAd()
 	{
 	// now check the source of the image and show that ad
 		
-		url="http://prod.artkick.net/images/GettyAds/browser/"+imageMap[currImage]['gettyDomain'].toLowerCase();
+		url=adURL+"/browser/"+imageMap[currImage]['gettyDomain'].toLowerCase();
 		dojo.byId("gettyPopUpAd").setAttribute("src", url + ".png");
 	}
 	else
 	{// somewhere else so pop up the bundle ad
-		dojo.byId("gettyPopUpAd").setAttribute("src","http://prod.artkick.net/images/GettyAds/browser/all.png");
+		dojo.byId("gettyPopUpAd").setAttribute("src",adURL+"/browser/all.png");
 	}
 	// now calculate the location to place the buttons
 	if(!window.computer)
@@ -82,7 +82,7 @@ window.placeSubscribe=function()
 			}
 			else
 			{
-				var wid=Math.min(699,window.bodywidth);
+				//var wid=Math.min(699,window.bodywidth);
 			//	alert("height="+adlocation.height+ "width="+wid);
 				dojo.style("gettyPopUpSubscribe","font-size","15px");	
 				dojo.style("gettyPopUpSubscribe","top",adlocation.height-62+"px");	
