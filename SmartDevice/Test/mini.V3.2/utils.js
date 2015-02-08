@@ -4,12 +4,6 @@
         s = (s - ms) / 1000;
         var secs = s % 60;
         s = (s - secs) / 60;
-        var mins = s % 60;
-        s = (s - mins) / 60;
-        var hrs = s % 24;
-        s = (s - hrs) / 24;
-        var days = s;
-        //console.log(days+':'+hrs + ':' + mins + ':' + secs + '.' + ms);
         if (days > 0)
             return (days + " day ago");
         else if (hrs > 0)
@@ -19,3 +13,22 @@
         else
             return ("Just now");
     }
+	
+	
+window.showURL=function(pageID)
+{
+    dojo.io.script.get(
+    {
+        url: "http://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&page="+pageID,
+        callbackParamName: "callback",
+        load: function(result) {window.webcontents=result.parse.text['*'];
+		dojo.byId("wikicontents").innerHTML=window.webcontents;
+		gotoView(currentView,"wikic");
+		
+		}
+		
+
+    });
+
+
+}

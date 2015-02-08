@@ -3,7 +3,7 @@
 
 /*
 
-Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
+Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 
 */
 
@@ -37,31 +37,32 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	
 	
-   <script type="text/javascript" src="mini.V3.2/artkick.js?V1.3"></script>
+<!--   <script type="text/javascript" src="mini.V3.3/artkick.js?V1.3"></script> -->
 	
-<!-- for debugging remove these comments 
-    <script type="text/javascript" src="mini.V3.2/app.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/Browser-Detect.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/UserViewlists.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/PlayerFunctions.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/UserAccounts.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/Feedback.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/Search.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/backbutton.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/registrationhelp.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/Photoimport.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/social.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/getty.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/Premium.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/Editviewlist.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/changeAd.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.2/dial.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.2/getty-default.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.2/img-touch-canvas.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.2/utils.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.2/login.js?V1.3"></script>
-
--->
+<!-- for debugging remove these comments -->
+    <script type="text/javascript" src="mini.V3.3/app.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/Browser-Detect.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/UserViewlists.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/PlayerFunctions.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/UserAccounts.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/Feedback.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/Search.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/backbutton.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/registrationhelp.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/Photoimport.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/social.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/getty.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/Premium.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/Editviewlist.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/changeAd.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.3/dial.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.3/getty-default.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.3/img-touch-canvas.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.3/viewlistmenu.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.3/login.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.3/ConnectTV.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.3/wifi.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.3/share.js?V1.3"></script>
 	
 
     <script type="text/javascript">
@@ -122,7 +123,7 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
         @import "WebContent-V3.0/themes/claro/claro.css";
         @import "WebContent-V3.0/lib/shapes/shapes.css";
         @import "WebContent-V3.0/app.css";
-        @import "mini.V3.2/Artkick.css";
+        @import "mini.V3.3/Artkick.css";
     </style>
 
     <script>
@@ -515,7 +516,7 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
 
     <div data-dojo-type="dojox/mobile/SimpleDialog" id="AddUserList" data-dojo-props='modal:true,top:"61px"' style="width:320px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         Create new Viewlist
-        <input data-dojo-type="dojox/mobile/TextBox" type="text" id="NewListName" style='width:300px;margin-top:10px;' placeHolder="&nbsp;&nbsp;Viewlist Name">
+        <input data-dojo-type="dojox/mobile/TextBox" onkeydown="if (event.keyCode == 13) CreateNewViewlist('OK')" type="text" id="NewListName" style='width:300px;margin-top:10px;' placeHolder="&nbsp;&nbsp;Viewlist Name">
         <br>
         </input>
 
@@ -537,7 +538,7 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
 
     <div data-dojo-type="dojox/mobile/ScrollableView" id="select_player2">
         <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="moveTo:'OptionsList', fixed:'top'" >
-		<span style="margin-right:70px">Manage Devices</span>
+		<span style="margin-right:70px">Manage Displays</span>
             <div data-dojo-type="dojox/mobile/ToolBarButton" id="manageTVback" style="float: left" onclick='backbutton()'>
                 <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done&nbsp;&nbsp;&nbsp;</span>
             </div>
@@ -547,6 +548,67 @@ Copyright 2013, 2014  Zwamy, Inc.  All Rights Reserved
         <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="playerList2" data-dojo-props='select:"multiple"' style="position:relative;top:0px"></ul>
 
     </div>
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="select_player3">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="moveTo:'OptionsList', fixed:'top'" >
+		<span style="margin-right:70px">Connect a Display</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" id="manageTVback2" style="float: left" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done&nbsp;&nbsp;&nbsp;</span>
+            </div>
+
+        </div>
+		<div style="color:gray;text-align:center;padding-bottom:20px">Tap a Display below to connect it to Artkick</div>
+		<div class="wificlass" style="color:white;font-size:18px"> Auto-connect Displays </div>
+		<div id="screensFound" style="color:gray;text-align:center;padding:20px">These displays were found on your network and are ready to be connected automatically</div>
+		<div id="NoscreensFound" style="display:none;color:gray;text-align:center;padding:20px">No auto-connect Displays were found on your network</div>
+        <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="playerList3" data-dojo-props='select:"multiple"' style="position:relative;top:0px"></ul>
+		<div class="wificlass" style="color:white;font-size:18px"> Manual-connect Displays</div>
+		<div id="screentype">
+		<div style="color:gray;text-align:center;padding-bottom:20px;padding-top:20px">Choose a Display to connect manually:</div>
+		<div onclick="ConnectScreen('SmartTV')" class="tvnames">
+		<img class="manualdevices" src="images/connect_smartTV.png">
+		<a style="position:relative;top:-10px">SmartTV</a></div>
+		<div onclick="ConnectScreen('ScreenSaver')" class="tvnames">
+		<img class="manualdevices" src="images/connect_computer.png">
+		<a style="position:relative;top:-9px">Computer Screen Saver</a></div>
+		<div onclick="ConnectScreen('Fire')" class="tvnames">
+		<img class="manualdevices" src="images/connect_amazon.png">
+		<a style="position:relative;top:-10px">Amazon FireTV</a></div>	
+		<div onclick="ConnectScreen('AppleTV')" class="tvnames">
+		<img class="manualdevices" src="images/connect_apple.png">
+		<a style="position:relative;top:-7px">AppleTV</a></div>		
+		<div onclick="ConnectScreen('OtherDevice')" class="tvnames">
+		<img class="manualdevices" src="images/connect_other.png">
+		<a style="position:relative;top:-10px">Other</a></div>	
+		</div>
+		<div id="SmartTVtype" style="display:none">
+		<div style="color:gray;text-align:center;padding-bottom:20px;padding-top:20px">Please select the brand of your SmartTV:</div>
+		<div onclick="ConnectScreen('LG')" class="tvnames2">LG</div>
+		<div onclick="ConnectScreen('Samsung')" class="tvnames2">Samsung</div>
+		<div onclick="ConnectScreen('Sharp')" class="tvnames2">Sharp</div>
+		<div onclick="ConnectScreen('Sony')" class="tvnames2">Sony</div>
+		<div onclick="ConnectScreen('Other')" class="tvnames2">Other</div>
+		</div>
+    </div>	
+	
+<div data-dojo-type="dojox/mobile/ScrollableView" id="ConnectSmartTV">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="fixed:'top'" >
+		<span style="margin-right:70px">Connect a SmartTV</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton"  style="float: left" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done&nbsp;&nbsp;&nbsp;</span>
+            </div>
+
+        </div>
+		<div id="SmartTVName" class="wificlass" style="color:white;font-size:18px"> Unknown SmartTV </div>
+		<div id="SmartTVInstructions" style="padding-left:20px;padding-right:20px">
+	
+		</div>
+              <input type="text" data-dojo-type="dojox/mobile/TextBox" id="regPlayerCode2b" placeHolder="&nbsp;&nbsp;&nbsp;&nbsp;enter registration code" 
+			       class="registrationcode" ></input>
+		<div id="ConnectButton" style="text-align:center;margin-top:35px">
+	<button data-dojo-type="dojox/mobile/Button" id="ConnectCancel" style="position:relative;width:25%;background-color:white!important;color:black" onclick="backbutton()" >Cancel</button>
+	<button data-dojo-type="dojox/mobile/Button" id="ConnectRegister" style="position:relative;margin-left:30px;width:25%;background-color:#00C7FF!important;margin-bottom:10px;" onclick="createPlayer2()">Register</button>
+    </div>
+	</div>	
 
     <div data-dojo-type="dojox/mobile/View" id="registeruserx" style="background-size:cover;height: 100%;background-image:url('images/register_background.jpg')">
         <div onclick="gotoView('registeruser','Login')">
@@ -1400,7 +1462,7 @@ Save your favorite images in personal viewlists and share them with your friends
         <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">
         <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
         <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: gray;">
-Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserved.
+Artkick Version 3.3 <br> Copyright &copy; 2015, Artkick, Inc. All rights reserved.
   </span>
         <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: gray;">
             Server is
@@ -1474,7 +1536,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 
 
         <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
-		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
+		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Manage Displays
         </div>
 
 
@@ -1482,9 +1544,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 		<img src="images/menu/import.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Import Personal Images
         </div>
 
-        <div class="wipestyle" id="showeditmyviewlists" style="display:none" onclick="callEditmyListView()">
-		<img src="images/menu/edit.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Edit My Viewlists
-        </div>
+
         <div class="wipestyle" onclick="gotoView(window.currentView,'AccountSettings')">
 		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
         </div>
@@ -1495,7 +1555,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
     <div id="wipemenu2" style="position:absolute;top:35px;z-index:1000;display:none;background-color:rgba(0,0,0,.85)">
 
         <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
-		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
+		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Manage Displays
         </div>
 
         <div id="import2" class="wipestyle" onclick="gotoView(window.currentView,'Import')">
@@ -1516,16 +1576,14 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 
 
         <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
-		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
+		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Manage Displays
         </div>
 
         <div id="import3" class="wipestyle" onclick="gotoView(window.currentView,'Import')">
 		<img src="images/menu/import.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Import Personal Images
         </div>
 
-        <div class="wipestyle" id="editmyviewlists" onclick="callEditmyListView('')">
-		<img src="images/menu/edit.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Edit My Viewlists
-        </div>
+
         <div class="wipestyle" onclick="gotoView(window.currentView,'AccountSettings')">
 		<img src="images/menu/settings.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Settings
         </div>
@@ -1542,7 +1600,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 
 
         <div class="wipestyle" onclick="gotoView(window.currentView,'select_player2')">
-		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Connect/Manage TV
+		<img src="images/menu/connect.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Manage Displays
         </div>
         <div id="import4" class="wipestyle" onclick="gotoView(window.currentView,'Import')">
 		<img src="images/menu/import.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Import Personal Images
@@ -1621,7 +1679,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         </div>
     </div>
 	<div  data-dojo-type="dojox/mobile/View" id="hint1" style="z-index:999;height:100%;position:absolute;top:0px;background-color:rgba(0,0,0,.4)!important">
-        <div  class="bubblebottom" style="position:absolute;bottom:55px;right:20px;">Tap to connect/manage TV</div>
+        <div  class="bubblebottom" style="position:absolute;bottom:55px;right:20px;">Tap to Manage Displays</div>
 		<div  class="bubbleright" style="position:absolute;right:105px;top:5px;">Search for more art</div>
 		<div  class="bubbletop" style="position:absolute;right:10px;top:45px;">More options</div>
 	   <button    style="border:none;position:absolute;top:50%;left:40%;border-radius:10px;width:250px;height:50px;font-size:18px;background-color: #00C7FF!important;color:white" onclick='dojo.style("hint1","display","none")'>OK, Thanks</button>
@@ -1631,7 +1689,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         <div data-dojo-type="dojox/mobile/Heading"  data-dojo-props='fixed:"top"'>
             <span id="browse-search" style="top:-10px;color:#ADADAD;font-weight:bold">
    Home</span>
-           <img  src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" style="float: left;position:relative;margin-left:15px;top:8px;width:85px"  onClick="gotoView(currentView,'About')">
+           <img  src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" style="float: left;position:relative;margin-left:15px;top:8px;width:85px"  >
             </img>
         <img id="catlinemenu" src="images/3lineicon_menu-blue3.png" style="float: right;top:-1px;" onClick="showmenu()">
             </img>
@@ -1656,7 +1714,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 				
 		<div id="blueline" style="z-index:910;width:100%;height:5px;margin-bottom:5px;margin-top:5px;background-color:#00C7FF;float:left">		</div>
 <br>
-        <div align="center" style="color:#ADADAD;margin-top:2px;margin-botton:5px;clear:both;font-size:20px">Categories  </div>
+
 
 		<div class="newcategoryclass" onclick="gotoCategory('Highlights')">
             <img src="images/NewCategories/cat_01_highlights.jpg" alt=" "  >
@@ -1764,14 +1822,17 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
 
 		</div>
         <div data-dojo-type="dojox/mobile/Heading" id="catfooter"  data-dojo-props='fixed:"bottom"'>
-			<div onClick="gotoView(currentView,'ImageView')">
+		
+			<div id="haveTVfooter" onClick="gotoView(currentView,'ImageView')">
             <img class="showingclass1" src="images/tv-icon2.png" alt="">
             <img id="showingsrc" src="" alt=" " onclick="gotoView('select_category','ImageView')" class="showingclass">
             <div id="showingtitle" class="showtitle">Testtitle</div>
 			</div>
-			<img id="castmenu" src="images/cast_off.png" onClick='gotoView(currentView,"select_player2")'
-		     style="float: right;top:0px;height:25px;margin-top:7px;margin-right:10px" >
-            </img>
+			<div id="noTVfooter" style="float:left" onClick='gotoView(currentView,"select_player3")'>
+			<img src="images/connect_smartTV-blue.png" style="width:30px;padding-right:10px" alt="">
+			<a style="color:#00C7FF;position:relative;top:-7px;font-size:18px"> Connect a Display to Artkick</a>
+			</div>
+
             
 
         </div>
@@ -1801,10 +1862,16 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         </div>
         <div data-dojo-type="dojox/mobile/Heading" id="playlistfooter" onclick="gotoView('PlaylistView','ImageView')" data-dojo-props='fixed:"bottom"'>
 
+
+			<div id="haveTVfooter2" onClick="gotoView(currentView,'ImageView')">
             <img class="showingclass1" src="images/tv-icon2.png" alt="">
-            <img id="showingsrc2" src="" alt=" " onclick="gotoView('PlaylistView','ImageView')" class="showingclass">
-            <div id="showingtitle2" class="showtitle">Testtitle
-            </div>
+            <img id="showingsrc2" src="" alt=" " onclick="gotoView('select_category','ImageView')" class="showingclass">
+            <div id="showingtitle2" class="showtitle">Testtitle</div>
+			</div>
+			<div id="noTVfooter2" style="float:left" onClick='gotoView(currentView,"select_player3")'>
+			<img src="images/connect_smartTV-blue.png" style="width:30px;padding-right:10px" alt="">
+			<a style="color:#00C7FF;position:relative;top:-7px;font-size:18px"> Connect a Display to Artkick</a>
+			</div>
         </div>
     </div>
     <div data-dojo-type="dojox/mobile/View" style="height:100%;background-color:black" id="quickhint">
@@ -1892,7 +1959,7 @@ Artkick Version 3.2 <br> Copyright &copy; 2014, Artkick, Inc. All rights reserve
         <br>
         <a id='RenameVLname'>name of viewlist</a>
         <br>
-        <input type="text" data-dojo-type="dojox/mobile/TextBox" id="newVLname" placeHolder="&nbsp;&nbsp;New name" style="left: 1em;width: 300px;margin-top:10px">
+        <input type="text" onkeydown="if (event.keyCode == 13) RenameMyViewlist('OK')" data-dojo-type="dojox/mobile/TextBox" id="newVLname" placeHolder="&nbsp;&nbsp;New name" style="left: 1em;width: 300px;margin-top:10px">
         </input>
         <br>
         <br>
@@ -2183,32 +2250,115 @@ If you enjoy using Artkick, would you mind taking a moment to rate and review it
    
 	</div>
 </div>
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="GettySubscribeRemind" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;background-image:none!important">
-        <div style="width:100%;text-align: center;">
-            <img src="images/Artkick_GI_logolockups.png" style="width:100px;margin-top:10px">
-		<p style="text-align:left;font-size:15px;color:white;line-height:120%;width: 80%;margin-top: -4px;
-margin-left: 10%;">Your trial subscription to Getty Images will expire 
-<a id="gettydaysremaining">in a few more days.</a><br><br> Whether you want a backstage pass to celebrity events or 
-		to check out highlights from yesterday’s game, these are the world’s best 
-		images from the world’s best photographers.<br><br>
-		Click the Subscribe button to maintain your access for only $5/month</p>
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="GettySubscribeRemind" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;background-image:none!important">
+	<div style="width:100%;text-align: center;">
+		<img src="images/Artkick_GI_logolockups.png" style="width:100px;margin-top:10px">
+	<p style="text-align:left;font-size:15px;color:white;line-height:120%;width: 80%;margin-top: -4px;
+	margin-left: 10%;">Your trial subscription to Getty Images will expire 
+	<a id="gettydaysremaining">in a few more days.</a><br><br> Whether you want a backstage pass to celebrity events or 
+	to check out highlights from yesterday’s game, these are the world’s best 
+	images from the world’s best photographers.<br><br>
+	Click the Subscribe button to maintain your access for only $5/month</p>
+
+	</div>
+
+	<button data-dojo-type="dojox/mobile/Button" style="position:relative;" onclick="dijit.registry.byId('GettySubscribeRemind').hide()" >Maybe Later</button>
+	<button data-dojo-type="dojox/mobile/Button" style="position:relative;margin-left:30px;background-color:#00C7FF!important;margin-bottom:10px" onclick="dijit.registry.byId('GettySubscribeRemind').hide();DoSubscribe()">Subscribe</button>
+</div>
+
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="ConnectATV" data-dojo-props='modal:true,top:"61px"' style="padding:0px!important;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;background-image:none!important">
+		<div style="width:100%;height:25px;padding-top:10px;padding-bottom:10px;color:black;background-color:#00C7FF;font-weight:700">Welcome to Artkick</div>
+		<div style="width:100%;text-align: center;">
+
+		<img src="images/connect_tv-popup.png" style="margin-top:50px;width:75px;">
+	<p style="color:white;font-size:18px;margin-bottom:30px;padding:10px">Would you like to connect a TV or other Screen?</p>
+
+	</div>
+
+	<button data-dojo-type="dojox/mobile/Button" style="position:relative;" onclick="dijit.registry.byId('ConnectATV').hide()" >Not Now</button>
+	<button data-dojo-type="dojox/mobile/Button" style="position:relative;margin-left:30px;background-color:#00C7FF!important;margin-bottom:10px" onclick="ConnectTV()">Connect TV</button>
+</div>
+
+    <div data-dojo-type="dojox/mobile/ScrollableView" id="select_wifi">
+        <div data-dojo-type="dojox/mobile/Heading" data-dojo-props="moveTo:'OptionsList', fixed:'top'" >
+		<span style="margin-right:70px">WiFi Networks</span>
+            <div data-dojo-type="dojox/mobile/ToolBarButton" id="managewifiback" style="float: left" onclick='backbutton()'>
+                <img src="images/Arrows-Back-icon-blue.png" alt='' style="margin-left:5px"><span class="backstyle">Done&nbsp;&nbsp;&nbsp;</span>
+            </div>
 
         </div>
+		<div style="color:gray;text-align:center;padding-bottom:20px">Tap a wifi network below to connect your Artkick Screen-
+		<a id="screenIDcode">screen id code</a>
+		</div>
 
-        <button data-dojo-type="dojox/mobile/Button" style="position:relative;" onclick="dijit.registry.byId('GettySubscribeRemind').hide()" >Maybe Later</button>
-        <button data-dojo-type="dojox/mobile/Button" style="position:relative;margin-left:30px;background-color:#00C7FF!important;margin-bottom:10px" onclick="dijit.registry.byId('GettySubscribeRemind').hide();DoSubscribe()">Subscribe</button>
+        <div id="wifinames" ></div>
+
     </div>
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="wifiPassword" data-dojo-props='modal:true,top:"61px"' style="width:300px;z-index:940;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Enter WiFi Password for 
+        <br>
+        <a id='ssidname'>name of network</a>
+        <br>
+        <input type="password" onkeydown="if (event.keyCode == 13) NetworkConnect(true)" data-dojo-type="dojox/mobile/TextBox" id="wifipswd" placeHolder="&nbsp;&nbsp;password" style="left: 1em;width:90%;margin-top:10px">
+        </input>
+        <br>
+        <br>
 
+        <button data-dojo-type="dojox/mobile/Button" style="margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('wifiPassword').hide()">Cancel</button>
+        <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-right:10px;background-color: #00C7FF!important" onclick="NetworkConnect(true)">Connect</button>   
+   </div>
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="viewlistMenu" data-dojo-props='modal:true' style="width:300px;z-index:940;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Viewlist Menu for:  
+        <br>
+        <a id='vlmname'>name of viewlist</a>
+        <br>
+		<div style="text-align:left">  
+		<div id="vlCurator" class="wipestyle" onclick="showCuratorNotes()">
+		<img src="images/note-white.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Curator Notes
+        </div>
+        <div id="vlAdd" class="wipestyle" onclick="addViewlist()">
+		<img src="images/add-white.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Add to MyViewlists
+        </div>
+        <div id="vlShare" class="wipestyle" onclick="shareVL()">
+		<img src="images/share white.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Share Viewlist
+        </div>
+        <div id="vlEdit" class="wipestyle" onclick="EditMyViewlistImages()">
+		<img src="images/edit-viewlist-white.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Edit Viewlist
+        </div>
+        <div id="vlRename" class="wipestyle" onclick="ShowRenameMyViewlist2()">
+		<img src="images/pencil2-white.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Rename Viewlist
+        </div>
+        <div id="vlDelete" class="wipestyle" onclick="ShowdeleteMyViewlist()">
+		<img src="images/trash-white.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Delete Viewlist
+        </div>
+		<br>
+		</div>
 
-
-
-<!--	<div id="pinchtest" style="display:none">
-<div> pinchtest</div>
-
-	<canvas id="mycanvas" style="width: 350px; height:600px"></canvas>
-
+        <button data-dojo-type="dojox/mobile/Button" style="margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('viewlistMenu').hide()">Cancel</button>
+        
+   </div>
    
-	</div>-->
+<div data-dojo-type="dojox/mobile/SimpleDialog" id="CuratorNotes" data-dojo-props='modal:true' style="width:280px;z-index:940;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+        Curator Notes for:  
+        <br>
+        <a id='cn-vlmname'>name of viewlist</a>
+		<div style="width:100%;height:2px;background-color:#00C7FF;margin-bottom:5px;margin-top:5px;">		</div>
+        <br>
+		<div  data-dojo-type="dojox/mobile/ScrollablePane" data-dojo-props='height:"375px"'>
+			<div id="showCuratorNotes" style="text-align:left;padding:15px">curator notes contents</div>
+		</div>
+
+        <button data-dojo-type="dojox/mobile/Button" style="margin-right:10px;background-color: white !important;color:black" onclick="dijit.registry.byId('CuratorNotes').hide()">Done</button>
+        
+   </div>
+
+    <div id="wikic" data-dojo-type="dojox/mobile/ScrollableView" >
+	<div id="wikicontents" style="background-color:white;padding:10px">test
+	</div>
+	
+	</div>
+
+
 
 </div>
 

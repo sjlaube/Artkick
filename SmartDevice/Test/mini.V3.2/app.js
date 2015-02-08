@@ -89,8 +89,8 @@ require(["jquery",
         ready(
             function()
             {
-                window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
-                // window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
+                //window.base = "http://ancient-caverns-7624.herokuapp.com/api/v1.1/"; //Staging Server
+                 window.base = "http://evening-garden-3648.herokuapp.com/api/v1.1/";  // Production Server
 
                 var selectListView = registry.byId("PlaylistView");
                 var selectArtistListView = registry.byId("ArtistlistView");
@@ -2347,6 +2347,8 @@ require(["jquery",
 				
 				//here starts the mainline code of the app
 				window.production=true;
+				window.addEventListener("resize", checkOrientation, false);
+				window.addEventListener("orientationchange", checkOrientation, false);
 				if (window.base.indexOf("ancient")>0)// testing
 				{
 					window.production=false;
@@ -4180,6 +4182,20 @@ $(window).resize(function()
 	else*/
 		adjustSize();
 });
+
+
+var previousOrientation = window.orientation;
+window.checkOrientation = function(){
+    if(window.orientation !== previousOrientation){
+        previousOrientation = window.orientation;
+        // orientation changed, do your magic here
+		//alert("orientation changed");
+		dojox.mobile.resizeAll();
+		adjustSize();
+    }
+};
+
+
 
 function copyright()
 {
