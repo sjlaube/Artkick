@@ -15,7 +15,7 @@ window.dialsearch = function(str)
 		else
         jsonStr = str;
     window.dialMap = JSON.parse(jsonStr);
-	if (runInWebview)
+	if (runInWebview&&showingScanNetwork)
 		clearInterval(showingScanNetwork);
 	window.ScanNetworkComplete=true;
 
@@ -75,12 +75,25 @@ window.dialsearch = function(str)
 
     dijit.registry.byId("ScanNetwork").hide();
 	//usermessage("callingupdate from dial search");
-	if(playertoView == "select_player2")
+	if (indialLaunch)
+	{
 		updatePlayers();
+		gotoView(currentView,"select_category");
+	}
+	else if(playertoView == "select_player2")
+	{
+		updatePlayers();
+
+	}
 	else if(playertoView == "select_player3")
 		ConnectTV();
-	if (window.indialLaunch)
+	else // we found a new artkick Window
+	{
+		usermessage("Your new Artkick Window is now connected");
+		window.indialLaunch=true; // forces updateplayser2 to sync the image
 		updatePlayers();
+	}
+
 }
 
 function modelnamecount(id)
@@ -234,7 +247,7 @@ window.checkDial = function(id)
 				if (playerlist[i]['state']=="unkown")
 					playerlist[i]['state']="unknown";
                 //playerlist[i]['state']=state;
-                //	console.log("returning true for player:"+playerlist[i]['uuid']);
+               // alert("returning true for player:"+playerlist[i]['uuid']);
                 return true;
             }
         }
@@ -277,11 +290,13 @@ function dialLaunch(uuid,devicename)
 		catch (err)
 		{};
 	}
-	dojo.byId("scanid").innerHTML="Installing "+devicename+", Please wait uuid="+uuid;
+	dojo.byId("scanid").innerHTML="Installing "+devicename+", Please wait";
 	window.indialLaunch=true;
 	dijit.registry.byId("ScanNetwork").show();
 
 }
+
+
 
 function dialUpdate()
 {
@@ -308,4 +323,12 @@ function dialDeletePlayer(uuid)
     catch (err)
     {};
 
+}
+
+window.installWindow=function(name)
+{
+
+	dojo.byId("scanid").innerHTML="Installing "+name+", Please wait";
+
+	dijit.registry.byId("ScanNetwork").show();
 }

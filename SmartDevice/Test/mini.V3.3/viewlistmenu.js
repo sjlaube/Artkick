@@ -55,9 +55,9 @@ function submenuclick(id)
 	dojo.style("vlAdd","display","block");
 	if (currCat=="My Viewlists")
 	{
-		dojo.style("vlRename","display","block");
+		dojo.style("vlRename","display","none");
 		dojo.style("vlDelete","display","block");
-		dojo.style("vlEdit","display","block");
+		dojo.style("vlEdit","display","none");
 		dojo.style("vlAdd","display","none");
 	}
 	if (currCat.substr(0,5)=="Getty" ||window.currCat=="My Searches")
@@ -65,6 +65,13 @@ function submenuclick(id)
 		dojo.style("vlRename","display","none");
 		dojo.style("vlDelete","display","block");
 		dojo.style("vlEdit","display","none");
+		dojo.style("vlAdd","display","none");
+	}
+	else if (thislist["private_user"] == window.email)
+	{
+		dojo.style("vlRename","display","block");
+		dojo.style("vlDelete","display","block");
+		dojo.style("vlEdit","display","block");
 		dojo.style("vlAdd","display","none");
 	}
 	dijit.registry.byId('viewlistMenu').show();
@@ -100,7 +107,13 @@ function addViewlist()
             if (result["Status"] == "success")
             {
                 usermessage("Viewlist " + window.thislist['name'] + " added to My Viewlists!");
-				gotoCategory(currCat);
+				if(currCat=="Home")
+				{
+					updateCats();
+					return;
+				}
+				else
+					gotoCategory(currCat);
             }
             else
             {

@@ -363,7 +363,7 @@ function ShowdeleteMyViewlist()
     dojo.byId('deleteVLname').innerHTML = "unknown";
     window.viewlistfordelete = newid;
    
-    dojo.byId('deleteVLname').innerHTML = "'" + window.thislist['name']; + "'?";
+    dojo.byId('deleteVLname').innerHTML = "'" + window.thislist['name'] + "'?";
     dijit.registry.byId('DeleteViewlist').show();
 }
 
@@ -375,7 +375,7 @@ function deleteMyViewlist(parm)
     var id = window.viewlistfordelete;
 //	alert("trying to remove "+window.viewlistfordelete.toString());
 //		alert("dojo for this "+dojo.byId(window.viewlistfordelete.toString()));
-    dojo.destroy(dojo.byId(window.viewlistfordelete.toString()));
+   // dojo.destroy(dojo.byId(window.viewlistfordelete.toString()));
 
     // now get it out of the database
     var url = base + "user/removeMyViewlist?" + "email=" + window.email + "&listId=" + id + "&token=" + window.token;
@@ -386,9 +386,9 @@ function deleteMyViewlist(parm)
         callbackParamName: "callback",
         load: function(result)
         {
-            if (result["Status"] == "success")
+            if (result["Status"] == "success"||result["Status"] == "successs")
             {
-                usermessage("Viewlist " + window.thislist['name'] + " deleted!");
+               // usermessage("Viewlist " + window.thislist['name'] + " deleted!");
 				gotoCategory(currCat);
             }
             else

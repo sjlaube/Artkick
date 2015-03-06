@@ -40,7 +40,7 @@ window.wifisearch = function(str)
 					{
 						id: "dialq" + i,
 						className: 'playertitleclass2a',
-						innerHTML: wifiMap[i]["ssid"],
+						innerHTML: wifiMap[i]["ssid"]
 
 					}, lix);
 					if (wifiMap[i]["hasKey"])
@@ -49,7 +49,7 @@ window.wifisearch = function(str)
 						id: "wifix" + i,
 						className: 'iconclass4',
 						zindex: 950,
-						src: iconsrc,
+						src: iconsrc
 
 					}, lix);
 

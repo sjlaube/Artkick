@@ -35,9 +35,8 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 ['.*','',['WebContent-V3.0/themes/iphone/iphone.css']]],'mblThemeFiles':[],'mblLoadCompatPattern':''"></script>
     <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	
-	
-<!--   <script type="text/javascript" src="mini.V3.3/artkick.js?V1.3"></script> -->
+
+<!-- <script type="text/javascript" src="mini.V3.3/artkick.js?V1.3"></script> -->
 	
 <!-- for debugging remove these comments -->
     <script type="text/javascript" src="mini.V3.3/app.js?V1.3"></script>
@@ -62,7 +61,7 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 	<script type="text/javascript" src="mini.V3.3/login.js?V1.3"></script>
 	<script type="text/javascript" src="mini.V3.3/ConnectTV.js?V1.3"></script>
 	<script type="text/javascript" src="mini.V3.3/wifi.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.3/share.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.3/share.js?V1.3"></script> 
 	
 
     <script type="text/javascript">
@@ -148,7 +147,24 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 </head>
 
 <body data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" class="claro" data-maq-ws="collapse" data-maq-orientation="portrait" id="myapp" data-maq-appstates="{}">
-<div id="gettyoverlayback" style="height:100%;width:100%;background-color: rgba(39,39,39,.8);display:none;position:absolute;top:0px;left:0px;z-index:999">
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '419444481556804',
+      xfbml      : true,
+      version    : 'v2.2'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+<div id="gettyoverlayback2" style="height:100%;width:100%;background-color: rgba(39,39,39,.8);display:none;position:absolute;top:0px;left:0px;z-index:999">
 <div id="gettycomputerad" style=";margin:0 auto;position:relative;top:145px;text-align:center;">
 <div style="position:relative">
 <img id="gettyPopUpAd" src="images/GettyAds/browser/entertainment.png" style="width:600px">
@@ -157,6 +173,8 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 </div>
 </div>
 </div>
+
+
 <div id="Firefoxgo" style="height:100%;width:100%;background-color: rgba(39,39,39,.8);display:none;position:absolute;top:0px;left:0px;z-index:999">
 <div  style="width:699px;height:500px;margin:0 auto;background-color:rgba(255,255,255,.8);position:relative;top:50px;text-align:center">
 <br><br><br><br><p> Unfortunately Artkick does not work with Firefox </p>
@@ -166,6 +184,36 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 </div>
 </div>
 <div id="realcontent" style="margin:0 auto;height:100%">
+
+
+<div id="gettyoverlayback" style="border-radius:10px;height:80%;margin-left:.75%;background-color: white;display:none;position:absolute;top:10%;margin:0 auto;z-index:999">
+<div style="color:black;text-align:center;margin-left:1%;margin-right:1%">
+<div style="font-weight:700;margin-top:12px;font-size:15px">GET THE WORLD OF PHOTOGRAPHS ON YOUR TV</div>
+<div style="position:relative;margin-left:auto;margin-right:auto;width:20%;height:3px;background-color:#00C7FF;margin-bottom:10px;margin-top:10px">		</div>
+<div style="font-weight:400;font-size:12px;"">Add million of up-to-the-minute photos from Getty Images to your Artkick experience.</div>
+<div style="text-align:left;margin-left:10px;margin-top:10px">
+<img src="images/CheckMark25x25-purple.png"> <span style="color:#9138ac;position:relative;top:-5px;font-weight:700;font-size:15px">GETTY ENTERTAINMENT </span>
+<div style="color:black;margin-left:30px;font-size:12px;"">Worldwide celebrity events, concerts, movie, fashion shows , red carpets and more.</div>
+</div>
+<div style="text-align:left;margin-left:10px;margin-top:10px">
+<img src="images/CheckMark25x25-green.png"> <span style="color:#79bf74;position:relative;top:-5px;font-weight:700";font-size:15px>GETTY SPORTS </span>
+<div style="color:black;margin-left:30px;font-size:12px;"">Worldwide sporting events including the NFL, NBA, NHL, NASCAR, NCAA and more.</div>
+</div>
+<div style="text-align:left;margin-left:10px;margin-top:10px">
+<img src="images/CheckMark25x25-yellow.png"> <span style="color:#e0ae4f;position:relative;top:-5px;font-weight:700;font-size:15px">GETTY NEWS </span>
+<div style="color:black;margin-left:30px;font-size:12px;">The latest news and happenings from worldwide news events.</div>
+</div>
+<div style="text-align:center;color:black;margin-top:10px"> <b>$4.99</b>/month</div>
+<div style="text-align:center">
+<span onclick='dojo.style("gettyoverlayback","display","none");gotoView(currentView,"select_category")'
+	  style="height:25px;color:#00C7FF;text-decoration:underline;font-size:12px;margin-right:15px">No Thanks</span>
+<span onclick='dojo.style("gettyoverlayback","display","none");DoSubscribe()'
+	  style="position:relative;border-radius:10px;padding-left:10px;padding-right:10px;height:40px;margin-left:15px;background-color:#00C7FF;line-height:40px;color:white">LEARN MORE		</span>
+</div>
+</div>
+</div>
+
+
     <div id="splash" style=" position: fixed!important;text-align:center; overflow:hidden; background-color:black;z-index:1500;width:100%; height:100%">
         <img src="images/ArtkickStartupScreen640x1136.jpg" alt="" style="height:100%;margin:auto;display:block">
 
@@ -557,9 +605,12 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 
         </div>
 		<div style="color:gray;text-align:center;padding-bottom:20px">Tap a Display below to connect it to Artkick</div>
-		<div class="wificlass" style="color:white;font-size:18px"> Auto-connect Displays </div>
+		<div onClick='gotoView(currentView,"select_player3")' class="wificlass" style="color:white;font-size:18px"> Auto-connect Displays 
+				<img src="images/refresh.png" onClick='gotoView(currentView,"select_player3")' style="float:right;height:25px">
+		</div>
 		<div id="screensFound" style="color:gray;text-align:center;padding:20px">These displays were found on your network and are ready to be connected automatically</div>
-		<div id="NoscreensFound" style="display:none;color:gray;text-align:center;padding:20px">No auto-connect Displays were found on your network</div>
+		<div id="NoscreensFound" style="display:none;color:gray;text-align:center;padding:20px">No auto-connect Displays were found on your network
+		</div>
         <ul data-dojo-type="dojox/mobile/EdgeToEdgeList" id="playerList3" data-dojo-props='select:"multiple"' style="position:relative;top:0px"></ul>
 		<div class="wificlass" style="color:white;font-size:18px"> Manual-connect Displays</div>
 		<div id="screentype">
@@ -818,12 +869,14 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 
     <div data-dojo-type="dojox/mobile/SimpleDialog" id="Sharemenu2" data-dojo-props='modal:false,top:"21px"' style="z-index:999;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.6)!important;border-radius:5px;;width:200px;position:absolute">
 
-        <ul data-dojo-type="dojox/mobile/IconMenu" id="shareiconmenu" data-dojo-props='cols:3' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
+
+		<ul data-dojo-type="dojox/mobile/IconMenu" id="shareiconmenu" data-dojo-props='cols:3' style="border-radius:none!important;border:0px!important;outline:none!important;border-top-left-radius:none!important">
             <li data-dojo-type="dojox/mobile/IconMenuItem" id="facebookshare" onclick="facebook()" style="border:none!important" data-dojo-props='closeOnAction:true,label:"Facebook",icon:"images/FB-f-Logo__blue_50.png"'></li>
             <li data-dojo-type="dojox/mobile/IconMenuItem" id="twittershare" onclick="twitter()" style="border:none!important" data-dojo-props='closeOnAction:true, label:"Twitter", icon:"images/twitter-share.png"'></li>
             <li data-dojo-type="dojox/mobile/IconMenuItem" id="emailShare" onclick="emailShare()" style="border:none!important" data-dojo-props='closeOnAction:true, label:"Mail", icon:"images/email-share.png"'></li>
 
         </ul>
+
 
     </div>
 
@@ -908,6 +961,23 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
      </select>
 	 </span>
 		</div>
+	<div  id="normalbuttons" style="margin-top:10px">
+
+		
+
+
+        <span id="EditorialOrientation2" style="white-space:nowrap;">
+     <select style="text-size:16px;margin-top:15px;margin-right:10px;" id="orientationValue3" onchange="setEditorialOrientation2(this.value)">
+       <option value='Any' >
+         Any Orientation</option>
+       <option value='horizontal' selected="selected">
+         Horizontal</option>
+	   <option value='vertical' >
+         Vertical</option>
+	 
+     </select>
+	 </span>
+	</div>
 		<div style="width:100%" id="searchbuttons">
             <button data-dojo-type="dojox/mobile/Button" style="margin-top:25px;margin-right:10px;background-color: white !important;color:black" onclick="cancelsearch()">Cancel</button>
             <button data-dojo-type="dojox/mobile/Button" style="margin-top:25px;margin-left:10px;background-color: #00C7FF !important;color:black" onclick="usersearch()">Search</button>
@@ -1621,6 +1691,9 @@ Artkick Version 3.3 <br> Copyright &copy; 2015, Artkick, Inc. All rights reserve
 
         <div class="wipestyle" onclick="callHelp()"><img src="images/menu/help.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >Help
         </div>
+		<div class="wipestyle" onclick="gotoView(currentView,'About')">
+		<img src="images/menu/info.png" alt="" style="position:relative;height:18px;top:4px;margin-right:10px" >About
+        </div>
     </div>
 
     <div id="newsharemenu" style="position:absolute;top:42px;left:200px;z-index:1000;display:none;background-color:#7b90ab">
@@ -1828,7 +1901,7 @@ Artkick Version 3.3 <br> Copyright &copy; 2015, Artkick, Inc. All rights reserve
             <img id="showingsrc" src="" alt=" " onclick="gotoView('select_category','ImageView')" class="showingclass">
             <div id="showingtitle" class="showtitle">Testtitle</div>
 			</div>
-			<div id="noTVfooter" style="float:left" onClick='gotoView(currentView,"select_player3")'>
+			<div id="noTVfooter" style="float:left;display:none" onClick='gotoView(currentView,"select_player3")'>
 			<img src="images/connect_smartTV-blue.png" style="width:30px;padding-right:10px" alt="">
 			<a style="color:#00C7FF;position:relative;top:-7px;font-size:18px"> Connect a Display to Artkick</a>
 			</div>
@@ -1868,7 +1941,7 @@ Artkick Version 3.3 <br> Copyright &copy; 2015, Artkick, Inc. All rights reserve
             <img id="showingsrc2" src="" alt=" " onclick="gotoView('select_category','ImageView')" class="showingclass">
             <div id="showingtitle2" class="showtitle">Testtitle</div>
 			</div>
-			<div id="noTVfooter2" style="float:left" onClick='gotoView(currentView,"select_player3")'>
+			<div id="noTVfooter2" style="float:left;display:none" onClick='gotoView(currentView,"select_player3")'>
 			<img src="images/connect_smartTV-blue.png" style="width:30px;padding-right:10px" alt="">
 			<a style="color:#00C7FF;position:relative;top:-7px;font-size:18px"> Connect a Display to Artkick</a>
 			</div>
@@ -2014,63 +2087,7 @@ If you enjoy using Artkick, would you mind taking a moment to rate and review it
         </div>
 
     </div>
-    <div id="gettyadvanced1" style="color:white;text-color:white;position:absolute;top:100px;left:5px;z-index:1000;display:none;background-color:#404040;width:95%">
-        &nbsp;Search Options
-        <br>
-	  <span>
-	  <img src="images/getty-editorial1.jpg" alt="" style="width:49%" onclick='setEditorial("Any")'>
-	  <a  onclick='setEditorial("Any")' style="position:absolute;top:20px;left:15%;color:white">Editorial </a>
-	  <a  onclick='setEditorial("Any")' style="position:absolute;top:38px;left:15%;font-size:12px;color:white">Up-to-the-minute</a>
-	  <a  onclick='setEditorial("Any")' style="position:absolute;top:50px;left:15%;font-size:12px;color:white">news, sports,</a>
-	  <a  onclick='setEditorial("Any")' style="position:absolute;top:62px;left:15%;font-size:12px;color:white">fashion and</a>
-		<a  onclick='setEditorial("Any")' style="position:absolute;top:74px;left:15%;font-size:12px;color:white">celebrity photos</a>
-			<a  id="editorialselected" style="position:absolute;top:94px;left:15%;font-size:16px;color:red"><b>Selected</b></a>
-
-		<img src="images/getty-creative1.jpg" alt="" style="width:49%" onclick='setEditorial("Creative")'>
-		  <a  onclick='setEditorial("Creative")' style="position:absolute;top:20px;left:52%;color:white">Creative </a>
-			<a  onclick='setEditorial("Creative")' style="position:absolute;top:38px;left:52%;font-size:12px;color:white">Contemporary</a>
-	  <a  onclick='setEditorial("Creative")' style="position:absolute;top:50px;left:52%;font-size:12px;color:white">creative images,</a>
-	  <a  onclick='setEditorial("Creative")' style="position:absolute;top:62px;left:52%;font-size:12px;color:white">illustrations and </a>
-		 <a  onclick='setEditorial("Creative")' style="position:absolute;top:74px;left:52%;font-size:12px;color:white">archival images</a>
-				<a  id="creativeselected" style="position:absolute;top:94px;left:52%;font-size:16px;color:red"><b>Selected</b></a>
-	  </span>
-
-        <span id="EditorialTime1" style="white-space:nowrap;">
-
-     <select style="position: relative; top: 10px;left:2%;text-size:16px;" id="dateValue2" onchange="setEditorialTime(this.value)">
-       <option value='Any' selected="selected" >
-         Any date</option>
-       <option value='24H'>
-         Last 24 Hours</option>
-	   <option value='7D' >
-         Last 7 days</option>
-	   <option value='30D' >
-         Last 30 days</option>
-       <option value='12M' >
-         Last 12 months</option>
-
-
-     </select><br>
-	 </span>
-        <span id="EditorialOrientation1" style="white-space:nowrap;">
-     <select style="position: relative;top:-16px; left:52%;text-size:16px" id="orientationValue3" onchange="setEditorialOrientation(this.value)">
-       <option value='Any' >
-         Any</option>
-       <option value='horizontal' selected="selected">
-         Horizontal</option>
-	   <option value='vertical' >
-         Vertical</option>
-	 
-     </select>
-	 </span>
-        <br>
-        <br>
-        <span id="previousgetty">
-	 Previous Searches:
-	 <div id="prevGettySearches" >
-	 </div>
-	 </span>
-    </div>
+    
 
     <div data-dojo-type="dojox/mobile/SimpleDialog" id="Copyright" data-dojo-props='modal:true,top:"61px"' style="z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         <div style="text-align:left;margin-left:10px;margin-top:10px">
@@ -2109,17 +2126,17 @@ If you enjoy using Artkick, would you mind taking a moment to rate and review it
                 <option value=-1 id="-1">
                     Every Morning</option>
                 <option value=30000 id="30000">
-                    Every 30 Seconds for 1 Hr</option>
+                    Every 30 Seconds</option>
                 <option value=60000 id="60000">
-                    Every Minute for 1 Hr</option>
+                    Every Minute</option>
                 <option value=120000 id="120000">
-                    Every 2 Minutes for 1 Hr</option>
+                    Every 2 Minutes</option>
                 <option value=300000 id="300000">
-                    Every 5 Minutes for 1 Hr</option>
+                    Every 5 Minutes</option>
                 <option value=600000 id="600000">
-                    Every 10 Minutes for 1 Hr</option>
+                    Every 10 Minutes</option>
                 <option value=1800000 id="1800000">
-                    Every 30 Minutes for 1 Hr</option>
+                    Every 30 Minutes</option>
                 <option value=3600000 id="3600000">
                     Every Hour</option>
                 <option value=43200000 id="43200000">
@@ -2184,7 +2201,7 @@ If you enjoy using Artkick, would you mind taking a moment to rate and review it
         <button data-dojo-type="dojox/mobile/Button" style="margin-bottom:10px;margin-left:10px;background-color: #00C7FF !important;color:black" onclick="searchUser()">Search</button>
     </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="ScanNetwork" data-dojo-props='modal:true,top:"61px"' style="height:130px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="ScanNetwork" data-dojo-props='modal:true,top:"61px"' style="height:150px;z-index:950;border:#00C7ff solid 2px;background-color:rgba(0,0,0,.8)!important;border-radius:5px;">
         <span id="scanid">Scanning Local Network</span>
 
         <div style="position:relative;top:60px; width:99%">

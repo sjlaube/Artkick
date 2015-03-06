@@ -231,6 +231,8 @@ require(["jquery",
 				window.indialLaunch=false;
 				window.ScanNetworkComplete=false;
 				window.VLsharing=false;
+				window.playertoView='Home';
+				showingScanNetwork=0;
 
                 window.getCookie=function(c_name)
                 {
@@ -489,13 +491,19 @@ require(["jquery",
 						}, 45000);
                       //  updatePlayers();
                     }
+					if (toView=="select_category")
+					{
+						window.currCat="Home";
+						updateCats();
+					}
 					if (toView=="select_category" && runInWebview)
 					{
+						$(window).trigger('resize');
 							calliOSFunction("blescan", [], "onSuccess", "onError");
 							try
 							{
 							
-								Android.launchApp(blescan);
+								Android.blescan();
 							}
 							catch (err)
 							{};
@@ -552,7 +560,7 @@ require(["jquery",
                             url += "&players[]=" + i;
                         }
                     }
-                    // alert('syncimage '+url);
+                   //  usermessage('syncimage '+url.substr(url.length-20,20));
                     if (!window.guest && window.currImage!="")
                     {
                         dojo.io.script.get(
@@ -1319,12 +1327,7 @@ require(["jquery",
                 { // Get the Spotlight viewlists
 				//	if (!ISgettyad)
 				//		window.currentView = "select_category";
-                    if (window.loadcatview)
-                    {
-                        // catList.startup();
-                        //	gotoView("select_category","MuseumlistView");
-                        return; // already did this
-                    }
+				
                     window.loadcatview = true;
              //       window.currentView = "select_category";
                   //  catList.destroyRecursive(true);
@@ -1351,10 +1354,10 @@ require(["jquery",
                         },
                         load: function(result)
                         {
-                            var lists = result["viewlists"];
+                             lists = result["viewlists"];
                             for (var i in lists)
                             {
-                                //console.log(lists[i]["coverImage"]);
+                                console.log(lists[i]["coverImage"]);
                                 var listcoverimage = "images/ARTKICKlogoFULLCOLOR-APP_50x50.png";
                                 if (lists[i]["coverImage"])
                                     listcoverimage = lists[i]["coverImage"];
@@ -1403,21 +1406,58 @@ require(["jquery",
                                     margin: "0px"
 									
                                 }, newdiv2);
+								var newdiv3= dojo.create("div",
+								{
+									id: 'sux'+i,
+									onclick:function()
+									{
+										submenuclick(this.id);
+									}
+								
+								},newdiv2);
+								newimg3=dojo.create("img",
+								{
+								
+									src: "images/vertical-3dot-menu.png"
+								
+								},newdiv3);
+								domAttr.set(newimg3, "class", 'submenuclass');
+								//show note icon if there is a note for this viewlist
+								if (lists[i]['curatornote'])
+								{
+									newimg4=dojo.create("img",
+									{
+									
+										src: "images/note-white.png"
+									
+																		
+									},newdiv3);
+									domAttr.set(newimg4, "class", 'submenunote');
+								}
                                 var newtxt = dojo.create("div",
                                 {
                                     innerHTML: title
-                                }, newdiv2);
+                                }, newdiv3);
 								if (window.computer)
 									imgsize=Math.min((699 / 3)-5,275);
 								else
 									imgsize=Math.min((x.w / 3)-5,275);
+                                //var newtxt = dojo.create("div", {class:"imagetxt",innerHTML: title},newdiv2);
+                             //   domAttr.set(newtxt, "class", "imagetxt");
+								//domStyle.set(newtxt,"padding-left","22px");
+                             //   domStyle.set(newimg2, "width", imagewidth + 'px');
+                                domStyle.set(newdiv2, "width", imgsize + 'px');
+                              //  domStyle.set(newimg2, "height", imageheight + 'px');
+                             //   domStyle.set(newdiv2, "height", imgsize + 45 + 'px');
+							 var xh=imgsize+45;
+							//domStyle.set(newdiv2, "height", xh+'px');
                                 domAttr.set(newtxt, "class", "imagetxt");
 								domAttr.set(newimg2,"class", "featuredclass");
                               //  domStyle.set(newdiv2, "width", imgsize + 'px');
                                 //  domStyle.set(newdiv2, "width", x.w/3 + 'px');
                             //    domStyle.set(newimg2, "height", imgsize + 'px');
-								  //  $('.featuredclass').css('width', imgsize + "px");
-								  //  $('.featuredclass').css('height', imgsize + "px");
+								    $('.featuredclass').css('width', imgsize + "px");
+								    $('.featuredclass').css('height', imgsize + "px");
 
                             }
                         }
@@ -1478,7 +1518,7 @@ require(["jquery",
 						dojo.style("gettysearchhint","display","block");
 						
 						//dojo.style("PlaylistHeader","height","85px");
-						dojo.style("listList2","top","45px");
+						//dojo.style("listList2","top","45px");
 					}
 					else
 					{
@@ -1487,7 +1527,7 @@ require(["jquery",
 						dojo.style("searchhint","display","block");
 						
 						//dojo.style("PlaylistHeader","height","85px");
-						dojo.style("listList2","top","45px");
+						//dojo.style("listList2","top","45px");
 
 						
 					}
@@ -1703,7 +1743,7 @@ require(["jquery",
 									newimg4=dojo.create("img",
 									{
 									
-										src: "images/note-white.png",
+										src: "images/note-white.png"
 									
 																		
 									},newdiv3);
@@ -1975,12 +2015,12 @@ require(["jquery",
                      dijit.registry.byId("ImageViewHeader").set("label",  window.currAbsIndex + "/" + window.listSize);
                    
 						
-					   if (!runInWebview)
+					/*   if (!runInWebview)
 						{
 
 							$(".shareSpan").css({display:'none'})
 							$(".shareImg").css({display:'none'})
-						}
+						}*/
                 }
 
                 window.updatePlayers2 = function()
@@ -1988,9 +2028,15 @@ require(["jquery",
                     console.log("update players2");
 					if (window.indialLaunch)
 					{
-						//usermessage("syncing");i
+						//alert('sync image');
 						window.indialLaunch=false;
-						syncImage(); //don't know why we are doing this here??? because if we just installed the player we need to set the image correctly
+						 //don't know why we are doing this here??? because if we just installed the player we need to set the image correctly
+						syncImage();
+						setTimeout(function () {
+                               syncImage();
+                           }, 2000);
+						
+				
 					}
                     
                     thisurl = base + "player/getPlayers?email=" + window.email + "&token=" + window.token;
@@ -2033,9 +2079,12 @@ require(["jquery",
 							else
 							{
 								dojo.style("haveTVfooter","display","none");
-								dojo.style("noTVfooter","display","block");
 								dojo.style("haveTVfooter2","display","none");
-								dojo.style("noTVfooter2","display","block");
+								if (!window.guest)
+								{
+									dojo.style("noTVfooter2","display","block");
+									dojo.style("noTVfooter","display","block");
+								}
 							}
                             for (var i in dialMap)
                                 checkDial(i);
@@ -2161,32 +2210,32 @@ require(["jquery",
 								dojo.create("option",
 								{
 									value:'30000',
-									label:'Every 30 Seconds for 1 Hr'
+									label:'Every 30 Seconds'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'60000',
-									label:'Every Minute for 1 Hr'
+									label:'Every Minute'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'120000',
-									label:'Every 2 Minutes for 1 Hr'
+									label:'Every 2 Minutes'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'300000',
-									label:'Every 5 Minutes for 1 Hr'
+									label:'Every 5 Minutes'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'600000',
-									label:'Every 10 Minutes for 1 Hr'
+									label:'Every 10 Minutes'
 								},selectauto);
 								dojo.create("option",
 								{
 									value:'1800000',
-									label:'Every 30 Minutes for 1 Hr'
+									label:'Every 30 Minutes'
 								},selectauto);
 								dojo.create("option",
 								{
@@ -2470,6 +2519,8 @@ require(["jquery",
 					dojo.style('import2', 'display', 'none');
 					dojo.style('import3', 'display', 'none');
 					dojo.style('import4', 'display', 'none');
+					dojo.style("emailShare","display","none");
+					dojo.style("facebookshare","margin-left","60px");
 
                 }
 			//	alert("calling resize");
@@ -3354,37 +3405,7 @@ function mytest()
     alert("mytest");
 }
 
-function facebook()
-{
-    //alert("facebook!");
-    imageurl = imageMap[currImage]["thumbnail"];
-	if (imageMap[currImage]["waterMark"])
-		imageurl = imageMap[currImage]["waterMark"];
-    if (window.currViewList == "Last Search")
-    { /* can't share last search */
-        myalert("You can't share the Last Search Viewlist");
-        return;
-    }
-    //alert("image="+imageurl+"currList="+currList+"currImage="+currImage);
-    var url = "http://prod.artkick.net/index-V3.1.html";
-    url = url + "?currList=" + encodeURIComponent(currList) + "&currImage=" + encodeURIComponent(currImage) + "&currCat=" + encodeURIComponent(currCat);
-    //alert ("url="+url);
-    get_short_url(url, login, api_key, function(short_url)
-    {
-        calliOSFunction("facebook", ['Artkick rocks', short_url, encodeURIComponent(imageurl), 'Check out this great image and thousands more at Artkick @artkicktv #freeart'], "onSuccess", "onError");
-        try
-        {
-            //alert(imageMap[currImage]["thumbnail"]);
-            Android.facebook('Check out this great image and thousands more at Artkick @artkicktv #freeart', short_url, imageurl, 'Artkick rocks');
-        }
-        catch (err)
-        {}
-        setTimeout(function()
-        {
-            hidemenu()
-        }, 1000);
-    })
-}
+
 
 function testlaunch()
 {
@@ -3504,9 +3525,9 @@ function showsharemenu()
     if (window.sharemenushow)
         hidemenu();
     else
-    { // calculate the right spot for this
+    { 
+		
         dijit.registry.byId("Sharemenu2").show();
-        //dojo.style("Sharemenu2","display", "block");
         window.sharemenushow = true;
     }
 }
@@ -3688,7 +3709,7 @@ function refreshView()
     ga('create', 'UA-44460273-1', 'artkick.net'); 
     ga('require', 'displayfeatures');
     ga('send', 'pageview');
-    window.justRefresh = true;
+    //window.justRefresh = true;
     window.switchView = true;
 	window.spotlightlist=false;
     if (window.guest&&email.indexOf("apple.store")<0)
@@ -3705,9 +3726,7 @@ function refreshView()
     var currView = dijit.registry.byId("IntroA");
 	$("select").blur();
 	
-    var mycurrView = currView.getShowingView();
-    //alert(mycurrView);
-    //mycurrView.performTransition("blankview", 1, "fade", null);
+
 	if (window.subscriptions.length==0)
 	{
 		window.adnumber = 0;
@@ -3720,8 +3739,8 @@ function refreshView()
 		clearInterval(window.AdInterval);
 		dojo.style("gettyad", "display", "none");
 	}
-    gotoView(window.currentView, 'blankview');
-    updateImages(-1);
+    //gotoView(window.currentView, 'blankview');
+    //updateImages(-1);
 }
 
 function setCookie(c_name, value, exdays)

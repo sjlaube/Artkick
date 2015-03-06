@@ -10,6 +10,7 @@ function removePlayerconfirm()
 		$('#removeTVbutton').click(function(event){event.stopImmediatePropagation();
 }) // stop click from propogating
     dijit.registry.byId("ConfirmTVDelete").show();
+	//alert("current uuid="+window.currentplayer['dialuuid']);
 }
 
 

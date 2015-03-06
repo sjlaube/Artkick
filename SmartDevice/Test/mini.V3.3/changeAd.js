@@ -8,7 +8,7 @@ function changeAd()
     adbase = adURL+"/GettyTrial_";
     window.adnumber++;
     //console.log("changing ad to "+window.adnumber);
-    if (window.adnumber > 3)
+    if (window.adnumber > 2)
     {
         window.adnumber = 0;
         clearInterval(window.AdInterval);
