@@ -48,7 +48,10 @@ function submenuclick(id)
 		dojo.style("vlCurator","display","block");
 	else
 		dojo.style("vlCurator","display","none");
-	dojo.byId("vlmname").innerHTML=thislist['name'];
+	if (isAdmin)
+		dojo.byId("vlmname").innerHTML=thislist['name']+'-'+thislist['id'];
+	else
+		dojo.byId("vlmname").innerHTML=thislist['name'];
 	dojo.style("vlRename","display","none");
 	dojo.style("vlDelete","display","none");
 	dojo.style("vlEdit","display","none");
@@ -82,7 +85,7 @@ function showCuratorNotes()
 {
 	dijit.registry.byId('viewlistMenu').hide();
 	dojo.byId("cn-vlmname").innerHTML=thislist['name'];
-		dojo.byId("showCuratorNotes").innerHTML=thislist['curatornote'];
+		dojo.byId("showCuratorNotes").innerHTML=unescape(thislist['curatornote']);
 		dijit.registry.byId('CuratorNotes').show();
 
 }

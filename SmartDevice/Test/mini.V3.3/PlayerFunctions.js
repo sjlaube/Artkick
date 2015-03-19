@@ -889,3 +889,17 @@ function renameDevice()
 
 }
 
+function findactivePlayer()
+{
+	for (var i in playerlist)
+	{
+		var player = playerlist[i];
+
+		if (player["account"] in selectedPlayers)
+		{
+	   
+			window.activeplayer = player["nickname"];
+		}
+	}
+
+}

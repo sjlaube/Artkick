@@ -36,32 +36,32 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
     <!--<script src="http://jsconsole.com/remote.js?1AA85237-3A9E-46DF-A95C-A18C1E883B43"></script> -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-<!-- <script type="text/javascript" src="mini.V3.3/artkick.js?V1.3"></script> -->
+<!-- <script type="text/javascript" src="mini.V3.4/artkick.js?V1.3"></script> -->
 	
 <!-- for debugging remove these comments -->
-    <script type="text/javascript" src="mini.V3.3/app.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/Browser-Detect.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/UserViewlists.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/PlayerFunctions.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/UserAccounts.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/Feedback.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/Search.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/backbutton.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/registrationhelp.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/Photoimport.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/social.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/getty.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/Premium.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/Editviewlist.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/changeAd.js?V1.3"></script>
-    <script type="text/javascript" src="mini.V3.3/dial.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.3/getty-default.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.3/img-touch-canvas.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.3/viewlistmenu.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.3/login.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.3/ConnectTV.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.3/wifi.js?V1.3"></script>
-	<script type="text/javascript" src="mini.V3.3/share.js?V1.3"></script> 
+    <script type="text/javascript" src="mini.V3.4/app.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/Browser-Detect.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/UserViewlists.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/PlayerFunctions.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/UserAccounts.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/Feedback.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/Search.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/backbutton.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/registrationhelp.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/Photoimport.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/social.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/getty.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/Premium.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/Editviewlist.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/changeAd.js?V1.3"></script>
+    <script type="text/javascript" src="mini.V3.4/dial.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.4/getty-default.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.4/img-touch-canvas.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.4/viewlistmenu.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.4/login.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.4/ConnectTV.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.4/wifi.js?V1.3"></script>
+	<script type="text/javascript" src="mini.V3.4/share.js?V1.3"></script> 
 	
 
     <script type="text/javascript">
@@ -122,7 +122,7 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
         @import "WebContent-V3.0/themes/claro/claro.css";
         @import "WebContent-V3.0/lib/shapes/shapes.css";
         @import "WebContent-V3.0/app.css";
-        @import "mini.V3.3/Artkick.css";
+        @import "mini.V3.4/Artkick.css";
     </style>
 
     <script>
@@ -143,7 +143,13 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
         ga('require', 'displayfeatures');
         ga('send', 'pageview');
     </script>
-
+<script type="text/javascript">
+      (function() {
+       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+       po.src = 'https://apis.google.com/js/client.js?onload=GonLoadCallback';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+     })();
+</script>
 </head>
 
 <body data-maq-device="iphone" data-maq-flow-layout="true" data-maq-comptype="mobile" class="claro" data-maq-ws="collapse" data-maq-orientation="portrait" id="myapp" data-maq-appstates="{}">
@@ -152,6 +158,7 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
     FB.init({
       appId      : '419444481556804',
       xfbml      : true,
+	  cookie	 : true,
       version    : 'v2.2'
     });
   };
@@ -912,21 +919,40 @@ Copyright 2013, 2014, 2015  Zwamy, Inc.  All Rights Reserved
 
    </div>
 
-    <div data-dojo-type="dojox/mobile/SimpleDialog" id="SearchBox" data-dojo-props='modal:false' 		style="z-index:903;width:90%;border-radius:0px!important;border-right:none;border-left:none;border-top-color:#28272D!important;border-bottom-color:#28272D!important;outline:none!important;background-image:none!important;background-color:rgba(0,0,0,.85)!important;height:200px">
+    <div data-dojo-type="dojox/mobile/SimpleDialog" id="SearchBox" data-dojo-props='modal:false' 		style="z-index:903;width:100%;border-radius:0px!important;border-right:none;border-left:none;border-top-color:#28272D!important;border-bottom-color:#28272D!important;outline:none!important;background-image:none!important;background-color:rgba(0,0,0,.85)!important">
 
 	 <div id="searchSelect" style="margin-top:5px;white-space:nowrap;">
-     <select style="text-size:16px;border-radius:5!important" id="searchSelectValue3" onchange="setSearchSelection(this.value)">
+     <select style="display:none;text-size:16px;border-radius:5!important" id="searchSelectValue3" onchange="setSearchSelection(this.value)">
        <option value='Fine Art' selected="selected">Search Fine Art</option>
 	   <option value='Photography' selected="selected">Search Photography</option>
 
      </select>
+	 <br>
+	 <form name="RadioForm" style="text-align:left;width:80%;margin:auto">
+	 
+	 <input type="radio" id="radioFineArt" name="SearchTerm" value="Fine Art" checked="true" data-dojo-type="dojox/mobile/RadioButton" onChange="radiochange()";/>
+	 <label for="radioFineArt" style="font-size:18px;">Search Fine Art</label>
+	 <br>
+	 <input type="radio" id="radioPhotos" name="SearchTerm" value="Photography" data-dojo-type="dojox/mobile/RadioButton" onChange="radiochange()";/>
+	 <label for="radioPhotos" style="font-size:18px;">Search Photography</label>
+	 <div id="gettyRadio">
+	 <input type="radio" id="radioGettyEnt" name="SearchTerm" value="GettyEnt" data-dojo-type="dojox/mobile/RadioButton" onChange="radiochange()";/>
+	 <label for="radioGettyEnt" style="font-size:18px;">Search Getty Entertainmant</label>
+	 <br>
+	 <input type="radio" id="radioGettySports" name="SearchTerm" value="GettySports" data-dojo-type="dojox/mobile/RadioButton" onChange="radiochange()";/>
+	 <label for="radioGettySports" style="font-size:18px;">Search Getty Sports</label>
+	<br>
+	 <input type="radio" id="radioGettyNews" name="SearchTerm" value="GettyNews" data-dojo-type="dojox/mobile/RadioButton" onChange="radiochange()";/>
+	 <label for="radioGettyNews" style="font-size:18px;">Search Getty News</label>
+	 </div>
+	 </form>
 	 </div>
         <input data-dojo-type="dojox/mobile/SearchBox" type="search" placeHolder="&nbsp;&nbsp;Artist Name, Genre, Museum" id="searchbox2" style="width:80%;height:25px;font-size:15px;border-radius:5px;margin-top:10px" data-dojo-props='ignoreCase: true, incremental:false,onSearch:usersearch'></input>
         
 	<div  id="gettybuttons" style="margin-top:10px">
 	 <span id="bestoftoggle" style="white-space:nowrap;">
-	        <label style="vertical-align: middle; text-align: left; ;color:white;font-size:15px">Best Of</label>
-            <button data-dojo-type="dojox/mobile/ToggleButton" checked="true" id="bestof-switch" onchange="bestofswitch()" style="color:white;height:25px;top:2px" data-dojo-props='label:"On"' ></button>
+	        <label style="vertical-align: middle; text-align: left; ;color:white;font-size:15px">Editor's Choice</label>
+            <button data-dojo-type="dojox/mobile/CheckBox" checked="true" id="bestof-switch" onchange="bestofswitch()" style="color:white;top:-5px"  ></button>
 		</span>
 		
 		<br>
@@ -1532,7 +1558,7 @@ Save your favorite images in personal viewlists and share them with your friends
         <img src="images/ARTKICKlogoFULLCOLORdarkbackgrounds_200.png" alt=" " style="position: absolute; z-index: 900; left: 55px; top: 170px;">
         <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; color: #ffffff; font-family: Verdana,Geneva,sans-serif; left: 60px; top: 240px;">EXPLORE, DISCOVER, SHARE</span>
         <span data-dojo-type="shapes/Text" style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 275px; color: gray;">
-Artkick Version 3.3 <br> Copyright &copy; 2015, Artkick, Inc. All rights reserved.
+Artkick Version 3.4 <br> Copyright &copy; 2015, Artkick, Inc. All rights reserved.
   </span>
         <div id='baseurlname' style="font-size: 14px; position: absolute; z-index: 900; left: 50px; top: 350px; color: gray;">
             Server is

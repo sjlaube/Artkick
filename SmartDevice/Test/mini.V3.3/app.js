@@ -423,6 +423,12 @@ require(["jquery",
 						dijit.registry.byId('SearchBox').show();
 						dijit.byId(toView).scrollTo({y:0});
 					}
+					if((toView=="select_category"||toView=="PlaylistView")&&!window.guest)
+					{
+						findactivePlayer();//update the activeplayer name at bottom of view
+						if (Object.keys(imageMap).length>0)
+						loadmetadata();
+					}
                     if (fromView == "ImageView" || fromView == "PlaylistView" || fromView == "select_category")
 					{
                         window.lastView = fromView;
